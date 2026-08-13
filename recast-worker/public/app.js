@@ -23,8 +23,8 @@
 // =====================================================================
 const STRIPE = {
   links: {
-    pro_monthly: 'https://buy.stripe.com/REPLACE_PRO_MONTHLY',
-    pro_yearly:  'https://buy.stripe.com/REPLACE_PRO_YEARLY',
+    pro_monthly: 'https://buy.stripe.com/6oU28jez7ayf8sRg5y4c800',
+    pro_yearly:  'https://buy.stripe.com/14AcMX2Qp7m310paLe4c801',
     api_monthly: 'https://buy.stripe.com/REPLACE_API_MONTHLY',
     api_yearly:  'https://buy.stripe.com/REPLACE_API_YEARLY',
   },
