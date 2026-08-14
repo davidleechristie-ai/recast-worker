@@ -5,21 +5,29 @@
 //   1. Stripe Dashboard -> Product catalog -> Add product
 //        "Recast Pro"  — £9.00/month recurring, and a second price £90.00/year
 //        "Recast API"  — £29.00/month recurring, and a second price £290.00/year
-//   2. For each of the 4 prices: Product page -> Create payment link
+//        "Recast Day Pass" — £2.99, ONE-TIME (not recurring) — a single price only
+//   2. For each of the 5 prices: Product page -> Create payment link
 //        Payment page settings -> After payment -> "Don't show confirmation page"
 //        -> redirect to:
 //        https://tryrecast.app/?upgraded=1&plan=pro_monthly&session_id={CHECKOUT_SESSION_ID}
-//        (swap plan=pro_monthly for pro_yearly / api_monthly / api_yearly on each link)
+//        (swap plan=pro_monthly for pro_yearly / api_monthly / api_yearly / day_pass on each link)
 //   3. Copy each payment link's URL (looks like https://buy.stripe.com/xxxxx)
 //      into STRIPE.links below.
-//   4. Deploy the companion Cloudflare Worker (see /recast-worker in this
+//   4. Add the Day Pass price's ID (starts price_..., found on the Price's
+//      own page in Stripe) to PRICE_MAP in the Worker's wrangler.jsonc,
+//      mapped to "day_pass" — same as the other four prices.
+//   5. Deploy the companion Cloudflare Worker (see /recast-worker in this
 //      project) for REAL server-side subscription enforcement. Until that's
 //      deployed, this still collects real payment correctly (every genuine
 //      customer gets Pro) — it just can't yet detect a cancellation or
 //      block someone from setting the unlock flag by hand in devtools.
 //      Once the Worker is live, entitlement is checked against a real
 //      Stripe subscription on every page load, and cancellations are
-//      caught automatically.
+//      caught automatically. The Day Pass specifically ALWAYS needs the
+//      Worker, since its 24-hour expiry is computed and enforced there —
+//      without the Worker deployed, a Day Pass purchase falls back to
+//      granting ordinary (non-expiring) Pro access instead, same as any
+//      other plan would in that fallback path.
 // =====================================================================
 const STRIPE = {
   links: {
@@ -27,6 +35,7 @@ const STRIPE = {
     pro_yearly:  'https://buy.stripe.com/14AcMX2Qp7m310paLe4c801',
     api_monthly: 'https://buy.stripe.com/REPLACE_API_MONTHLY',
     api_yearly:  'https://buy.stripe.com/REPLACE_API_YEARLY',
+    day_pass:    'https://buy.stripe.com/eVq3cn2QpeOv7oN2eI4c802', // one-time, non-recurring — 24 hours of full Pro access, £2.99
   },
   // Fallback only — used if the Worker's dynamic /api/portal call fails or
   // the Worker isn't deployed yet. Settings -> Billing -> Customer portal.
@@ -40,7 +49,7 @@ function isLinkConfigured(url) { return !!url && !url.includes('REPLACE'); }
 // fail and every code path below falls back gracefully.
 const API_BASE = '';
 
-let accountState = { entitled: false, plan: null, status: null, token: null };
+let accountState = { entitled: false, plan: null, status: null, token: null, expiresAt: null };
 try {
   accountState.token = localStorage.getItem('recast_access_token') || null;
   const cached = JSON.parse(localStorage.getItem('recast_account_cache') || 'null');
@@ -49,7 +58,7 @@ try {
 
 function saveAccountCache() {
   try {
-    localStorage.setItem('recast_account_cache', JSON.stringify({ entitled: accountState.entitled, plan: accountState.plan, status: accountState.status }));
+    localStorage.setItem('recast_account_cache', JSON.stringify({ entitled: accountState.entitled, plan: accountState.plan, status: accountState.status, expiresAt: accountState.expiresAt }));
     if (accountState.token) localStorage.setItem('recast_access_token', accountState.token);
   } catch (e) { /* storage unavailable — entitlement just won't persist across reloads */ }
 }
@@ -66,6 +75,7 @@ async function verifySessionWithBackend(sessionId) {
     accountState.token = data.token;
     accountState.plan = data.plan;
     accountState.status = data.status;
+    accountState.expiresAt = data.expiresAt || null;
     accountState.entitled = !!data.entitled;
     saveAccountCache();
     return true;
@@ -74,7 +84,7 @@ async function verifySessionWithBackend(sessionId) {
   }
 }
 
-/** Re-checks current entitlement against the backend. This is the call that actually catches a cancellation — nothing is trusted forever. */
+/** Re-checks current entitlement against the backend. This is the call that actually catches a cancellation — nothing is trusted forever. Also what catches a day pass running out. */
 async function refreshEntitlement() {
   if (!accountState.token) return;
   try {
@@ -84,6 +94,7 @@ async function refreshEntitlement() {
     accountState.entitled = !!data.entitled;
     accountState.plan = data.plan;
     accountState.status = data.status;
+    accountState.expiresAt = data.expiresAt || null;
     saveAccountCache();
     updateAccountUI();
   } catch (e) { /* offline / Worker not deployed — keep last cached state */ }
@@ -159,10 +170,25 @@ async function openManageSubscription(e) {
   else alert('Subscription management isn\'t connected yet \u2014 email support to cancel or change your plan.');
 }
 
+function formatTimeRemaining(expiresAt) {
+  const ms = expiresAt - Date.now();
+  if (ms <= 0) return 'expired';
+  const totalMins = Math.floor(ms / 60000);
+  const hours = Math.floor(totalMins / 60);
+  const mins = totalMins % 60;
+  return hours > 0 ? `${hours}h ${mins}m left` : `${mins}m left`;
+}
+
 function updateAccountUI() {
   const upgradeBtn = document.getElementById('accountBtn');
   if (!upgradeBtn) return;
-  if (isPro()) {
+  if (isPro() && accountState.plan === 'day_pass' && accountState.expiresAt) {
+    // A day pass isn't a real Stripe subscription — nothing to "manage,"
+    // it just runs out. Show a countdown instead of a portal link.
+    upgradeBtn.textContent = 'Pro pass \u00b7 ' + formatTimeRemaining(accountState.expiresAt);
+    upgradeBtn.href = '#pricing';
+    upgradeBtn.onclick = null;
+  } else if (isPro()) {
     upgradeBtn.textContent = 'Manage subscription';
     upgradeBtn.href = '#';
     upgradeBtn.onclick = openManageSubscription;
@@ -492,6 +518,7 @@ function formatSchemaValidationReport(result) {
 
 // ---------------- Mode config ----------------
 function getLimitBytes() { return isPro() ? 25 * 1024 * 1024 : 256 * 1024; }
+const CSV_COMPARE_FREE_ROW_LIMIT = 50; // free tier: CSV compare capped at this many data rows per file; unlimited on Pro
 
 const modeConfig = {
   json2csv:  { inFmt:'JSON', outFmt:'CSV', dual:false, path:false, showDelim:true, showBom:true, showPretty:false, showInfer:false, btn:'Convert', hl:'json', hlOut:'csv',
@@ -688,6 +715,16 @@ async function runCurrentMode() {
     statusEl.innerHTML = '<span class="status-err">\u2715 File exceeds the free limit \u2014 <a href="#pricing" style="color:#F2C14E">upgrade to Pro</a> for files up to 25 MB.</span>';
     $('upgradeNudge')?.classList.add('show');
     return;
+  }
+  if (currentMode === 'diffCsv' && !isPro()) {
+    const delim = getDelim();
+    const rowsA = RecastEngine.csvRowCount($('inputA').value, delim);
+    const rowsB = RecastEngine.csvRowCount($('inputB').value, delim);
+    if (Math.max(rowsA, rowsB) > CSV_COMPARE_FREE_ROW_LIMIT) {
+      statusEl.innerHTML = `<span class="status-err">\u2715 Free tier compares up to ${CSV_COMPARE_FREE_ROW_LIMIT} rows per file \u2014 <a href="#pricing" style="color:#F2C14E">upgrade to Pro</a>, or <a href="#" onclick="startCheckout('day_pass');return false;" style="color:#F2C14E">get a 24-hour pass \u2014 \u00a32.99</a> for just this one.</span>`;
+      $('upgradeNudge')?.classList.add('show');
+      return;
+    }
   }
   try {
     if (cfg.sync) {
