@@ -1,20 +1,20 @@
 /*!
- * Recast entitlements Worker.
- *
- * Routes:
- *   GET  /api/verify-session?session_id=...  — called once after Stripe
- *        Checkout redirects back. Confirms payment with Stripe directly
- *        (server-side, using the secret key) and issues an access token.
- *   GET  /api/verify-token?token=...         — called on page load / on an
- *        interval to re-check current entitlement. This is what actually
- *        catches a cancellation — nothing is trusted forever.
- *   POST /api/webhook                        — Stripe calls this on
- *        subscription changes. Signature-verified.
- *   POST /api/portal   { token }             — generates a real-time Stripe
- *        Billing Portal link for the token's customer.
- *
- * Everything else falls through to the static site (env.ASSETS).
- */
+* Recast entitlements Worker.
+*
+* Routes:
+*  GET  /api/verify-session?session_id=...  — called once after Stripe
+*        Checkout redirects back. Confirms payment with Stripe directly
+*        (server-side, using the secret key) and issues an access token.
+*  GET  /api/verify-token?token=...        — called on page load / on an
+*        interval to re-check current entitlement. This is what actually
+*        catches a cancellation — nothing is trusted forever.
+*  POST /api/webhook                        — Stripe calls this on
+*        subscription changes. Signature-verified.
+*  POST /api/portal  { token }            — generates a real-time Stripe
+*        Billing Portal link for the token's customer.
+*
+* Everything else falls through to the static site (env.ASSETS).
+*/
 import { verifyStripeSignature } from './stripe-verify.js';
 import { issueToken, lookupToken, setCustomerStatus, isEntitled } from './entitlements.js';
 
@@ -27,10 +27,20 @@ function json(data, status) {
   });
 }
 
+/**
+* Resolves a secret regardless of how it's bound. Cloudflare's dashboard
+* currently pushes new bindings toward "Secrets Store" (an object with an
+* async .get() method) rather than a plain string env var, so this handles
+* both shapes without needing to know in advance which one was used.
+*/
+async function resolveSecret(binding) {
+  if (binding == null) return binding;
+  if (typeof binding === 'string') return binding;
+  if (typeof binding.get === 'function') return binding.get();
+  return binding;
+}
+
 function planFromPriceId(priceId, env) {
-  // env.PRICE_MAP is a JSON string set as a Worker variable, e.g.:
-  //   {"price_1ABC...":"pro_monthly","price_1DEF...":"pro_yearly", ...}
-  // Fill this in with your real Stripe Price IDs after creating products.
   try {
     const map = JSON.parse(env.PRICE_MAP || '{}');
     return map[priceId] || 'unknown';
@@ -41,8 +51,9 @@ function planFromPriceId(priceId, env) {
 
 async function stripeGet(path, env, fetchImpl) {
   const doFetch = fetchImpl || fetch;
+  const secretKey = await resolveSecret(env.STRIPE_SECRET_KEY);
   const res = await doFetch(STRIPE_API + path, {
-    headers: { Authorization: 'Bearer ' + env.STRIPE_SECRET_KEY },
+    headers: { Authorization: 'Bearer ' + secretKey },
   });
   const data = await res.json();
   if (!res.ok) throw new Error((data.error && data.error.message) || 'Stripe API error');
@@ -51,11 +62,12 @@ async function stripeGet(path, env, fetchImpl) {
 
 async function stripePost(path, params, env, fetchImpl) {
   const doFetch = fetchImpl || fetch;
+  const secretKey = await resolveSecret(env.STRIPE_SECRET_KEY);
   const body = new URLSearchParams(params).toString();
   const res = await doFetch(STRIPE_API + path, {
     method: 'POST',
     headers: {
-      Authorization: 'Bearer ' + env.STRIPE_SECRET_KEY,
+      Authorization: 'Bearer ' + secretKey,
       'Content-Type': 'application/x-www-form-urlencoded',
     },
     body: body,
@@ -104,7 +116,8 @@ async function handleWebhook(request, env, deps) {
   const rawBody = await request.text();
   const sig = request.headers.get('Stripe-Signature');
   try {
-    await deps.verifyStripeSignature(rawBody, sig, env.STRIPE_WEBHOOK_SECRET);
+    const webhookSecret = await resolveSecret(env.STRIPE_WEBHOOK_SECRET);
+    await deps.verifyStripeSignature(rawBody, sig, webhookSecret);
   } catch (e) {
     return json({ error: 'invalid signature: ' + e.message }, 400);
   }
@@ -120,10 +133,6 @@ async function handleWebhook(request, env, deps) {
     const status = event.type === 'customer.subscription.deleted' ? 'canceled' : obj.status;
     await deps.setCustomerStatus(env.ENTITLEMENTS, customerId, plan, status);
   }
-  // checkout.session.completed is intentionally not handled here — entitlement
-  // is granted via /api/verify-session, called directly by the frontend right
-  // after redirect. This event still arrives and could be logged for an audit
-  // trail, but isn't needed for the enforcement logic itself.
 
   return json({ received: true });
 }
