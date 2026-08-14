@@ -1,24 +1,25 @@
 /*!
-* Recast entitlements Worker.
-*
-* Routes:
-*  GET  /api/verify-session?session_id=...  — called once after Stripe
-*        Checkout redirects back. Confirms payment with Stripe directly
-*        (server-side, using the secret key) and issues an access token.
-*  GET  /api/verify-token?token=...        — called on page load / on an
-*        interval to re-check current entitlement. This is what actually
-*        catches a cancellation — nothing is trusted forever.
-*  POST /api/webhook                        — Stripe calls this on
-*        subscription changes. Signature-verified.
-*  POST /api/portal  { token }            — generates a real-time Stripe
-*        Billing Portal link for the token's customer.
-*
-* Everything else falls through to the static site (env.ASSETS).
-*/
+ * Recast entitlements Worker.
+ *
+ * Routes:
+ *   GET  /api/verify-session?session_id=...  — called once after Stripe
+ *        Checkout redirects back. Confirms payment with Stripe directly
+ *        (server-side, using the secret key) and issues an access token.
+ *   GET  /api/verify-token?token=...         — called on page load / on an
+ *        interval to re-check current entitlement. This is what actually
+ *        catches a cancellation — nothing is trusted forever.
+ *   POST /api/webhook                        — Stripe calls this on
+ *        subscription changes. Signature-verified.
+ *   POST /api/portal   { token }             — generates a real-time Stripe
+ *        Billing Portal link for the token's customer.
+ *
+ * Everything else falls through to the static site (env.ASSETS).
+ */
 import { verifyStripeSignature } from './stripe-verify.js';
 import { issueToken, lookupToken, setCustomerStatus, isEntitled } from './entitlements.js';
 
 const STRIPE_API = 'https://api.stripe.com/v1';
+const DAY_PASS_DURATION_MS = 24 * 60 * 60 * 1000; // one-time pass window: 24 hours
 
 function json(data, status) {
   return new Response(JSON.stringify(data), {
@@ -28,11 +29,11 @@ function json(data, status) {
 }
 
 /**
-* Resolves a secret regardless of how it's bound. Cloudflare's dashboard
-* currently pushes new bindings toward "Secrets Store" (an object with an
-* async .get() method) rather than a plain string env var, so this handles
-* both shapes without needing to know in advance which one was used.
-*/
+ * Resolves a secret regardless of how it's bound. Cloudflare's dashboard
+ * currently pushes new bindings toward "Secrets Store" (an object with an
+ * async .get() method) rather than a plain string env var, so this handles
+ * both shapes without needing to know in advance which one was used.
+ */
 async function resolveSecret(binding) {
   if (binding == null) return binding;
   if (typeof binding === 'string') return binding;
@@ -41,6 +42,9 @@ async function resolveSecret(binding) {
 }
 
 function planFromPriceId(priceId, env) {
+  // env.PRICE_MAP is a JSON string set as a Worker variable, e.g.:
+  //   {"price_1ABC...":"pro_monthly","price_1DEF...":"pro_yearly", ...}
+  // Fill this in with your real Stripe Price IDs after creating products.
   try {
     const map = JSON.parse(env.PRICE_MAP || '{}');
     return map[priceId] || 'unknown';
@@ -84,7 +88,10 @@ async function handleVerifySession(request, env, deps) {
 
   let session;
   try {
-    session = await stripeGet('/checkout/sessions/' + sessionId + '?expand[]=subscription', env, deps.fetchImpl);
+    // line_items is needed alongside subscription because a one-time pass
+    // (e.g. a 24-hour Pro pass) has no subscription object at all — its
+    // price ID only shows up in the line items.
+    session = await stripeGet('/checkout/sessions/' + sessionId + '?expand[]=subscription&expand[]=line_items', env, deps.fetchImpl);
   } catch (e) {
     return json({ error: 'could not verify session: ' + e.message }, 502);
   }
@@ -93,14 +100,33 @@ async function handleVerifySession(request, env, deps) {
     return json({ error: 'payment not completed' }, 402);
   }
 
-  const customerId = session.customer;
   const sub = session.subscription;
-  const priceId = sub && sub.items && sub.items.data && sub.items.data[0] && sub.items.data[0].price && sub.items.data[0].price.id;
-  const plan = planFromPriceId(priceId, env);
-  const status = sub ? sub.status : 'active';
+  let priceId, status, expiresAt;
 
-  const token = await deps.issueToken(env.ENTITLEMENTS, customerId, plan, status);
-  return json({ token: token, plan: plan, status: status, entitled: deps.isEntitled(status) });
+  if (sub) {
+    // Ongoing subscription — no fixed expiry, status is kept current by webhooks.
+    priceId = sub.items && sub.items.data && sub.items.data[0] && sub.items.data[0].price && sub.items.data[0].price.id;
+    status = sub.status;
+    expiresAt = null;
+  } else {
+    // One-time payment (e.g. a day pass) — no subscription object exists at
+    // all, so the price comes from the line items instead, and the pass
+    // gets a fixed expiry rather than an ongoing status webhooks would update.
+    const lineItems = session.line_items && session.line_items.data;
+    priceId = lineItems && lineItems[0] && lineItems[0].price && lineItems[0].price.id;
+    status = 'active';
+    expiresAt = Date.now() + DAY_PASS_DURATION_MS;
+  }
+
+  const plan = planFromPriceId(priceId, env);
+  // A one-time Payment Link doesn't always create a real Stripe Customer
+  // object (depends on the link's "customer creation" setting) — fall back
+  // to the Checkout Session's own ID as the storage key in that case, since
+  // a day pass doesn't need an ongoing customer relationship anyway.
+  const customerId = session.customer || session.id;
+
+  const token = await deps.issueToken(env.ENTITLEMENTS, customerId, plan, status, expiresAt);
+  return json({ token: token, plan: plan, status: status, expiresAt: expiresAt, entitled: deps.isEntitled(status, expiresAt) });
 }
 
 async function handleVerifyToken(request, env, deps) {
@@ -108,8 +134,8 @@ async function handleVerifyToken(request, env, deps) {
   const token = url.searchParams.get('token');
   if (!token) return json({ error: 'missing token' }, 400);
   const rec = await deps.lookupToken(env.ENTITLEMENTS, token);
-  if (!rec) return json({ entitled: false, plan: null, status: null });
-  return json({ entitled: deps.isEntitled(rec.status), plan: rec.plan, status: rec.status });
+  if (!rec) return json({ entitled: false, plan: null, status: null, expiresAt: null });
+  return json({ entitled: deps.isEntitled(rec.status, rec.expiresAt), plan: rec.plan, status: rec.status, expiresAt: rec.expiresAt || null });
 }
 
 async function handleWebhook(request, env, deps) {
@@ -133,6 +159,10 @@ async function handleWebhook(request, env, deps) {
     const status = event.type === 'customer.subscription.deleted' ? 'canceled' : obj.status;
     await deps.setCustomerStatus(env.ENTITLEMENTS, customerId, plan, status);
   }
+  // checkout.session.completed is intentionally not handled here — entitlement
+  // is granted via /api/verify-session, called directly by the frontend right
+  // after redirect. This event still arrives and could be logged for an audit
+  // trail, but isn't needed for the enforcement logic itself.
 
   return json({ received: true });
 }
