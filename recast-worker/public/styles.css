@@ -365,3 +365,52 @@
 .presets-list-item .pmode{ font-family:'IBM Plex Mono', monospace; font-size:10px; color:#F2C14E; text-transform:uppercase; }
 .presets-list-item .pdel{ background:none; border:none; color:#B9CBDA; cursor:pointer; font-size:13px; }
 .presets-list-item .pdel:hover{ color:#F2846B; }
+
+/* ================= CSV compare — Beyond-Compare-style aligned table ================= */
+.compare-toolbar{ display:flex; align-items:center; gap:8px; flex-wrap:wrap; padding:10px 16px; border-bottom:1px solid rgba(140,182,214,0.16); background:rgba(237,243,248,0.02); }
+.compare-filter-group{ display:flex; gap:4px; }
+.compare-filter-btn{ font-family:'IBM Plex Mono', monospace; font-size:11px; padding:5px 10px; border:1px solid rgba(140,182,214,0.32); background:transparent; color:#B9CBDA; border-radius:2px; cursor:pointer; white-space:nowrap; }
+.compare-filter-btn:hover{ border-color:#EDF3F8; color:#EDF3F8; }
+.compare-filter-btn.active{ border-color:#F2C14E; color:#F2C14E; background:rgba(242,193,78,0.08); }
+.compare-filter-btn .n{ opacity:.7; margin-left:3px; }
+.compare-search{ flex:1; min-width:140px; background:#0E2338; border:1px solid rgba(140,182,214,0.32); color:#EDF3F8; padding:6px 10px; border-radius:2px; font-family:'IBM Plex Mono', monospace; font-size:12px; }
+.compare-search::placeholder{ color:rgba(185,203,218,0.5); }
+.compare-downloads{ display:flex; gap:6px; margin-left:auto; }
+
+.diff-table-wrap{ overflow:auto; max-height:480px; }
+.diff-table{ border-collapse:collapse; width:100%; font-family:'IBM Plex Mono', monospace; font-size:12px; }
+.diff-table th, .diff-table td{ padding:7px 10px; border-bottom:1px solid rgba(140,182,214,0.16); text-align:left; white-space:nowrap; }
+.diff-table th{ background:#0E2338; position:sticky; top:0; z-index:1; color:#B9CBDA; font-weight:500; text-transform:uppercase; font-size:10.5px; letter-spacing:.04em; }
+.diff-table .col-status{ width:64px; }
+.row-badge{ font-size:9.5px; text-transform:uppercase; letter-spacing:.04em; padding:2px 7px; border-radius:2px; display:inline-block; }
+tr.row-added{ background:rgba(127,231,208,0.06); }
+tr.row-added .row-badge{ background:#7FE7D0; color:#0E2338; }
+tr.row-removed{ background:rgba(242,132,107,0.06); }
+tr.row-removed .row-badge{ background:#F2846B; color:#0E2338; }
+tr.row-changed{ background:rgba(242,193,78,0.05); }
+tr.row-changed .row-badge{ background:#F2C14E; color:#0E2338; }
+tr.row-unchanged .row-badge{ background:rgba(140,182,214,0.28); color:#EDF3F8; }
+tr.row-unchanged{ opacity:.72; }
+td.cell-changed{ background:rgba(242,193,78,0.1); }
+.cell-old{ color:#F2846B; text-decoration:line-through; opacity:.85; font-size:10.5px; line-height:1.3; }
+.cell-new{ color:#7FE7D0; line-height:1.3; }
+
+/* ================= FAQ ================= */
+.faq-list{ max-width:760px; }
+.faq-item{ border-bottom:1px solid rgba(140,182,214,0.16); padding:16px 0; }
+.faq-item summary{ cursor:pointer; font-family:'Space Grotesk', sans-serif; font-weight:600; font-size:15.5px; color:#EDF3F8; list-style:none; display:flex; align-items:center; justify-content:space-between; gap:12px; }
+.faq-item summary::-webkit-details-marker{ display:none; }
+.faq-item summary::after{ content:'+'; color:#F2C14E; font-size:20px; font-weight:400; flex-shrink:0; transition:transform .15s; }
+.faq-item[open] summary::after{ transform:rotate(45deg); }
+.faq-item p{ color:#B9CBDA; font-size:14px; line-height:1.6; margin:12px 0 0; }
+
+/* ================= Difference navigation + ignore-whitespace ================= */
+.compare-ws-toggle{ display:flex; align-items:center; gap:6px; font-family:'IBM Plex Mono', monospace; font-size:11.5px; color:#B9CBDA; white-space:nowrap; cursor:pointer; }
+.compare-ws-toggle input{ accent-color:#F2C14E; }
+.compare-nav{ display:flex; align-items:center; gap:6px; }
+.compare-nav-pos{ font-family:'IBM Plex Mono', monospace; font-size:11px; color:#B9CBDA; min-width:44px; text-align:center; }
+@keyframes diffRowFlash {
+  0%   { background:rgba(242,193,78,0.45); }
+  100% { background:transparent; }
+}
+tr.diff-row-flash{ animation:diffRowFlash 1s ease-out; }

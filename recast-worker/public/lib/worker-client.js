@@ -14,10 +14,7 @@
   function initWorker() {
     if (worker || workerFailed) return;
     try {
-      // Root-relative path so this resolves correctly whether the page is
-      // at the site root (/) or a subpath (/tools/json-to-csv.html) — a
-      // page-relative path would break one directory down.
-      worker = new root.Worker('/lib/worker.js');
+      worker = new root.Worker('lib/worker.js');
       worker.onmessage = function (e) {
         const msg = e.data;
         const p = pending.get(msg.id);

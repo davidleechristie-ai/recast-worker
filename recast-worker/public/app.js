@@ -378,22 +378,94 @@ function renderTreeDiff(changes) {
   }).join('');
 }
 
-function renderCsvDiff(cd) {
-  const summaryEl = document.getElementById('diffSummary');
-  summaryEl.innerHTML = `<span class="added">${cd.added.length} <b>added</b></span><span class="removed">${cd.removed.length} <b>removed</b></span><span class="changed">${cd.changed.length} <b>changed</b></span>`;
-  const noteEl = document.getElementById('diffKeyNote');
-  noteEl.style.display = 'block';
-  noteEl.textContent = 'Rows matched by key column: ' + cd.keyColumn;
+function renderCompareTable() {
+  const cd = lastCsvDiffResult;
+  if (!cd) return;
+  const summaryEl = document.getElementById('compareSummary');
+  const unchangedCount = cd.rows.length - cd.added.length - cd.removed.length - cd.changed.length;
+  summaryEl.innerHTML = `<span class="added">${cd.added.length} <b>added</b></span><span class="removed">${cd.removed.length} <b>removed</b></span><span class="changed">${cd.changed.length} <b>changed</b></span><span>${unchangedCount} unchanged \u00b7 matched by <b>${escHtml(cd.keyColumn)}</b></span>`;
 
-  const rowsEl = document.getElementById('diffRows');
-  const rows = [];
-  cd.added.forEach(r => rows.push(`<div class="diff-row added"><span class="badge">add</span><span class="path">[${escHtml(cd.keyColumn)}=${escHtml(r[cd.keyColumn])}]</span><span class="vals"><span class="new">${escHtml(JSON.stringify(r))}</span></span></div>`));
-  cd.removed.forEach(r => rows.push(`<div class="diff-row removed"><span class="badge">del</span><span class="path">[${escHtml(cd.keyColumn)}=${escHtml(r[cd.keyColumn])}]</span><span class="vals"><span class="old">${escHtml(JSON.stringify(r))}</span></span></div>`));
-  cd.changed.forEach(c => c.cellChanges.forEach(cc => {
-    rows.push(`<div class="diff-row changed"><span class="badge">chg</span><span class="path">[${escHtml(cd.keyColumn)}=${escHtml(c.key)}].${escHtml(cc.col)}</span><span class="vals"><span class="old">${escHtml(cc.from)}</span> \u2192 <span class="new">${escHtml(cc.to)}</span></span></div>`);
-  }));
-  rowsEl.innerHTML = rows.length ? rows.join('') : '<div class="diff-empty">No differences found.</div>';
+  document.getElementById('cntAll').textContent = cd.rows.length;
+  document.getElementById('cntAdded').textContent = cd.added.length;
+  document.getElementById('cntRemoved').textContent = cd.removed.length;
+  document.getElementById('cntChanged').textContent = cd.changed.length;
+  document.getElementById('cntUnchanged').textContent = unchangedCount;
+
+  document.querySelectorAll('.compare-filter-btn').forEach(btn => btn.classList.toggle('active', btn.dataset.filter === compareFilterStatus));
+
+  const searchText = document.getElementById('compareSearch').value;
+  document.getElementById('compareTableWrap').innerHTML = RecastCompare.buildTableHtml(cd, { statusFilter: compareFilterStatus, searchText });
+  currentDiffNavIndex = -1;
+  updateDiffNavPosition();
 }
+
+document.querySelectorAll('.compare-filter-btn').forEach(btn => {
+  btn.addEventListener('click', () => {
+    compareFilterStatus = btn.dataset.filter;
+    renderCompareTable();
+  });
+});
+document.getElementById('compareSearch')?.addEventListener('input', () => renderCompareTable());
+document.getElementById('compareIgnoreWs')?.addEventListener('change', () => { if (currentMode === 'diffCsv') runCurrentMode(); });
+
+// ---------------- Next/previous difference navigation ----------------
+// The one interaction Beyond Compare is built around: jump straight to the
+// next thing that changed, without scanning the whole table by eye. Works
+// against whatever's currently visible (respects the active filter/search),
+// so "Next diff" inside "Changed only" jumps only through changed rows.
+let currentDiffNavIndex = -1;
+
+function getVisibleDiffRows() {
+  return Array.from(document.querySelectorAll('#compareTableWrap tr[data-status]'))
+    .filter(tr => tr.dataset.status !== 'unchanged');
+}
+
+function updateDiffNavPosition() {
+  const posEl = document.getElementById('compareDiffPos');
+  if (!posEl) return;
+  const total = getVisibleDiffRows().length;
+  posEl.textContent = total ? `${currentDiffNavIndex + 1 > 0 ? currentDiffNavIndex + 1 : '–'} / ${total}` : '0 / 0';
+}
+
+function jumpToDiff(direction) {
+  const rows = getVisibleDiffRows();
+  if (!rows.length) return;
+  currentDiffNavIndex = direction === 'next'
+    ? Math.min(currentDiffNavIndex + 1, rows.length - 1)
+    : Math.max(currentDiffNavIndex - 1, 0);
+  const target = rows[currentDiffNavIndex];
+  target.scrollIntoView({ block: 'center', behavior: 'smooth' });
+  target.classList.remove('diff-row-flash');
+  void target.offsetWidth; // restart the CSS animation if the same row is jumped to twice in a row
+  target.classList.add('diff-row-flash');
+  updateDiffNavPosition();
+}
+document.getElementById('compareDiffNext')?.addEventListener('click', () => jumpToDiff('next'));
+document.getElementById('compareDiffPrev')?.addEventListener('click', () => jumpToDiff('prev'));
+document.addEventListener('keydown', (e) => {
+  if (!document.getElementById('comparePanel')?.classList.contains('show')) return;
+  const active = document.activeElement;
+  if (active && (active.tagName === 'INPUT' || active.tagName === 'TEXTAREA')) return;
+  if (e.key === 'n' || e.key === 'N') jumpToDiff('next');
+  if (e.key === 'p' || e.key === 'P') jumpToDiff('prev');
+});
+
+function triggerDownload(text, filename, mime) {
+  const blob = new Blob([text], { type: mime + ';charset=utf-8' });
+  const a = document.createElement('a');
+  a.href = URL.createObjectURL(blob);
+  a.download = filename;
+  a.click();
+  URL.revokeObjectURL(a.href);
+}
+document.getElementById('compareDownloadCsv')?.addEventListener('click', () => {
+  if (!lastCsvDiffResult) return;
+  triggerDownload(RecastCompare.toReportCsv(lastCsvDiffResult), 'recast-compare-report.csv', 'text/csv');
+});
+document.getElementById('compareDownloadHtml')?.addEventListener('click', () => {
+  if (!lastCsvDiffResult) return;
+  triggerDownload(RecastCompare.toReportHtml(lastCsvDiffResult, { title: 'Recast CSV Comparison Report' }), 'recast-compare-report.html', 'text/html');
+});
 
 function flatTextFromChanges(changes) {
   if (!changes.length) return '\u2713 No differences \u2014 documents are equal';
@@ -449,7 +521,7 @@ const modeConfig = {
   diffXml: { inFmt:'XML A / B', outFmt:'Diff', dual:true, path:false, showDelim:false, showBom:false, showPretty:false, showInfer:false, btn:'Compare', hl:'xml', hlOut:'plain', isDiff:true, diffKind:'tree',
     task: () => ({ task:'diff', payload:{ op:'diffXml', textA: document.getElementById('inputA').value, textB: document.getElementById('inputB').value } }) },
   diffCsv: { inFmt:'CSV A / B', outFmt:'Diff', dual:true, path:false, showDelim:true, showBom:false, showPretty:false, showInfer:false, btn:'Compare', hl:'csv', hlOut:'plain', isDiff:true, diffKind:'csv',
-    task: () => ({ task:'diff', payload:{ op:'diffCsv', textA: document.getElementById('inputA').value, textB: document.getElementById('inputB').value, options:{ delimiter:getDelim() } } }) },
+    task: () => ({ task:'diff', payload:{ op:'diffCsv', textA: document.getElementById('inputA').value, textB: document.getElementById('inputB').value, options:{ delimiter:getDelim(), ignoreWhitespace: document.getElementById('compareIgnoreWs')?.checked } } }) },
   jsonPath: { inFmt:'JSON', outFmt:'Result', dual:false, path:true, showDelim:false, showBom:false, showPretty:true, showInfer:false, btn:'Query', hl:'json', hlOut:'json',
     sync: t => JSON.stringify(jsonPathQuery(JSON.parse(t), document.getElementById('jsonPathInput').value), null, document.getElementById('prettyPrint')?.checked ? 2 : 0) },
   jsonSchema: { inFmt:'JSON (sample)', outFmt:'JSON Schema', dual:false, path:false, showDelim:false, showBom:false, showPretty:false, showInfer:false, btn:'Generate schema', hl:'json', hlOut:'json', batchSupported:true, outExt:'json',
@@ -497,6 +569,8 @@ const diffSamples = {
 };
 
 let currentMode = 'json2csv';
+let lastCsvDiffResult = null; // full engine.csvDiff() result, re-filtered locally on each toolbar interaction
+let compareFilterStatus = 'all';
 const $ = id => document.getElementById(id);
 const inputEl = $('input'), outputEl = $('output'), statusEl = $('status');
 
@@ -538,6 +612,7 @@ function setMode(mode) {
   statusEl.textContent = '';
   $('diffPanel').classList.remove('show');
   $('diffKeyNote').style.display = 'none';
+  $('comparePanel')?.classList.remove('show');
 
   const dual = $('dualInput');
   const singleWrap = $('singleInputWrap');
@@ -629,23 +704,31 @@ async function runCurrentMode() {
 
       if (cfg.isDiff) {
         if (cfg.diffKind === 'csv') {
-          renderCsvDiff(result.result);
+          lastCsvDiffResult = result.result;
+          compareFilterStatus = 'all';
+          $('compareSearch').value = '';
+          renderCompareTable();
           outputEl.value = flatTextFromCsvDiff(result.result);
+          $('diffPanel').classList.remove('show');
+          $('comparePanel').classList.add('show');
         } else {
           renderTreeDiff(result.result);
           outputEl.value = flatTextFromChanges(result.result);
+          $('comparePanel').classList.remove('show');
+          $('diffPanel').classList.add('show');
         }
-        $('diffPanel').classList.add('show');
         statusEl.innerHTML = '<span class="status-ok">\u2713 Compared</span>';
       } else if (cfg.isSchemaCheck) {
         outputEl.value = formatSchemaValidationReport(result);
         $('diffPanel').classList.remove('show');
+        $('comparePanel').classList.remove('show');
         statusEl.innerHTML = result.valid
           ? '<span class="status-ok">\u2713 Valid against schema</span>'
           : `<span class="status-err">\u2715 ${result.errors.length} violation${result.errors.length===1?'':'s'} found</span>`;
       } else {
         outputEl.value = result;
         $('diffPanel').classList.remove('show');
+        $('comparePanel').classList.remove('show');
         statusEl.innerHTML = '<span class="status-ok">\u2713 Done</span>';
       }
     }
@@ -667,6 +750,20 @@ async function runCurrentMode() {
 $('convertBtn').addEventListener('click', runCurrentMode);
 
 $('swapBtn').addEventListener('click', () => {
+  const cfg = modeConfig[currentMode];
+  if (cfg && cfg.isDiff) {
+    // Swap A/B for diff modes — common need when the two files got loaded
+    // in the wrong order, without re-selecting/re-pasting anything.
+    const inputA = $('inputA'), inputB = $('inputB');
+    const tmp = inputA.value;
+    inputA.value = inputB.value;
+    inputB.value = tmp;
+    updateCounts();
+    renderHl($('hlInputA'), inputA, cfg.hl);
+    renderHl($('hlInputB'), inputB, cfg.hl);
+    statusEl.innerHTML = '<span class="status-ok">\u2713 Swapped A / B</span>';
+    return;
+  }
   const swapMap = { json2csv:'csv2json', csv2json:'json2csv', json2xml:'xml2json', xml2json:'json2xml', flatten:'unflatten', unflatten:'flatten' };
   const next = swapMap[currentMode];
   if (next) {
@@ -696,7 +793,7 @@ $('loadSample').addEventListener('click', () => {
 });
 
 $('clearInputBtn')?.addEventListener('click', () => { inputEl.value = ''; updateCounts(); statusEl.textContent = ''; renderHl($('hlInput'), inputEl, modeConfig[currentMode].hl); });
-$('clearOutputBtn')?.addEventListener('click', () => { outputEl.value = ''; updateCounts(); renderHl($('hlOutput'), outputEl, modeConfig[currentMode].hlOut); $('diffPanel').classList.remove('show'); });
+$('clearOutputBtn')?.addEventListener('click', () => { outputEl.value = ''; updateCounts(); renderHl($('hlOutput'), outputEl, modeConfig[currentMode].hlOut); $('diffPanel').classList.remove('show'); $('comparePanel')?.classList.remove('show'); });
 
 $('fileInput')?.addEventListener('change', (e) => {
   const file = e.target.files?.[0];

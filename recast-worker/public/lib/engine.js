@@ -352,6 +352,17 @@
     return { headers: headers, rows: rows };
   }
 
+  // Normalizes a value for comparison purposes only (display/output values
+  // stay untouched). ignoreWhitespace collapses leading/trailing and runs
+  // of internal whitespace, so "Ada  Lovelace " and "Ada Lovelace" count as
+  // equal — a very common source of false-positive diffs in real CSVs
+  // exported from different tools.
+  function normalizeForCompare(val, opts) {
+    if (val === undefined || val === null) return val;
+    if (!opts || !opts.ignoreWhitespace) return val;
+    return String(val).trim().replace(/\s+/g, ' ');
+  }
+
   function csvDiff(csvA, csvB, opts) {
     opts = opts || {};
     const delim = opts.delimiter || ',';
@@ -360,16 +371,52 @@
     const mapA = new Map(A.rows.map(function (r) { return [r[key], r]; }));
     const mapB = new Map(B.rows.map(function (r) { return [r[key], r]; }));
     const added = [], removed = [], changed = [];
-    mapB.forEach(function (rowB, k) { if (!mapA.has(k)) added.push(rowB); });
-    mapA.forEach(function (rowA, k) {
-      if (!mapB.has(k)) { removed.push(rowA); return; }
+
+    const headerSet = new Set(A.headers);
+    B.headers.forEach(function (h) { headerSet.add(h); });
+    const headers = Array.from(headerSet);
+
+    // Full aligned view (Beyond-Compare-style): every row from both files,
+    // in A's original order first, then any B-only rows appended in B's
+    // order. Each entry carries its full data plus a status, so the UI can
+    // render one unified table instead of three separate lists.
+    const rows = [];
+    const seenKeys = new Set();
+
+    A.rows.forEach(function (rowA) {
+      const k = rowA[key];
+      seenKeys.add(k);
+      if (!mapB.has(k)) {
+        removed.push(rowA);
+        rows.push({ key: k, status: 'removed', a: rowA, b: null, changedCols: [] });
+        return;
+      }
       const rowB = mapB.get(k);
+      const changedCols = [];
       const cellChanges = [];
-      const allCols = Array.from(new Set(Object.keys(rowA).concat(Object.keys(rowB))));
-      allCols.forEach(function (col) { if (rowA[col] !== rowB[col]) cellChanges.push({ col: col, from: rowA[col], to: rowB[col] }); });
-      if (cellChanges.length) changed.push({ key: k, cellChanges: cellChanges });
+      headers.forEach(function (col) {
+        if (normalizeForCompare(rowA[col], opts) !== normalizeForCompare(rowB[col], opts)) {
+          changedCols.push(col);
+          cellChanges.push({ col: col, from: rowA[col], to: rowB[col] });
+        }
+      });
+      if (cellChanges.length) {
+        changed.push({ key: k, cellChanges: cellChanges });
+        rows.push({ key: k, status: 'changed', a: rowA, b: rowB, changedCols: changedCols });
+      } else {
+        rows.push({ key: k, status: 'unchanged', a: rowA, b: rowB, changedCols: [] });
+      }
     });
-    return { added: added, removed: removed, changed: changed, keyColumn: key };
+
+    B.rows.forEach(function (rowB) {
+      const k = rowB[key];
+      if (!seenKeys.has(k)) {
+        added.push(rowB);
+        rows.push({ key: k, status: 'added', a: null, b: rowB, changedCols: [] });
+      }
+    });
+
+    return { added: added, removed: removed, changed: changed, keyColumn: key, headers: headers, rows: rows };
   }
 
   // ---------------- JSON Schema inference (draft-07-ish) ----------------

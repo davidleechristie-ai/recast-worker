@@ -179,6 +179,31 @@
       <div class="diff-rows" id="diffRows"></div>
     </div>
 
+    <div class="diff-panel" id="comparePanel">
+      <div class="diff-summary" id="compareSummary"></div>
+      <div class="compare-toolbar">
+        <div class="compare-filter-group" id="compareFilterGroup">
+          <button class="compare-filter-btn active" data-filter="all">All <span class="n" id="cntAll"></span></button>
+          <button class="compare-filter-btn" data-filter="added">Added <span class="n" id="cntAdded"></span></button>
+          <button class="compare-filter-btn" data-filter="removed">Removed <span class="n" id="cntRemoved"></span></button>
+          <button class="compare-filter-btn" data-filter="changed">Changed <span class="n" id="cntChanged"></span></button>
+          <button class="compare-filter-btn" data-filter="unchanged">Unchanged <span class="n" id="cntUnchanged"></span></button>
+        </div>
+        <input type="text" class="compare-search" id="compareSearch" placeholder="Search key or any cell value…">
+        <label class="compare-ws-toggle"><input type="checkbox" id="compareIgnoreWs"> Ignore whitespace</label>
+        <div class="compare-nav">
+          <button class="icon-btn" id="compareDiffPrev" title="Previous difference (P)">↑ Prev diff</button>
+          <button class="icon-btn" id="compareDiffNext" title="Next difference (N)">↓ Next diff</button>
+          <span class="compare-nav-pos" id="compareDiffPos"></span>
+        </div>
+        <div class="compare-downloads">
+          <button class="icon-btn" id="compareDownloadCsv">Download CSV report</button>
+          <button class="icon-btn" id="compareDownloadHtml">Download HTML report</button>
+        </div>
+      </div>
+      <div id="compareTableWrap"></div>
+    </div>
+
     <div class="batch-panel" id="batchPanel">
       <div class="batch-head">
         <span class="title" id="batchModeLabel">Batch: JSON → CSV</span>
@@ -251,6 +276,7 @@
           <li>Batch convert — up to 100 files at once, download as .zip</li>
           <li>Saved presets — reusable delimiter/format settings</li>
           <li>No ads</li>
+          <li>No account or password — access is tied to this browser</li>
           <li>Priority support</li>
         </ul>
         <a href="#" class="btn btn-gold" id="btnProMonthly" data-plan="pro_monthly">Start Pro – £9/mo</a>
@@ -270,6 +296,31 @@
         <a href="#" class="btn btn-ghost" id="btnApiMonthly" data-plan="api_monthly">Get API – £29/mo</a>
         <a href="#" class="btn btn-ghost" id="btnApiYearly" data-plan="api_yearly" style="margin-top:8px;text-align:center;">API yearly – £290</a>
       </div>
+    </div>
+  </section>
+
+  <section id="faq">
+    <div class="section-head">
+      <p class="eyebrow">FAQ</p>
+      <h2>A few things worth knowing.</h2>
+    </div>
+    <div class="faq-list">
+      <details class="faq-item">
+        <summary>Do I need to create an account?</summary>
+        <p>No — Recast doesn't use logins, emails, or passwords. When you pay, your browser is automatically given secure access. This means access is tied to the specific browser you paid in, not to an identity we track. If you switch devices, use a different browser, or clear your browser's storage, click <b>Manage subscription</b> from the original browser to pick it back up, or get in touch and we'll sort it out.</p>
+      </details>
+      <details class="faq-item">
+        <summary>Is my data ever uploaded anywhere?</summary>
+        <p>No. Every conversion, diff, and validation runs entirely inside your browser tab. Nothing you paste into the tool is ever sent to a server — the only exception is the checkout process itself, which is handled directly by Stripe.</p>
+      </details>
+      <details class="faq-item">
+        <summary>What happens if I cancel?</summary>
+        <p>Cancel any time from <b>Manage subscription</b>. Your access reverts to the Free tier automatically — usually within moments, always by your next page load — no need to email anyone.</p>
+      </details>
+      <details class="faq-item">
+        <summary>Can I use Recast in a script or CI pipeline?</summary>
+        <p>Yes — the same engine that powers the browser tool is available as <a href="https://www.npmjs.com/package/recast-cli" style="color:#F2C14E;">recast-cli</a>, an npm package with no network dependency, plus a REST API on the API plan.</p>
+      </details>
     </div>
   </section>
 
@@ -331,6 +382,7 @@ Content-Type: application/json
 <script src="lib/worker-client.js"></script>
 <script src="lib/batch.js"></script>
 <script src="lib/presets.js"></script>
+<script src="lib/csv-compare.js"></script>
 <script src="app.js"></script>
 <!--
   Cloudflare Web Analytics — free, no cookies, no consent banner needed.
