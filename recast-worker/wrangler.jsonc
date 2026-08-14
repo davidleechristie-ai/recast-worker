@@ -19,7 +19,7 @@
 
   "vars": {
     "SITE_URL": "https://tryrecast.app/",
-    "PRICE_MAP": "{\"price_price_1U41Bw07vRRG7JsXH0iAKy7g\":\"pro_monthly\",\"price_price_1U41Bx07vRRG7JsXlwnms0uo\":\"pro_yearly\",\"price_REPLACE_API_MONTHLY\":\"api_monthly\",\"price_REPLACE_API_YEARLY\":\"api_yearly\"}"
+    "PRICE_MAP": "{\"price_price_1U41Bw07vRRG7JsXH0iAKy7g\":\"pro_monthly\",\"price_price_1U41Bx07vRRG7JsXlwnms0uo\":\"pro_yearly\",\"price_REPLACE_API_MONTHLY\":\"api_monthly\",\"price_REPLACE_API_YEARLY\":\"api_yearly\",\"price_1U4Kub07vRRG7JsXtMatleol\":\"day_pass\"}"
   }
 
   // STRIPE_SECRET_KEY and STRIPE_WEBHOOK_SECRET are NOT set here — secrets
