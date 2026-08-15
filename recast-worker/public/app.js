@@ -33,8 +33,8 @@ const STRIPE = {
   links: {
     pro_monthly: 'https://buy.stripe.com/6oU28jez7ayf8sRg5y4c800',
     pro_yearly:  'https://buy.stripe.com/14AcMX2Qp7m310paLe4c801',
-    api_monthly: 'https://buy.stripe.com/REPLACE_API_MONTHLY',
-    api_yearly:  'https://buy.stripe.com/REPLACE_API_YEARLY',
+    api_monthly: 'https://buy.stripe.com/aFa00bcqZcGn7oNbPi4c804',
+    api_yearly:  'https://buy.stripe.com/14A00bfDb6hZdNbg5y4c803',
     day_pass:    'https://buy.stripe.com/eVq3cn2QpeOv7oN2eI4c802', // one-time, non-recurring — 24 hours of full Pro access, £2.99
   },
   // Fallback only — used if the Worker's dynamic /api/portal call fails or
