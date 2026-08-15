@@ -179,7 +179,31 @@ function formatTimeRemaining(expiresAt) {
   return hours > 0 ? `${hours}h ${mins}m left` : `${mins}m left`;
 }
 
+function updateApiKeyDisplay() {
+  const box = document.getElementById('apiKeyBox');
+  const cta = document.getElementById('apiActionsCTA');
+  if (!box || !cta) return;
+  const onApiPlan = isPro() && (accountState.plan === 'api_monthly' || accountState.plan === 'api_yearly') && accountState.token;
+  if (onApiPlan) {
+    document.getElementById('apiKeyValue').textContent = accountState.token;
+    box.style.display = 'flex';
+    cta.style.display = 'none';
+  } else {
+    box.style.display = 'none';
+    cta.style.display = '';
+  }
+}
+document.getElementById('apiKeyCopyBtn')?.addEventListener('click', () => {
+  if (!accountState.token) return;
+  navigator.clipboard?.writeText(accountState.token);
+  const btn = document.getElementById('apiKeyCopyBtn');
+  const original = btn.textContent;
+  btn.textContent = 'Copied!';
+  setTimeout(() => { btn.textContent = original; }, 1500);
+});
+
 function updateAccountUI() {
+  updateApiKeyDisplay();
   const upgradeBtn = document.getElementById('accountBtn');
   if (!upgradeBtn) return;
   if (isPro() && accountState.plan === 'day_pass' && accountState.expiresAt) {
@@ -553,6 +577,10 @@ const modeConfig = {
     sync: t => JSON.stringify(jsonPathQuery(JSON.parse(t), document.getElementById('jsonPathInput').value), null, document.getElementById('prettyPrint')?.checked ? 2 : 0) },
   jsonSchema: { inFmt:'JSON (sample)', outFmt:'JSON Schema', dual:false, path:false, showDelim:false, showBom:false, showPretty:false, showInfer:false, btn:'Generate schema', hl:'json', hlOut:'json', batchSupported:true, outExt:'json',
     task: () => ({ task:'schema', payload:{ text: inputEl.value, options:{ title: '' } } }) },
+  json2ts: { inFmt:'JSON (sample)', outFmt:'TypeScript', dual:false, path:false, showDelim:false, showBom:false, showPretty:false, showInfer:false, showRootName:true, btn:'Generate types', hl:'json', hlOut:'plain', batchSupported:true, outExt:'ts',
+    task: () => ({ task:'schema', payload:{ text: inputEl.value, options:{ render:'typescript', rootName: document.getElementById('schemaRootName')?.value || 'Root' } } }) },
+  json2zod: { inFmt:'JSON (sample)', outFmt:'Zod schema', dual:false, path:false, showDelim:false, showBom:false, showPretty:false, showInfer:false, showRootName:true, btn:'Generate Zod schema', hl:'json', hlOut:'plain', batchSupported:true, outExt:'ts',
+    task: () => ({ task:'schema', payload:{ text: inputEl.value, options:{ render:'zod', rootName: document.getElementById('schemaRootName')?.value || 'Root' } } }) },
   validateSchema: { inFmt:'Schema / Data', outFmt:'Validation report', dual:true, path:false, showDelim:false, showBom:false, showPretty:false, showInfer:false, btn:'Validate against schema', hl:'json', hlOut:'plain', isSchemaCheck:true,
     dualLabels: ['Paste the JSON Schema here\u2026', 'Paste the data to validate here\u2026'],
     task: () => ({ task:'validateSchema', payload:{ schemaText: document.getElementById('inputA').value, dataText: document.getElementById('inputB').value } }) },
@@ -575,6 +603,8 @@ const samples = {
   sortJson: JSON.stringify({ z: 1, a: { c: 3, b: 2 }, m: [3,1,2] }, null, 2),
   jsonPath: JSON.stringify({ users: [{ name: "Ada", role: "Engineer" }, { name: "Grace", role: "Admiral" }], meta: { count: 2 } }, null, 2),
   jsonSchema: JSON.stringify({ id: 1, name: "Ada Lovelace", active: true, tags: ["math","computing"], address: { city: "London", zip: null } }, null, 2),
+  json2ts: JSON.stringify({ id: 1, name: "Ada Lovelace", active: true, tags: ["math","computing"], address: { city: "London", zip: null } }, null, 2),
+  json2zod: JSON.stringify({ id: 1, name: "Ada Lovelace", active: true, tags: ["math","computing"], address: { city: "London", zip: null } }, null, 2),
 };
 const diffSamples = {
   diffJson: {
@@ -653,6 +683,7 @@ function setMode(mode) {
 
   if ($('prettyLabel')) $('prettyLabel').style.display = cfg.showPretty ? '' : 'none';
   if ($('bomLabel')) $('bomLabel').style.display = cfg.showBom ? '' : 'none';
+  if ($('rootNameLabel')) $('rootNameLabel').style.display = cfg.showRootName ? '' : 'none';
   if ($('delimLabel')) $('delimLabel').style.display = cfg.showDelim ? '' : 'none';
   if ($('inferLabel')) $('inferLabel').style.display = cfg.showInfer ? '' : 'none';
 
@@ -1117,6 +1148,79 @@ document.addEventListener('click', (e) => { if (!e.target.closest('.header-actio
 
 const ruler = $('ruler');
 for (let i = 0; i < 60; i++) { const s = document.createElement('span'); s.textContent = i % 5 === 0 ? i : ''; ruler.appendChild(s); }
+
+// ---------------- API playground ----------------
+// Runs entirely in the browser using the same engine that powers the
+// browser tool AND the hosted API — so the output shown here is exactly
+// what a real /v1/convert call would return, without needing an API key
+// just to try it (and without exposing a way to hit the real endpoint
+// unauthenticated). Clearly labeled as a live preview, not a real network
+// call, so nobody's misled about what's actually happening.
+function runPlaygroundConversion(mode, input) {
+  switch (mode) {
+    case 'json2csv': return RecastEngine.jsonToCsv(JSON.parse(input), {});
+    case 'csv2json': return JSON.stringify(RecastEngine.csvToJson(input, {}), null, 2);
+    case 'json2xml': return RecastEngine.jsonToXml(JSON.parse(input), 'root');
+    case 'xml2json': return JSON.stringify(RecastEngine.xmlToJson(input), null, 2);
+    case 'flatten':  return JSON.stringify(RecastEngine.flattenObj(JSON.parse(input)), null, 2);
+    case 'unflatten': return JSON.stringify(RecastEngine.unflattenObj(JSON.parse(input)), null, 2);
+    default: throw new Error('unknown mode: ' + mode);
+  }
+}
+
+function buildApiSnippet(lang, mode, input) {
+  const bodyObj = { mode: mode, input: input };
+  const bodyJson = JSON.stringify(bodyObj);
+  if (lang === 'curl') {
+    return `curl https://tryrecast.app/v1/convert \\\n  -H "Authorization: Bearer rk_live_YOUR_KEY" \\\n  -H "Content-Type: application/json" \\\n  -d '${bodyJson}'`;
+  }
+  if (lang === 'js') {
+    return `const res = await fetch('https://tryrecast.app/v1/convert', {\n  method: 'POST',\n  headers: {\n    'Authorization': 'Bearer rk_live_YOUR_KEY',\n    'Content-Type': 'application/json'\n  },\n  body: JSON.stringify(${JSON.stringify(bodyObj, null, 2)})\n});\nconst data = await res.json();\nconsole.log(data.output);`;
+  }
+  if (lang === 'python') {
+    return `import requests\n\nres = requests.post(\n    "https://tryrecast.app/v1/convert",\n    headers={"Authorization": "Bearer rk_live_YOUR_KEY"},\n    json=${bodyJson}\n)\nprint(res.json()["output"])`;
+  }
+  return '';
+}
+
+let playgroundLang = 'curl';
+function updatePlaygroundSnippet() {
+  const modeEl = $('playgroundMode'), inputEl2 = $('playgroundInput'), codeEl = $('playgroundCode');
+  if (!modeEl || !inputEl2 || !codeEl) return;
+  codeEl.textContent = buildApiSnippet(playgroundLang, modeEl.value, inputEl2.value);
+}
+function runPlayground() {
+  const modeEl = $('playgroundMode'), inputEl2 = $('playgroundInput'), outputEl2 = $('playgroundOutput');
+  if (!modeEl || !inputEl2 || !outputEl2) return;
+  try {
+    outputEl2.textContent = runPlaygroundConversion(modeEl.value, inputEl2.value);
+    outputEl2.classList.remove('playground-error');
+  } catch (e) {
+    outputEl2.textContent = 'Error: ' + e.message;
+    outputEl2.classList.add('playground-error');
+  }
+  updatePlaygroundSnippet();
+}
+$('playgroundRunBtn')?.addEventListener('click', runPlayground);
+$('playgroundMode')?.addEventListener('change', updatePlaygroundSnippet);
+$('playgroundInput')?.addEventListener('input', updatePlaygroundSnippet);
+document.querySelectorAll('.playground-snippet-tab').forEach(tab => {
+  tab.addEventListener('click', () => {
+    playgroundLang = tab.dataset.lang;
+    document.querySelectorAll('.playground-snippet-tab').forEach(t => t.classList.toggle('active', t === tab));
+    updatePlaygroundSnippet();
+  });
+});
+$('playgroundCopyBtn')?.addEventListener('click', () => {
+  const codeEl = $('playgroundCode');
+  if (!codeEl) return;
+  navigator.clipboard?.writeText(codeEl.textContent);
+  const btn = $('playgroundCopyBtn');
+  const original = btn.textContent;
+  btn.textContent = 'Copied!';
+  setTimeout(() => { btn.textContent = original; }, 1500);
+});
+updatePlaygroundSnippet();
 
 // init
 // A tool landing page (/tools/json-to-csv.html etc.) can set

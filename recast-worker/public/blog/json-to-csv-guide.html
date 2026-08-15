@@ -1,0 +1,90 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>How to Convert JSON to CSV (A Practical Guide) | Recast</title>
+<meta name="description" content="A practical guide to converting JSON to CSV: flattening nested objects, handling arrays of objects, type inference going the other direction, and the delimiter/encoding traps that corrupt spreadsheets.">
+<link rel="canonical" href="https://tryrecast.app/blog/json-to-csv-guide.html">
+<link rel="stylesheet" href="../styles.css">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@500;600;700&family=IBM+Plex+Mono:wght@400;500&display=swap" rel="stylesheet">
+<script type="application/ld+json">
+{
+  "@context": "https://schema.org",
+  "@type": "Article",
+  "headline": "How to Convert JSON to CSV (A Practical Guide) | Recast",
+  "description": "A practical guide to converting JSON to CSV: flattening nested objects, handling arrays of objects, type inference going the other direction, and the delimiter/encoding traps that corrupt spreadsheets.",
+  "url": "https://tryrecast.app/blog/json-to-csv-guide.html",
+  "publisher": { "@type": "Organization", "name": "Recast", "url": "https://tryrecast.app/" },
+  "datePublished": "2026-08-14"
+}
+</script>
+</head>
+<body style="background:#0E2338;color:#EDF3F8;margin:0;min-height:100vh;">
+
+<header class="titleblock">
+  <div class="tb-row">
+    <a href="../index.html" class="brand" style="text-decoration:none;color:inherit;"><span class="mark">⇄</span>RECAST</a>
+    <nav class="tb-nav">
+      <a href="../index.html#tool">Tool</a>
+      <a href="../index.html#pricing">Pricing</a>
+      <a href="../index.html#api">API docs</a>
+      <a href="index.html">Blog</a>
+    </nav>
+  </div>
+</header>
+
+<main style="max-width:1100px;margin:0 auto;padding:48px 24px 80px;">
+
+<article class="post">
+  <div class="post-meta">Guide · 14 August 2026</div>
+  <h1>How to Convert JSON to CSV (A Practical Guide)</h1>
+
+  <p>JSON and CSV solve different problems. JSON is built for nested, hierarchical data — objects inside objects, arrays of objects, optional fields. CSV is built for one thing: a flat grid, rows and columns, the format every spreadsheet tool and most data-import pipelines actually expect. Converting between them sounds trivial until your JSON has a nested <code>address</code> object or an array of <code>tags</code>, and suddenly "just convert it" isn't obvious anymore.</p>
+
+  <p>This is a practical walkthrough of what actually happens during a JSON-to-CSV conversion, the decisions a good converter has to make on your behalf, and the mistakes that cause corrupted spreadsheets down the line.</p>
+
+  <h2>The core problem: flattening</h2>
+  <p>CSV has no concept of nesting. So the first real job of any JSON-to-CSV converter is <strong>flattening</strong> — turning a nested structure into flat column names. The standard convention is dot notation for objects and bracket notation for arrays:</p>
+
+  <pre>{
+  "id": 1,
+  "name": "Ada",
+  "address": { "city": "London", "zip": "E1" },
+  "tags": ["engineer", "mathematician"]
+}</pre>
+
+  <p>becomes columns:</p>
+
+  <pre>id, name, address.city, address.zip, tags[0], tags[1]</pre>
+
+  <p>This is the part that trips up naive conversion scripts. A converter that doesn't flatten will either throw an error on the first nested object it sees, or — worse — silently stringify it as <code>"[object Object]"</code>, corrupting your data without telling you.</p>
+
+  <h2>Arrays of objects: the harder case</h2>
+  <p>Flattening a single nested object is straightforward. The genuinely hard case is an array of objects — a list of <code>line_items</code>, a list of <code>authors</code>, anything where the array length varies between records. There's no universally "correct" answer here; a good converter needs to make a defensible choice and be consistent about it (typically: index-based column names, like <code>items[0].sku</code>, <code>items[1].sku</code>, padding with blanks for shorter arrays).</p>
+
+  <h2>Type inference going the other direction</h2>
+  <p>The reverse conversion — CSV back to JSON — has its own trap. Every value in a CSV file is, technically, a string. <code>"42"</code>, <code>"true"</code>, <code>""</code> are just text until something decides otherwise. A converter that doesn't do type inference will hand you back a JSON file where every single field is a string, including numbers and booleans — which breaks anything downstream that expects a real type.</p>
+  <p>Good CSV-to-JSON conversion detects numbers, booleans, and empty cells (as <code>null</code>) automatically, and gives you the option to turn that off when you genuinely want everything kept as a literal string (IDs with leading zeros are the classic case where automatic number conversion actively hurts you — <code>"007"</code> becoming <code>7</code> is a real bug, not a feature).</p>
+
+  <h2>The delimiter and encoding traps</h2>
+  <p>Two smaller but common gotchas:</p>
+  <ul>
+    <li><strong>Delimiter conflicts.</strong> If a text field contains a comma, a naive converter will silently split it into two columns. Correct CSV output quotes any field containing the delimiter, a quote character, or a newline.</li>
+    <li><strong>Excel and the BOM.</strong> Excel on Windows won't correctly detect UTF-8 encoding in a CSV without a byte-order-mark (BOM) at the start of the file — without it, accented characters and non-Latin text render as garbled symbols the moment someone opens the file in Excel.</li>
+  </ul>
+
+  <div class="post-cta">
+    <p>Recast's <a href="../tools/json-to-csv.html">JSON to CSV converter</a> handles flattening, array indexing, delimiter escaping, and the Excel BOM automatically — paste JSON, get clean CSV, entirely in your browser. The reverse direction, with full type inference, is the <a href="../tools/csv-to-json.html">CSV to JSON converter</a>.</p>
+  </div>
+</article>
+
+</main>
+
+<footer style="max-width:1100px;margin:0 auto;padding:24px;text-align:center;color:#B9CBDA;font-size:12.5px;border-top:1px solid rgba(140,182,214,0.16);">
+  <a href="../index.html" style="color:#B9CBDA;">Recast</a> — convert, validate, diff JSON, CSV and XML in your browser.
+</footer>
+
+</body>
+</html>

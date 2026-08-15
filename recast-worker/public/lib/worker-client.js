@@ -14,7 +14,10 @@
   function initWorker() {
     if (worker || workerFailed) return;
     try {
-      worker = new root.Worker('lib/worker.js');
+      // Root-relative path so this resolves correctly whether the page is
+      // at the site root (/) or a subpath (/tools/json-to-csv.html) — a
+      // page-relative path would break one directory down.
+      worker = new root.Worker('/lib/worker.js');
       worker.onmessage = function (e) {
         const msg = e.data;
         const p = pending.get(msg.id);
@@ -59,7 +62,12 @@
       const dataB = payload.op === 'diffXml' ? E.xmlToJson(payload.textB) : JSON.parse(payload.textB);
       return { kind: 'tree', result: E.deepDiff(dataA, dataB) };
     }
-    if (task === 'schema') return JSON.stringify(E.jsonSchemaFromSample(JSON.parse(payload.text), opts), null, 2);
+    if (task === 'schema') {
+      const schema = E.jsonSchemaFromSample(JSON.parse(payload.text), opts);
+      if (opts.render === 'typescript') return E.jsonSchemaToTypescript(schema, opts.rootName || 'Root');
+      if (opts.render === 'zod') return E.jsonSchemaToZod(schema, opts.rootName || 'Root');
+      return JSON.stringify(schema, null, 2);
+    }
     if (task === 'validateSchema') return E.validateAgainstSchema(JSON.parse(payload.dataText), JSON.parse(payload.schemaText));
     throw new Error('Unknown task: ' + task);
   }

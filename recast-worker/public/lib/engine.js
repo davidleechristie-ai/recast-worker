@@ -583,6 +583,109 @@
     return { valid: errors.length === 0, errors: errors };
   }
 
+  // ---------------- JSON Schema -> TypeScript / Zod ----------------
+  // Both renderers walk the SAME schema produced by jsonSchemaFromSample,
+  // so a "JSON to TypeScript" and "JSON to Zod" result always agree with
+  // what the JSON Schema Generator tool shows for the same input — one
+  // inference pass, multiple output syntaxes, rather than two separate
+  // (and potentially diverging) type-inference implementations.
+
+  function isValidIdentifier(key) {
+    return /^[A-Za-z_$][A-Za-z0-9_$]*$/.test(key);
+  }
+  function tsKey(key) {
+    return isValidIdentifier(key) ? key : JSON.stringify(key);
+  }
+
+  function schemaToTsType(s, indent) {
+    if (!s || (s.type === undefined && !s.anyOf)) return 'any';
+    if (s.anyOf) {
+      const parts = s.anyOf.map(function (sub) { return schemaToTsType(sub, indent); });
+      return Array.from(new Set(parts)).join(' | ');
+    }
+    if (s.type === 'string') return 'string';
+    if (s.type === 'integer' || s.type === 'number') return 'number';
+    if (s.type === 'boolean') return 'boolean';
+    if (s.type === 'null') return 'null';
+    if (s.type === 'array') {
+      const itemType = schemaToTsType(s.items, indent);
+      return itemType.indexOf('|') !== -1 ? '(' + itemType + ')[]' : itemType + '[]';
+    }
+    if (s.type === 'object') return tsObjectBody(s, indent);
+    return 'any';
+  }
+
+  function tsObjectBody(s, indent) {
+    const pad = '  '.repeat(indent + 1);
+    const closePad = '  '.repeat(indent);
+    const props = s.properties || {};
+    const required = {};
+    (s.required || []).forEach(function (k) { required[k] = true; });
+    const keys = Object.keys(props);
+    if (!keys.length) return '{}';
+    const lines = keys.map(function (key) {
+      const optional = required[key] ? '' : '?';
+      return pad + tsKey(key) + optional + ': ' + schemaToTsType(props[key], indent + 1) + ';';
+    });
+    return '{\n' + lines.join('\n') + '\n' + closePad + '}';
+  }
+
+  function jsonSchemaToTypescript(schema, rootName) {
+    rootName = rootName || 'Root';
+    if (schema && schema.type === 'object') {
+      return 'interface ' + rootName + ' ' + tsObjectBody(schema, 0);
+    }
+    return 'type ' + rootName + ' = ' + schemaToTsType(schema, 0) + ';';
+  }
+
+  function schemaToZod(s, indent) {
+    if (!s || (s.type === undefined && !s.anyOf)) return 'z.any()';
+    if (s.anyOf) {
+      const parts = s.anyOf.map(function (sub) { return schemaToZod(sub, indent); });
+      return 'z.union([' + parts.join(', ') + '])';
+    }
+    if (s.type === 'string') return 'z.string()';
+    if (s.type === 'integer') return 'z.number().int()';
+    if (s.type === 'number') return 'z.number()';
+    if (s.type === 'boolean') return 'z.boolean()';
+    if (s.type === 'null') return 'z.null()';
+    if (s.type === 'array') return 'z.array(' + schemaToZod(s.items, indent) + ')';
+    if (s.type === 'object') return zodObjectBody(s, indent);
+    return 'z.any()';
+  }
+
+  function zodObjectBody(s, indent) {
+    const pad = '  '.repeat(indent + 1);
+    const closePad = '  '.repeat(indent);
+    const props = s.properties || {};
+    const required = {};
+    (s.required || []).forEach(function (k) { required[k] = true; });
+    const keys = Object.keys(props);
+    if (!keys.length) return 'z.object({})';
+    const lines = keys.map(function (key) {
+      let fieldZod = schemaToZod(props[key], indent + 1);
+      if (!required[key]) fieldZod += '.optional()';
+      return pad + tsKey(key) + ': ' + fieldZod + ',';
+    });
+    return 'z.object({\n' + lines.join('\n') + '\n' + closePad + '})';
+  }
+
+  function jsonSchemaToZod(schema, rootName) {
+    rootName = rootName || 'Root';
+    const body = schemaToZod(schema, 0);
+    return 'import { z } from "zod";\n\n' +
+      'const ' + rootName + 'Schema = ' + body + ';\n\n' +
+      'export type ' + rootName + ' = z.infer<typeof ' + rootName + 'Schema>;';
+  }
+
+  // Real row count via the actual CSV parser (respects quoted fields with
+  // embedded newlines/commas), not a naive newline count — used to gate
+  // free-vs-Pro comparison size without misjudging a file that merely has
+  // multi-line quoted cells.
+  function csvRowCount(text, delim) {
+    return csvToRows(text, delim || ',').rows.length;
+  }
+
   return {
     flattenObj: flattenObj,
     unflattenObj: unflattenObj,
@@ -594,7 +697,10 @@
     deepDiff: deepDiff,
     pickArrayKey: pickArrayKey,
     csvDiff: csvDiff,
+    csvRowCount: csvRowCount,
     jsonSchemaFromSample: jsonSchemaFromSample,
+    jsonSchemaToTypescript: jsonSchemaToTypescript,
+    jsonSchemaToZod: jsonSchemaToZod,
     validateAgainstSchema: validateAgainstSchema,
     inferCell: inferCell
   };

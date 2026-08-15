@@ -3,21 +3,21 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>JSON to CSV Converter — free, runs in your browser | Recast</title>
-<meta name="description" content="Convert JSON to CSV instantly in your browser. Auto-flattens nested objects and arrays, Excel-ready output with BOM support, custom delimiters. Nothing is uploaded.">
+<title>JSON to TypeScript Interface Generator — free online | Recast</title>
+<meta name="description" content="Convert a JSON sample directly into a TypeScript interface. Infers nested types, arrays, and marks fields optional when they're not present in every sample. Runs in your browser.">
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@400;500;600;700&family=IBM+Plex+Sans:wght@400;500;600&family=IBM+Plex+Mono:wght@400;500&display=swap" rel="stylesheet">
 <link rel="stylesheet" href="../styles.css">
-<link rel="canonical" href="https://tryrecast.app/tools/json-to-csv.html">
+<link rel="canonical" href="https://tryrecast.app/tools/json-to-typescript.html">
 <script type="application/ld+json">
 {
   "@context": "https://schema.org",
   "@type": "SoftwareApplication",
   "name": "Recast",
-  "url": "https://tryrecast.app/tools/json-to-csv.html",
+  "url": "https://tryrecast.app/tools/json-to-typescript.html",
   "applicationCategory": "DeveloperApplication",
   "operatingSystem": "Any (runs in browser)",
-  "description": "Convert JSON to CSV instantly in your browser. Auto-flattens nested objects and arrays, Excel-ready output with BOM support, custom delimiters. Nothing is uploaded.",
+  "description": "Convert a JSON sample directly into a TypeScript interface. Infers nested types, arrays, and marks fields optional when they're not present in every sample. Runs in your browser.",
   "offers": [
     { "@type": "Offer", "name": "Free", "price": "0", "priceCurrency": "GBP" },
     { "@type": "Offer", "name": "Pro", "price": "9", "priceCurrency": "GBP" },
@@ -64,8 +64,8 @@
 <main>
   <section class="hero" id="tool">
     <p class="eyebrow">Data format toolkit</p>
-    <h1>JSON to CSV Converter</h1>
-    <p class="sub">Paste an array of JSON objects and get clean CSV output — nested fields are automatically flattened into dot-notation columns (<code>address.city</code>, <code>items[0].sku</code>), so you don't have to restructure your data first. Choose comma, semicolon, tab or pipe delimiters, and add a UTF-8 BOM if the file is headed for Excel. <a href="../blog/json-to-csv-guide.html">Read the full guide →</a></p>
+    <h1>JSON to TypeScript</h1>
+    <p class="sub">Paste a real JSON sample — an API response, a config file — and get back a proper TypeScript <code>interface</code>, with nested objects, array types, and union types for mixed-type arrays all inferred automatically. Paste an array of samples instead of a single object and fields that aren't present in every item are correctly marked optional (<code>field?: type</code>), not forced. Uses the same inference engine as the <a href="json-schema-generator.html">JSON Schema Generator</a>, so the two always agree on structure. Need runtime validation too, not just compile-time types? Try <a href="json-to-zod.html">JSON to Zod</a>.</p>
     <p style="font-size:13px;"><a href="../index.html" style="color:#B9CBDA;">← Full toolkit (all 16 tools)</a></p>
 
         <div class="mode-nav" id="modeNav">
@@ -428,7 +428,7 @@
 <div class="share-toast" id="shareToast"></div>
 
 <!-- Shared, tested engine + feature modules (also power the recast-cli npm package and worker) -->
-<script>window.RECAST_DEFAULT_MODE = "json2csv";</script>
+<script>window.RECAST_DEFAULT_MODE = "json2ts";</script>
 <script src="../lib/engine.js"></script>
 <script src="../lib/highlight.js"></script>
 <script src="../lib/history.js"></script>

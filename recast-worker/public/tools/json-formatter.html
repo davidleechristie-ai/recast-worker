@@ -37,6 +37,7 @@
       <a href="#tool">Tool</a>
       <a href="#pricing">Pricing</a>
       <a href="#api">API docs</a>
+      <a href="../blog/index.html">Blog</a>
     </nav>
     <div class="header-actions">
       <span class="worker-status" id="workerStatus"><span class="dot"></span>Processing…</span>
@@ -64,10 +65,10 @@
   <section class="hero" id="tool">
     <p class="eyebrow">Data format toolkit</p>
     <h1>JSON Formatter</h1>
-    <p class="sub">Pretty-prints minified or badly-indented JSON with proper 2-space indentation, or strips whitespace down to a single-line minified version — whichever direction you need.</p>
-    <p style="font-size:13px;"><a href="../index.html" style="color:#B9CBDA;">← Full toolkit (all 14 tools)</a></p>
+    <p class="sub">Pretty-prints minified or badly-indented JSON with proper 2-space indentation, or strips whitespace down to a single-line minified version — whichever direction you need.<br><br><strong>Want this on your own site?</strong> Embed a lightweight version with one iframe: <code style="font-size:12.5px;">&lt;iframe src="https://tryrecast.app/embed/json-formatter.html" width="100%" height="320" style="border:1px solid #ccc;border-radius:6px;"&gt;&lt;/iframe&gt;</code></p>
+    <p style="font-size:13px;"><a href="../index.html" style="color:#B9CBDA;">← Full toolkit (all 16 tools)</a></p>
 
-    <div class="mode-nav" id="modeNav">
+        <div class="mode-nav" id="modeNav">
       <div class="mode-groups" id="modeGroups">
         <button class="mode-group-btn active" data-group="convert">Convert</button>
         <button class="mode-group-btn" data-group="transform">Transform</button>
@@ -93,6 +94,8 @@
         <button class="mode-chip hidden" data-mode="diffCsv" data-group="compare">Diff CSV</button>
         <button class="mode-chip hidden" data-mode="jsonPath" data-group="query">JSONPath</button>
         <button class="mode-chip hidden" data-mode="jsonSchema" data-group="schema">JSON → Schema</button>
+        <button class="mode-chip hidden" data-mode="json2ts" data-group="schema">JSON → TypeScript</button>
+        <button class="mode-chip hidden" data-mode="json2zod" data-group="schema">JSON → Zod</button>
         <button class="mode-chip hidden" data-mode="validateSchema" data-group="schema">Validate against Schema</button>
       </div>
     </div>
@@ -153,6 +156,10 @@
             <label id="prettyLabel"><input type="checkbox" id="prettyPrint" checked> Pretty</label>
             <label id="bomLabel" style="display:none"><input type="checkbox" id="excelBom"> Excel BOM</label>
             <label id="inferLabel" style="display:none"><input type="checkbox" id="inferTypes" checked> Infer types</label>
+            <label id="rootNameLabel" style="display:none">
+              Type name
+              <input type="text" id="schemaRootName" value="Root" style="width:90px;">
+            </label>
             <label id="delimLabel" style="display:none">
               Delimiter
               <select id="csvDelimiter">
@@ -261,6 +268,7 @@
         <p class="desc">For occasional, one-off conversions.</p>
         <ul>
           <li>Convert, validate, format, diff, JSONPath, schema generate + validate</li>
+          <li>CSV compare up to 50 rows per file</li>
           <li>Files up to 256 KB</li>
           <li>One file at a time</li>
           <li>Runs entirely in-browser</li>
@@ -273,6 +281,7 @@
         <p class="desc">For daily conversions, CI use, and larger files.</p>
         <ul>
           <li>Everything in Free</li>
+          <li>Unlimited rows for CSV compare</li>
           <li>Files up to 25 MB</li>
           <li>Batch convert — up to 100 files at once, download as .zip</li>
           <li>Saved presets — reusable delimiter/format settings</li>
@@ -297,6 +306,12 @@
         <a href="#" class="btn btn-ghost" id="btnApiMonthly" data-plan="api_monthly">Get API – £29/mo</a>
         <a href="#" class="btn btn-ghost" id="btnApiYearly" data-plan="api_yearly" style="margin-top:8px;text-align:center;">API yearly – £290</a>
       </div>
+    </div>
+
+    <div class="day-pass-note">
+      <span>Only need it once? </span>
+      <a href="#" onclick="startCheckout('day_pass');return false;">Get a 24-hour Pro pass for £2.99</a>
+      <span> — no subscription, unlocks everything in Pro for a day.</span>
     </div>
   </section>
 
@@ -333,33 +348,70 @@
     </div>
 
     <div class="api-card">
-      <span class="badge">Coming soon</span>
-      <h3>Recast API — early access</h3>
+      <h3>Recast API</h3>
       <p>
-        The API is in private beta. You'll get a personal key, 10,000 conversions per month,
-        support for all conversion, diff, and schema modes, and webhooks.
+        Your access token — the same one issued when you subscribe — doubles as your API key.
+        10,000 calls per month, resets on the calendar month, tracked and returned with every response.
       </p>
 
-      <pre>POST /v1/convert
-Authorization: Bearer rk_live_••••••••
-Content-Type: application/json
+      <pre>curl https://tryrecast.app/v1/convert \
+  -H "Authorization: Bearer rk_live_••••••••" \
+  -H "Content-Type: application/json" \
+  -d '{
+    "mode": "json2csv",
+    "input": "[{\"id\":1,\"name\":\"Ada\"}]"
+  }'
 
-{
-  "mode": "json2csv",
-  "input": "[{\"id\":1,\"name\":\"Ada\"}]",
-  "options": { "delimiter": ",", "excel_bom": true }
-}</pre>
+# -&gt; {"output":"id,name\n1,Ada","usage":{"calls_this_month":1,"limit":10000}}</pre>
 
-      <p style="margin-bottom:6px;font-size:13.5px;color:#B9CBDA;">
-        Planned endpoints: <code style="color:#7FE7D0;">/v1/convert</code>,
-        <code style="color:#7FE7D0;">/v1/diff</code>,
-        <code style="color:#7FE7D0;">/v1/schema</code>,
-        <code style="color:#7FE7D0;">/v1/me</code>,
-        <code style="color:#7FE7D0;">/v1/usage</code>
+      <p style="margin-bottom:6px;font-size:13.5px;color:#B9CBDA;line-height:1.7;">
+        <code style="color:#7FE7D0;">POST /v1/convert</code> — <code>mode</code>: json2csv, csv2json, json2xml, xml2json, flatten, unflatten<br>
+        <code style="color:#7FE7D0;">POST /v1/diff</code> — <code>mode</code>: diffJson, diffXml, diffCsv (send <code>inputA</code>/<code>inputB</code> instead of <code>input</code>)<br>
+        <code style="color:#7FE7D0;">POST /v1/schema</code> — infers a JSON Schema (draft-07) from a sample <code>input</code>
       </p>
 
-      <div class="api-actions">
-        <a href="mailto:api@tryrecast.app?subject=API%20early%20access" class="btn btn-gold">Request early access</a>
+      <div id="apiKeyBox" class="api-key-box" style="display:none;">
+        <span class="api-key-label">Your API key</span>
+        <code id="apiKeyValue"></code>
+        <button class="icon-btn" id="apiKeyCopyBtn">Copy</button>
+      </div>
+
+      <div class="api-playground">
+        <div class="playground-row">
+          <div class="playground-col">
+            <div class="playground-label-row">
+              <label class="playground-label">Request</label>
+              <span class="playground-live-tag">Live preview — runs in your browser, same engine as the API</span>
+            </div>
+            <select id="playgroundMode" class="playground-select">
+              <option value="json2csv">json2csv</option>
+              <option value="csv2json">csv2json</option>
+              <option value="json2xml">json2xml</option>
+              <option value="xml2json">xml2json</option>
+              <option value="flatten">flatten</option>
+              <option value="unflatten">unflatten</option>
+            </select>
+            <textarea id="playgroundInput" class="playground-textarea" spellcheck="false">[{"id":1,"name":"Ada","city":"London"}]</textarea>
+            <button class="btn btn-gold" id="playgroundRunBtn" style="margin-top:10px;">Run</button>
+          </div>
+          <div class="playground-col">
+            <label class="playground-label">Response</label>
+            <pre class="playground-output" id="playgroundOutput">// click Run to see the output</pre>
+          </div>
+        </div>
+        <div class="playground-snippets">
+          <div class="playground-snippet-tabs">
+            <button class="playground-snippet-tab active" data-lang="curl">cURL</button>
+            <button class="playground-snippet-tab" data-lang="js">JavaScript</button>
+            <button class="playground-snippet-tab" data-lang="python">Python</button>
+            <button class="icon-btn playground-copy-btn" id="playgroundCopyBtn">Copy</button>
+          </div>
+          <pre class="playground-code" id="playgroundCode"></pre>
+        </div>
+      </div>
+
+      <div class="api-actions" id="apiActionsCTA">
+        <a href="#pricing" class="btn btn-gold">Get API access – £29/mo</a>
         <a href="#pricing" class="btn btn-ghost">See API pricing →</a>
       </div>
     </div>

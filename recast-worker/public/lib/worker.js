@@ -31,7 +31,10 @@ function runDiff(p) {
 
 function runSchema(p) {
   const opts = p.options || {};
-  return E.jsonSchemaFromSample(JSON.parse(p.text), opts);
+  const schema = E.jsonSchemaFromSample(JSON.parse(p.text), opts);
+  if (opts.render === 'typescript') return E.jsonSchemaToTypescript(schema, opts.rootName || 'Root');
+  if (opts.render === 'zod') return E.jsonSchemaToZod(schema, opts.rootName || 'Root');
+  return JSON.stringify(schema, null, 2);
 }
 
 function runValidateSchema(p) {
@@ -46,7 +49,7 @@ self.onmessage = function (e) {
     let result;
     if (msg.task === 'convert') result = runConvert(msg.payload);
     else if (msg.task === 'diff') result = runDiff(msg.payload);
-    else if (msg.task === 'schema') result = JSON.stringify(runSchema(msg.payload), null, 2);
+    else if (msg.task === 'schema') result = runSchema(msg.payload);
     else if (msg.task === 'validateSchema') result = runValidateSchema(msg.payload);
     else throw new Error('Unknown task: ' + msg.task);
     self.postMessage({ id: msg.id, ok: true, result: result });
