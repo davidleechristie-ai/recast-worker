@@ -1,4 +1,16 @@
 {
+"secrets_store_secrets": [
+  {
+    "binding": "STRIPE_SECRET_KEY",
+    "store_id": "8fea47bd0f6e47b1b19663d50cf64181",
+    "secret_name": "STRIPE_SECRET_KEY"
+  },
+  {
+    "binding": "STRIPE_WEBHOOK_SECRET",
+    "store_id": "8fea47bd0f6e47b1b19663d50cf64181",
+    "secret_name": "STRIPE_WEBHOOK_SECRET"
+  }
+],
   "$schema": "./node_modules/wrangler/config-schema.json",
   "name": "recast",
   "main": "src/worker.js",
@@ -19,10 +31,29 @@
 
   "vars": {
     "SITE_URL": "https://tryrecast.app/",
-    "PRICE_MAP": "{\"price_price_1U41Bw07vRRG7JsXH0iAKy7g\":\"pro_monthly\",\"price_price_1U41Bx07vRRG7JsXlwnms0uo\":\"pro_yearly\",\"price_1U41Bs07vRRG7JsXnYpcoHh1\":\"api_monthly\",\"price_1U41Br07vRRG7JsXV1vskFmE\":\"api_yearly\",\"price_1U4Kub07vRRG7JsXtMatleol\":\"day_pass\"}"
-  }
+    "PRICE_MAP": "{\"price_1U41Bw07vRRG7JsXH0iAKy7g\":\"pro_monthly\",\"price_1U41Bx07vRRG7JsXlwnms0uo\":\"pro_yearly\",\"price_1U41Bs07vRRG7JsXnYpcoHh1\":\"api_monthly\",\"price_1U41Br07vRRG7JsXV1vskFmE\":\"api_yearly\",\"price_1U4Kub07vRRG7JsXtMatleol\":\"day_pass\"}"
+  },
 
-  // STRIPE_SECRET_KEY and STRIPE_WEBHOOK_SECRET are NOT set here — secrets
-  // never belong in a config file that might get committed to git. Set them
-  // with `wrangler secret put` instead (see README.md).
+
+    "observability": {
+      "enabled": true,
+      "head_sampling_rate": 1,
+      "logs": {
+        "enabled": true,
+        "head_sampling_rate": 1,
+        "persist": true,
+        "invocation_logs": true
+      },
+      "traces": {
+        "enabled": true,
+        "persist": true,
+        "head_sampling_rate": 1
+      }
+    },
+
+    // STRIPE_SECRET_KEY and STRIPE_WEBHOOK_SECRET are bound above via
+    // secrets_store_secrets...
+
+ 
+
 }
