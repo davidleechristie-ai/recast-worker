@@ -13,13 +13,23 @@
  *   POST /api/portal   { token }             — generates a real-time Stripe
  *        Billing Portal link for the token's customer.
  *
+ *   POST /v1/convert   { mode, input, options } — the same access token
+ *        issued at checkout doubles as the API key. Requires the API plan
+ *        specifically (not just any Pro entitlement). Rate-limited to
+ *        10,000 calls/month per the pricing page's promise, tracked in KV.
+ *   POST /v1/diff      { mode, inputA, inputB, options }
+ *   POST /v1/schema    { input, options }
+ *   All three: Authorization: Bearer <token>
+ *
  * Everything else falls through to the static site (env.ASSETS).
  */
 import { verifyStripeSignature } from './stripe-verify.js';
 import { issueToken, lookupToken, setCustomerStatus, isEntitled } from './entitlements.js';
+import * as Engine from './engine.js';
 
 const STRIPE_API = 'https://api.stripe.com/v1';
 const DAY_PASS_DURATION_MS = 24 * 60 * 60 * 1000; // one-time pass window: 24 hours
+const API_MONTHLY_CALL_LIMIT = 10000; // matches the pricing page's promise
 
 function json(data, status) {
   return new Response(JSON.stringify(data), {
@@ -183,12 +193,117 @@ async function handlePortal(request, env, deps) {
   }
 }
 
+// ---------------- Public REST API (/v1/*) ----------------
+// The same access token issued at checkout doubles as the API key — no
+// separate key-management system needed. Requires the API plan
+// specifically, not just any Pro entitlement (Pro/day-pass tokens are
+// rejected with 403, matching what the pricing page actually promises).
+
+async function authenticateApiToken(request, env, deps) {
+  const authHeader = request.headers.get('Authorization') || '';
+  const token = authHeader.indexOf('Bearer ') === 0 ? authHeader.slice(7).trim() : null;
+  if (!token) return { error: json({ error: 'missing Authorization: Bearer <token> header' }, 401) };
+  const rec = await deps.lookupToken(env.ENTITLEMENTS, token);
+  if (!rec || !deps.isEntitled(rec.status, rec.expiresAt)) return { error: json({ error: 'invalid or expired token' }, 401) };
+  if (rec.plan !== 'api_monthly' && rec.plan !== 'api_yearly') {
+    return { error: json({ error: 'this token is not on the API plan — see https://tryrecast.app/#pricing' }, 403) };
+  }
+  return { rec: rec };
+}
+
+async function checkAndIncrementUsage(kv, customerId, limit) {
+  const period = new Date().toISOString().slice(0, 7); // "2026-08" — resets naturally each calendar month
+  const key = 'usage:' + customerId + ':' + period;
+  const raw = await kv.get(key);
+  const count = raw ? parseInt(raw, 10) : 0;
+  if (count >= limit) return { ok: false, count: count, limit: limit };
+  await kv.put(key, String(count + 1));
+  return { ok: true, count: count + 1, limit: limit };
+}
+
+async function handleApiConvert(request, env, deps) {
+  const auth = await deps.authenticateApiToken(request, env, deps);
+  if (auth.error) return auth.error;
+  const usage = await deps.checkAndIncrementUsage(env.ENTITLEMENTS, auth.rec.customerId, API_MONTHLY_CALL_LIMIT);
+  if (!usage.ok) return json({ error: 'monthly API limit reached (' + usage.limit + ' calls) — resets next calendar month' }, 429);
+
+  let body;
+  try { body = await request.json(); } catch (e) { return json({ error: 'invalid JSON body' }, 400); }
+  const mode = body && body.mode, input = body && body.input, options = (body && body.options) || {};
+  if (typeof input !== 'string') return json({ error: 'missing "input" (must be a string)' }, 400);
+
+  try {
+    let output;
+    switch (mode) {
+      case 'json2csv': output = Engine.jsonToCsv(JSON.parse(input), options); break;
+      case 'csv2json': output = JSON.stringify(Engine.csvToJson(input, options), null, options.pretty === false ? 0 : 2); break;
+      case 'json2xml': output = Engine.jsonToXml(JSON.parse(input), 'root'); break;
+      case 'xml2json': output = JSON.stringify(Engine.xmlToJson(input), null, options.pretty === false ? 0 : 2); break;
+      case 'flatten': output = JSON.stringify(Engine.flattenObj(JSON.parse(input)), null, options.pretty === false ? 0 : 2); break;
+      case 'unflatten': output = JSON.stringify(Engine.unflattenObj(JSON.parse(input)), null, options.pretty === false ? 0 : 2); break;
+      default: return json({ error: 'unknown mode: "' + mode + '" — expected one of json2csv, csv2json, json2xml, xml2json, flatten, unflatten' }, 400);
+    }
+    return json({ output: output, usage: { calls_this_month: usage.count, limit: usage.limit } });
+  } catch (e) {
+    return json({ error: e.message || String(e) }, 400);
+  }
+}
+
+async function handleApiDiff(request, env, deps) {
+  const auth = await deps.authenticateApiToken(request, env, deps);
+  if (auth.error) return auth.error;
+  const usage = await deps.checkAndIncrementUsage(env.ENTITLEMENTS, auth.rec.customerId, API_MONTHLY_CALL_LIMIT);
+  if (!usage.ok) return json({ error: 'monthly API limit reached (' + usage.limit + ' calls) — resets next calendar month' }, 429);
+
+  let body;
+  try { body = await request.json(); } catch (e) { return json({ error: 'invalid JSON body' }, 400); }
+  const mode = body && body.mode, inputA = body && body.inputA, inputB = body && body.inputB, options = (body && body.options) || {};
+  if (typeof inputA !== 'string' || typeof inputB !== 'string') return json({ error: 'missing "inputA"/"inputB" (must both be strings)' }, 400);
+
+  try {
+    let result;
+    if (mode === 'diffCsv') {
+      result = Engine.csvDiff(inputA, inputB, options);
+    } else if (mode === 'diffJson') {
+      result = Engine.deepDiff(JSON.parse(inputA), JSON.parse(inputB));
+    } else if (mode === 'diffXml') {
+      result = Engine.deepDiff(Engine.xmlToJson(inputA), Engine.xmlToJson(inputB));
+    } else {
+      return json({ error: 'unknown mode: "' + mode + '" — expected one of diffCsv, diffJson, diffXml' }, 400);
+    }
+    return json({ result: result, usage: { calls_this_month: usage.count, limit: usage.limit } });
+  } catch (e) {
+    return json({ error: e.message || String(e) }, 400);
+  }
+}
+
+async function handleApiSchema(request, env, deps) {
+  const auth = await deps.authenticateApiToken(request, env, deps);
+  if (auth.error) return auth.error;
+  const usage = await deps.checkAndIncrementUsage(env.ENTITLEMENTS, auth.rec.customerId, API_MONTHLY_CALL_LIMIT);
+  if (!usage.ok) return json({ error: 'monthly API limit reached (' + usage.limit + ' calls) — resets next calendar month' }, 429);
+
+  let body;
+  try { body = await request.json(); } catch (e) { return json({ error: 'invalid JSON body' }, 400); }
+  const input = body && body.input, options = (body && body.options) || {};
+  if (typeof input !== 'string') return json({ error: 'missing "input" (must be a string)' }, 400);
+
+  try {
+    const schema = Engine.jsonSchemaFromSample(JSON.parse(input), options);
+    return json({ schema: schema, usage: { calls_this_month: usage.count, limit: usage.limit } });
+  } catch (e) {
+    return json({ error: e.message || String(e) }, 400);
+  }
+}
+
 const defaultDeps = {
   issueToken: issueToken,
   lookupToken: lookupToken,
   setCustomerStatus: setCustomerStatus,
   isEntitled: isEntitled,
   verifyStripeSignature: verifyStripeSignature,
+  authenticateApiToken: authenticateApiToken,
+  checkAndIncrementUsage: checkAndIncrementUsage,
   fetchImpl: undefined,
 };
 
@@ -198,6 +313,9 @@ async function route(request, env, deps) {
   if (url.pathname === '/api/verify-token' && request.method === 'GET') return handleVerifyToken(request, env, deps);
   if (url.pathname === '/api/webhook' && request.method === 'POST') return handleWebhook(request, env, deps);
   if (url.pathname === '/api/portal' && request.method === 'POST') return handlePortal(request, env, deps);
+  if (url.pathname === '/v1/convert' && request.method === 'POST') return handleApiConvert(request, env, deps);
+  if (url.pathname === '/v1/diff' && request.method === 'POST') return handleApiDiff(request, env, deps);
+  if (url.pathname === '/v1/schema' && request.method === 'POST') return handleApiSchema(request, env, deps);
   return null;
 }
 
@@ -209,4 +327,4 @@ export default {
   },
 };
 
-export { route, handleVerifySession, handleVerifyToken, handleWebhook, handlePortal, planFromPriceId, defaultDeps };
+export { route, handleVerifySession, handleVerifyToken, handleWebhook, handlePortal, handleApiConvert, handleApiDiff, handleApiSchema, authenticateApiToken, checkAndIncrementUsage, planFromPriceId, defaultDeps };
