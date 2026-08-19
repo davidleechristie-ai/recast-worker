@@ -547,58 +547,58 @@
         <code id="apiKeyValue"></code>
         <button class="icon-btn" id="apiKeyCopyBtn">Copy</button>
       </div>
+    </div>
 
-      <div class="api-playground" id="apiPlayground">
-        <div class="playground-row">
-          <div class="playground-col">
-            <div class="playground-label-row">
-              <label class="playground-label">Request</label>
-              <span class="playground-live-tag">Live preview — runs in your browser, same engine as the API</span>
-              <div class="head-actions">
-                <button class="win-btn" id="playgroundPopoutBtn" title="Pop out into a separate window"><svg class="ico"><use href="#ico-popout"/></svg></button>
-                <button class="win-btn" id="playgroundExpandBtn" title="Expand to full screen"><svg class="ico"><use href="#ico-expand"/></svg></button>
-              </div>
+    <div class="api-playground" id="apiPlayground">
+      <div class="playground-row">
+        <div class="playground-col">
+          <div class="playground-label-row">
+            <label class="playground-label">Request</label>
+            <span class="playground-live-tag">Live preview — runs in your browser, same engine as the API</span>
+            <div class="head-actions">
+              <button class="win-btn" id="playgroundPopoutBtn" title="Pop out into a separate window"><svg class="ico"><use href="#ico-popout"/></svg></button>
+              <button class="win-btn" id="playgroundExpandBtn" title="Expand to full screen"><svg class="ico"><use href="#ico-expand"/></svg></button>
             </div>
-            <select id="playgroundMode" class="playground-select">
-              <option value="json2csv">json2csv</option>
-              <option value="csv2json">csv2json</option>
-              <option value="json2xml">json2xml</option>
-              <option value="xml2json">xml2json</option>
-              <option value="flatten">flatten</option>
-              <option value="unflatten">unflatten</option>
-              <option value="json2yaml">json2yaml</option>
-              <option value="yaml2json">yaml2json</option>
-              <option value="json2markdown">json2markdown</option>
-              <option value="markdown2json">markdown2json</option>
-            </select>
-            <textarea id="playgroundInput" class="playground-textarea" spellcheck="false">[{"id":1,"name":"Ada","city":"London"}]</textarea>
-            <button class="btn btn-gold" id="playgroundRunBtn" style="margin-top:10px;">Run</button>
           </div>
-          <div class="playground-col">
-            <div class="playground-label-row">
-              <label class="playground-label">Response</label>
-              <div class="head-actions">
-                <button class="win-btn" id="playgroundOutputPopoutBtn" title="Pop out into a separate window"><svg class="ico"><use href="#ico-popout"/></svg></button>
-              </div>
-            </div>
-            <pre class="playground-output" id="playgroundOutput">// click Run to see the output</pre>
-          </div>
+          <select id="playgroundMode" class="playground-select">
+            <option value="json2csv">json2csv</option>
+            <option value="csv2json">csv2json</option>
+            <option value="json2xml">json2xml</option>
+            <option value="xml2json">xml2json</option>
+            <option value="flatten">flatten</option>
+            <option value="unflatten">unflatten</option>
+            <option value="json2yaml">json2yaml</option>
+            <option value="yaml2json">yaml2json</option>
+            <option value="json2markdown">json2markdown</option>
+            <option value="markdown2json">markdown2json</option>
+          </select>
+          <textarea id="playgroundInput" class="playground-textarea" spellcheck="false">[{"id":1,"name":"Ada","city":"London"}]</textarea>
+          <button class="btn btn-gold" id="playgroundRunBtn" style="margin-top:10px;">Run</button>
         </div>
-        <div class="playground-snippets">
-          <div class="playground-snippet-tabs">
-            <button class="playground-snippet-tab active" data-lang="curl">cURL</button>
-            <button class="playground-snippet-tab" data-lang="js">JavaScript</button>
-            <button class="playground-snippet-tab" data-lang="python">Python</button>
-            <button class="icon-btn playground-copy-btn" id="playgroundCopyBtn">Copy</button>
+        <div class="playground-col">
+          <div class="playground-label-row">
+            <label class="playground-label">Response</label>
+            <div class="head-actions">
+              <button class="win-btn" id="playgroundOutputPopoutBtn" title="Pop out into a separate window"><svg class="ico"><use href="#ico-popout"/></svg></button>
+            </div>
           </div>
-          <pre class="playground-code" id="playgroundCode"></pre>
+          <pre class="playground-output" id="playgroundOutput">// click Run to see the output</pre>
         </div>
       </div>
-
-      <div class="api-actions" id="apiActionsCTA">
-        <a href="#pricing" class="btn btn-gold">Get API access – £29/mo</a>
-        <a href="#pricing" class="btn btn-ghost">See API pricing →</a>
+      <div class="playground-snippets">
+        <div class="playground-snippet-tabs">
+          <button class="playground-snippet-tab active" data-lang="curl">cURL</button>
+          <button class="playground-snippet-tab" data-lang="js">JavaScript</button>
+          <button class="playground-snippet-tab" data-lang="python">Python</button>
+          <button class="icon-btn playground-copy-btn" id="playgroundCopyBtn">Copy</button>
+        </div>
+        <pre class="playground-code" id="playgroundCode"></pre>
       </div>
+    </div>
+
+    <div class="api-actions" id="apiActionsCTA">
+      <a href="#pricing" class="btn btn-gold">Get API access – £29/mo</a>
+      <a href="#pricing" class="btn btn-ghost">See API pricing →</a>
     </div>
   </section>
 </main>
