@@ -1,0 +1,629 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>JSON Diff — compare two JSON files online | Recast</title>
+<meta name="description" content="Compare two JSON files or objects online. Matches array items by ID instead of position, so a reordered array doesn't show as a false change. Runs in your browser.">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@400;500;600;700&family=IBM+Plex+Sans:wght@400;500;600&family=IBM+Plex+Mono:wght@400;500&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="../styles.css">
+<link rel="canonical" href="https://tryrecast.app/tools/json-diff.html">
+<script type="application/ld+json">
+{
+  "@context": "https://schema.org",
+  "@type": "SoftwareApplication",
+  "name": "Recast",
+  "url": "https://tryrecast.app/tools/json-diff.html",
+  "applicationCategory": "DeveloperApplication",
+  "operatingSystem": "Any (runs in browser)",
+  "description": "Compare two JSON files or objects online. Matches array items by ID instead of position, so a reordered array doesn't show as a false change. Runs in your browser.",
+  "offers": [
+    { "@type": "Offer", "name": "Free", "price": "0", "priceCurrency": "GBP" },
+    { "@type": "Offer", "name": "Pro", "price": "9", "priceCurrency": "GBP" },
+    { "@type": "Offer", "name": "API", "price": "29", "priceCurrency": "GBP" }
+  ]
+}
+</script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/jszip/3.10.1/jszip.min.js"></script>
+<!-- Google tag (gtag.js) -->
+<script async src="https://www.googletagmanager.com/gtag/js?id=G-MW47YKCSLX"></script>
+<script>
+  window.dataLayer = window.dataLayer || [];
+  function gtag(){dataLayer.push(arguments);}
+  gtag('js', new Date());
+
+  gtag('config', 'G-MW47YKCSLX');
+</script>
+</head>
+
+<body style="background:#0E2338;color:#EDF3F8;margin:0;min-height:100vh;">
+<svg style="display:none" aria-hidden="true">
+  <symbol id="ico-json" viewBox="0 0 18 18" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round">
+    <path d="M6.5 2.5c-1.4 0-1.9.5-1.9 1.9v1.7c0 1-.5 1.5-1.4 1.5.9 0 1.4.5 1.4 1.5v1.7c0 1.4.5 1.9 1.9 1.9"/>
+    <path d="M11.5 2.5c1.4 0 1.9.5 1.9 1.9v1.7c0 1 .5 1.5 1.4 1.5-.9 0-1.4.5-1.4 1.5v1.7c0 1.4-.5 1.9-1.9 1.9"/>
+  </symbol>
+  <symbol id="ico-table" viewBox="0 0 18 18" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round">
+    <rect x="2.2" y="3" width="13.6" height="12" rx="1"/>
+    <line x1="2.2" y1="7.4" x2="15.8" y2="7.4"/>
+    <line x1="7.3" y1="3" x2="7.3" y2="15"/>
+    <line x1="11.7" y1="3" x2="11.7" y2="15"/>
+  </symbol>
+  <symbol id="ico-mdtable" viewBox="0 0 18 18" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round">
+    <rect x="2.2" y="3" width="13.6" height="12" rx="1"/>
+    <rect x="2.2" y="3" width="13.6" height="3.6" fill="currentColor" fill-opacity="0.22" stroke="none"/>
+    <line x1="2.2" y1="7.4" x2="15.8" y2="7.4"/>
+    <line x1="7.3" y1="3" x2="7.3" y2="15"/>
+    <line x1="11.7" y1="3" x2="11.7" y2="15"/>
+  </symbol>
+  <symbol id="ico-tag" viewBox="0 0 18 18" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round">
+    <polyline points="6,4 2,9 6,14"/>
+    <polyline points="12,4 16,9 12,14"/>
+    <line x1="9.6" y1="4" x2="9.6" y2="14"/>
+  </symbol>
+  <symbol id="ico-code" viewBox="0 0 18 18" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round">
+    <polyline points="6,4.5 2,9 6,13.5"/>
+    <polyline points="12,4.5 16,9 12,13.5"/>
+    <line x1="10.6" y1="3" x2="7.4" y2="15"/>
+  </symbol>
+  <symbol id="ico-yaml" viewBox="0 0 18 18" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round">
+    <circle cx="3" cy="5" r=".55" fill="currentColor" stroke="none"/>
+    <line x1="5" y1="5" x2="11" y2="5"/>
+    <circle cx="3" cy="9" r=".55" fill="currentColor" stroke="none"/>
+    <line x1="5" y1="9" x2="15" y2="9"/>
+    <circle cx="3" cy="13" r=".55" fill="currentColor" stroke="none"/>
+    <line x1="5" y1="13" x2="13" y2="13"/>
+  </symbol>
+  <symbol id="ico-schema" viewBox="0 0 18 18" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round">
+    <rect x="3" y="3" width="12" height="12" rx="1" stroke-dasharray="2.4 2.1"/>
+    <line x1="3" y1="9" x2="1.2" y2="9" stroke-dasharray="none"/>
+    <line x1="15" y1="9" x2="16.8" y2="9" stroke-dasharray="none"/>
+    <line x1="9" y1="3" x2="9" y2="1.2" stroke-dasharray="none"/>
+    <line x1="9" y1="15" x2="9" y2="16.8" stroke-dasharray="none"/>
+  </symbol>
+  <symbol id="ico-diff" viewBox="0 0 18 18" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round">
+    <rect x="2" y="2" width="9.5" height="9.5" rx="1"/>
+    <rect x="6.5" y="6.5" width="9.5" height="9.5" rx="1"/>
+  </symbol>
+  <symbol id="ico-path" viewBox="0 0 18 18" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round">
+    <rect x="2" y="2" width="14" height="14" rx="2.5"/>
+    <path d="M9 4.5v9"/>
+    <path d="M11.4 6.2c0-.85-1-1.5-2.4-1.5s-2.4.7-2.4 1.6c0 2.3 4.8 1 4.8 3.3 0 1-1.1 1.7-2.4 1.7s-2.4-.6-2.4-1.5"/>
+  </symbol>
+  <symbol id="ico-tree" viewBox="0 0 18 18" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round">
+    <circle cx="2.6" cy="4" r="1"/>
+    <circle cx="2.6" cy="9" r="1"/>
+    <circle cx="2.6" cy="14" r="1"/>
+    <circle cx="15.4" cy="9" r="1"/>
+    <path d="M3.6 4H8a2 2 0 012 2"/>
+    <path d="M3.6 9h10.8"/>
+    <path d="M3.6 14H8a2 2 0 002-2"/>
+  </symbol>
+  <symbol id="ico-check" viewBox="0 0 18 18" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round">
+    <circle cx="9" cy="9" r="7"/>
+    <polyline points="5.5,9.2 8,11.7 12.7,6.4"/>
+  </symbol>
+  <symbol id="ico-arrow" viewBox="0 0 18 18" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round">
+    <line x1="2" y1="9" x2="14.5" y2="9"/>
+    <polyline points="10.5,5 14.5,9 10.5,13"/>
+  </symbol>
+  <symbol id="ico-bolt" viewBox="0 0 18 18" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round">
+    <polygon points="9.5,2 4,10.5 8,10.5 7.2,16 14,7 9.6,7"/>
+  </symbol>
+  <symbol id="ico-star" viewBox="0 0 18 18" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round">
+    <polygon points="9,2.3 11.1,7 16,7.5 12.3,10.8 13.4,15.7 9,13.1 4.6,15.7 5.7,10.8 2,7.5 6.9,7"/>
+  </symbol>
+  <symbol id="ico-expand" viewBox="0 0 18 18" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round">
+    <polyline points="6.5,2.5 2.5,2.5 2.5,6.5"/>
+    <polyline points="11.5,2.5 15.5,2.5 15.5,6.5"/>
+    <polyline points="6.5,15.5 2.5,15.5 2.5,11.5"/>
+    <polyline points="11.5,15.5 15.5,15.5 15.5,11.5"/>
+  </symbol>
+  <symbol id="ico-collapse" viewBox="0 0 18 18" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round">
+    <polyline points="2.5,6.5 6.5,6.5 6.5,2.5"/>
+    <polyline points="15.5,6.5 11.5,6.5 11.5,2.5"/>
+    <polyline points="2.5,11.5 6.5,11.5 6.5,15.5"/>
+    <polyline points="15.5,11.5 11.5,11.5 11.5,15.5"/>
+  </symbol>
+  <symbol id="ico-popout" viewBox="0 0 18 18" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round">
+    <path d="M7 3H3.5a1 1 0 00-1 1v10a1 1 0 001 1h10a1 1 0 001-1V11"/>
+    <path d="M10 2.5h5.5V8"/>
+    <line x1="15.3" y1="2.7" x2="8.5" y2="9.5"/>
+  </symbol>
+</svg>
+
+
+<header class="titleblock">
+  <div class="ruler" id="ruler"></div>
+  <div class="tb-row">
+    <div class="brand"><span class="mark">⇄</span>RECAST</div>
+    <nav class="tb-nav">
+      <a href="#tool">Tool</a>
+      <a href="#pricing">Pricing</a>
+      <a href="#api">API docs</a>
+      <a href="../blog/index.html">Blog</a>
+    </nav>
+    <div class="header-actions">
+      <span class="worker-status" id="workerStatus"><span class="dot"></span>Processing…</span>
+      <button class="icon-btn" id="historyBtn" title="Recent conversions (stored only on this device)">History</button>
+      <div class="history-panel" id="historyPanel">
+        <div class="history-head"><span>Recent (this device only)</span><button id="historyClearBtn">Clear</button></div>
+        <div id="historyList"></div>
+      </div>
+      <button class="icon-btn" id="presetsBtn" title="Saved option presets (Pro)">Presets</button>
+      <div class="history-panel" id="presetsPanel">
+        <div class="history-head"><span>Saved presets</span><button id="presetsCloseBtn">Close</button></div>
+        <div id="presetsList"></div>
+        <div style="padding:10px 14px; border-top:1px solid rgba(140,182,214,0.16); display:flex; gap:6px;">
+          <input type="text" id="presetNameInput" placeholder="Preset name" style="flex:1; min-width:0; background:#0E2338; border:1px solid rgba(140,182,214,0.32); color:#EDF3F8; padding:6px 8px; border-radius:2px; font-size:12px;">
+          <button class="icon-btn" id="presetSaveBtn">Save current</button>
+        </div>
+      </div>
+      <button class="icon-btn" id="shareBtn" title="Copy a link that restores this input — data is compressed into the URL itself, nothing is uploaded">Share link</button>
+      <a href="#pricing" class="btn btn-gold" id="accountBtn">Upgrade to Pro</a>
+    </div>
+  </div>
+</header>
+
+<main>
+  <section class="hero" id="tool">
+    <p class="eyebrow">Data format toolkit</p>
+    <h1>JSON Diff — Compare Two JSON Files</h1>
+    <p class="sub">Compares two JSON documents and shows exactly what was added, removed, or changed. Unlike most JSON diff tools, array items are matched by an ID-like field (<code>id</code>, <code>uuid</code>, <code>slug</code>...) when one exists, so an array that was simply reordered doesn't show every item as “changed”. <a href="../blog/csv-diff-explained.html">Why this matters →</a></p>
+    <p style="font-size:13px;"><a href="../index.html" style="color:#B9CBDA;">← Full toolkit (all 23 tools)</a></p>
+
+<div class="hero-preview">
+  <div class="hp-head"><svg class="ico"><use href="#ico-diff"/></svg> live example <span class="hp-badge">real output</span></div>
+  <div class="hp-panes">
+    <div class="hp-pane"><div class="hp-pane-label">ORIGINAL</div><pre class="hp-code">{
+  <span class="tok-key">"id":</span> <span class="tok-num">1</span>,
+  <span class="tok-key">"name":</span> <span class="tok-str">"Ada Lovelace"</span>,
+  <span class="tok-key">"role":</span> <span class="tok-str">"Engineer"</span>
+}</pre></div>
+    <div class="hp-mid"><svg class="ico"><use href="#ico-diff"/></svg></div>
+    <div class="hp-pane"><div class="hp-pane-label">MODIFIED</div><pre class="hp-code">{
+  <span class="tok-key">"id":</span> <span class="tok-num">1</span>,
+  <span class="tok-key">"name":</span> <span class="tok-str">"Ada Lovelace"</span>,
+  <span class="tok-key">"role":</span> <span class="tok-str">"Senior Engineer"</span>,
+  <span class="tok-key">"team":</span> <span class="tok-str">"Platform"</span>
+}</pre></div>
+  </div>
+</div>
+
+    <div class="mode-nav" id="modeNav">
+      <div class="mode-groups" id="modeGroups">
+        <button class="mode-group-btn active" data-group="convert">Convert</button>
+        <button class="mode-group-btn" data-group="transform">Transform</button>
+        <button class="mode-group-btn" data-group="validate">Validate &amp; Format</button>
+        <button class="mode-group-btn" data-group="compare">Compare</button>
+        <button class="mode-group-btn" data-group="query">Query</button>
+        <button class="mode-group-btn" data-group="schema">Schema</button>
+      </div>
+      <div class="mode-chips" id="modes">
+        <button class="mode-chip active" data-mode="json2csv" data-group="convert"><svg class="ico"><use href="#ico-json"/></svg><svg class="ico ico-swap"><use href="#ico-arrow"/></svg><svg class="ico"><use href="#ico-table"/></svg>JSON → CSV</button>
+        <button class="mode-chip" data-mode="csv2json" data-group="convert"><svg class="ico"><use href="#ico-table"/></svg><svg class="ico ico-swap"><use href="#ico-arrow"/></svg><svg class="ico"><use href="#ico-json"/></svg>CSV → JSON</button>
+        <button class="mode-chip" data-mode="json2xml" data-group="convert"><svg class="ico"><use href="#ico-json"/></svg><svg class="ico ico-swap"><use href="#ico-arrow"/></svg><svg class="ico"><use href="#ico-tag"/></svg>JSON → XML</button>
+        <button class="mode-chip" data-mode="xml2json" data-group="convert"><svg class="ico"><use href="#ico-tag"/></svg><svg class="ico ico-swap"><use href="#ico-arrow"/></svg><svg class="ico"><use href="#ico-json"/></svg>XML → JSON</button>
+        <button class="mode-chip" data-mode="json2yaml" data-group="convert"><svg class="ico"><use href="#ico-json"/></svg><svg class="ico ico-swap"><use href="#ico-arrow"/></svg><svg class="ico"><use href="#ico-yaml"/></svg>JSON → YAML</button>
+        <button class="mode-chip" data-mode="yaml2json" data-group="convert"><svg class="ico"><use href="#ico-yaml"/></svg><svg class="ico ico-swap"><use href="#ico-arrow"/></svg><svg class="ico"><use href="#ico-json"/></svg>YAML → JSON</button>
+        <button class="mode-chip" data-mode="json2markdown" data-group="convert"><svg class="ico"><use href="#ico-json"/></svg><svg class="ico ico-swap"><use href="#ico-arrow"/></svg><svg class="ico"><use href="#ico-mdtable"/></svg>JSON → Markdown</button>
+        <button class="mode-chip" data-mode="markdown2json" data-group="convert"><svg class="ico"><use href="#ico-mdtable"/></svg><svg class="ico ico-swap"><use href="#ico-arrow"/></svg><svg class="ico"><use href="#ico-json"/></svg>Markdown → JSON</button>
+        <button class="mode-chip hidden" data-mode="flatten" data-group="transform"><svg class="ico"><use href="#ico-tree"/></svg>Flatten JSON</button>
+        <button class="mode-chip hidden" data-mode="unflatten" data-group="transform"><svg class="ico"><use href="#ico-tree"/></svg>Unflatten JSON</button>
+        <button class="mode-chip hidden" data-mode="sortJson" data-group="transform"><svg class="ico"><use href="#ico-json"/></svg>Sort keys</button>
+        <button class="mode-chip hidden" data-mode="validateJson" data-group="validate"><svg class="ico"><use href="#ico-check"/></svg>Validate JSON</button>
+        <button class="mode-chip hidden" data-mode="validateXml" data-group="validate"><svg class="ico"><use href="#ico-check"/></svg>Validate XML</button>
+        <button class="mode-chip hidden" data-mode="formatJson" data-group="validate"><svg class="ico"><use href="#ico-json"/></svg>Format JSON</button>
+        <button class="mode-chip hidden" data-mode="formatXml" data-group="validate"><svg class="ico"><use href="#ico-tag"/></svg>Format XML</button>
+        <button class="mode-chip hidden" data-mode="diffJson" data-group="compare"><svg class="ico"><use href="#ico-diff"/></svg>Diff JSON</button>
+        <button class="mode-chip hidden" data-mode="diffXml" data-group="compare"><svg class="ico"><use href="#ico-diff"/></svg>Diff XML</button>
+        <button class="mode-chip hidden" data-mode="diffCsv" data-group="compare"><svg class="ico"><use href="#ico-diff"/></svg>Diff CSV</button>
+        <button class="mode-chip hidden" data-mode="jsonPath" data-group="query"><svg class="ico"><use href="#ico-path"/></svg>JSONPath</button>
+        <button class="mode-chip hidden" data-mode="jsonSchema" data-group="schema"><svg class="ico"><use href="#ico-schema"/></svg>JSON → Schema</button>
+        <button class="mode-chip hidden" data-mode="json2ts" data-group="schema"><svg class="ico"><use href="#ico-code"/></svg>JSON → TypeScript</button>
+        <button class="mode-chip hidden" data-mode="json2zod" data-group="schema"><svg class="ico"><use href="#ico-code"/></svg>JSON → Zod</button>
+        <button class="mode-chip hidden" data-mode="json2python" data-group="schema"><svg class="ico"><use href="#ico-code"/></svg>JSON → Python</button>
+        <button class="mode-chip hidden" data-mode="json2pydantic" data-group="schema"><svg class="ico"><use href="#ico-code"/></svg>JSON → Pydantic</button>
+        <button class="mode-chip hidden" data-mode="json2go" data-group="schema"><svg class="ico"><use href="#ico-code"/></svg>JSON → Go</button>
+        <button class="mode-chip hidden" data-mode="validateSchema" data-group="schema"><svg class="ico"><use href="#ico-check"/></svg>Validate against Schema</button>
+      </div>
+    </div>
+
+    <div class="workbench">
+      <div class="path-row" id="pathRow">
+        <span style="font-family:'IBM Plex Mono', monospace;font-size:12px;color:#B9CBDA;">JSONPath</span>
+        <input type="text" id="jsonPathInput" placeholder="e.g. $.users[*].name  or  address.city" spellcheck="false">
+      </div>
+      <div class="wb-grid">
+        <div class="panel" id="inputPanel">
+          <div class="drop-zone" id="dropZone">Drop 1 file to load — or several to batch convert</div>
+          <div class="panel-head">
+            <div class="fmt-count"><span class="fmt" id="inFmt">JSON</span><span id="inCount">0 chars</span></div>
+            <div class="head-actions">
+              <button class="win-btn" id="inputPopoutBtn" title="Pop out into a separate window"><svg class="ico"><use href="#ico-popout"/></svg></button>
+              <button class="win-btn" id="inputExpandBtn" title="Expand to full screen"><svg class="ico"><use href="#ico-expand"/></svg></button>
+            </div>
+          </div>
+          <div class="ta-wrap single-input" id="singleInputWrap">
+            <pre class="hl-layer" id="hlInput" aria-hidden="true"></pre>
+            <textarea id="input" spellcheck="false" placeholder="Paste data here, drop a file, or click Load sample."></textarea>
+          </div>
+          <div class="dual-input" id="dualInput">
+            <div class="ta-wrap" style="min-height:160px;border-bottom:1px solid rgba(140,182,214,0.16);">
+              <pre class="hl-layer" id="hlInputA" aria-hidden="true"></pre>
+              <textarea id="inputA" spellcheck="false" placeholder="Original / left side…" style="min-height:160px;"></textarea>
+              <div class="drop-zone" id="dropZoneA">Drop file for original / left side</div>
+            </div>
+            <div class="ta-wrap" style="min-height:160px;">
+              <pre class="hl-layer" id="hlInputB" aria-hidden="true"></pre>
+              <textarea id="inputB" spellcheck="false" placeholder="Modified / right side…" style="min-height:160px;"></textarea>
+              <div class="drop-zone" id="dropZoneB">Drop file for modified / right side</div>
+            </div>
+          </div>
+          <div class="opts-row">
+            <button class="try-sample" id="loadSample">Load sample</button>
+            <button class="icon-btn" id="clearInputBtn" title="Clear input">Clear</button>
+            <label class="icon-btn" style="cursor:pointer;margin:0;">
+              Upload
+              <input type="file" id="fileInput" accept=".json,.csv,.xml,.txt,application/json,text/csv,text/xml,text/plain" hidden>
+            </label>
+            <button class="icon-btn" id="batchToggleBtn" title="Convert many files at once">Batch</button>
+            <span class="kb-hint" title="Keyboard shortcut">⌘/Ctrl + Enter</span>
+          </div>
+        </div>
+
+        <div class="wb-mid">
+          <button class="swap-btn" id="swapBtn" title="Swap direction">⇄</button>
+          <button class="convert-btn" id="convertBtn">Convert</button>
+          <button class="win-btn" id="workbenchExpandBtn" title="Expand workbench to full screen"><svg class="ico"><use href="#ico-expand"/></svg></button>
+        </div>
+
+        <div class="panel" id="outputPanel">
+          <div class="panel-head">
+            <div class="fmt-count"><span class="fmt" id="outFmt">CSV</span><span id="outCount">0 chars</span></div>
+            <div class="head-actions">
+              <button class="win-btn" id="outputPopoutBtn" title="Pop out into a separate window"><svg class="ico"><use href="#ico-popout"/></svg></button>
+              <button class="win-btn" id="outputExpandBtn" title="Expand to full screen"><svg class="ico"><use href="#ico-expand"/></svg></button>
+            </div>
+          </div>
+          <div class="ta-wrap">
+            <pre class="hl-layer" id="hlOutput" aria-hidden="true"></pre>
+            <textarea id="output" spellcheck="false" placeholder="Output appears here." readonly></textarea>
+          </div>
+          <div class="opts-row" id="outOpts">
+            <label id="prettyLabel"><input type="checkbox" id="prettyPrint" checked> Pretty</label>
+            <label id="bomLabel" style="display:none"><input type="checkbox" id="excelBom"> Excel BOM</label>
+            <label id="inferLabel" style="display:none"><input type="checkbox" id="inferTypes" checked> Infer types</label>
+            <label id="rootNameLabel" style="display:none">
+              Type name
+              <input type="text" id="schemaRootName" value="Root" style="width:90px;">
+            </label>
+            <label id="delimLabel" style="display:none">
+              Delimiter
+              <select id="csvDelimiter">
+                <option value=",">Comma</option>
+                <option value=";">Semicolon</option>
+                <option value="\t">Tab</option>
+                <option value="|">Pipe</option>
+              </select>
+            </label>
+          </div>
+          <div class="panel-foot">
+            <div class="cap-bar"><div class="cap-fill" id="capFill"></div></div>
+            <span class="cap-label" id="capLabel">0 / 256 KB free limit</span>
+            <button class="icon-btn" id="copyBtn">Copy</button>
+            <button class="icon-btn" id="downloadBtn">Download</button>
+            <button class="icon-btn" id="clearOutputBtn" title="Clear output">Clear</button>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <div class="diff-panel" id="diffPanel">
+      <div class="diff-summary" id="diffSummary"></div>
+      <div class="diff-key-note" id="diffKeyNote" style="display:none;"></div>
+      <div class="diff-rows" id="diffRows"></div>
+    </div>
+
+    <div class="diff-panel" id="comparePanel">
+      <div class="diff-summary" id="compareSummary"></div>
+      <div class="compare-toolbar">
+        <div class="compare-filter-group" id="compareFilterGroup">
+          <button class="compare-filter-btn active" data-filter="all">All <span class="n" id="cntAll"></span></button>
+          <button class="compare-filter-btn" data-filter="added">Added <span class="n" id="cntAdded"></span></button>
+          <button class="compare-filter-btn" data-filter="removed">Removed <span class="n" id="cntRemoved"></span></button>
+          <button class="compare-filter-btn" data-filter="changed">Changed <span class="n" id="cntChanged"></span></button>
+          <button class="compare-filter-btn" data-filter="unchanged">Unchanged <span class="n" id="cntUnchanged"></span></button>
+        </div>
+        <input type="text" class="compare-search" id="compareSearch" placeholder="Search key or any cell value…">
+        <label class="compare-ws-toggle"><input type="checkbox" id="compareIgnoreWs"> Ignore whitespace</label>
+        <div class="compare-nav">
+          <button class="icon-btn" id="compareDiffPrev" title="Previous difference (P)">↑ Prev diff</button>
+          <button class="icon-btn" id="compareDiffNext" title="Next difference (N)">↓ Next diff</button>
+          <span class="compare-nav-pos" id="compareDiffPos"></span>
+        </div>
+        <div class="compare-downloads">
+          <button class="icon-btn" id="compareDownloadCsv">Download CSV report</button>
+          <button class="icon-btn" id="compareDownloadHtml">Download HTML report</button>
+        </div>
+      </div>
+      <div id="compareTableWrap"></div>
+    </div>
+
+    <div class="batch-panel" id="batchPanel">
+      <div class="batch-head">
+        <span class="title" id="batchModeLabel">Batch: JSON → CSV</span>
+        <label class="icon-btn" style="cursor:pointer;margin:0;">
+          Add files
+          <input type="file" id="batchFileInput" multiple hidden accept=".json,.csv,.xml,.txt">
+        </label>
+        <button class="icon-btn" id="batchRunBtn">Run batch</button>
+        <button class="icon-btn" id="batchDownloadBtn" style="display:none;">Download .zip</button>
+        <button class="icon-btn" id="batchClearBtn">Clear</button>
+      </div>
+      <div class="batch-file-list" id="batchFileList"></div>
+      <div class="batch-summary" id="batchSummary" style="display:none;"></div>
+      <div class="drop-zone" id="batchDropZone">Drop files to add to the batch</div>
+    </div>
+
+    <div class="status-line" id="status"></div>
+    <div class="upgrade-nudge" id="upgradeNudge">
+      <span>Free limit reached or nearly full. Pro unlocks 25 MB files, batch convert, and saved presets.</span>
+      <a href="#pricing">Upgrade to Pro →</a>
+    </div>
+
+    <div class="related-groups">
+      <div class="related-group">
+        <span class="rg-label">Convert</span>
+        <a href="json-to-csv.html" onclick="setMode('json2csv');return false;"><svg class="ico"><use href="#ico-json"/></svg>JSON→CSV</a>
+        <a href="csv-to-json.html" onclick="setMode('csv2json');return false;"><svg class="ico"><use href="#ico-table"/></svg>CSV→JSON</a>
+        <a href="json-to-xml.html" onclick="setMode('json2xml');return false;"><svg class="ico"><use href="#ico-json"/></svg>JSON→XML</a>
+        <a href="xml-to-json.html" onclick="setMode('xml2json');return false;"><svg class="ico"><use href="#ico-tag"/></svg>XML→JSON</a>
+        <a href="json-to-yaml.html" onclick="setMode('json2yaml');return false;"><svg class="ico"><use href="#ico-json"/></svg>JSON→YAML</a>
+        <a href="yaml-to-json.html" onclick="setMode('yaml2json');return false;"><svg class="ico"><use href="#ico-yaml"/></svg>YAML→JSON</a>
+        <a href="json-to-markdown.html" onclick="setMode('json2markdown');return false;"><svg class="ico"><use href="#ico-json"/></svg>JSON→Markdown</a>
+        <a href="markdown-to-json.html" onclick="setMode('markdown2json');return false;"><svg class="ico"><use href="#ico-mdtable"/></svg>Markdown→JSON</a>
+      </div>
+      <div class="related-group">
+        <span class="rg-label">Transform</span>
+        <a href="flatten-json.html" onclick="setMode('flatten');return false;"><svg class="ico"><use href="#ico-tree"/></svg>Flatten</a>
+        <a href="unflatten-json.html" onclick="setMode('unflatten');return false;"><svg class="ico"><use href="#ico-tree"/></svg>Unflatten</a>
+        <a href="#" onclick="setMode('sortJson');return false;"><svg class="ico"><use href="#ico-json"/></svg>Sort keys</a>
+      </div>
+      <div class="related-group">
+        <span class="rg-label">Validate &amp; format</span>
+        <a href="json-validator.html" onclick="setMode('validateJson');return false;"><svg class="ico"><use href="#ico-check"/></svg>Validate JSON</a>
+        <a href="#" onclick="setMode('validateXml');return false;"><svg class="ico"><use href="#ico-check"/></svg>Validate XML</a>
+        <a href="json-formatter.html" onclick="setMode('formatJson');return false;"><svg class="ico"><use href="#ico-json"/></svg>Format JSON</a>
+        <a href="#" onclick="setMode('formatXml');return false;"><svg class="ico"><use href="#ico-tag"/></svg>Format XML</a>
+      </div>
+      <div class="related-group">
+        <span class="rg-label">Compare</span>
+        <a href="json-diff.html" onclick="setMode('diffJson');return false;"><svg class="ico"><use href="#ico-diff"/></svg>Diff JSON</a>
+        <a href="xml-diff.html" onclick="setMode('diffXml');return false;"><svg class="ico"><use href="#ico-diff"/></svg>Diff XML</a>
+        <a href="csv-diff.html" onclick="setMode('diffCsv');return false;"><svg class="ico"><use href="#ico-diff"/></svg>Diff CSV</a>
+      </div>
+      <div class="related-group">
+        <span class="rg-label">Query</span>
+        <a href="jsonpath-tester.html" onclick="setMode('jsonPath');return false;"><svg class="ico"><use href="#ico-path"/></svg>JSONPath</a>
+      </div>
+      <div class="related-group">
+        <span class="rg-label">Schema &amp; types</span>
+        <a href="json-schema-generator.html" onclick="setMode('jsonSchema');return false;"><svg class="ico"><use href="#ico-schema"/></svg>JSON → Schema</a>
+        <a href="json-to-typescript.html" onclick="setMode('json2ts');return false;"><svg class="ico"><use href="#ico-code"/></svg>JSON → TypeScript</a>
+        <a href="json-to-zod.html" onclick="setMode('json2zod');return false;"><svg class="ico"><use href="#ico-code"/></svg>JSON → Zod</a>
+        <a href="json-to-python.html" onclick="setMode('json2python');return false;"><svg class="ico"><use href="#ico-code"/></svg>JSON → Python</a>
+        <a href="json-to-pydantic.html" onclick="setMode('json2pydantic');return false;"><svg class="ico"><use href="#ico-code"/></svg>JSON → Pydantic</a>
+        <a href="json-to-go.html" onclick="setMode('json2go');return false;"><svg class="ico"><use href="#ico-code"/></svg>JSON → Go</a>
+        <a href="validate-json-schema.html" onclick="setMode('validateSchema');return false;"><svg class="ico"><use href="#ico-check"/></svg>Validate against Schema</a>
+      </div>
+    </div>
+  </section>
+
+  <section id="pricing">
+    <div class="section-head">
+      <p class="eyebrow">Pricing</p>
+      <h2>Free for one-off conversions. Pro for daily use.</h2>
+      <p>Occasional use is free, forever. If you're converting files at work every day, Pro pays for itself in the first ten minutes you save.</p>
+    </div>
+    <div class="plans">
+      <div class="plan">
+        <div class="plan-icon"><svg class="ico"><use href="#ico-bolt"/></svg></div>
+        <h3>Free</h3>
+        <div class="price"><sup>£</sup>0<span class="period">/forever</span></div>
+        <p class="desc">For occasional, one-off conversions.</p>
+        <ul>
+          <li>Convert, validate, format, diff, JSONPath, schema generate + validate</li>
+          <li>CSV compare up to 50 rows per file</li>
+          <li>Files up to 256 KB</li>
+          <li>One file at a time</li>
+          <li>Runs entirely in-browser</li>
+        </ul>
+        <a href="#tool" class="btn btn-ghost">Use for free</a>
+      </div>
+      <div class="plan featured">
+        <div class="plan-icon"><svg class="ico"><use href="#ico-star"/></svg></div>
+        <h3>Pro</h3>
+        <div class="price"><sup>£</sup>9<span class="period">/month</span></div>
+        <p class="desc">For daily conversions, CI use, and larger files.</p>
+        <ul>
+          <li>Everything in Free</li>
+          <li>Unlimited rows for CSV compare</li>
+          <li>Files up to 25 MB</li>
+          <li>Batch convert — up to 100 files at once, download as .zip</li>
+          <li>Saved presets — reusable delimiter/format settings</li>
+          <li>No ads</li>
+          <li>No account or password — access is tied to this browser</li>
+          <li>Priority support</li>
+        </ul>
+        <a href="#" class="btn btn-gold" id="btnProMonthly" data-plan="pro_monthly">Start Pro – £9/mo</a>
+        <a href="#" class="btn btn-ghost" id="btnProYearly" data-plan="pro_yearly" style="margin-top:8px;text-align:center;">Pro yearly – £90</a>
+      </div>
+      <div class="plan">
+        <div class="plan-icon"><svg class="ico"><use href="#ico-code"/></svg></div>
+        <h3>API</h3>
+        <div class="price"><sup>£</sup>29<span class="period">/month</span></div>
+        <p class="desc">For scripts, pipelines and internal tools.</p>
+        <ul>
+          <li>Everything in Pro</li>
+          <li>REST API with your own key</li>
+          <li>10,000 conversions / month</li>
+          <li>Webhook + CLI available</li>
+          <li>Team seats (add-on)</li>
+        </ul>
+        <a href="#" class="btn btn-ghost" id="btnApiMonthly" data-plan="api_monthly">Get API – £29/mo</a>
+        <a href="#" class="btn btn-ghost" id="btnApiYearly" data-plan="api_yearly" style="margin-top:8px;text-align:center;">API yearly – £290</a>
+      </div>
+    </div>
+
+    <div class="day-pass-note">
+      <span>Only need it once? </span>
+      <a href="#" onclick="startCheckout('day_pass');return false;">Get a 24-hour Pro pass for £2.99</a>
+      <span> — no subscription, unlocks everything in Pro for a day.</span>
+    </div>
+  </section>
+
+  <section id="faq">
+    <div class="section-head">
+      <p class="eyebrow">FAQ</p>
+      <h2>A few things worth knowing.</h2>
+    </div>
+    <div class="faq-list">
+      <details class="faq-item">
+        <summary>Do I need to create an account?</summary>
+        <p>No — Recast doesn't use logins, emails, or passwords. When you pay, your browser is automatically given secure access. This means access is tied to the specific browser you paid in, not to an identity we track. If you switch devices, use a different browser, or clear your browser's storage, click <b>Manage subscription</b> from the original browser to pick it back up, or get in touch and we'll sort it out.</p>
+      </details>
+      <details class="faq-item">
+        <summary>Is my data ever uploaded anywhere?</summary>
+        <p>No. Every conversion, diff, and validation runs entirely inside your browser tab. Nothing you paste into the tool is ever sent to a server — the only exception is the checkout process itself, which is handled directly by Stripe.</p>
+      </details>
+      <details class="faq-item">
+        <summary>What happens if I cancel?</summary>
+        <p>Cancel any time from <b>Manage subscription</b>. Your access reverts to the Free tier automatically — usually within moments, always by your next page load — no need to email anyone.</p>
+      </details>
+      <details class="faq-item">
+        <summary>Can I use Recast in a script or CI pipeline?</summary>
+        <p>Yes — the same engine that powers the browser tool is available as <a href="https://www.npmjs.com/package/recast-cli" style="color:#F2C14E;">recast-cli</a>, an npm package with no network dependency, plus a REST API on the API plan.</p>
+      </details>
+    </div>
+  </section>
+
+  <section id="api">
+    <div class="section-head">
+      <p class="eyebrow">API</p>
+      <h2>Convert from your scripts and pipelines.</h2>
+      <p>Same conversions as the browser tool, available over a simple REST API. Ideal for backends, CLIs, and internal tools. Prefer zero network dependency? The <a href="https://www.npmjs.com/package/recast-cli" style="color:#F2C14E;">recast-cli</a> npm package runs the identical engine locally.</p>
+    </div>
+
+    <div class="api-card">
+      <h3>Recast API</h3>
+      <p>
+        Your access token — the same one issued when you subscribe — doubles as your API key.
+        10,000 calls per month, resets on the calendar month, tracked and returned with every response.
+      </p>
+
+      <pre>curl https://tryrecast.app/v1/convert \
+  -H "Authorization: Bearer rk_live_••••••••" \
+  -H "Content-Type: application/json" \
+  -d '{
+    "mode": "json2csv",
+    "input": "[{\"id\":1,\"name\":\"Ada\"}]"
+  }'
+
+# -&gt; {"output":"id,name\n1,Ada","usage":{"calls_this_month":1,"limit":10000}}</pre>
+
+      <p style="margin-bottom:6px;font-size:13.5px;color:#B9CBDA;line-height:1.7;">
+        <code style="color:#7FE7D0;">POST /v1/convert</code> — <code>mode</code>: json2csv, csv2json, json2xml, xml2json, flatten, unflatten, json2yaml, yaml2json, json2markdown, markdown2json<br>
+        <code style="color:#7FE7D0;">POST /v1/diff</code> — <code>mode</code>: diffJson, diffXml, diffCsv (send <code>inputA</code>/<code>inputB</code> instead of <code>input</code>)<br>
+        <code style="color:#7FE7D0;">POST /v1/schema</code> — infers a JSON Schema (draft-07) from a sample <code>input</code>
+      </p>
+
+      <div id="apiKeyBox" class="api-key-box" style="display:none;">
+        <span class="api-key-label">Your API key</span>
+        <code id="apiKeyValue"></code>
+        <button class="icon-btn" id="apiKeyCopyBtn">Copy</button>
+      </div>
+    </div>
+
+    <div class="api-playground" id="apiPlayground">
+      <div class="playground-row">
+        <div class="playground-col">
+          <div class="playground-label-row">
+            <label class="playground-label">Request</label>
+            <span class="playground-live-tag">Live preview — runs in your browser, same engine as the API</span>
+            <div class="head-actions">
+              <button class="win-btn" id="playgroundPopoutBtn" title="Pop out into a separate window"><svg class="ico"><use href="#ico-popout"/></svg></button>
+              <button class="win-btn" id="playgroundExpandBtn" title="Expand to full screen"><svg class="ico"><use href="#ico-expand"/></svg></button>
+            </div>
+          </div>
+          <select id="playgroundMode" class="playground-select">
+            <option value="json2csv">json2csv</option>
+            <option value="csv2json">csv2json</option>
+            <option value="json2xml">json2xml</option>
+            <option value="xml2json">xml2json</option>
+            <option value="flatten">flatten</option>
+            <option value="unflatten">unflatten</option>
+            <option value="json2yaml">json2yaml</option>
+            <option value="yaml2json">yaml2json</option>
+            <option value="json2markdown">json2markdown</option>
+            <option value="markdown2json">markdown2json</option>
+          </select>
+          <textarea id="playgroundInput" class="playground-textarea" spellcheck="false">[{"id":1,"name":"Ada","city":"London"}]</textarea>
+          <button class="btn btn-gold" id="playgroundRunBtn" style="margin-top:10px;">Run</button>
+        </div>
+        <div class="playground-col">
+          <div class="playground-label-row">
+            <label class="playground-label">Response</label>
+            <div class="head-actions">
+              <button class="win-btn" id="playgroundOutputPopoutBtn" title="Pop out into a separate window"><svg class="ico"><use href="#ico-popout"/></svg></button>
+            </div>
+          </div>
+          <pre class="playground-output" id="playgroundOutput">// click Run to see the output</pre>
+        </div>
+      </div>
+      <div class="playground-snippets">
+        <div class="playground-snippet-tabs">
+          <button class="playground-snippet-tab active" data-lang="curl">cURL</button>
+          <button class="playground-snippet-tab" data-lang="js">JavaScript</button>
+          <button class="playground-snippet-tab" data-lang="python">Python</button>
+          <button class="icon-btn playground-copy-btn" id="playgroundCopyBtn">Copy</button>
+        </div>
+        <pre class="playground-code" id="playgroundCode"></pre>
+      </div>
+    </div>
+
+    <div class="api-actions" id="apiActionsCTA">
+      <a href="#pricing" class="btn btn-gold">Get API access – £29/mo</a>
+      <a href="#pricing" class="btn btn-ghost">See API pricing →</a>
+    </div>
+  </section>
+</main>
+
+<footer>
+  <div class="tb-row foot-row" style="max-width:1180px;margin:0 auto;padding:0 24px;">
+    <span>© 2026 Recast · tryrecast.app · Built with care, no tracking scripts.</span>
+    <span class="priv">→ your data never leaves this tab</span>
+  </div>
+</footer>
+
+<div class="share-toast" id="shareToast"></div>
+
+<!-- Shared, tested engine + feature modules (also power the recast-cli npm package and worker) -->
+<script>window.RECAST_DEFAULT_MODE = "diffJson";</script>
+<script src="../lib/engine.js"></script>
+<script src="../lib/highlight.js"></script>
+<script src="../lib/history.js"></script>
+<script src="../lib/share.js"></script>
+<script src="../lib/worker-client.js"></script>
+<script src="../lib/batch.js"></script>
+<script src="../lib/presets.js"></script>
+<script src="../lib/csv-compare.js"></script>
+<script src="../app.js"></script>
+<!--
+  Cloudflare Web Analytics — free, no cookies, no consent banner needed.
+  Get your token: Cloudflare Dashboard -> Analytics & Logs -> Web Analytics
+  -> Add a site -> tryrecast.app -> "Manual setup" -> copy the token below.
+-->
+<script defer src="https://static.cloudflareinsights.com/beacon.min.js" data-cf-beacon='{"token": "REPLACE_WITH_YOUR_CF_ANALYTICS_TOKEN"}'></script>
+</body>
+</html>

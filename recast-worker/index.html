@@ -1,0 +1,78 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Blog | Recast</title>
+<meta name="description" content="Practical guides on JSON, CSV, XML, and JSON Schema — from the team building Recast's data format tools.">
+<link rel="canonical" href="https://tryrecast.app/blog/index.html">
+<link rel="stylesheet" href="../styles.css">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@500;600;700&family=IBM+Plex+Mono:wght@400;500&display=swap" rel="stylesheet">
+<script type="application/ld+json">
+{
+  "@context": "https://schema.org",
+  "@type": "Blog",
+  "headline": "Blog | Recast",
+  "description": "Practical guides on JSON, CSV, XML, and JSON Schema — from the team building Recast's data format tools.",
+  "url": "https://tryrecast.app/blog/index.html",
+  "publisher": { "@type": "Organization", "name": "Recast", "url": "https://tryrecast.app/" }
+  
+}
+</script>
+<!-- Google tag (gtag.js) -->
+<script async src="https://www.googletagmanager.com/gtag/js?id=G-MW47YKCSLX"></script>
+<script>
+  window.dataLayer = window.dataLayer || [];
+  function gtag(){dataLayer.push(arguments);}
+  gtag('js', new Date());
+
+  gtag('config', 'G-MW47YKCSLX');
+</script>
+</head>
+<body style="background:#0E2338;color:#EDF3F8;margin:0;min-height:100vh;">
+
+<header class="titleblock">
+  <div class="tb-row">
+    <a href="../index.html" class="brand" style="text-decoration:none;color:inherit;"><span class="mark">⇄</span>RECAST</a>
+    <nav class="tb-nav">
+      <a href="../index.html#tool">Tool</a>
+      <a href="../index.html#pricing">Pricing</a>
+      <a href="../index.html#api">API docs</a>
+      <a href="index.html">Blog</a>
+    </nav>
+  </div>
+</header>
+
+<main style="max-width:1100px;margin:0 auto;padding:48px 24px 80px;">
+
+<div class="section-head">
+  <p class="eyebrow">Blog</p>
+  <h2>Notes on data formats, from building the tools.</h2>
+</div>
+<div class="blog-index-list">
+      <a class="blog-index-item" href="csv-diff-explained.html">
+        <div class="blog-index-date">14 August 2026</div>
+        <div class="blog-index-title">Why Most CSV Diff Tools Lie to You</div>
+        <p class="blog-index-excerpt">Most CSV diff tools compare by line position, not row identity — so a single reordered or deleted row cascades into dozens of false-positive changes. Here's why key-aware diffing fixes it.</p>
+      </a>
+      <a class="blog-index-item" href="json-schema-validation-guide.html">
+        <div class="blog-index-date">14 August 2026</div>
+        <div class="blog-index-title">JSON Schema Validation: A Practical Guide for API Contracts</div>
+        <p class="blog-index-excerpt">What JSON Schema actually is, how to generate one from a real sample instead of writing it by hand, and how to use it as a CI gate that catches breaking API changes before they ship.</p>
+      </a>
+      <a class="blog-index-item" href="json-to-csv-guide.html">
+        <div class="blog-index-date">14 August 2026</div>
+        <div class="blog-index-title">How to Convert JSON to CSV (A Practical Guide)</div>
+        <p class="blog-index-excerpt">What actually happens during a JSON-to-CSV conversion: flattening nested objects, handling arrays of objects, type inference going the other direction, and the delimiter/encoding traps that corrupt spreadsheets.</p>
+      </a>
+</div>
+
+</main>
+
+<footer style="max-width:1100px;margin:0 auto;padding:24px;text-align:center;color:#B9CBDA;font-size:12.5px;border-top:1px solid rgba(140,182,214,0.16);">
+  <a href="../index.html" style="color:#B9CBDA;">Recast</a> — convert, validate, diff JSON, CSV and XML in your browser.
+</footer>
+
+</body>
+</html>
