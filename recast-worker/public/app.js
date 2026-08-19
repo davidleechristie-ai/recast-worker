@@ -925,10 +925,17 @@ function openPopoutMirror(sourceEl, label, opts) {
   head.className = 'head';
   const title = doc.createElement('span');
   title.textContent = label + (readOnly ? ' \u2014 read-only, live-synced' : ' \u2014 synced with the main tab');
+  const btnGroup = doc.createElement('div');
+  btnGroup.style.display = 'flex';
+  btnGroup.style.gap = '6px';
+  const fsBtn = doc.createElement('button');
+  fsBtn.textContent = 'Full screen';
   const copyBtn = doc.createElement('button');
   copyBtn.textContent = 'Copy';
+  btnGroup.appendChild(fsBtn);
+  btnGroup.appendChild(copyBtn);
   head.appendChild(title);
-  head.appendChild(copyBtn);
+  head.appendChild(btnGroup);
   doc.body.appendChild(head);
 
   const ta = doc.createElement('textarea');
@@ -936,6 +943,26 @@ function openPopoutMirror(sourceEl, label, opts) {
   ta.value = sourceEl.value !== undefined ? sourceEl.value : sourceEl.textContent;
   if (readOnly) ta.readOnly = true;
   doc.body.appendChild(ta);
+
+  // Full screen inside the pop-out itself — same "more room for large
+  // datasets" option as the in-tab Expand button, just applied to this
+  // separate window instead (useful once it's already been dragged to
+  // another monitor). Requires a real user gesture, which this click is.
+  const docEl = doc.documentElement;
+  function updateFsBtn() {
+    const isFs = !!doc.fullscreenElement;
+    fsBtn.textContent = isFs ? 'Exit full screen' : 'Full screen';
+  }
+  fsBtn.addEventListener('click', () => {
+    if (doc.fullscreenElement) {
+      doc.exitFullscreen?.();
+    } else if (docEl.requestFullscreen) {
+      docEl.requestFullscreen().catch(() => showToast('Full screen isn\u2019t available for this window'));
+    } else {
+      showToast('Full screen isn\u2019t supported in this browser');
+    }
+  });
+  doc.addEventListener('fullscreenchange', updateFsBtn);
 
   copyBtn.addEventListener('click', () => {
     ta.select();
@@ -1025,39 +1052,96 @@ $('loadSample').addEventListener('click', () => {
 $('clearInputBtn')?.addEventListener('click', () => { inputEl.value = ''; updateCounts(); statusEl.textContent = ''; renderHl($('hlInput'), inputEl, modeConfig[currentMode].hl); });
 $('clearOutputBtn')?.addEventListener('click', () => { outputEl.value = ''; updateCounts(); renderHl($('hlOutput'), outputEl, modeConfig[currentMode].hlOut); $('diffPanel').classList.remove('show'); $('comparePanel')?.classList.remove('show'); });
 
-$('fileInput')?.addEventListener('change', (e) => {
+$('fileInput')?.addEventListener('change', async (e) => {
   const file = e.target.files?.[0];
   if (!file) return;
-  if (file.size > getLimitBytes()) {
-    statusEl.innerHTML = '<span class="status-err">\u2715 File exceeds the free limit \u2014 <a href="#pricing" style="color:#F2C14E">upgrade to Pro</a>.</span>';
-    $('upgradeNudge')?.classList.add('show');
-    e.target.value = ''; return;
-  }
-  const reader = new FileReader();
-  reader.onload = () => {
-    inputEl.value = reader.result;
-    updateCounts();
-    renderHl($('hlInput'), inputEl, modeConfig[currentMode].hl);
-    statusEl.innerHTML = `<span class="status-ok">\u2713 Loaded ${file.name}</span>`;
-  };
-  reader.readAsText(file);
+  const ok = await loadFileIntoTextarea(file, inputEl, modeConfig[currentMode].hl);
+  if (ok) statusEl.innerHTML = `<span class="status-ok">\u2713 Loaded ${file.name}</span>`;
   e.target.value = '';
 });
 
-const dropZone = $('dropZone');
-const inputPanel = $('inputPanel');
-['dragenter','dragover'].forEach(evt => inputPanel?.addEventListener(evt, (e) => { e.preventDefault(); e.stopPropagation(); dropZone?.classList.add('active'); }));
-['dragleave','drop'].forEach(evt => inputPanel?.addEventListener(evt, (e) => { e.preventDefault(); e.stopPropagation(); dropZone?.classList.remove('active'); }));
-inputPanel?.addEventListener('drop', (e) => {
-  const file = e.dataTransfer?.files?.[0];
-  if (!file) return;
+// ---------------- Drag-and-drop file upload ----------------
+// Drop 1 file onto the input panel to load it directly, same as clicking
+// Upload — or drop several at once and it routes straight to Batch instead
+// of silently keeping only the first one. Diff mode gets its own drop zone
+// per side (a file dropped on the left shouldn't land on the right). The
+// batch panel accepts drops too, appending to whatever's already queued.
+async function loadFileIntoTextarea(file, textareaEl) {
   if (file.size > getLimitBytes()) {
     statusEl.innerHTML = '<span class="status-err">\u2715 File exceeds the free limit \u2014 <a href="#pricing" style="color:#F2C14E">upgrade to Pro</a>.</span>';
-    $('upgradeNudge')?.classList.add('show'); return;
+    $('upgradeNudge')?.classList.add('show');
+    return false;
   }
-  const reader = new FileReader();
-  reader.onload = () => { inputEl.value = reader.result; updateCounts(); renderHl($('hlInput'), inputEl, modeConfig[currentMode].hl); statusEl.innerHTML = `<span class="status-ok">\u2713 Loaded ${file.name}</span>`; };
-  reader.readAsText(file);
+  const text = await file.text();
+  textareaEl.value = text;
+  textareaEl.dispatchEvent(new Event('input', { bubbles: true }));
+  return true;
+}
+
+function wireDropZone(containerEl, zoneEl, onDrop, opts) {
+  opts = opts || {};
+  if (!containerEl || !zoneEl) return;
+  function isRelevant(e) {
+    if (!e.dataTransfer?.types?.includes('Files')) return false;
+    if (opts.enabled && !opts.enabled()) return false;
+    return true;
+  }
+  ['dragenter', 'dragover'].forEach(evt => containerEl.addEventListener(evt, (e) => {
+    if (!isRelevant(e)) return;
+    e.preventDefault(); e.stopPropagation();
+    zoneEl.classList.add('active');
+  }));
+  ['dragleave', 'drop'].forEach(evt => containerEl.addEventListener(evt, (e) => {
+    if (!isRelevant(e)) return;
+    e.preventDefault(); e.stopPropagation();
+    zoneEl.classList.remove('active');
+  }));
+  containerEl.addEventListener('drop', (e) => {
+    if (!isRelevant(e) || !e.dataTransfer?.files?.length) return;
+    onDrop(Array.from(e.dataTransfer.files));
+  });
+}
+
+// Main input panel.
+wireDropZone($('inputPanel'), $('dropZone'), async (files) => {
+  track('file_drop', { mode: currentMode, count: files.length });
+  if (files.length === 1) {
+    const ok = await loadFileIntoTextarea(files[0], inputEl);
+    if (ok) statusEl.innerHTML = `<span class="status-ok">\u2713 Loaded ${files[0].name}</span>`;
+    return;
+  }
+  // Multiple files dropped where only one field can hold text — route to Batch.
+  if (!isPro()) {
+    showBatchLocked();
+    const ok = await loadFileIntoTextarea(files[0], inputEl);
+    if (ok) showToast(`Loaded ${files[0].name} \u2014 batch convert (all ${files.length} files) needs Pro`);
+    return;
+  }
+  const panel = $('batchPanel');
+  panel.querySelector('.batch-head').style.display = '';
+  panel.classList.add('show');
+  await addFilesToBatch(files);
+  showToast(`Added ${files.length} files to batch`);
+}, { enabled: () => !modeConfig[currentMode]?.dual });
+
+// Diff mode — one drop zone per side, so a file lands on the correct side.
+wireDropZone($('inputA')?.closest('.ta-wrap'), $('dropZoneA'), async (files) => {
+  const ok = await loadFileIntoTextarea(files[0], $('inputA'));
+  if (ok) statusEl.innerHTML = `<span class="status-ok">\u2713 Loaded ${files[0].name}</span>`;
+  track('file_drop', { mode: currentMode, side: 'A', count: 1 });
+});
+wireDropZone($('inputB')?.closest('.ta-wrap'), $('dropZoneB'), async (files) => {
+  const ok = await loadFileIntoTextarea(files[0], $('inputB'));
+  if (ok) statusEl.innerHTML = `<span class="status-ok">\u2713 Loaded ${files[0].name}</span>`;
+  track('file_drop', { mode: currentMode, side: 'B', count: 1 });
+});
+
+// Batch panel — append dropped files to the existing queue.
+wireDropZone($('batchPanel'), $('batchDropZone'), async (files) => {
+  if (!isPro()) { showBatchLocked(); return; }
+  await addFilesToBatch(files);
+  track('file_drop', { mode: currentMode, batch: true, count: files.length });
+  showToast(`Added ${files.length} file${files.length === 1 ? '' : 's'} to batch`);
 });
 
 document.addEventListener('keydown', (e) => { if ((e.metaKey || e.ctrlKey) && e.key === 'Enter') { e.preventDefault(); $('convertBtn')?.click(); } });

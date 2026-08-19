@@ -246,7 +246,7 @@
       </div>
       <div class="wb-grid">
         <div class="panel" id="inputPanel">
-          <div class="drop-zone" id="dropZone">Drop file to load</div>
+          <div class="drop-zone" id="dropZone">Drop 1 file to load — or several to batch convert</div>
           <div class="panel-head">
             <div class="fmt-count"><span class="fmt" id="inFmt">JSON</span><span id="inCount">0 chars</span></div>
             <div class="head-actions">
@@ -262,10 +262,12 @@
             <div class="ta-wrap" style="min-height:160px;border-bottom:1px solid rgba(140,182,214,0.16);">
               <pre class="hl-layer" id="hlInputA" aria-hidden="true"></pre>
               <textarea id="inputA" spellcheck="false" placeholder="Original / left side…" style="min-height:160px;"></textarea>
+              <div class="drop-zone" id="dropZoneA">Drop file for original / left side</div>
             </div>
             <div class="ta-wrap" style="min-height:160px;">
               <pre class="hl-layer" id="hlInputB" aria-hidden="true"></pre>
               <textarea id="inputB" spellcheck="false" placeholder="Modified / right side…" style="min-height:160px;"></textarea>
+              <div class="drop-zone" id="dropZoneB">Drop file for modified / right side</div>
             </div>
           </div>
           <div class="opts-row">
@@ -371,6 +373,7 @@
       </div>
       <div class="batch-file-list" id="batchFileList"></div>
       <div class="batch-summary" id="batchSummary" style="display:none;"></div>
+      <div class="drop-zone" id="batchDropZone">Drop files to add to the batch</div>
     </div>
 
     <div class="status-line" id="status"></div>
