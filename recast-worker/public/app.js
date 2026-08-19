@@ -29,6 +29,28 @@
 //      granting ordinary (non-expiring) Pro access instead, same as any
 //      other plan would in that fallback path.
 // =====================================================================
+// =====================================================================
+// ANALYTICS — thin wrapper around gtag() for product usage events.
+//
+// Page-level traffic (which tool page got visited, bounce, etc.) is
+// already covered for free by each page's own GA4 pageview — every
+// /tools/*.html has its own <title>/canonical and its own gtag config
+// call, so GA4's own "Pages and screens" report already answers "which
+// converter pages get visited." This layer is for the things GA4 can't
+// infer from a URL alone: which conversion mode someone actually RAN
+// (as opposed to just landing on the page), whether it succeeded, and
+// revenue-funnel events (checkout started / completed) that live inside
+// this single-page app rather than as separate URLs.
+//
+// Every event is best-effort: if gtag isn't loaded (ad blocker, GA not
+// configured yet, etc.) this silently no-ops rather than breaking the
+// tool.
+function track(eventName, params) {
+  try {
+    if (typeof gtag === 'function') gtag('event', eventName, params || {});
+  } catch (e) { /* analytics must never break the actual tool */ }
+}
+
 const STRIPE = {
   links: {
     pro_monthly: 'https://buy.stripe.com/6oU28jez7ayf8sRg5y4c800',
@@ -113,6 +135,7 @@ function startCheckout(planKey) {
     );
     return;
   }
+  track('checkout_start', { plan: planKey, from_mode: currentMode });
   window.location.href = url;
 }
 ['btnProMonthly','btnProYearly','btnApiMonthly','btnApiYearly'].forEach(id => {
@@ -128,6 +151,7 @@ if (returnParams.get('upgraded') === '1') {
   const sessionId = returnParams.get('session_id') || '';
   const fallbackPlan = returnParams.get('plan') || 'pro';
   history.replaceState({}, '', location.pathname);
+  track('checkout_complete', { plan: fallbackPlan, verified: !!sessionId });
 
   const applyFallback = () => {
     // No backend reachable — trust the redirect, same as before the Worker
@@ -553,6 +577,14 @@ const modeConfig = {
     task: () => ({ task:'convert', payload:{ op:'json2xml', text: inputEl.value } }) },
   xml2json:  { inFmt:'XML', outFmt:'JSON', dual:false, path:false, showDelim:false, showBom:false, showPretty:true, showInfer:false, btn:'Convert', hl:'xml', hlOut:'json',
     task: () => ({ task:'convert', payload:{ op:'xml2json', text: inputEl.value, options:{ pretty: document.getElementById('prettyPrint')?.checked } } }) },
+  json2yaml: { inFmt:'JSON', outFmt:'YAML', dual:false, path:false, showDelim:false, showBom:false, showPretty:false, showInfer:false, btn:'Convert', hl:'json', hlOut:'plain',
+    task: () => ({ task:'convert', payload:{ op:'json2yaml', text: inputEl.value } }) },
+  yaml2json: { inFmt:'YAML', outFmt:'JSON', dual:false, path:false, showDelim:false, showBom:false, showPretty:true, showInfer:false, btn:'Convert', hl:'plain', hlOut:'json',
+    task: () => ({ task:'convert', payload:{ op:'yaml2json', text: inputEl.value, options:{ pretty: document.getElementById('prettyPrint')?.checked } } }) },
+  json2markdown: { inFmt:'JSON', outFmt:'Markdown table', dual:false, path:false, showDelim:false, showBom:false, showPretty:false, showInfer:false, btn:'Convert', hl:'json', hlOut:'plain',
+    task: () => ({ task:'convert', payload:{ op:'json2markdown', text: inputEl.value } }) },
+  markdown2json: { inFmt:'Markdown table', outFmt:'JSON', dual:false, path:false, showDelim:false, showBom:false, showPretty:true, showInfer:true, btn:'Convert', hl:'plain', hlOut:'json',
+    task: () => ({ task:'convert', payload:{ op:'markdown2json', text: inputEl.value, options:{ inferTypes:getInferTypes(), pretty: document.getElementById('prettyPrint')?.checked } } }) },
   flatten:   { inFmt:'JSON', outFmt:'JSON (flat)', dual:false, path:false, showDelim:false, showBom:false, showPretty:true, showInfer:false, btn:'Flatten', hl:'json', hlOut:'json',
     task: () => ({ task:'convert', payload:{ op:'flatten', text: inputEl.value, options:{ pretty: document.getElementById('prettyPrint')?.checked } } }) },
   unflatten: { inFmt:'JSON (flat)', outFmt:'JSON', dual:false, path:false, showDelim:false, showBom:false, showPretty:true, showInfer:false, btn:'Unflatten', hl:'json', hlOut:'json',
@@ -581,6 +613,12 @@ const modeConfig = {
     task: () => ({ task:'schema', payload:{ text: inputEl.value, options:{ render:'typescript', rootName: document.getElementById('schemaRootName')?.value || 'Root' } } }) },
   json2zod: { inFmt:'JSON (sample)', outFmt:'Zod schema', dual:false, path:false, showDelim:false, showBom:false, showPretty:false, showInfer:false, showRootName:true, btn:'Generate Zod schema', hl:'json', hlOut:'plain', batchSupported:true, outExt:'ts',
     task: () => ({ task:'schema', payload:{ text: inputEl.value, options:{ render:'zod', rootName: document.getElementById('schemaRootName')?.value || 'Root' } } }) },
+  json2python: { inFmt:'JSON (sample)', outFmt:'Python dataclasses', dual:false, path:false, showDelim:false, showBom:false, showPretty:false, showInfer:false, showRootName:true, btn:'Generate dataclasses', hl:'json', hlOut:'plain', batchSupported:true, outExt:'py',
+    task: () => ({ task:'schema', payload:{ text: inputEl.value, options:{ render:'python', rootName: document.getElementById('schemaRootName')?.value || 'Root' } } }) },
+  json2pydantic: { inFmt:'JSON (sample)', outFmt:'Pydantic model', dual:false, path:false, showDelim:false, showBom:false, showPretty:false, showInfer:false, showRootName:true, btn:'Generate Pydantic model', hl:'json', hlOut:'plain', batchSupported:true, outExt:'py',
+    task: () => ({ task:'schema', payload:{ text: inputEl.value, options:{ render:'pydantic', rootName: document.getElementById('schemaRootName')?.value || 'Root' } } }) },
+  json2go: { inFmt:'JSON (sample)', outFmt:'Go structs', dual:false, path:false, showDelim:false, showBom:false, showPretty:false, showInfer:false, showRootName:true, btn:'Generate Go structs', hl:'json', hlOut:'plain', batchSupported:true, outExt:'go',
+    task: () => ({ task:'schema', payload:{ text: inputEl.value, options:{ render:'go', rootName: document.getElementById('schemaRootName')?.value || 'Root' } } }) },
   validateSchema: { inFmt:'Schema / Data', outFmt:'Validation report', dual:true, path:false, showDelim:false, showBom:false, showPretty:false, showInfer:false, btn:'Validate against schema', hl:'json', hlOut:'plain', isSchemaCheck:true,
     dualLabels: ['Paste the JSON Schema here\u2026', 'Paste the data to validate here\u2026'],
     task: () => ({ task:'validateSchema', payload:{ schemaText: document.getElementById('inputA').value, dataText: document.getElementById('inputB').value } }) },
@@ -594,6 +632,13 @@ const samples = {
   csv2json: `id,name,score,active,address.city\n1,Ada Lovelace,98.5,true,London\n2,Grace Hopper,100,true,New York`,
   json2xml: JSON.stringify({ id: 1, name: "Ada Lovelace", tags: ["math","computing"] }, null, 2),
   xml2json: `<root>\n  <id>1</id>\n  <name>Ada Lovelace</name>\n  <tags>math</tags>\n  <tags>computing</tags>\n</root>`,
+  json2yaml: JSON.stringify({ id: 1, name: "Ada Lovelace", tags: ["math","computing"], address: { city: "London", country: "UK" } }, null, 2),
+  yaml2json: `id: 1\nname: Ada Lovelace\ntags:\n  - math\n  - computing\naddress:\n  city: London\n  country: UK`,
+  json2markdown: JSON.stringify([
+    { id: 1, name: "Ada Lovelace", role: "Engineer" },
+    { id: 2, name: "Grace Hopper", role: "Engineer" }
+  ], null, 2),
+  markdown2json: `| id | name | role |\n| --- | --- | --- |\n| 1 | Ada Lovelace | Engineer |\n| 2 | Grace Hopper | Engineer |`,
   flatten: JSON.stringify({ user: { name: "Ada", tags: ["dev","math"], addr: { city: "London" } } }, null, 2),
   unflatten: JSON.stringify({ "user.name": "Ada", "user.tags[0]": "dev", "user.tags[1]": "math", "user.addr.city": "London" }, null, 2),
   validateJson: JSON.stringify({ id: 1, name: "Ada", active: true }, null, 2),
@@ -715,7 +760,7 @@ function setGroup(group) {
   }
 }
 document.querySelectorAll('.mode-group-btn').forEach(btn => btn.addEventListener('click', () => setGroup(btn.dataset.group)));
-document.querySelectorAll('.mode-chip[data-mode]').forEach(chip => chip.addEventListener('click', () => setMode(chip.dataset.mode)));
+document.querySelectorAll('.mode-chip[data-mode]').forEach(chip => chip.addEventListener('click', () => { setMode(chip.dataset.mode); track('select_tool', { mode: chip.dataset.mode }); }));
 
 function updateCounts() {
   const cfg = modeConfig[currentMode];
@@ -745,6 +790,7 @@ async function runCurrentMode() {
   if (bytes > getLimitBytes()) {
     statusEl.innerHTML = '<span class="status-err">\u2715 File exceeds the free limit \u2014 <a href="#pricing" style="color:#F2C14E">upgrade to Pro</a> for files up to 25 MB.</span>';
     $('upgradeNudge')?.classList.add('show');
+    track('limit_hit', { mode: currentMode, reason: 'file_size' });
     return;
   }
   if (currentMode === 'diffCsv' && !isPro()) {
@@ -754,6 +800,7 @@ async function runCurrentMode() {
     if (Math.max(rowsA, rowsB) > CSV_COMPARE_FREE_ROW_LIMIT) {
       statusEl.innerHTML = `<span class="status-err">\u2715 Free tier compares up to ${CSV_COMPARE_FREE_ROW_LIMIT} rows per file \u2014 <a href="#pricing" style="color:#F2C14E">upgrade to Pro</a>, or <a href="#" onclick="startCheckout('day_pass');return false;" style="color:#F2C14E">get a 24-hour pass \u2014 \u00a32.99</a> for just this one.</span>`;
       $('upgradeNudge')?.classList.add('show');
+      track('limit_hit', { mode: currentMode, reason: 'row_count' });
       return;
     }
   }
@@ -807,12 +854,14 @@ async function runCurrentMode() {
       ? { mode: currentMode, inputA: $('inputA').value, inputB: $('inputB').value }
       : { mode: currentMode, input: inputEl.value });
     renderHistoryList();
+    track('convert_run', { mode: currentMode, success: true, is_pro: isPro() });
   } catch (e) {
     setWorking(false);
     const msg = e.message || String(e);
     if (cfg.btn === 'Validate') { outputEl.value = '\u2715 ' + msg; statusEl.innerHTML = '<span class="status-err">\u2715 Invalid \u2014 see report</span>'; }
     else { statusEl.innerHTML = '<span class="status-err">\u2715 ' + msg.split('\n')[0] + '</span>'; }
     updateCounts();
+    track('convert_run', { mode: currentMode, success: false, is_pro: isPro() });
   }
 }
 $('convertBtn').addEventListener('click', runCurrentMode);
@@ -832,7 +881,7 @@ $('swapBtn').addEventListener('click', () => {
     statusEl.innerHTML = '<span class="status-ok">\u2713 Swapped A / B</span>';
     return;
   }
-  const swapMap = { json2csv:'csv2json', csv2json:'json2csv', json2xml:'xml2json', xml2json:'json2xml', flatten:'unflatten', unflatten:'flatten' };
+  const swapMap = { json2csv:'csv2json', csv2json:'json2csv', json2xml:'xml2json', xml2json:'json2xml', flatten:'unflatten', unflatten:'flatten', json2yaml:'yaml2json', yaml2json:'json2yaml', json2markdown:'markdown2json', markdown2json:'json2markdown' };
   const next = swapMap[currentMode];
   if (next) {
     const oldOutput = outputEl.value;
@@ -900,10 +949,10 @@ inputPanel?.addEventListener('drop', (e) => {
 
 document.addEventListener('keydown', (e) => { if ((e.metaKey || e.ctrlKey) && e.key === 'Enter') { e.preventDefault(); $('convertBtn')?.click(); } });
 
-$('copyBtn').addEventListener('click', () => { if (!outputEl.value) return; navigator.clipboard.writeText(outputEl.value).then(() => { statusEl.innerHTML = '<span class="status-ok">\u2713 Copied to clipboard</span>'; }); });
+$('copyBtn').addEventListener('click', () => { if (!outputEl.value) return; navigator.clipboard.writeText(outputEl.value).then(() => { statusEl.innerHTML = '<span class="status-ok">\u2713 Copied to clipboard</span>'; track('copy_output', { mode: currentMode }); }); });
 $('downloadBtn').addEventListener('click', () => {
   if (!outputEl.value) return;
-  const ext = { json2csv:'csv', csv2json:'json', json2xml:'xml', xml2json:'json', flatten:'json', unflatten:'json', jsonSchema:'json' }[currentMode] || 'txt';
+  const ext = { json2csv:'csv', csv2json:'json', json2xml:'xml', xml2json:'json', flatten:'json', unflatten:'json', jsonSchema:'json', json2yaml:'yaml', yaml2json:'json', json2markdown:'md', markdown2json:'json', json2python:'py', json2pydantic:'py', json2go:'go' }[currentMode] || 'txt';
   const mime = { csv:'text/csv', json:'application/json', xml:'application/xml' }[ext] || 'text/plain';
   const blob = new Blob([outputEl.value], { type: mime + ';charset=utf-8' });
   const a = document.createElement('a');
@@ -911,6 +960,7 @@ $('downloadBtn').addEventListener('click', () => {
   a.download = `recast-output.${ext}`;
   a.click();
   URL.revokeObjectURL(a.href);
+  track('download_output', { mode: currentMode, ext: ext });
 });
 
 // ---------------- History panel ----------------
@@ -1071,6 +1121,7 @@ $('batchRunBtn')?.addEventListener('click', async () => {
   $('batchSummary').style.display = 'block';
   $('batchSummary').textContent = `${okCount} converted, ${errCount} failed`;
   $('batchDownloadBtn').style.display = okCount ? '' : 'none';
+  track('batch_convert', { mode: currentMode, file_count: batchResults.length, ok_count: okCount, err_count: errCount });
 });
 
 $('batchDownloadBtn')?.addEventListener('click', async () => {
@@ -1164,6 +1215,10 @@ function runPlaygroundConversion(mode, input) {
     case 'xml2json': return JSON.stringify(RecastEngine.xmlToJson(input), null, 2);
     case 'flatten':  return JSON.stringify(RecastEngine.flattenObj(JSON.parse(input)), null, 2);
     case 'unflatten': return JSON.stringify(RecastEngine.unflattenObj(JSON.parse(input)), null, 2);
+    case 'json2yaml': return RecastEngine.jsonToYaml(JSON.parse(input));
+    case 'yaml2json': return JSON.stringify(RecastEngine.yamlToJson(input), null, 2);
+    case 'json2markdown': return RecastEngine.jsonToMarkdownTable(JSON.parse(input));
+    case 'markdown2json': return JSON.stringify(RecastEngine.markdownTableToJson(input, {}), null, 2);
     default: throw new Error('unknown mode: ' + mode);
   }
 }
@@ -1195,9 +1250,11 @@ function runPlayground() {
   try {
     outputEl2.textContent = runPlaygroundConversion(modeEl.value, inputEl2.value);
     outputEl2.classList.remove('playground-error');
+    track('api_playground_run', { mode: modeEl.value, success: true });
   } catch (e) {
     outputEl2.textContent = 'Error: ' + e.message;
     outputEl2.classList.add('playground-error');
+    track('api_playground_run', { mode: modeEl.value, success: false });
   }
   updatePlaygroundSnippet();
 }

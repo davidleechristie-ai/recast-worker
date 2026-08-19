@@ -476,3 +476,71 @@ article.post .post-cta p{ margin-bottom:14px; }
 .playground-snippet-tab.active{ border-color:#F2C14E; color:#F2C14E; }
 .playground-copy-btn{ margin-left:auto; }
 .playground-code{ margin:0; padding:14px 16px; font-family:'IBM Plex Mono', monospace; font-size:12.5px; color:#DCE6EF; overflow-x:auto; white-space:pre; }
+
+/* ================= Icon system, hero preview, grouped footer, plan icons ================= */
+.ico{ width:14px; height:14px; flex-shrink:0; display:inline-block; vertical-align:-2px; }
+.mode-chip{ display:inline-flex; align-items:center; gap:6px; }
+.mode-chip .ico{ color:#B9CBDA; }
+.mode-chip.active .ico{ color:#F2C14E; }
+.mode-chip:hover:not(.active) .ico{ color:#EDF3F8; }
+.mode-chip .ico + .ico{ margin-left:-2px; }
+.mode-chip .ico-swap{ width:10px; height:10px; opacity:.6; margin:0 1px; }
+
+/* ---- Hero preview card ---- */
+.hero-preview{
+  border:1px solid rgba(140,182,214,0.32); border-radius:4px; overflow:hidden;
+  background:linear-gradient(180deg, rgba(237,243,248,0.03), transparent 40%), #12314C;
+  margin:0 0 28px; max-width:720px;
+}
+.hero-preview .hp-head{
+  display:flex; align-items:center; gap:8px; padding:9px 14px;
+  border-bottom:1px solid rgba(140,182,214,0.16); font-family:'IBM Plex Mono', monospace;
+  font-size:11px; letter-spacing:.08em; text-transform:uppercase; color:#B9CBDA;
+}
+.hero-preview .hp-head .ico{ color:#7FE7D0; }
+.hero-preview .hp-badge{
+  margin-left:auto; font-family:'IBM Plex Mono', monospace; font-size:10px; color:#7FE7D0;
+  border:1px solid rgba(127,231,208,0.4); border-radius:2px; padding:2px 7px; letter-spacing:.06em;
+}
+.hp-panes{ display:grid; grid-template-columns:1fr auto 1fr; }
+@media (max-width:640px){ .hp-panes{ grid-template-columns:1fr; } .hp-panes .hp-mid{ padding:6px 0 !important; transform:rotate(90deg); } }
+.hp-pane{ min-width:0; }
+.hp-pane-label{
+  font-family:'IBM Plex Mono', monospace; font-size:10.5px; color:#B9CBDA; text-transform:uppercase;
+  letter-spacing:.06em; padding:8px 14px 0;
+}
+.hp-code{
+  margin:0; padding:8px 14px 14px; font-family:'IBM Plex Mono', monospace; font-size:12px; line-height:1.55;
+  color:#EDF3F8; white-space:pre; overflow:hidden; max-height:168px; position:relative;
+  -webkit-mask-image:linear-gradient(180deg,#000 82%,transparent 100%); mask-image:linear-gradient(180deg,#000 82%,transparent 100%);
+}
+.hp-code .tok-key{ color:#8FCBEB; } .hp-code .tok-str{ color:#7FE7D0; } .hp-code .tok-num{ color:#F2C14E; }
+.hp-code .tok-bool{ color:#C99FE8; } .hp-code .tok-null{ color:#F2846B; opacity:.85; }
+.hp-code .tok-punct{ color:#B9CBDA; } .hp-code .tok-tag{ color:#8FCBEB; } .hp-code .tok-attr{ color:#F2C14E; }
+.hp-mid{ display:flex; align-items:center; justify-content:center; padding:0 8px; color:#F2C14E; border-left:1px solid rgba(140,182,214,0.16); border-right:1px solid rgba(140,182,214,0.16); }
+.hp-mid .ico{ width:20px; height:20px; }
+.hp-single .hp-panes{ grid-template-columns:1fr; }
+.hp-status{ display:flex; align-items:center; gap:8px; padding:10px 14px; border-top:1px solid rgba(140,182,214,0.16); font-family:'IBM Plex Mono', monospace; font-size:12px; }
+.hp-status.ok{ color:#7FE7D0; } .hp-status .ico{ width:15px; height:15px; }
+.hp-expr{ font-family:'IBM Plex Mono', monospace; font-size:12px; color:#F2C14E; padding:0 14px 8px; }
+.hp-diffrow{ display:flex; align-items:baseline; gap:8px; font-family:'IBM Plex Mono', monospace; font-size:12px; padding:2px 14px; }
+.hp-diffrow.rem{ color:#F2846B; } .hp-diffrow.add{ color:#7FE7D0; } .hp-diffrow .m{ opacity:.7; width:12px; flex-shrink:0; }
+
+/* ---- Grouped toolkit footer ---- */
+.related-groups{ display:flex; flex-direction:column; gap:14px; }
+.related-group{ display:flex; flex-wrap:wrap; align-items:baseline; gap:14px; }
+.related-group .rg-label{
+  font-family:'IBM Plex Mono', monospace; font-size:11px; color:#7FE7D0; text-transform:uppercase;
+  letter-spacing:.1em; min-width:120px; flex-shrink:0;
+}
+.related-group a{ display:inline-flex; align-items:center; gap:5px; font-size:12.5px; color:#B9CBDA; text-decoration:none; white-space:nowrap; }
+.related-group a:hover{ color:#F2C14E; }
+.related-group a .ico{ width:12px; height:12px; opacity:.75; }
+
+/* ---- Plan tier icons ---- */
+.plan .plan-icon{
+  width:30px; height:30px; border:1.5px solid rgba(140,182,214,0.32); border-radius:3px;
+  display:grid; place-items:center; margin-bottom:10px; color:#B9CBDA;
+}
+.plan .plan-icon .ico{ width:16px; height:16px; }
+.plan.featured .plan-icon{ border-color:#F2C14E; color:#F2C14E; }

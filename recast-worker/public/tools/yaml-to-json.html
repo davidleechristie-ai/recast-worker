@@ -3,21 +3,21 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Flatten Nested JSON Online — dot notation | Recast</title>
-<meta name="description" content="Flatten deeply nested JSON into dot-notation key-value pairs in your browser. Reversible — unflatten back to the original structure any time.">
+<title>YAML to JSON Converter — free online | Recast</title>
+<meta name="description" content="Convert YAML to JSON instantly in your browser. Parses mappings, sequences, and nested structures from config files and CI/CD manifests. Nothing is uploaded.">
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@400;500;600;700&family=IBM+Plex+Sans:wght@400;500;600&family=IBM+Plex+Mono:wght@400;500&display=swap" rel="stylesheet">
 <link rel="stylesheet" href="../styles.css">
-<link rel="canonical" href="https://tryrecast.app/tools/flatten-json.html">
+<link rel="canonical" href="https://tryrecast.app/tools/yaml-to-json.html">
 <script type="application/ld+json">
 {
   "@context": "https://schema.org",
   "@type": "SoftwareApplication",
   "name": "Recast",
-  "url": "https://tryrecast.app/tools/flatten-json.html",
+  "url": "https://tryrecast.app/tools/yaml-to-json.html",
   "applicationCategory": "DeveloperApplication",
   "operatingSystem": "Any (runs in browser)",
-  "description": "Flatten deeply nested JSON into dot-notation key-value pairs in your browser. Reversible — unflatten back to the original structure any time.",
+  "description": "Convert YAML to JSON instantly in your browser. Parses mappings, sequences, and nested structures from config files and CI/CD manifests. Nothing is uploaded.",
   "offers": [
     { "@type": "Offer", "name": "Free", "price": "0", "priceCurrency": "GBP" },
     { "@type": "Offer", "name": "Pro", "price": "9", "priceCurrency": "GBP" },
@@ -151,27 +151,21 @@
 <main>
   <section class="hero" id="tool">
     <p class="eyebrow">Data format toolkit</p>
-    <h1>Flatten Nested JSON</h1>
-    <p class="sub">Turns deeply nested objects and arrays into flat, single-level key-value pairs using dot notation and array indices (<code>user.address.city</code>, <code>tags[0]</code>) — useful for spreadsheets, flat key-value stores, or just making a complex structure easier to scan. Fully reversible with the companion Unflatten tool.</p>
+    <h1>YAML to JSON</h1>
+    <p class="sub">Paste YAML — a config file, a CI pipeline definition, an API response someone dumped as YAML — and get back clean JSON. Handles nested mappings, block sequences, and quoted, plain, numeric, and boolean scalars. Going the other way? Try <a href="json-to-yaml.html">JSON to YAML</a>.</p>
     <p style="font-size:13px;"><a href="../index.html" style="color:#B9CBDA;">← Full toolkit (all 23 tools)</a></p>
 
 <div class="hero-preview">
-  <div class="hp-head"><svg class="ico"><use href="#ico-json"/></svg> live example <span class="hp-badge">real output</span></div>
+  <div class="hp-head"><svg class="ico"><use href="#ico-yaml"/></svg> live example <span class="hp-badge">real output</span></div>
   <div class="hp-panes">
-    <div class="hp-pane"><div class="hp-pane-label">NESTED</div><pre class="hp-code">{
-  <span class="tok-key">"user":</span> {
-    <span class="tok-key">"name":</span> <span class="tok-str">"Ada"</span>,
-    <span class="tok-key">"tags":</span> [
-      <span class="tok-str">"dev"</span>,
-      <span class="tok-str">"math"</span>
-    ]
-  }
-}</pre></div>
+    <div class="hp-pane"><div class="hp-pane-label">YAML</div><pre class="hp-code">id: 1
+name: Ada Lovelace
+role: Engineer</pre></div>
     <div class="hp-mid"><svg class="ico"><use href="#ico-arrow"/></svg></div>
-    <div class="hp-pane"><div class="hp-pane-label">FLAT</div><pre class="hp-code">{
-  "user.name": "Ada",
-  "user.tags[0]": "dev",
-  "user.tags[1]": "math"
+    <div class="hp-pane"><div class="hp-pane-label">JSON</div><pre class="hp-code">{
+  <span class="tok-key">"id":</span> <span class="tok-num">1</span>,
+  <span class="tok-key">"name":</span> <span class="tok-str">"Ada Lovelace"</span>,
+  <span class="tok-key">"role":</span> <span class="tok-str">"Engineer"</span>
 }</pre></div>
   </div>
 </div>
@@ -576,7 +570,7 @@
 <div class="share-toast" id="shareToast"></div>
 
 <!-- Shared, tested engine + feature modules (also power the recast-cli npm package and worker) -->
-<script>window.RECAST_DEFAULT_MODE = "flatten";</script>
+<script>window.RECAST_DEFAULT_MODE = "yaml2json";</script>
 <script src="../lib/engine.js"></script>
 <script src="../lib/highlight.js"></script>
 <script src="../lib/history.js"></script>

@@ -241,7 +241,11 @@ async function handleApiConvert(request, env, deps) {
       case 'xml2json': output = JSON.stringify(Engine.xmlToJson(input), null, options.pretty === false ? 0 : 2); break;
       case 'flatten': output = JSON.stringify(Engine.flattenObj(JSON.parse(input)), null, options.pretty === false ? 0 : 2); break;
       case 'unflatten': output = JSON.stringify(Engine.unflattenObj(JSON.parse(input)), null, options.pretty === false ? 0 : 2); break;
-      default: return json({ error: 'unknown mode: "' + mode + '" — expected one of json2csv, csv2json, json2xml, xml2json, flatten, unflatten' }, 400);
+      case 'json2yaml': output = Engine.jsonToYaml(JSON.parse(input)); break;
+      case 'yaml2json': output = JSON.stringify(Engine.yamlToJson(input), null, options.pretty === false ? 0 : 2); break;
+      case 'json2markdown': output = Engine.jsonToMarkdownTable(JSON.parse(input)); break;
+      case 'markdown2json': output = JSON.stringify(Engine.markdownTableToJson(input, options), null, options.pretty === false ? 0 : 2); break;
+      default: return json({ error: 'unknown mode: "' + mode + '" — expected one of json2csv, csv2json, json2xml, xml2json, flatten, unflatten, json2yaml, yaml2json, json2markdown, markdown2json' }, 400);
     }
     return json({ output: output, usage: { calls_this_month: usage.count, limit: usage.limit } });
   } catch (e) {

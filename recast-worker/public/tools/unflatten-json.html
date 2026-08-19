@@ -26,8 +26,95 @@
 }
 </script>
 <script src="https://cdnjs.cloudflare.com/ajax/libs/jszip/3.10.1/jszip.min.js"></script>
+<!-- Google tag (gtag.js) -->
+<script async src="https://www.googletagmanager.com/gtag/js?id=G-MW47YKCSLX"></script>
+<script>
+  window.dataLayer = window.dataLayer || [];
+  function gtag(){dataLayer.push(arguments);}
+  gtag('js', new Date());
+
+  gtag('config', 'G-MW47YKCSLX');
+</script>
 </head>
+
 <body style="background:#0E2338;color:#EDF3F8;margin:0;min-height:100vh;">
+<svg style="display:none" aria-hidden="true">
+  <symbol id="ico-json" viewBox="0 0 18 18" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round">
+    <path d="M6.5 2.5c-1.4 0-1.9.5-1.9 1.9v1.7c0 1-.5 1.5-1.4 1.5.9 0 1.4.5 1.4 1.5v1.7c0 1.4.5 1.9 1.9 1.9"/>
+    <path d="M11.5 2.5c1.4 0 1.9.5 1.9 1.9v1.7c0 1 .5 1.5 1.4 1.5-.9 0-1.4.5-1.4 1.5v1.7c0 1.4-.5 1.9-1.9 1.9"/>
+  </symbol>
+  <symbol id="ico-table" viewBox="0 0 18 18" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round">
+    <rect x="2.2" y="3" width="13.6" height="12" rx="1"/>
+    <line x1="2.2" y1="7.4" x2="15.8" y2="7.4"/>
+    <line x1="7.3" y1="3" x2="7.3" y2="15"/>
+    <line x1="11.7" y1="3" x2="11.7" y2="15"/>
+  </symbol>
+  <symbol id="ico-mdtable" viewBox="0 0 18 18" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round">
+    <rect x="2.2" y="3" width="13.6" height="12" rx="1"/>
+    <rect x="2.2" y="3" width="13.6" height="3.6" fill="currentColor" fill-opacity="0.22" stroke="none"/>
+    <line x1="2.2" y1="7.4" x2="15.8" y2="7.4"/>
+    <line x1="7.3" y1="3" x2="7.3" y2="15"/>
+    <line x1="11.7" y1="3" x2="11.7" y2="15"/>
+  </symbol>
+  <symbol id="ico-tag" viewBox="0 0 18 18" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round">
+    <polyline points="6,4 2,9 6,14"/>
+    <polyline points="12,4 16,9 12,14"/>
+    <line x1="9.6" y1="4" x2="9.6" y2="14"/>
+  </symbol>
+  <symbol id="ico-code" viewBox="0 0 18 18" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round">
+    <polyline points="6,4.5 2,9 6,13.5"/>
+    <polyline points="12,4.5 16,9 12,13.5"/>
+    <line x1="10.6" y1="3" x2="7.4" y2="15"/>
+  </symbol>
+  <symbol id="ico-yaml" viewBox="0 0 18 18" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round">
+    <circle cx="3" cy="5" r=".55" fill="currentColor" stroke="none"/>
+    <line x1="5" y1="5" x2="11" y2="5"/>
+    <circle cx="3" cy="9" r=".55" fill="currentColor" stroke="none"/>
+    <line x1="5" y1="9" x2="15" y2="9"/>
+    <circle cx="3" cy="13" r=".55" fill="currentColor" stroke="none"/>
+    <line x1="5" y1="13" x2="13" y2="13"/>
+  </symbol>
+  <symbol id="ico-schema" viewBox="0 0 18 18" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round">
+    <rect x="3" y="3" width="12" height="12" rx="1" stroke-dasharray="2.4 2.1"/>
+    <line x1="3" y1="9" x2="1.2" y2="9" stroke-dasharray="none"/>
+    <line x1="15" y1="9" x2="16.8" y2="9" stroke-dasharray="none"/>
+    <line x1="9" y1="3" x2="9" y2="1.2" stroke-dasharray="none"/>
+    <line x1="9" y1="15" x2="9" y2="16.8" stroke-dasharray="none"/>
+  </symbol>
+  <symbol id="ico-diff" viewBox="0 0 18 18" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round">
+    <rect x="2" y="2" width="9.5" height="9.5" rx="1"/>
+    <rect x="6.5" y="6.5" width="9.5" height="9.5" rx="1"/>
+  </symbol>
+  <symbol id="ico-path" viewBox="0 0 18 18" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round">
+    <rect x="2" y="2" width="14" height="14" rx="2.5"/>
+    <path d="M9 4.5v9"/>
+    <path d="M11.4 6.2c0-.85-1-1.5-2.4-1.5s-2.4.7-2.4 1.6c0 2.3 4.8 1 4.8 3.3 0 1-1.1 1.7-2.4 1.7s-2.4-.6-2.4-1.5"/>
+  </symbol>
+  <symbol id="ico-tree" viewBox="0 0 18 18" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round">
+    <circle cx="2.6" cy="4" r="1"/>
+    <circle cx="2.6" cy="9" r="1"/>
+    <circle cx="2.6" cy="14" r="1"/>
+    <circle cx="15.4" cy="9" r="1"/>
+    <path d="M3.6 4H8a2 2 0 012 2"/>
+    <path d="M3.6 9h10.8"/>
+    <path d="M3.6 14H8a2 2 0 002-2"/>
+  </symbol>
+  <symbol id="ico-check" viewBox="0 0 18 18" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round">
+    <circle cx="9" cy="9" r="7"/>
+    <polyline points="5.5,9.2 8,11.7 12.7,6.4"/>
+  </symbol>
+  <symbol id="ico-arrow" viewBox="0 0 18 18" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round">
+    <line x1="2" y1="9" x2="14.5" y2="9"/>
+    <polyline points="10.5,5 14.5,9 10.5,13"/>
+  </symbol>
+  <symbol id="ico-bolt" viewBox="0 0 18 18" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round">
+    <polygon points="9.5,2 4,10.5 8,10.5 7.2,16 14,7 9.6,7"/>
+  </symbol>
+  <symbol id="ico-star" viewBox="0 0 18 18" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round">
+    <polygon points="9,2.3 11.1,7 16,7.5 12.3,10.8 13.4,15.7 9,13.1 4.6,15.7 5.7,10.8 2,7.5 6.9,7"/>
+  </symbol>
+</svg>
+
 
 <header class="titleblock">
   <div class="ruler" id="ruler"></div>
@@ -66,9 +153,30 @@
     <p class="eyebrow">Data format toolkit</p>
     <h1>Unflatten JSON</h1>
     <p class="sub">Takes flat dot-notation keys like <code>user.address.city</code> or <code>tags[0]</code> and rebuilds the original nested object and array structure. The exact inverse of the Flatten tool — useful after pulling flattened data out of a spreadsheet or key-value store.</p>
-    <p style="font-size:13px;"><a href="../index.html" style="color:#B9CBDA;">← Full toolkit (all 16 tools)</a></p>
+    <p style="font-size:13px;"><a href="../index.html" style="color:#B9CBDA;">← Full toolkit (all 23 tools)</a></p>
 
-        <div class="mode-nav" id="modeNav">
+<div class="hero-preview">
+  <div class="hp-head"><svg class="ico"><use href="#ico-tree"/></svg> live example <span class="hp-badge">real output</span></div>
+  <div class="hp-panes">
+    <div class="hp-pane"><div class="hp-pane-label">FLAT</div><pre class="hp-code">{
+  <span class="tok-key">"user.name":</span> <span class="tok-str">"Ada"</span>,
+  <span class="tok-key">"user.tags[0]":</span> <span class="tok-str">"dev"</span>,
+  <span class="tok-key">"user.tags[1]":</span> <span class="tok-str">"math"</span>
+}</pre></div>
+    <div class="hp-mid"><svg class="ico"><use href="#ico-arrow"/></svg></div>
+    <div class="hp-pane"><div class="hp-pane-label">NESTED</div><pre class="hp-code">{
+  "user": {
+    "name": "Ada",
+    "tags": [
+      "dev",
+      "math"
+    ]
+  }
+}</pre></div>
+  </div>
+</div>
+
+    <div class="mode-nav" id="modeNav">
       <div class="mode-groups" id="modeGroups">
         <button class="mode-group-btn active" data-group="convert">Convert</button>
         <button class="mode-group-btn" data-group="transform">Transform</button>
@@ -78,25 +186,32 @@
         <button class="mode-group-btn" data-group="schema">Schema</button>
       </div>
       <div class="mode-chips" id="modes">
-        <button class="mode-chip active" data-mode="json2csv" data-group="convert">JSON → CSV</button>
-        <button class="mode-chip" data-mode="csv2json" data-group="convert">CSV → JSON</button>
-        <button class="mode-chip" data-mode="json2xml" data-group="convert">JSON → XML</button>
-        <button class="mode-chip" data-mode="xml2json" data-group="convert">XML → JSON</button>
-        <button class="mode-chip hidden" data-mode="flatten" data-group="transform">Flatten JSON</button>
-        <button class="mode-chip hidden" data-mode="unflatten" data-group="transform">Unflatten JSON</button>
-        <button class="mode-chip hidden" data-mode="sortJson" data-group="transform">Sort keys</button>
-        <button class="mode-chip hidden" data-mode="validateJson" data-group="validate">Validate JSON</button>
-        <button class="mode-chip hidden" data-mode="validateXml" data-group="validate">Validate XML</button>
-        <button class="mode-chip hidden" data-mode="formatJson" data-group="validate">Format JSON</button>
-        <button class="mode-chip hidden" data-mode="formatXml" data-group="validate">Format XML</button>
-        <button class="mode-chip hidden" data-mode="diffJson" data-group="compare">Diff JSON</button>
-        <button class="mode-chip hidden" data-mode="diffXml" data-group="compare">Diff XML</button>
-        <button class="mode-chip hidden" data-mode="diffCsv" data-group="compare">Diff CSV</button>
-        <button class="mode-chip hidden" data-mode="jsonPath" data-group="query">JSONPath</button>
-        <button class="mode-chip hidden" data-mode="jsonSchema" data-group="schema">JSON → Schema</button>
-        <button class="mode-chip hidden" data-mode="json2ts" data-group="schema">JSON → TypeScript</button>
-        <button class="mode-chip hidden" data-mode="json2zod" data-group="schema">JSON → Zod</button>
-        <button class="mode-chip hidden" data-mode="validateSchema" data-group="schema">Validate against Schema</button>
+        <button class="mode-chip active" data-mode="json2csv" data-group="convert"><svg class="ico"><use href="#ico-json"/></svg><svg class="ico ico-swap"><use href="#ico-arrow"/></svg><svg class="ico"><use href="#ico-table"/></svg>JSON → CSV</button>
+        <button class="mode-chip" data-mode="csv2json" data-group="convert"><svg class="ico"><use href="#ico-table"/></svg><svg class="ico ico-swap"><use href="#ico-arrow"/></svg><svg class="ico"><use href="#ico-json"/></svg>CSV → JSON</button>
+        <button class="mode-chip" data-mode="json2xml" data-group="convert"><svg class="ico"><use href="#ico-json"/></svg><svg class="ico ico-swap"><use href="#ico-arrow"/></svg><svg class="ico"><use href="#ico-tag"/></svg>JSON → XML</button>
+        <button class="mode-chip" data-mode="xml2json" data-group="convert"><svg class="ico"><use href="#ico-tag"/></svg><svg class="ico ico-swap"><use href="#ico-arrow"/></svg><svg class="ico"><use href="#ico-json"/></svg>XML → JSON</button>
+        <button class="mode-chip" data-mode="json2yaml" data-group="convert"><svg class="ico"><use href="#ico-json"/></svg><svg class="ico ico-swap"><use href="#ico-arrow"/></svg><svg class="ico"><use href="#ico-yaml"/></svg>JSON → YAML</button>
+        <button class="mode-chip" data-mode="yaml2json" data-group="convert"><svg class="ico"><use href="#ico-yaml"/></svg><svg class="ico ico-swap"><use href="#ico-arrow"/></svg><svg class="ico"><use href="#ico-json"/></svg>YAML → JSON</button>
+        <button class="mode-chip" data-mode="json2markdown" data-group="convert"><svg class="ico"><use href="#ico-json"/></svg><svg class="ico ico-swap"><use href="#ico-arrow"/></svg><svg class="ico"><use href="#ico-mdtable"/></svg>JSON → Markdown</button>
+        <button class="mode-chip" data-mode="markdown2json" data-group="convert"><svg class="ico"><use href="#ico-mdtable"/></svg><svg class="ico ico-swap"><use href="#ico-arrow"/></svg><svg class="ico"><use href="#ico-json"/></svg>Markdown → JSON</button>
+        <button class="mode-chip hidden" data-mode="flatten" data-group="transform"><svg class="ico"><use href="#ico-tree"/></svg>Flatten JSON</button>
+        <button class="mode-chip hidden" data-mode="unflatten" data-group="transform"><svg class="ico"><use href="#ico-tree"/></svg>Unflatten JSON</button>
+        <button class="mode-chip hidden" data-mode="sortJson" data-group="transform"><svg class="ico"><use href="#ico-json"/></svg>Sort keys</button>
+        <button class="mode-chip hidden" data-mode="validateJson" data-group="validate"><svg class="ico"><use href="#ico-check"/></svg>Validate JSON</button>
+        <button class="mode-chip hidden" data-mode="validateXml" data-group="validate"><svg class="ico"><use href="#ico-check"/></svg>Validate XML</button>
+        <button class="mode-chip hidden" data-mode="formatJson" data-group="validate"><svg class="ico"><use href="#ico-json"/></svg>Format JSON</button>
+        <button class="mode-chip hidden" data-mode="formatXml" data-group="validate"><svg class="ico"><use href="#ico-tag"/></svg>Format XML</button>
+        <button class="mode-chip hidden" data-mode="diffJson" data-group="compare"><svg class="ico"><use href="#ico-diff"/></svg>Diff JSON</button>
+        <button class="mode-chip hidden" data-mode="diffXml" data-group="compare"><svg class="ico"><use href="#ico-diff"/></svg>Diff XML</button>
+        <button class="mode-chip hidden" data-mode="diffCsv" data-group="compare"><svg class="ico"><use href="#ico-diff"/></svg>Diff CSV</button>
+        <button class="mode-chip hidden" data-mode="jsonPath" data-group="query"><svg class="ico"><use href="#ico-path"/></svg>JSONPath</button>
+        <button class="mode-chip hidden" data-mode="jsonSchema" data-group="schema"><svg class="ico"><use href="#ico-schema"/></svg>JSON → Schema</button>
+        <button class="mode-chip hidden" data-mode="json2ts" data-group="schema"><svg class="ico"><use href="#ico-code"/></svg>JSON → TypeScript</button>
+        <button class="mode-chip hidden" data-mode="json2zod" data-group="schema"><svg class="ico"><use href="#ico-code"/></svg>JSON → Zod</button>
+        <button class="mode-chip hidden" data-mode="json2python" data-group="schema"><svg class="ico"><use href="#ico-code"/></svg>JSON → Python</button>
+        <button class="mode-chip hidden" data-mode="json2pydantic" data-group="schema"><svg class="ico"><use href="#ico-code"/></svg>JSON → Pydantic</button>
+        <button class="mode-chip hidden" data-mode="json2go" data-group="schema"><svg class="ico"><use href="#ico-code"/></svg>JSON → Go</button>
+        <button class="mode-chip hidden" data-mode="validateSchema" data-group="schema"><svg class="ico"><use href="#ico-check"/></svg>Validate against Schema</button>
       </div>
     </div>
 
@@ -233,25 +348,51 @@
       <a href="#pricing">Upgrade to Pro →</a>
     </div>
 
-    <div class="related">
-      <span class="label">Toolkit —</span>
-      <a href="json-to-csv.html" onclick="setMode('json2csv');return false;">JSON→CSV</a>
-      <a href="csv-to-json.html" onclick="setMode('csv2json');return false;">CSV→JSON</a>
-      <a href="json-to-xml.html" onclick="setMode('json2xml');return false;">JSON→XML</a>
-      <a href="xml-to-json.html" onclick="setMode('xml2json');return false;">XML→JSON</a>
-      <a href="flatten-json.html" onclick="setMode('flatten');return false;">Flatten</a>
-      <a href="unflatten-json.html" onclick="setMode('unflatten');return false;">Unflatten</a>
-      <a href="json-validator.html" onclick="setMode('validateJson');return false;">Validate JSON</a>
-      <a href="#" onclick="setMode('validateXml');return false;">Validate XML</a>
-      <a href="json-formatter.html" onclick="setMode('formatJson');return false;">Format JSON</a>
-      <a href="#" onclick="setMode('formatXml');return false;">Format XML</a>
-      <a href="#" onclick="setMode('sortJson');return false;">Sort keys</a>
-      <a href="json-diff.html" onclick="setMode('diffJson');return false;">Diff JSON</a>
-      <a href="xml-diff.html" onclick="setMode('diffXml');return false;">Diff XML</a>
-      <a href="csv-diff.html" onclick="setMode('diffCsv');return false;">Diff CSV</a>
-      <a href="jsonpath-tester.html" onclick="setMode('jsonPath');return false;">JSONPath</a>
-      <a href="json-schema-generator.html" onclick="setMode('jsonSchema');return false;">JSON → Schema</a>
-      <a href="validate-json-schema.html" onclick="setMode('validateSchema');return false;">Validate against Schema</a>
+    <div class="related-groups">
+      <div class="related-group">
+        <span class="rg-label">Convert</span>
+        <a href="json-to-csv.html" onclick="setMode('json2csv');return false;"><svg class="ico"><use href="#ico-json"/></svg>JSON→CSV</a>
+        <a href="csv-to-json.html" onclick="setMode('csv2json');return false;"><svg class="ico"><use href="#ico-table"/></svg>CSV→JSON</a>
+        <a href="json-to-xml.html" onclick="setMode('json2xml');return false;"><svg class="ico"><use href="#ico-json"/></svg>JSON→XML</a>
+        <a href="xml-to-json.html" onclick="setMode('xml2json');return false;"><svg class="ico"><use href="#ico-tag"/></svg>XML→JSON</a>
+        <a href="json-to-yaml.html" onclick="setMode('json2yaml');return false;"><svg class="ico"><use href="#ico-json"/></svg>JSON→YAML</a>
+        <a href="yaml-to-json.html" onclick="setMode('yaml2json');return false;"><svg class="ico"><use href="#ico-yaml"/></svg>YAML→JSON</a>
+        <a href="json-to-markdown.html" onclick="setMode('json2markdown');return false;"><svg class="ico"><use href="#ico-json"/></svg>JSON→Markdown</a>
+        <a href="markdown-to-json.html" onclick="setMode('markdown2json');return false;"><svg class="ico"><use href="#ico-mdtable"/></svg>Markdown→JSON</a>
+      </div>
+      <div class="related-group">
+        <span class="rg-label">Transform</span>
+        <a href="flatten-json.html" onclick="setMode('flatten');return false;"><svg class="ico"><use href="#ico-tree"/></svg>Flatten</a>
+        <a href="unflatten-json.html" onclick="setMode('unflatten');return false;"><svg class="ico"><use href="#ico-tree"/></svg>Unflatten</a>
+        <a href="#" onclick="setMode('sortJson');return false;"><svg class="ico"><use href="#ico-json"/></svg>Sort keys</a>
+      </div>
+      <div class="related-group">
+        <span class="rg-label">Validate &amp; format</span>
+        <a href="json-validator.html" onclick="setMode('validateJson');return false;"><svg class="ico"><use href="#ico-check"/></svg>Validate JSON</a>
+        <a href="#" onclick="setMode('validateXml');return false;"><svg class="ico"><use href="#ico-check"/></svg>Validate XML</a>
+        <a href="json-formatter.html" onclick="setMode('formatJson');return false;"><svg class="ico"><use href="#ico-json"/></svg>Format JSON</a>
+        <a href="#" onclick="setMode('formatXml');return false;"><svg class="ico"><use href="#ico-tag"/></svg>Format XML</a>
+      </div>
+      <div class="related-group">
+        <span class="rg-label">Compare</span>
+        <a href="json-diff.html" onclick="setMode('diffJson');return false;"><svg class="ico"><use href="#ico-diff"/></svg>Diff JSON</a>
+        <a href="xml-diff.html" onclick="setMode('diffXml');return false;"><svg class="ico"><use href="#ico-diff"/></svg>Diff XML</a>
+        <a href="csv-diff.html" onclick="setMode('diffCsv');return false;"><svg class="ico"><use href="#ico-diff"/></svg>Diff CSV</a>
+      </div>
+      <div class="related-group">
+        <span class="rg-label">Query</span>
+        <a href="jsonpath-tester.html" onclick="setMode('jsonPath');return false;"><svg class="ico"><use href="#ico-path"/></svg>JSONPath</a>
+      </div>
+      <div class="related-group">
+        <span class="rg-label">Schema &amp; types</span>
+        <a href="json-schema-generator.html" onclick="setMode('jsonSchema');return false;"><svg class="ico"><use href="#ico-schema"/></svg>JSON → Schema</a>
+        <a href="json-to-typescript.html" onclick="setMode('json2ts');return false;"><svg class="ico"><use href="#ico-code"/></svg>JSON → TypeScript</a>
+        <a href="json-to-zod.html" onclick="setMode('json2zod');return false;"><svg class="ico"><use href="#ico-code"/></svg>JSON → Zod</a>
+        <a href="json-to-python.html" onclick="setMode('json2python');return false;"><svg class="ico"><use href="#ico-code"/></svg>JSON → Python</a>
+        <a href="json-to-pydantic.html" onclick="setMode('json2pydantic');return false;"><svg class="ico"><use href="#ico-code"/></svg>JSON → Pydantic</a>
+        <a href="json-to-go.html" onclick="setMode('json2go');return false;"><svg class="ico"><use href="#ico-code"/></svg>JSON → Go</a>
+        <a href="validate-json-schema.html" onclick="setMode('validateSchema');return false;"><svg class="ico"><use href="#ico-check"/></svg>Validate against Schema</a>
+      </div>
     </div>
   </section>
 
@@ -263,6 +404,7 @@
     </div>
     <div class="plans">
       <div class="plan">
+        <div class="plan-icon"><svg class="ico"><use href="#ico-bolt"/></svg></div>
         <h3>Free</h3>
         <div class="price"><sup>£</sup>0<span class="period">/forever</span></div>
         <p class="desc">For occasional, one-off conversions.</p>
@@ -276,6 +418,7 @@
         <a href="#tool" class="btn btn-ghost">Use for free</a>
       </div>
       <div class="plan featured">
+        <div class="plan-icon"><svg class="ico"><use href="#ico-star"/></svg></div>
         <h3>Pro</h3>
         <div class="price"><sup>£</sup>9<span class="period">/month</span></div>
         <p class="desc">For daily conversions, CI use, and larger files.</p>
@@ -293,6 +436,7 @@
         <a href="#" class="btn btn-ghost" id="btnProYearly" data-plan="pro_yearly" style="margin-top:8px;text-align:center;">Pro yearly – £90</a>
       </div>
       <div class="plan">
+        <div class="plan-icon"><svg class="ico"><use href="#ico-code"/></svg></div>
         <h3>API</h3>
         <div class="price"><sup>£</sup>29<span class="period">/month</span></div>
         <p class="desc">For scripts, pipelines and internal tools.</p>
@@ -365,7 +509,7 @@
 # -&gt; {"output":"id,name\n1,Ada","usage":{"calls_this_month":1,"limit":10000}}</pre>
 
       <p style="margin-bottom:6px;font-size:13.5px;color:#B9CBDA;line-height:1.7;">
-        <code style="color:#7FE7D0;">POST /v1/convert</code> — <code>mode</code>: json2csv, csv2json, json2xml, xml2json, flatten, unflatten<br>
+        <code style="color:#7FE7D0;">POST /v1/convert</code> — <code>mode</code>: json2csv, csv2json, json2xml, xml2json, flatten, unflatten, json2yaml, yaml2json, json2markdown, markdown2json<br>
         <code style="color:#7FE7D0;">POST /v1/diff</code> — <code>mode</code>: diffJson, diffXml, diffCsv (send <code>inputA</code>/<code>inputB</code> instead of <code>input</code>)<br>
         <code style="color:#7FE7D0;">POST /v1/schema</code> — infers a JSON Schema (draft-07) from a sample <code>input</code>
       </p>
@@ -390,6 +534,10 @@
               <option value="xml2json">xml2json</option>
               <option value="flatten">flatten</option>
               <option value="unflatten">unflatten</option>
+              <option value="json2yaml">json2yaml</option>
+              <option value="yaml2json">yaml2json</option>
+              <option value="json2markdown">json2markdown</option>
+              <option value="markdown2json">markdown2json</option>
             </select>
             <textarea id="playgroundInput" class="playground-textarea" spellcheck="false">[{"id":1,"name":"Ada","city":"London"}]</textarea>
             <button class="btn btn-gold" id="playgroundRunBtn" style="margin-top:10px;">Run</button>

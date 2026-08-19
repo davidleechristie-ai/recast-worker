@@ -263,6 +263,234 @@
     return out;
   }
 
+  // ---------------- JSON <-> YAML ----------------
+  function yamlIndent(n) { return '  '.repeat(n); }
+
+  function yamlScalar(val) {
+    if (val === null || val === undefined) return 'null';
+    if (typeof val === 'boolean' || typeof val === 'number') return String(val);
+    const s = String(val);
+    if (s === '') return "''";
+    const looksSpecial = /^(true|false|null|~|-?\d+(\.\d+)?)$/i.test(s);
+    const needsQuote = looksSpecial ||
+      /^[\s\-?:,\[\]{}#&*!|>'"%@`]/.test(s) ||
+      /: |:$| #|\n/.test(s) ||
+      s !== s.trim();
+    if (needsQuote) {
+      return '"' + s.replace(/\\/g, '\\\\').replace(/"/g, '\\"').replace(/\n/g, '\\n') + '"';
+    }
+    return s;
+  }
+
+  function yamlIsContainer(v) {
+    if (v === null || typeof v !== 'object') return false;
+    return Array.isArray(v) ? v.length > 0 : Object.keys(v).length > 0;
+  }
+
+  function yamlObjectBody(obj, indent) {
+    const keys = Object.keys(obj);
+    if (!keys.length) return yamlIndent(indent) + '{}';
+    const pad = yamlIndent(indent);
+    return keys.map(function (k) {
+      const v = obj[k];
+      const key = /^[A-Za-z_][\w-]*$/.test(k) ? k : yamlScalar(k);
+      if (yamlIsContainer(v)) return pad + key + ':\n' + yamlNode(v, indent + 1);
+      return pad + key + ': ' + yamlScalar(v);
+    }).join('\n');
+  }
+
+  function yamlArrayBody(arr, indent) {
+    if (!arr.length) return yamlIndent(indent) + '[]';
+    const pad = yamlIndent(indent);
+    return arr.map(function (item) {
+      if (yamlIsContainer(item)) {
+        const childPad = yamlIndent(indent + 1);
+        const body = yamlNode(item, indent + 1);
+        const lines = body.split('\n').map(function (l, idx) { return idx === 0 ? l.slice(childPad.length) : l; });
+        return pad + '- ' + lines[0] + (lines.length > 1 ? '\n' + lines.slice(1).join('\n') : '');
+      }
+      return pad + '- ' + yamlScalar(item);
+    }).join('\n');
+  }
+
+  function yamlNode(value, indent) {
+    if (value === null || typeof value !== 'object') return yamlScalar(value);
+    return Array.isArray(value) ? yamlArrayBody(value, indent) : yamlObjectBody(value, indent);
+  }
+
+  // Dependency-free block-style YAML emitter (covers the mappings/sequences/
+  // scalars that a JSON document actually needs — not the full YAML spec).
+  function jsonToYaml(value) {
+    if (value === null || typeof value !== 'object') return yamlScalar(value) + '\n';
+    return yamlNode(value, 0) + '\n';
+  }
+
+  function yamlUnquote(raw) {
+    const s = raw.trim();
+    if (s.length >= 2 && s[0] === '"' && s[s.length - 1] === '"') {
+      return s.slice(1, -1).replace(/\\n/g, '\n').replace(/\\"/g, '"').replace(/\\\\/g, '\\');
+    }
+    if (s.length >= 2 && s[0] === "'" && s[s.length - 1] === "'") {
+      return s.slice(1, -1).replace(/''/g, "'");
+    }
+    return s;
+  }
+
+  function yamlParseScalar(raw) {
+    let s = raw.trim();
+    if (s[0] !== '"' && s[0] !== "'") {
+      const commentMatch = /^(.*?)\s+#.*$/.exec(s);
+      if (commentMatch) s = commentMatch[1].trim();
+    }
+    if (s === '' || s === '~' || /^null$/i.test(s)) return null;
+    if (/^true$/i.test(s)) return true;
+    if (/^false$/i.test(s)) return false;
+    if (s[0] === '"' || s[0] === "'") return yamlUnquote(s);
+    if (/^-?\d+$/.test(s)) return parseInt(s, 10);
+    if (/^-?\d*\.\d+$/.test(s) || /^-?\d+\.\d*$/.test(s)) return parseFloat(s);
+    return s;
+  }
+
+  const YAML_KV_RE = /^("(?:[^"\\]|\\.)*"|'(?:[^']|'')*'|[^:]+):(\s*(.*))?$/;
+
+  function yamlTokenize(text) {
+    const rawLines = text.replace(/\r\n/g, '\n').replace(/\r/g, '\n').split('\n');
+    const lines = [];
+    rawLines.forEach(function (line) {
+      if (/^\s*#/.test(line) || /^\s*$/.test(line) || /^---\s*$/.test(line) || /^\.\.\.\s*$/.test(line)) return;
+      const m = /^(\s*)/.exec(line);
+      lines.push({ indent: m[1].length, text: line.slice(m[1].length) });
+    });
+    return lines;
+  }
+
+  function yamlParseMappingLine(text) {
+    const m = YAML_KV_RE.exec(text);
+    if (!m) return null;
+    const rawKey = m[1];
+    return { key: /^["']/.test(rawKey) ? yamlUnquote(rawKey) : rawKey.trim(), rawVal: m[3] !== undefined ? m[3] : '' };
+  }
+
+  function yamlParseBlock(lines, pos, indent) {
+    if (pos.i >= lines.length || lines[pos.i].indent < indent) return null;
+    const isSeq = /^-(\s|$)/.test(lines[pos.i].text);
+    if (isSeq) {
+      const arr = [];
+      while (pos.i < lines.length && lines[pos.i].indent === indent && /^-(\s|$)/.test(lines[pos.i].text)) {
+        const line = lines[pos.i];
+        const rest = line.text.slice(1).replace(/^\s+/, '');
+        const dashPrefixLen = line.text.length - rest.length;
+        if (rest === '') {
+          pos.i++;
+          arr.push(pos.i < lines.length && lines[pos.i].indent > indent ? yamlParseBlock(lines, pos, lines[pos.i].indent) : null);
+        } else if (YAML_KV_RE.test(rest)) {
+          // "- key: value" — rewrite as a plain mapping line at the deeper
+          // indent so the mapping branch below can parse it (and any
+          // sibling keys on the following lines) without duplicating logic.
+          lines[pos.i] = { indent: indent + dashPrefixLen, text: rest };
+          arr.push(yamlParseBlock(lines, pos, indent + dashPrefixLen));
+        } else {
+          arr.push(yamlParseScalar(rest));
+          pos.i++;
+        }
+      }
+      return arr;
+    }
+    const obj = {};
+    while (pos.i < lines.length && lines[pos.i].indent === indent && !/^-(\s|$)/.test(lines[pos.i].text)) {
+      const parsed = yamlParseMappingLine(lines[pos.i].text);
+      if (!parsed) { pos.i++; continue; }
+      pos.i++;
+      if (parsed.rawVal === '') {
+        if (pos.i < lines.length && lines[pos.i].indent > indent) {
+          obj[parsed.key] = yamlParseBlock(lines, pos, lines[pos.i].indent);
+        } else if (pos.i < lines.length && lines[pos.i].indent === indent && /^-(\s|$)/.test(lines[pos.i].text)) {
+          obj[parsed.key] = yamlParseBlock(lines, pos, indent);
+        } else {
+          obj[parsed.key] = null;
+        }
+      } else if (parsed.rawVal === '[]') {
+        obj[parsed.key] = [];
+      } else if (parsed.rawVal === '{}') {
+        obj[parsed.key] = {};
+      } else {
+        obj[parsed.key] = yamlParseScalar(parsed.rawVal);
+      }
+    }
+    return obj;
+  }
+
+  // Dependency-free block-style YAML parser. Covers mappings, sequences,
+  // nesting via indentation, and quoted/plain/numeric/boolean/null scalars.
+  // Does NOT support flow style ({}/[] inline), anchors/aliases, multi-line
+  // block scalars (| or >), or multi-document files — a documented subset
+  // that covers the config-file and API-response YAML people actually paste.
+  function yamlToJson(yamlText) {
+    const lines = yamlTokenize(yamlText);
+    if (!lines.length) return null;
+    if (lines.length === 1 && !/^-(\s|$)/.test(lines[0].text) && !YAML_KV_RE.test(lines[0].text)) {
+      return yamlParseScalar(lines[0].text);
+    }
+    const pos = { i: 0 };
+    return yamlParseBlock(lines, pos, lines[0].indent);
+  }
+
+  // ---------------- JSON <-> Markdown table (GFM pipe tables) ----------------
+  function mdEscapeCell(val) {
+    if (val === null || val === undefined) return '';
+    return String(val).replace(/\|/g, '\\|').replace(/\n/g, '<br>');
+  }
+
+  function jsonToMarkdownTable(jsonArray) {
+    if (!Array.isArray(jsonArray)) jsonArray = [jsonArray];
+    const flatRows = jsonArray.map(function (row) { return flattenObj(row); });
+    const headerSet = new Set();
+    flatRows.forEach(function (r) { Object.keys(r).forEach(function (k) { headerSet.add(k); }); });
+    const headers = Array.from(headerSet);
+    if (!headers.length) return '';
+    const headerLine = '| ' + headers.join(' | ') + ' |';
+    const sepLine = '| ' + headers.map(function () { return '---'; }).join(' | ') + ' |';
+    const rowLines = flatRows.map(function (r) {
+      return '| ' + headers.map(function (h) { return mdEscapeCell(r[h]); }).join(' | ') + ' |';
+    });
+    return [headerLine, sepLine].concat(rowLines).join('\n');
+  }
+
+  function splitMdRow(line) {
+    let s = line.trim();
+    if (s[0] === '|') s = s.slice(1);
+    if (s[s.length - 1] === '|') s = s.slice(0, -1);
+    const cells = []; let cur = '';
+    for (let i = 0; i < s.length; i++) {
+      if (s[i] === '\\' && s[i + 1] === '|') { cur += '|'; i++; }
+      else if (s[i] === '|') { cells.push(cur.trim()); cur = ''; }
+      else cur += s[i];
+    }
+    cells.push(cur.trim());
+    return cells;
+  }
+
+  function markdownTableToJson(mdText, opts) {
+    opts = opts || {};
+    const inferTypes = opts.inferTypes !== false;
+    const unflatten = opts.unflatten !== false;
+    const lines = mdText.replace(/\r\n/g, '\n').split('\n')
+      .map(function (l) { return l.trim(); })
+      .filter(function (l) { return l.length > 0 && l.indexOf('|') !== -1; });
+    if (lines.length < 2) return [];
+    const headers = splitMdRow(lines[0]);
+    const dataLines = lines.slice(2); // lines[1] is the |---|---| separator row
+    return dataLines.map(function (line) {
+      const cells = splitMdRow(line);
+      const flatObj = {};
+      headers.forEach(function (h, i) {
+        const raw = (cells[i] !== undefined ? cells[i] : '').replace(/<br>/gi, '\n');
+        flatObj[h] = inferTypes ? inferCell(raw) : raw;
+      });
+      return unflatten ? unflattenObj(flatObj) : flatObj;
+    });
+  }
+
   // ---------------- Deep diff (key-aware for arrays of objects) ----------------
   function isPlainObj(v) { return v !== null && typeof v === 'object' && !Array.isArray(v); }
 
@@ -597,6 +825,10 @@ export {
   jsonToXml,
   xmlToJson,
   parseXmlToTree,
+  jsonToYaml,
+  yamlToJson,
+  jsonToMarkdownTable,
+  markdownTableToJson,
   deepDiff,
   pickArrayKey,
   csvDiff,

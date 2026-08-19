@@ -181,6 +181,51 @@ const env = {
     assert('portal rejects an invalid token with 401', res.status === 401, res.status);
   }
 
+  // ---------------- /v1/convert (new formats: YAML, Markdown table) ----------------
+  {
+    const kv = makeMockKV();
+    const token = await E.issueToken(kv, 'cus_api_1', 'api_monthly', 'active');
+    const testEnv = Object.assign({}, env, { ENTITLEMENTS: kv });
+    const authHeaders = { 'Content-Type': 'application/json', Authorization: 'Bearer ' + token };
+
+    const yamlReq = mockRequest('https://x/v1/convert', {
+      method: 'POST', headers: authHeaders,
+      body: JSON.stringify({ mode: 'json2yaml', input: JSON.stringify({ id: 1, name: 'Ada' }) }),
+    });
+    const yamlRes = await W.handleApiConvert(yamlReq, testEnv, W.defaultDeps);
+    const yamlBody = await yamlRes.json();
+    assert('json2yaml returns 200', yamlRes.status === 200, yamlRes.status);
+    assert('json2yaml output looks like YAML', yamlBody.output === 'id: 1\nname: Ada\n', yamlBody);
+
+    const backReq = mockRequest('https://x/v1/convert', {
+      method: 'POST', headers: authHeaders,
+      body: JSON.stringify({ mode: 'yaml2json', input: yamlBody.output }),
+    });
+    const backBody = await (await W.handleApiConvert(backReq, testEnv, W.defaultDeps)).json();
+    assert('yaml2json round-trips json2yaml output', JSON.parse(backBody.output).name === 'Ada', backBody);
+
+    const mdReq = mockRequest('https://x/v1/convert', {
+      method: 'POST', headers: authHeaders,
+      body: JSON.stringify({ mode: 'json2markdown', input: JSON.stringify([{ id: 1, name: 'Ada' }]) }),
+    });
+    const mdBody = await (await W.handleApiConvert(mdReq, testEnv, W.defaultDeps)).json();
+    assert('json2markdown produces a pipe table', mdBody.output.startsWith('| id | name |'), mdBody);
+
+    const md2jsonReq = mockRequest('https://x/v1/convert', {
+      method: 'POST', headers: authHeaders,
+      body: JSON.stringify({ mode: 'markdown2json', input: mdBody.output }),
+    });
+    const md2jsonBody = await (await W.handleApiConvert(md2jsonReq, testEnv, W.defaultDeps)).json();
+    assert('markdown2json round-trips json2markdown output', JSON.parse(md2jsonBody.output)[0].name === 'Ada', md2jsonBody);
+
+    const badReq = mockRequest('https://x/v1/convert', {
+      method: 'POST', headers: authHeaders,
+      body: JSON.stringify({ mode: 'not_a_real_mode', input: '{}' }),
+    });
+    const badRes = await W.handleApiConvert(badReq, testEnv, W.defaultDeps);
+    assert('unknown mode still rejected with 400', badRes.status === 400, badRes.status);
+  }
+
   // ---------------- routing ----------------
   {
     const testEnv = Object.assign({}, env, { ENTITLEMENTS: makeMockKV() });

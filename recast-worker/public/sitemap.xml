@@ -9,6 +9,10 @@
   <url><loc>https://tryrecast.app/tools/csv-to-json.html</loc><changefreq>monthly</changefreq><priority>0.9</priority></url>
   <url><loc>https://tryrecast.app/tools/json-to-xml.html</loc><changefreq>monthly</changefreq><priority>0.8</priority></url>
   <url><loc>https://tryrecast.app/tools/xml-to-json.html</loc><changefreq>monthly</changefreq><priority>0.8</priority></url>
+  <url><loc>https://tryrecast.app/tools/json-to-yaml.html</loc><changefreq>monthly</changefreq><priority>0.9</priority></url>
+  <url><loc>https://tryrecast.app/tools/yaml-to-json.html</loc><changefreq>monthly</changefreq><priority>0.9</priority></url>
+  <url><loc>https://tryrecast.app/tools/json-to-markdown.html</loc><changefreq>monthly</changefreq><priority>0.7</priority></url>
+  <url><loc>https://tryrecast.app/tools/markdown-to-json.html</loc><changefreq>monthly</changefreq><priority>0.7</priority></url>
   <url><loc>https://tryrecast.app/tools/flatten-json.html</loc><changefreq>monthly</changefreq><priority>0.7</priority></url>
   <url><loc>https://tryrecast.app/tools/unflatten-json.html</loc><changefreq>monthly</changefreq><priority>0.6</priority></url>
   <url><loc>https://tryrecast.app/tools/json-validator.html</loc><changefreq>monthly</changefreq><priority>0.8</priority></url>
@@ -20,6 +24,9 @@
   <url><loc>https://tryrecast.app/tools/json-schema-generator.html</loc><changefreq>monthly</changefreq><priority>0.8</priority></url>
   <url><loc>https://tryrecast.app/tools/json-to-typescript.html</loc><changefreq>monthly</changefreq><priority>0.9</priority></url>
   <url><loc>https://tryrecast.app/tools/json-to-zod.html</loc><changefreq>monthly</changefreq><priority>0.9</priority></url>
+  <url><loc>https://tryrecast.app/tools/json-to-python.html</loc><changefreq>monthly</changefreq><priority>0.8</priority></url>
+  <url><loc>https://tryrecast.app/tools/json-to-pydantic.html</loc><changefreq>monthly</changefreq><priority>0.8</priority></url>
+  <url><loc>https://tryrecast.app/tools/json-to-go.html</loc><changefreq>monthly</changefreq><priority>0.8</priority></url>
   <url><loc>https://tryrecast.app/tools/validate-json-schema.html</loc><changefreq>monthly</changefreq><priority>0.8</priority></url>
   <url><loc>https://tryrecast.app/blog/index.html</loc><changefreq>weekly</changefreq><priority>0.7</priority></url>
   <url><loc>https://tryrecast.app/blog/json-to-csv-guide.html</loc><changefreq>yearly</changefreq><priority>0.6</priority></url>

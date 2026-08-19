@@ -15,6 +15,10 @@ function runConvert(p) {
     case 'xml2json': return JSON.stringify(E.xmlToJson(p.text), null, opts.pretty === false ? 0 : 2);
     case 'flatten': return JSON.stringify(E.flattenObj(JSON.parse(p.text)), null, opts.pretty === false ? 0 : 2);
     case 'unflatten': return JSON.stringify(E.unflattenObj(JSON.parse(p.text)), null, opts.pretty === false ? 0 : 2);
+    case 'json2yaml': return E.jsonToYaml(JSON.parse(p.text));
+    case 'yaml2json': return JSON.stringify(E.yamlToJson(p.text), null, opts.pretty === false ? 0 : 2);
+    case 'json2markdown': return E.jsonToMarkdownTable(JSON.parse(p.text));
+    case 'markdown2json': return JSON.stringify(E.markdownTableToJson(p.text, opts), null, opts.pretty === false ? 0 : 2);
     default: throw new Error('Unknown convert op: ' + p.op);
   }
 }
@@ -34,6 +38,9 @@ function runSchema(p) {
   const schema = E.jsonSchemaFromSample(JSON.parse(p.text), opts);
   if (opts.render === 'typescript') return E.jsonSchemaToTypescript(schema, opts.rootName || 'Root');
   if (opts.render === 'zod') return E.jsonSchemaToZod(schema, opts.rootName || 'Root');
+  if (opts.render === 'python') return E.jsonSchemaToPython(schema, opts.rootName || 'Root');
+  if (opts.render === 'pydantic') return E.jsonSchemaToPydantic(schema, opts.rootName || 'Root');
+  if (opts.render === 'go') return E.jsonSchemaToGo(schema, opts.rootName || 'Root');
   return JSON.stringify(schema, null, 2);
 }
 
