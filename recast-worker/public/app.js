@@ -866,6 +866,119 @@ async function runCurrentMode() {
 }
 $('convertBtn').addEventListener('click', runCurrentMode);
 
+// ---------------- Expand to full screen + pop out into a separate window ----------------
+// Two ways to get more screen real estate for large datasets, since the
+// panels otherwise cap out at whatever fits in the page layout:
+// - "Expand" keeps everything in this tab but overlays the panel/workbench/
+//   playground across the full viewport (Escape or the button again exits).
+// - "Pop out" opens a genuinely separate browser window with a live,
+//   two-way-synced mirror of the field, so it can be dragged to another
+//   monitor. Editing in either window updates the other; output/read-only
+//   fields sync one-way since there's nothing to type back.
+let currentFullscreenEl = null;
+function setExpandIcon(btn, expanded) {
+  const use = btn?.querySelector('use');
+  if (use) use.setAttribute('href', expanded ? '#ico-collapse' : '#ico-expand');
+  if (btn) btn.title = expanded ? 'Exit full screen' : 'Expand to full screen';
+}
+function toggleFullscreen(el, btn) {
+  if (!el) return;
+  if (currentFullscreenEl && currentFullscreenEl !== el) {
+    currentFullscreenEl.classList.remove('wb-fullscreen');
+    document.querySelectorAll('.win-btn[title="Exit full screen"]').forEach(b => setExpandIcon(b, false));
+  }
+  const nowExpanded = !el.classList.contains('wb-fullscreen');
+  el.classList.toggle('wb-fullscreen', nowExpanded);
+  document.body.classList.toggle('wb-lock', nowExpanded);
+  currentFullscreenEl = nowExpanded ? el : null;
+  setExpandIcon(btn, nowExpanded);
+}
+document.addEventListener('keydown', (e) => {
+  if (e.key === 'Escape' && currentFullscreenEl) {
+    const btn = document.querySelector('.win-btn[title="Exit full screen"]');
+    toggleFullscreen(currentFullscreenEl, btn);
+  }
+});
+$('inputExpandBtn')?.addEventListener('click', (e) => toggleFullscreen($('inputPanel'), e.currentTarget));
+$('outputExpandBtn')?.addEventListener('click', (e) => toggleFullscreen($('outputPanel') || e.currentTarget.closest('.panel'), e.currentTarget));
+$('workbenchExpandBtn')?.addEventListener('click', (e) => toggleFullscreen(document.querySelector('.workbench'), e.currentTarget));
+$('playgroundExpandBtn')?.addEventListener('click', (e) => toggleFullscreen($('apiPlayground'), e.currentTarget));
+
+function openPopoutMirror(sourceEl, label, opts) {
+  opts = opts || {};
+  const isPre = sourceEl.tagName === 'PRE';
+  const readOnly = opts.readOnly || isPre;
+  const w = window.open('', 'recast_popout_' + (opts.id || label.replace(/\s+/g, '_')), 'width=900,height=700');
+  if (!w) { showToast('Pop-out blocked \u2014 allow pop-ups for this site'); return; }
+  const doc = w.document;
+  doc.title = 'Recast \u2014 ' + label;
+  const style = doc.createElement('style');
+  style.textContent =
+    "html,body{margin:0;height:100%;background:#0E2338;color:#EDF3F8;font-family:'IBM Plex Mono',ui-monospace,monospace;}" +
+    ".head{box-sizing:border-box;display:flex;align-items:center;justify-content:space-between;gap:10px;padding:10px 14px;border-bottom:1px solid rgba(140,182,214,0.32);font-size:12px;letter-spacing:.06em;text-transform:uppercase;color:#B9CBDA;}" +
+    ".head button{font-family:inherit;font-size:11px;background:transparent;border:1px solid rgba(140,182,214,0.32);color:#EDF3F8;border-radius:2px;padding:5px 10px;cursor:pointer;}" +
+    ".head button:hover{border-color:#F2C14E;color:#F2C14E;}" +
+    "textarea{box-sizing:border-box;width:100%;height:calc(100% - 41px);border:none;outline:none;background:transparent;color:#EDF3F8;font-family:inherit;font-size:13px;line-height:1.6;padding:16px;resize:none;}";
+  doc.head.appendChild(style);
+
+  const head = doc.createElement('div');
+  head.className = 'head';
+  const title = doc.createElement('span');
+  title.textContent = label + (readOnly ? ' \u2014 read-only, live-synced' : ' \u2014 synced with the main tab');
+  const copyBtn = doc.createElement('button');
+  copyBtn.textContent = 'Copy';
+  head.appendChild(title);
+  head.appendChild(copyBtn);
+  doc.body.appendChild(head);
+
+  const ta = doc.createElement('textarea');
+  ta.spellcheck = false;
+  ta.value = sourceEl.value !== undefined ? sourceEl.value : sourceEl.textContent;
+  if (readOnly) ta.readOnly = true;
+  doc.body.appendChild(ta);
+
+  copyBtn.addEventListener('click', () => {
+    ta.select();
+    doc.execCommand('copy');
+    copyBtn.textContent = 'Copied!';
+    setTimeout(() => { copyBtn.textContent = 'Copy'; }, 1200);
+  });
+
+  let syncing = false;
+
+  if (!readOnly) {
+    ta.addEventListener('input', () => {
+      if (syncing) return;
+      syncing = true;
+      sourceEl.value = ta.value;
+      sourceEl.dispatchEvent(new Event('input', { bubbles: true }));
+      syncing = false;
+    });
+  }
+
+  function pushToPopout() {
+    if (w.closed) { cleanup(); return; }
+    if (syncing) return;
+    const val = sourceEl.value !== undefined ? sourceEl.value : sourceEl.textContent;
+    if (ta.value !== val) { syncing = true; ta.value = val; syncing = false; }
+  }
+  function onSourceInput() { pushToPopout(); }
+  if (sourceEl.value !== undefined) sourceEl.addEventListener('input', onSourceInput);
+  // Programmatic updates (e.g. outputEl.value = result after Convert) don't
+  // fire 'input' events, so poll as a cheap, reliable fallback for those.
+  const poll = setInterval(pushToPopout, 400);
+  function cleanup() {
+    clearInterval(poll);
+    if (sourceEl.value !== undefined) sourceEl.removeEventListener('input', onSourceInput);
+  }
+  w.addEventListener('beforeunload', cleanup);
+  track('popout_open', { field: opts.id || label });
+}
+$('inputPopoutBtn')?.addEventListener('click', () => openPopoutMirror(inputEl, modeConfig[currentMode]?.inFmt ? modeConfig[currentMode].inFmt + ' input' : 'Input', { id: 'input' }));
+$('outputPopoutBtn')?.addEventListener('click', () => openPopoutMirror(outputEl, modeConfig[currentMode]?.outFmt ? modeConfig[currentMode].outFmt + ' output' : 'Output', { id: 'output', readOnly: true }));
+$('playgroundPopoutBtn')?.addEventListener('click', () => openPopoutMirror($('playgroundInput'), 'API playground request', { id: 'playground_request' }));
+$('playgroundOutputPopoutBtn')?.addEventListener('click', () => openPopoutMirror($('playgroundOutput'), 'API playground response', { id: 'playground_response', readOnly: true }));
+
 $('swapBtn').addEventListener('click', () => {
   const cfg = modeConfig[currentMode];
   if (cfg && cfg.isDiff) {

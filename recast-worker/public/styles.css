@@ -118,6 +118,7 @@
     font-family:'IBM Plex Mono', monospace; font-size:11.5px; color:#B9CBDA; text-transform:uppercase; letter-spacing:.08em;
   }
   .panel-head .fmt{color:#EDF3F8; font-weight:600;}
+  .panel-head .fmt-count{display:flex; align-items:center; gap:10px;}
   textarea{
     width:100%; min-height:340px; resize:vertical; border:none; outline:none;
     background:transparent; color:#EDF3F8; font-family:'IBM Plex Mono', monospace; font-size:13px;
@@ -544,3 +545,44 @@ article.post .post-cta p{ margin-bottom:14px; }
 }
 .plan .plan-icon .ico{ width:16px; height:16px; }
 .plan.featured .plan-icon{ border-color:#F2C14E; color:#F2C14E; }
+
+/* ================= Expand (fullscreen) + pop-out windows ================= */
+.panel-head .head-actions{ display:flex; align-items:center; gap:4px; }
+.win-btn{
+  display:inline-flex; align-items:center; justify-content:center; width:22px; height:22px;
+  border:1px solid transparent; border-radius:2px; background:transparent; color:#B9CBDA; cursor:pointer; padding:0;
+}
+.win-btn:hover{ color:#F2C14E; border-color:rgba(140,182,214,0.32); }
+.win-btn .ico{ width:13px; height:13px; }
+.wb-mid .win-btn{ width:26px; height:26px; border:1px solid rgba(140,182,214,0.32); margin-top:4px; }
+
+body.wb-lock{ overflow:hidden; }
+
+.panel.wb-fullscreen{
+  position:fixed; inset:0; z-index:300; background:#0E2338; padding:0; display:flex; flex-direction:column;
+  border-radius:0; border:none;
+}
+.panel.wb-fullscreen .ta-wrap{ flex:1; min-height:0; }
+.panel.wb-fullscreen textarea{ min-height:100%; height:100%; }
+.panel.wb-fullscreen .panel-head{ padding:14px 20px; }
+.panel.wb-fullscreen .opts-row, .panel.wb-fullscreen .panel-foot{ padding:12px 20px; }
+
+.workbench.wb-fullscreen{
+  position:fixed; inset:0; z-index:300; background:#0E2338; margin:0; border-radius:0; border:none;
+  display:flex; flex-direction:column; padding:0;
+}
+.workbench.wb-fullscreen .wb-grid{ flex:1; min-height:0; }
+.workbench.wb-fullscreen .panel{ min-height:0; }
+.workbench.wb-fullscreen .ta-wrap{ flex:1; min-height:0; }
+.workbench.wb-fullscreen textarea{ min-height:100%; height:100%; }
+.workbench.wb-fullscreen .path-row{ padding:14px 20px 0; }
+
+.api-playground.wb-fullscreen{
+  position:fixed; inset:0; z-index:300; background:#0E2338; padding:24px; overflow:auto; margin:0;
+}
+.api-playground.wb-fullscreen .playground-row{ min-height:calc(100vh - 220px); }
+.api-playground.wb-fullscreen .playground-textarea,
+.api-playground.wb-fullscreen .playground-output{ min-height:calc(100vh - 320px); }
+
+.playground-label-row .head-actions{ display:flex; align-items:center; gap:4px; margin-left:auto; }
+.playground-label-row{ display:flex; align-items:center; gap:10px; }
