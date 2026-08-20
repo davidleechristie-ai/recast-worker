@@ -1,0 +1,229 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>How to Use Recast — A Beginner's Guide | Recast</title>
+<meta name="description" content="No coding experience needed. A plain-English, visual walkthrough of how to convert your files with Recast — what it does, how to use it step by step, and how the API playground works.">
+<link rel="canonical" href="https://tryrecast.app/how-to/index.html">
+<link rel="stylesheet" href="../styles.css">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@500;600;700&family=IBM+Plex+Mono:wght@400;500&display=swap" rel="stylesheet">
+<link rel="manifest" href="../manifest.json">
+<meta name="theme-color" content="#0E2338">
+<link rel="apple-touch-icon" href="../icons/icon-192.png">
+<script type="application/ld+json">
+{
+  "@context": "https://schema.org",
+  "@type": "Article",
+  "headline": "How to Use Recast — A Beginner's Guide",
+  "description": "No coding experience needed. A plain-English, visual walkthrough of how to convert your files with Recast.",
+  "url": "https://tryrecast.app/how-to/index.html",
+  "publisher": { "@type": "Organization", "name": "Recast", "url": "https://tryrecast.app/" },
+  "datePublished": "2026-08-20"
+}
+</script>
+<!-- Google tag (gtag.js) -->
+<script async src="https://www.googletagmanager.com/gtag/js?id=G-MW47YKCSLX"></script>
+<script>
+  window.dataLayer = window.dataLayer || [];
+  function gtag(){dataLayer.push(arguments);}
+  gtag('js', new Date());
+
+  gtag('config', 'G-MW47YKCSLX');
+</script>
+</head>
+<body style="background:#0E2338;color:#EDF3F8;margin:0;min-height:100vh;">
+
+<header class="titleblock">
+  <div class="tb-row">
+    <a href="../index.html" class="brand" style="text-decoration:none;color:inherit;"><span class="mark">⇄</span>RECAST</a>
+    <nav class="tb-nav">
+      <a href="../index.html#tool">Tool</a>
+      <a href="../index.html#pricing">Pricing</a>
+      <a href="../index.html#api">API docs</a>
+      <a href="../blog/index.html">Blog</a>
+      <a href="../demo/index.html">Demo</a>
+      <a href="index.html">How To</a>
+    </nav>
+  </div>
+</header>
+
+<main style="max-width:1100px;margin:0 auto;padding:48px 24px 80px;">
+
+<article class="post" style="max-width:760px;">
+  <div class="post-meta">Beginner's Guide</div>
+  <h1>How to use Recast — no coding experience needed</h1>
+
+  <p>If you've never touched a data file in your life and someone just told you "convert this JSON to CSV," this page is for you. No jargon assumed — we'll explain the words as we go.</p>
+
+  <div class="howto-toc">
+    <a href="#what-is-it">What is Recast?</a>
+    <a href="#steps">Step-by-step</a>
+    <a href="#example">A real example</a>
+    <a href="#privacy">Is my data safe?</a>
+    <a href="#other-tools">What else can it do?</a>
+    <a href="#api">Using the API</a>
+  </div>
+
+  <h2 id="what-is-it">What is Recast, in plain English?</h2>
+  <p>Think of Recast as a <strong>translator for data files</strong> — the same way Google Translate turns French into English, Recast turns one type of data file into another. Computer programs are picky: one system might only understand a format called <strong>JSON</strong>, while another only reads <strong>CSV</strong> (basically a spreadsheet saved as plain text). If you've got a file in the wrong format, Recast rewrites it into the format you actually need — usually in under a second.</p>
+
+  <div class="howto-diagram">
+<svg viewBox="0 0 720 160" xmlns="http://www.w3.org/2000/svg" style="width:100%;max-width:600px;height:auto;">
+  <style>
+    .box{fill:#12314C;stroke:rgba(140,182,214,0.4);stroke-width:1.5;}
+    .box-accent{fill:#12314C;stroke:#F2C14E;stroke-width:1.5;}
+    .lbl{font-family:'Space Grotesk',sans-serif;font-size:14px;font-weight:600;fill:#EDF3F8;}
+    .sub{font-family:'IBM Plex Mono',monospace;font-size:10.5px;fill:#B9CBDA;}
+    .arrow{stroke:#F2C14E;stroke-width:2;fill:none;marker-end:url(#arrowhead);}
+  </style>
+  <defs>
+    <marker id="arrowhead" markerWidth="8" markerHeight="8" refX="6" refY="4" orient="auto">
+      <path d="M0,0 L8,4 L0,8 Z" fill="#F2C14E"/>
+    </marker>
+  </defs>
+  <rect x="10" y="35" width="180" height="90" rx="6" class="box"/>
+  <text x="100" y="72" text-anchor="middle" class="lbl">Your file</text>
+  <text x="100" y="92" text-anchor="middle" class="sub">CSV, XML, YAML...</text>
+
+  <path d="M195,80 L265,80" class="arrow"/>
+
+  <rect x="270" y="20" width="180" height="120" rx="6" class="box-accent"/>
+  <text x="360" y="65" text-anchor="middle" class="lbl">Recast</text>
+  <text x="360" y="85" text-anchor="middle" class="sub">picks the shape apart,</text>
+  <text x="360" y="100" text-anchor="middle" class="sub">rebuilds it correctly</text>
+
+  <path d="M455,80 L525,80" class="arrow"/>
+
+  <rect x="530" y="35" width="180" height="90" rx="6" class="box"/>
+  <text x="620" y="72" text-anchor="middle" class="lbl">Your result</text>
+  <text x="620" y="92" text-anchor="middle" class="sub">JSON, ready to use</text>
+</svg>
+  </div>
+
+  <p>You don't need to know what "JSON" or "CSV" technically means to use it. You just need to know: "I have a file, and I need it in a different format." Recast handles the rest.</p>
+
+  <div class="howto-callout">Here's what the tool actually looks like when you open it — the box on the left is where your original file goes, and the box on the right shows the converted result.</div>
+  <img class="howto-img" src="images/overview.png" alt="The Recast homepage, showing the privacy notice and a live before-and-after example converting JSON to CSV">
+
+  <h2 id="steps">Step-by-step: converting your first file</h2>
+
+  <div class="howto-step">
+    <div class="howto-step-num">1</div>
+    <div class="howto-step-body">
+      <h3>Tell it what you're starting with and what you want instead</h3>
+      <p>Along the top of the tool is a row of buttons in plain English, like "JSON → CSV" or "CSV → JSON" (the arrow just means "turns into"). Click the one that matches what you have and what you want. Don't worry about getting it wrong — you can change it any time, and nothing is saved or sent anywhere until you say so.</p>
+      <img class="howto-img" src="images/step1-pick-mode.png" alt="The Recast mode picker, showing buttons like JSON to CSV, CSV to JSON, Validate JSON, and Diff JSON">
+    </div>
+  </div>
+
+  <div class="howto-step">
+    <div class="howto-step-num">2</div>
+    <div class="howto-step-body">
+      <h3>Paste or upload your file, then click Convert</h3>
+      <p>Open your file in a text editor (or just open it and select-all, copy), then paste it into the left-hand box. Prefer not to copy-paste? There's an "Upload" button that lets you pick the file straight from your computer instead. Either way, click the yellow <strong>Convert</strong> button in the middle, and your result appears on the right almost instantly.</p>
+      <img class="howto-img" src="images/step2-convert.png" alt="Recast's workbench showing a JSON file converted into CSV, with Copy and Download buttons visible">
+    </div>
+  </div>
+
+  <div class="howto-step">
+    <div class="howto-step-num">3</div>
+    <div class="howto-step-body">
+      <h3>Copy it, or download it as a file</h3>
+      <p>Once you see your result, you've got two options: click <strong>Copy</strong> to paste it straight into another program, or click <strong>Download</strong> to save it as a proper file on your computer. That's the whole process, start to finish.</p>
+    </div>
+  </div>
+
+  <div class="howto-callout">Don't have a file of your own handy to practice with? Head to the <a href="../demo/index.html">Demo page</a> — it has real, ready-made sample files you can load with one click or one drag, so you can try this out right now without needing anything of your own.</div>
+
+  <h2 id="example">A real example</h2>
+  <p>Say you exported your customer list from an online store as a spreadsheet (CSV), but the system you need to send it to only accepts JSON. Here's what that actually looks like, before and after:</p>
+
+  <p><strong>Before</strong> — a CSV file, which is really just plain text with commas separating each value:</p>
+  <div class="howto-example">id,name,city
+1,Ada Lovelace,London
+2,Grace Hopper,New York</div>
+
+  <p><strong>After</strong> — the same information as JSON, which most modern software actually expects:</p>
+  <div class="howto-example">[
+  { "id": 1, "name": "Ada Lovelace", "city": "London" },
+  { "id": 2, "name": "Grace Hopper", "city": "New York" }
+]</div>
+
+  <p>Same information, same three customers — just written in a shape the receiving system can actually understand. That's the whole job.</p>
+
+  <h2 id="privacy">Is my data safe?</h2>
+  <p>A completely fair question, especially if you're pasting in something like a customer list or financial data. Short answer: yes. The conversion itself happens entirely on your own device, inside your browser — not on a server somewhere else. Nothing is uploaded, logged, or stored.</p>
+
+  <div class="howto-diagram">
+<svg viewBox="0 0 720 190" xmlns="http://www.w3.org/2000/svg" style="width:100%;max-width:600px;height:auto;">
+  <style>
+    .box{fill:#12314C;stroke:rgba(140,182,214,0.4);stroke-width:1.5;}
+    .box-accent{fill:#12314C;stroke:#7FE7D0;stroke-width:1.5;}
+    .box-x{fill:#12314C;stroke:rgba(242,132,107,0.5);stroke-width:1.5;stroke-dasharray:5,4;}
+    .lbl{font-family:'Space Grotesk',sans-serif;font-size:14px;font-weight:600;fill:#EDF3F8;}
+    .sub{font-family:'IBM Plex Mono',monospace;font-size:10.5px;fill:#B9CBDA;}
+    .arrow{stroke:#7FE7D0;stroke-width:2;fill:none;marker-end:url(#arrowhead2);}
+    .nope{font-family:'IBM Plex Mono',monospace;font-size:22px;fill:#F2846B;font-weight:700;}
+  </style>
+  <defs>
+    <marker id="arrowhead2" markerWidth="8" markerHeight="8" refX="6" refY="4" orient="auto">
+      <path d="M0,0 L8,4 L0,8 Z" fill="#7FE7D0"/>
+    </marker>
+  </defs>
+
+  <rect x="10" y="60" width="170" height="80" rx="6" class="box-accent"/>
+  <text x="95" y="95" text-anchor="middle" class="lbl">Your browser</text>
+  <text x="95" y="115" text-anchor="middle" class="sub">the whole tool runs here</text>
+
+  <path d="M185,100 C230,100 230,55 275,55" class="arrow"/>
+  <text x="230" y="45" text-anchor="middle" class="sub" fill="#B9CBDA">converting</text>
+
+  <rect x="280" y="15" width="170" height="80" rx="6" class="box-accent"/>
+  <text x="365" y="50" text-anchor="middle" class="lbl">Result</text>
+  <text x="365" y="70" text-anchor="middle" class="sub">shown right back to you</text>
+
+  <path d="M185,110 C240,150 400,150 460,150" class="arrow" stroke="rgba(242,132,107,0.5)" marker-end="none" stroke-dasharray="5,4"/>
+  <rect x="465" y="110" width="170" height="80" rx="6" class="box-x"/>
+  <text x="550" y="145" text-anchor="middle" class="lbl" fill="#F2846B">Our server</text>
+  <text x="550" y="165" text-anchor="middle" class="sub">never sees it — no route there</text>
+  <text x="620" y="140" class="nope">✕</text>
+</svg>
+  </div>
+
+  <p>The one exception: if a developer on your team uses the <a href="#api">API</a> to connect Recast to their own software, that specific request does go to our server to be processed automatically — but a one-off paste-and-convert in your browser never leaves your machine.</p>
+
+  <h2 id="other-tools">What else can it do?</h2>
+  <p>Converting between formats is the most common use, but a few other buttons are worth knowing about, explained simply:</p>
+  <ul>
+    <li><strong>Validate</strong> — checks your file for mistakes (like a missing comma or bracket) and tells you exactly where the problem is, instead of just saying "error."</li>
+    <li><strong>Diff</strong> — short for "difference." Give it two versions of the same file (an old one and a new one) and it highlights exactly what changed between them, like tracked changes in a Word document.</li>
+    <li><strong>Schema</strong> — looks at a sample of your data and works out the "rules" it follows (which fields exist, whether they're text or numbers, which ones are optional) — useful if you need to describe your data's structure to someone else, or another piece of software.</li>
+  </ul>
+  <p>All of these work the same way as converting: pick the option, paste your data, click the button. The <a href="../demo/index.html">Demo page</a> is the fastest way to see any of them in action.</p>
+
+  <h2 id="api">Using the API playground</h2>
+  <p>This part is more technical, and it's genuinely optional — most people never need it. It's for one specific situation: you (or someone on your team) wants your <em>own</em> software to convert files automatically, without a person copying and pasting each time.</p>
+
+  <p>In plain terms: instead of a person using the website, another computer program sends Recast a file and gets the converted result back automatically — the same conversion, just requested by code instead of a click.</p>
+
+  <img class="howto-img" src="images/step3-api.png" alt="The Recast API playground, showing an example request and the list of available endpoints">
+
+  <div class="howto-callout">If that paragraph didn't mean much to you, that's completely fine — it means you don't need this part. Everything above (paste, pick, convert) covers the vast majority of what people actually use Recast for.</div>
+
+  <p>If you do have a developer who wants to wire this up, they can find the exact technical details — request formats, authentication, and code examples in several languages — in the <a href="../index.html#api">full API documentation</a> further down the main tool page.</p>
+
+  <div class="post-cta">
+    <p>Ready to try it yourself? <a href="../demo/index.html">Start with a ready-made sample file</a> — no need to have your own data ready. Or jump straight into <a href="../index.html#tool">the tool</a> with your own file.</p>
+  </div>
+</article>
+
+</main>
+
+<footer style="max-width:1100px;margin:0 auto;padding:24px;text-align:center;color:#B9CBDA;font-size:12.5px;border-top:1px solid rgba(140,182,214,0.16);">
+  <a href="../index.html" style="color:#B9CBDA;">Recast</a> — convert, validate, diff JSON, CSV and XML in your browser.
+</footer>
+
+</body>
+</html>

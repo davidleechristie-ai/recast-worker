@@ -471,7 +471,7 @@ article.post .post-cta p{ margin-bottom:14px; }
 .api-playground{ margin:20px 0; }
 .playground-row{ display:grid; grid-template-columns:1fr 1fr; gap:16px; }
 @media (max-width:720px){ .playground-row{ grid-template-columns:1fr; } }
-.playground-col{ display:flex; flex-direction:column; }
+.playground-col{ display:flex; flex-direction:column; position:relative; }
 .playground-label-row{ display:flex; align-items:center; justify-content:space-between; gap:10px; flex-wrap:wrap; margin-bottom:6px; }
 .playground-label{ font-family:'IBM Plex Mono', monospace; font-size:11px; text-transform:uppercase; letter-spacing:.04em; color:#B9CBDA; }
 .playground-live-tag{ font-family:'IBM Plex Mono', monospace; font-size:10.5px; color:#7FE7D0; background:rgba(127,231,208,0.1); padding:2px 8px; border-radius:2px; }
@@ -702,3 +702,52 @@ body.wb-lock{ overflow:hidden; }
 .qs-card .qs-title{ font-family:'Space Grotesk', sans-serif; font-weight:600; font-size:14.5px; color:#EDF3F8; }
 .qs-card .qs-desc{ font-size:12px; color:#B9CBDA; line-height:1.4; }
 @media (max-width:640px){ .quick-start-grid{ grid-template-columns:repeat(2, 1fr); } }
+
+/* ================= Demo page ================= */
+.demo-gallery{ display:grid; grid-template-columns:repeat(auto-fit, minmax(230px, 1fr)); gap:12px; margin:28px 0 20px; }
+.demo-card{
+  position:relative; display:flex; flex-direction:column; gap:8px; text-align:left;
+  background:#12314C; border:1px solid rgba(140,182,214,0.32); border-radius:5px; padding:16px;
+  cursor:grab; transition:border-color .15s, transform .1s, box-shadow .15s;
+}
+.demo-card:hover{ border-color:#F2C14E; transform:translateY(-1px); box-shadow:0 6px 18px rgba(0,0,0,0.25); }
+.demo-card:active{ cursor:grabbing; }
+.demo-card.dragging{ opacity:.4; }
+.demo-card-head{ display:flex; align-items:center; gap:8px; }
+.demo-card-head .ico{ width:18px; height:18px; color:#F2C14E; }
+.demo-format{
+  font-family:'IBM Plex Mono', monospace; font-size:10.5px; letter-spacing:.08em; color:#7FE7D0;
+  border:1px solid rgba(127,231,208,0.4); border-radius:2px; padding:2px 6px;
+}
+.demo-card h3{ margin:0; font-family:'Space Grotesk', sans-serif; font-size:15.5px; font-weight:600; color:#EDF3F8; }
+.demo-card p{ margin:0; font-size:12.5px; color:#B9CBDA; line-height:1.5; }
+.demo-meta{ margin-top:auto; padding-top:8px; font-family:'IBM Plex Mono', monospace; font-size:11px; color:#7FE7D0; border-top:1px solid rgba(140,182,214,0.16); }
+.demo-card-loading{ position:absolute; inset:0; background:rgba(14,35,56,0.9); border-radius:5px; display:none; align-items:center; justify-content:center; font-family:'IBM Plex Mono', monospace; font-size:12px; color:#F2C14E; }
+.demo-card.loading .demo-card-loading{ display:flex; }
+
+/* ================= How-To page ================= */
+.howto-step{ display:flex; gap:20px; align-items:flex-start; margin:32px 0; }
+.howto-step-num{
+  flex-shrink:0; width:36px; height:36px; border-radius:50%; border:1.5px solid #F2C14E; color:#F2C14E;
+  display:grid; place-items:center; font-family:'Space Grotesk', sans-serif; font-weight:700; font-size:16px;
+}
+.howto-step-body{ flex:1; }
+.howto-step-body h3{ margin:0 0 8px; font-family:'Space Grotesk', sans-serif; font-size:17px; color:#EDF3F8; }
+.howto-step-body p{ margin:0 0 14px; }
+.howto-img{
+  width:100%; max-width:700px; border:1px solid rgba(140,182,214,0.32); border-radius:6px;
+  box-shadow:0 8px 24px rgba(0,0,0,0.3); display:block;
+}
+.howto-diagram{ margin:28px 0; padding:20px; background:#12314C; border:1px solid rgba(140,182,214,0.32); border-radius:6px; display:flex; justify-content:center; }
+.howto-callout{
+  margin:24px 0; padding:16px 18px; border-left:3px solid #7FE7D0; background:rgba(127,231,208,0.06);
+  border-radius:0 4px 4px 0; font-size:14px; line-height:1.6;
+}
+.howto-example{
+  margin:20px 0; padding:16px 18px; background:#12314C; border:1px solid rgba(140,182,214,0.32); border-radius:6px;
+  font-family:'IBM Plex Mono', monospace; font-size:12.5px; overflow-x:auto; white-space:pre;
+}
+.howto-toc{ display:flex; flex-wrap:wrap; gap:10px 20px; margin:20px 0 36px; padding:16px 18px; background:#12314C; border:1px solid rgba(140,182,214,0.32); border-radius:6px; }
+.howto-toc a{ color:#B9CBDA; font-size:13px; text-decoration:none; }
+.howto-toc a:hover{ color:#F2C14E; }
+@media (max-width:640px){ .howto-step{ flex-direction:column; gap:10px; } }

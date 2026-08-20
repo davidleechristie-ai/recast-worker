@@ -788,7 +788,19 @@ document.querySelectorAll('.mode-group-btn').forEach(btn => btn.addEventListener
 document.querySelectorAll('.mode-chip[data-mode]').forEach(chip => chip.addEventListener('click', () => { setMode(chip.dataset.mode); track('select_tool', { mode: chip.dataset.mode }); }));
 document.querySelectorAll('.qs-card[data-mode]').forEach(card => card.addEventListener('click', () => {
   setMode(card.dataset.mode);
-  $('inputPanel')?.scrollIntoView({ behavior: 'smooth', block: 'start' });
+  // Scroll to the quick-start row itself, not all the way down to the
+  // input panel — that overshot past the cards and the mode tabs, leaving
+  // the user unable to see what they'd just clicked or switch again
+  // without scrolling back up. Account for the sticky header's real
+  // height rather than a hardcoded offset, since it wraps taller on
+  // narrow screens.
+  const target = $('quickStart');
+  const header = document.querySelector('header.titleblock');
+  if (target) {
+    const headerH = header ? header.getBoundingClientRect().height : 0;
+    const y = target.getBoundingClientRect().top + window.scrollY - headerH - 12;
+    window.scrollTo({ top: y, behavior: 'smooth' });
+  }
   track('quick_start_select', { mode: card.dataset.mode });
 }));
 
@@ -2028,6 +2040,56 @@ $('cmdkInput')?.addEventListener('keydown', (e) => {
   else if (e.key === 'Escape') { closeCmdk(); }
 });
 $('cmdkOverlay')?.addEventListener('click', (e) => { if (e.target.id === 'cmdkOverlay') closeCmdk(); });
+
+// ---------------- Fix: #tool/#pricing/#api anchor links from other pages ----------------
+// The browser's native "scroll to URL fragment on load" fires once, early —
+// before Google Fonts finish loading and swap in, which reflows/shifts
+// everything below the hero and leaves the scroll position wrong (verified:
+// landed at a different wrong offset on every run, never the correct one).
+// It also doesn't know about the sticky header, so even a correct native
+// jump would sit partly underneath it. Re-doing the scroll ourselves after
+// the page has actually finished settling fixes both at once.
+function scrollToHashTarget() {
+  const hash = location.hash;
+  if (!hash) return;
+  const target = document.getElementById(hash.slice(1));
+  if (!target) return;
+  const header = document.querySelector('header.titleblock');
+  const headerH = header ? header.getBoundingClientRect().height : 0;
+  const y = target.getBoundingClientRect().top + window.scrollY - headerH - 12;
+  // 'instant' explicitly overrides the site's global CSS scroll-behavior:
+  // smooth — without it, 'auto' defers to that CSS, meaning every one of
+  // the retry checkpoints below would kick off its own multi-hundred-ms
+  // animation and interrupt whichever one was still mid-flight, landing
+  // wherever the last interruption happened to catch it rather than the
+  // actual target.
+  window.scrollTo({ top: Math.max(0, y), behavior: 'instant' });
+}
+if (location.hash) {
+  // Multiple checkpoints rather than one — whatever exact combination of
+  // fonts/images/icons is still settling, by a couple seconds in everything
+  // real has finished loading on any normal connection, so the last
+  // correction wins regardless of which earlier one was still premature.
+  [50, 200, 500, 1000, 1800].forEach(delay => setTimeout(scrollToHashTarget, delay));
+  if (document.fonts && document.fonts.ready) document.fonts.ready.then(scrollToHashTarget);
+  window.addEventListener('load', () => setTimeout(scrollToHashTarget, 60));
+}
+// Same-page anchor clicks (e.g. #pricing while already on a tool page,
+// which embeds its own copy of that section) are a *different* problem:
+// the browser's native jump and any reactive fix both end up racing each
+// other, since both are trying to scroll at once. Taking the click over
+// entirely — prevent the native jump, do the corrected scroll ourselves —
+// removes the race instead of trying to win it.
+document.addEventListener('click', (e) => {
+  const link = e.target.closest('a[href^="#"]');
+  if (!link) return;
+  const id = link.getAttribute('href').slice(1);
+  const target = id && document.getElementById(id);
+  if (!target) return;
+  e.preventDefault();
+  history.pushState(null, '', '#' + id);
+  scrollToHashTarget();
+});
 
 setMode(initialMode);
 inputEl.value = samples[initialMode] || samples.json2csv;

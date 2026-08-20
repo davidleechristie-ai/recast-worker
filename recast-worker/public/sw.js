@@ -13,7 +13,16 @@
  * offline too, without bloating the initial install with 23 near-duplicate
  * tool pages nobody's asked for yet.
  */
-const CACHE_VERSION = 'recast-v1';
+// IMPORTANT — bump this on every deploy that changes any cached file
+// (index.html, styles.css, app.js, or anything in CORE_ASSETS below).
+// Browsers only detect a service worker update when sw.js's own bytes
+// change; if this string stays the same, already-installed clients never
+// re-check, never re-fetch, and stay stuck on whatever was cached the
+// first time they visited — indefinitely, not just until a normal cache
+// expiry. This bit someone on the "Demo" page launch: the nav link update
+// never reached anyone with the SW already active, because this file was
+// otherwise unchanged.
+const CACHE_VERSION = 'recast-v3';
 const CORE_ASSETS = [
   '/',
   '/index.html',

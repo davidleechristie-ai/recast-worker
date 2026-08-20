@@ -145,6 +145,8 @@
       <a href="#pricing">Pricing</a>
       <a href="#api">API docs</a>
       <a href="../blog/index.html">Blog</a>
+      <a href="../demo/index.html">Demo</a>
+      <a href="../how-to/index.html">How To</a>
     </nav>
     <div class="header-actions">
       <span class="worker-status" id="workerStatus"><span class="dot"></span>Processing…</span>
@@ -189,7 +191,7 @@
   </div>
 </div>
 
-    <div class="quick-start">
+    <div class="quick-start" id="quickStart">
       <p class="quick-start-label">Start here</p>
       <div class="quick-start-grid">
         <button class="qs-card" data-mode="json2csv"><svg class="ico"><use href="#ico-json"/></svg><span class="qs-title">JSON → CSV</span><span class="qs-desc">Turn API responses into spreadsheet rows</span></button>
@@ -640,6 +642,7 @@
             <option value="markdown2json">markdown2json</option>
           </select>
           <textarea id="playgroundInput" class="playground-textarea" spellcheck="false">[{"id":1,"name":"Ada","city":"London"}]</textarea>
+          <div class="drop-zone" id="playgroundDropZone">Drop a demo file here</div>
           <button class="btn btn-gold" id="playgroundRunBtn" style="margin-top:10px;">Run</button>
         </div>
         <div class="playground-col">
