@@ -565,7 +565,7 @@ function formatSchemaValidationReport(result) {
 }
 
 // ---------------- Mode config ----------------
-function getLimitBytes() { return isPro() ? 25 * 1024 * 1024 : 256 * 1024; }
+function getLimitBytes() { return isPro() ? 25 * 1024 * 1024 : 3 * 1024 * 1024; }
 const CSV_COMPARE_FREE_ROW_LIMIT = 50; // free tier: CSV compare capped at this many data rows per file; unlimited on Pro
 
 const modeConfig = {
@@ -609,6 +609,8 @@ const modeConfig = {
     sync: t => JSON.stringify(jsonPathQuery(JSON.parse(t), document.getElementById('jsonPathInput').value), null, document.getElementById('prettyPrint')?.checked ? 2 : 0) },
   jsonSchema: { inFmt:'JSON (sample)', outFmt:'JSON Schema', dual:false, path:false, showDelim:false, showBom:false, showPretty:false, showInfer:false, btn:'Generate schema', hl:'json', hlOut:'json', batchSupported:true, outExt:'json',
     task: () => ({ task:'schema', payload:{ text: inputEl.value, options:{ title: '' } } }) },
+  jsonStructure: { inFmt:'JSON', outFmt:'Structure summary', dual:false, path:false, showDelim:false, showBom:false, showPretty:false, showInfer:false, btn:'Summarize structure', hl:'json', hlOut:'plain', batchSupported:true, outExt:'txt',
+    task: () => ({ task:'schema', payload:{ text: inputEl.value, options:{ render:'structure' } } }) },
   json2ts: { inFmt:'JSON (sample)', outFmt:'TypeScript', dual:false, path:false, showDelim:false, showBom:false, showPretty:false, showInfer:false, showRootName:true, btn:'Generate types', hl:'json', hlOut:'plain', batchSupported:true, outExt:'ts',
     task: () => ({ task:'schema', payload:{ text: inputEl.value, options:{ render:'typescript', rootName: document.getElementById('schemaRootName')?.value || 'Root' } } }) },
   json2zod: { inFmt:'JSON (sample)', outFmt:'Zod schema', dual:false, path:false, showDelim:false, showBom:false, showPretty:false, showInfer:false, showRootName:true, btn:'Generate Zod schema', hl:'json', hlOut:'plain', batchSupported:true, outExt:'ts',
@@ -619,6 +621,12 @@ const modeConfig = {
     task: () => ({ task:'schema', payload:{ text: inputEl.value, options:{ render:'pydantic', rootName: document.getElementById('schemaRootName')?.value || 'Root' } } }) },
   json2go: { inFmt:'JSON (sample)', outFmt:'Go structs', dual:false, path:false, showDelim:false, showBom:false, showPretty:false, showInfer:false, showRootName:true, btn:'Generate Go structs', hl:'json', hlOut:'plain', batchSupported:true, outExt:'go',
     task: () => ({ task:'schema', payload:{ text: inputEl.value, options:{ render:'go', rootName: document.getElementById('schemaRootName')?.value || 'Root' } } }) },
+  json2kotlin: { inFmt:'JSON (sample)', outFmt:'Kotlin data classes', dual:false, path:false, showDelim:false, showBom:false, showPretty:false, showInfer:false, showRootName:true, btn:'Generate Kotlin classes', hl:'json', hlOut:'plain', batchSupported:true, outExt:'kt',
+    task: () => ({ task:'schema', payload:{ text: inputEl.value, options:{ render:'kotlin', rootName: document.getElementById('schemaRootName')?.value || 'Root' } } }) },
+  json2rust: { inFmt:'JSON (sample)', outFmt:'Rust structs', dual:false, path:false, showDelim:false, showBom:false, showPretty:false, showInfer:false, showRootName:true, btn:'Generate Rust structs', hl:'json', hlOut:'plain', batchSupported:true, outExt:'rs',
+    task: () => ({ task:'schema', payload:{ text: inputEl.value, options:{ render:'rust', rootName: document.getElementById('schemaRootName')?.value || 'Root' } } }) },
+  jsonMock: { inFmt:'JSON (sample)', outFmt:'Mock data', dual:false, path:false, showDelim:false, showBom:false, showPretty:false, showInfer:false, showMockCount:true, btn:'Generate mock data', hl:'json', hlOut:'json', batchSupported:true, outExt:'json',
+    task: () => ({ task:'schema', payload:{ text: inputEl.value, options:{ render:'mock', count: parseInt(document.getElementById('mockCount')?.value, 10) || 3 } } }) },
   validateSchema: { inFmt:'Schema / Data', outFmt:'Validation report', dual:true, path:false, showDelim:false, showBom:false, showPretty:false, showInfer:false, btn:'Validate against schema', hl:'json', hlOut:'plain', isSchemaCheck:true,
     dualLabels: ['Paste the JSON Schema here\u2026', 'Paste the data to validate here\u2026'],
     task: () => ({ task:'validateSchema', payload:{ schemaText: document.getElementById('inputA').value, dataText: document.getElementById('inputB').value } }) },
@@ -648,7 +656,14 @@ const samples = {
   sortJson: JSON.stringify({ z: 1, a: { c: 3, b: 2 }, m: [3,1,2] }, null, 2),
   jsonPath: JSON.stringify({ users: [{ name: "Ada", role: "Engineer" }, { name: "Grace", role: "Admiral" }], meta: { count: 2 } }, null, 2),
   jsonSchema: JSON.stringify({ id: 1, name: "Ada Lovelace", active: true, tags: ["math","computing"], address: { city: "London", zip: null } }, null, 2),
+  jsonStructure: JSON.stringify([
+    { id: 1, name: "Ada Lovelace", role: "Engineer", address: { city: "London", country: "UK" }, tags: ["math","computing"] },
+    { id: 2, name: "Grace Hopper", role: "Admiral", address: { city: "New York", country: "US" }, tags: ["navy"], nickname: "Amazing Grace" }
+  ], null, 2),
   json2ts: JSON.stringify({ id: 1, name: "Ada Lovelace", active: true, tags: ["math","computing"], address: { city: "London", zip: null } }, null, 2),
+  json2kotlin: JSON.stringify({ id: 1, name: "Ada Lovelace", active: true, tags: ["math","computing"], address: { city: "London", zip: null } }, null, 2),
+  json2rust: JSON.stringify({ id: 1, name: "Ada Lovelace", active: true, tags: ["math","computing"], address: { city: "London", zip: null } }, null, 2),
+  jsonMock: JSON.stringify({ id: 1, name: "Ada Lovelace", email: "ada@example.com", city: "London", joinedDate: "2020-01-01", active: true }, null, 2),
   json2zod: JSON.stringify({ id: 1, name: "Ada Lovelace", active: true, tags: ["math","computing"], address: { city: "London", zip: null } }, null, 2),
 };
 const diffSamples = {
@@ -723,12 +738,22 @@ function setMode(mode) {
   if ($('inputA')) $('inputA').placeholder = (cfg.dualLabels && cfg.dualLabels[0]) || 'Original / left side\u2026';
   if ($('inputB')) $('inputB').placeholder = (cfg.dualLabels && cfg.dualLabels[1]) || 'Modified / right side\u2026';
 
+  // Table/graph view are reading aids — drop them on any mode switch so
+  // they don't linger showing stale/irrelevant data in an unrelated mode.
+  if (inputTableActive) { inputTableActive = false; singleWrap?.classList.remove('table-active'); $('inputTableBtn')?.classList.remove('active'); if ($('inputTableBtn')) $('inputTableBtn').title = 'Toggle table view'; }
+  if (outputTableActive) { outputTableActive = false; $('outputTableWrap')?.closest('.ta-wrap')?.classList.remove('table-active'); $('outputTableBtn')?.classList.remove('active'); if ($('outputTableBtn')) $('outputTableBtn').title = 'Toggle table view'; }
+  tableSortState = { input: null, output: null };
+  if (typeof setGraphActive === 'function') { setGraphActive('input', false); setGraphActive('output', false); }
+
+  if (typeof liveValidateIfApplicable === 'function') liveValidateIfApplicable();
+
   const pathRow = $('pathRow');
   if (cfg.path) pathRow?.classList.add('show'); else pathRow?.classList.remove('show');
 
   if ($('prettyLabel')) $('prettyLabel').style.display = cfg.showPretty ? '' : 'none';
   if ($('bomLabel')) $('bomLabel').style.display = cfg.showBom ? '' : 'none';
   if ($('rootNameLabel')) $('rootNameLabel').style.display = cfg.showRootName ? '' : 'none';
+  if ($('mockCountLabel')) $('mockCountLabel').style.display = cfg.showMockCount ? '' : 'none';
   if ($('delimLabel')) $('delimLabel').style.display = cfg.showDelim ? '' : 'none';
   if ($('inferLabel')) $('inferLabel').style.display = cfg.showInfer ? '' : 'none';
 
@@ -738,16 +763,16 @@ function setMode(mode) {
   updateHighlightLayers();
 
   // Batch support: hide the toggle entirely for modes that can't batch
-  // (diff modes are inherently two-input, JSONPath/schema-validation need
-  // a query alongside each file, so batch doesn't make sense for those).
+  // either as single-file conversion or as paired-file diff (JSONPath and
+  // schema-validation need a query alongside each file, so batch doesn't
+  // make sense for those).
   const batchToggle = $('batchToggleBtn');
   if (batchToggle) {
-    const supported = RecastBatch.isBatchSupported(mode);
+    const supported = RecastBatch.isBatchSupported(mode) || RecastBatch.isBatchDiffSupported(mode);
     batchToggle.style.display = supported ? '' : 'none';
     if (!supported) $('batchPanel')?.classList.remove('show');
   }
-  const label = $('batchModeLabel');
-  if (label) label.textContent = 'Batch: ' + (chip ? chip.textContent : mode);
+  updateBatchPanelForMode(mode);
 }
 
 function setGroup(group) {
@@ -761,6 +786,23 @@ function setGroup(group) {
 }
 document.querySelectorAll('.mode-group-btn').forEach(btn => btn.addEventListener('click', () => setGroup(btn.dataset.group)));
 document.querySelectorAll('.mode-chip[data-mode]').forEach(chip => chip.addEventListener('click', () => { setMode(chip.dataset.mode); track('select_tool', { mode: chip.dataset.mode }); }));
+document.querySelectorAll('.qs-card[data-mode]').forEach(card => card.addEventListener('click', () => {
+  setMode(card.dataset.mode);
+  // Scroll to the quick-start row itself, not all the way down to the
+  // input panel — that overshot past the cards and the mode tabs, leaving
+  // the user unable to see what they'd just clicked or switch again
+  // without scrolling back up. Account for the sticky header's real
+  // height rather than a hardcoded offset, since it wraps taller on
+  // narrow screens.
+  const target = $('quickStart');
+  const header = document.querySelector('header.titleblock');
+  if (target) {
+    const headerH = header ? header.getBoundingClientRect().height : 0;
+    const y = target.getBoundingClientRect().top + window.scrollY - headerH - 12;
+    window.scrollTo({ top: y, behavior: 'smooth' });
+  }
+  track('quick_start_select', { mode: card.dataset.mode });
+}));
 
 function updateCounts() {
   const cfg = modeConfig[currentMode];
@@ -773,13 +815,62 @@ function updateCounts() {
   const pct = Math.min(100, (bytes / limit) * 100);
   $('capFill').style.width = pct + '%';
   $('capFill').style.background = pct > 90 ? '#F2846B' : '#7FE7D0';
-  $('capLabel').textContent = isPro() ? `${Math.round(bytes/1024)} KB \u00b7 Pro` : `${Math.round(bytes/1024)} / 256 KB free limit`;
+  $('capLabel').textContent = isPro() ? `${Math.round(bytes/1024)} KB \u00b7 Pro` : `${(bytes/1024/1024).toFixed(2)} / 3 MB free limit`;
   const nudge = $('upgradeNudge');
   if (nudge) { if (pct > 80) nudge.classList.add('show'); else nudge.classList.remove('show'); }
 }
 inputEl.addEventListener('input', () => { updateCounts(); renderHl($('hlInput'), inputEl, modeConfig[currentMode].hl); });
-$('inputA')?.addEventListener('input', () => { updateCounts(); renderHl($('hlInputA'), $('inputA'), modeConfig[currentMode].hl); });
-$('inputB')?.addEventListener('input', () => { updateCounts(); renderHl($('hlInputB'), $('inputB'), modeConfig[currentMode].hl); });
+$('inputA')?.addEventListener('input', () => { updateCounts(); renderHl($('hlInputA'), $('inputA'), modeConfig[currentMode].hl); liveValidateIfApplicable(); });
+$('inputB')?.addEventListener('input', () => { updateCounts(); renderHl($('hlInputB'), $('inputB'), modeConfig[currentMode].hl); liveValidateIfApplicable(); });
+
+// ---------------- Live inline schema validation ----------------
+// Updates a small valid/invalid badge as you type against a schema,
+// instead of only reporting on button-click — closer to how an IDE
+// behaves. Debounced and length-guarded so it can't jank typing on a
+// large paste; skipped entirely outside the schema-validation mode.
+let liveValidateTimer = null;
+const LIVE_VALIDATE_MAX_BYTES = 200 * 1024;
+
+function liveValidateIfApplicable() {
+  const cfg = modeConfig[currentMode];
+  const badge = $('liveValidateBadge');
+  if (!badge) return;
+  if (!cfg?.isSchemaCheck) { badge.style.display = 'none'; return; }
+  clearTimeout(liveValidateTimer);
+  liveValidateTimer = setTimeout(runLiveValidate, 400);
+}
+
+function runLiveValidate() {
+  const badge = $('liveValidateBadge');
+  const schemaText = $('inputA')?.value || '';
+  const dataText = $('inputB')?.value || '';
+  if (!schemaText.trim() || !dataText.trim()) { badge.style.display = 'none'; return; }
+  if (new Blob([schemaText, dataText]).size > LIVE_VALIDATE_MAX_BYTES) {
+    badge.className = 'live-validate-badge wait';
+    badge.textContent = 'Too large for live validation \u2014 use the button';
+    badge.style.display = 'block';
+    return;
+  }
+  let schema, data;
+  try { schema = JSON.parse(schemaText); data = JSON.parse(dataText); }
+  catch (e) {
+    badge.className = 'live-validate-badge wait';
+    badge.textContent = '\u22ef waiting for valid JSON';
+    badge.style.display = 'block';
+    return;
+  }
+  try {
+    const result = RecastEngine.validateAgainstSchema(data, schema);
+    badge.className = 'live-validate-badge ' + (result.valid ? 'ok' : 'err');
+    badge.textContent = result.valid ? '\u2713 Valid' : `\u2715 ${result.errors.length} issue${result.errors.length === 1 ? '' : 's'}`;
+    badge.style.display = 'block';
+  } catch (e) {
+    badge.className = 'live-validate-badge wait';
+    badge.textContent = '\u22ef ' + (e.message || 'checking\u2026');
+    badge.style.display = 'block';
+  }
+}
+
 
 function setWorking(on) { $('workerStatus').classList.toggle('show', on); }
 
@@ -791,6 +882,7 @@ async function runCurrentMode() {
     statusEl.innerHTML = '<span class="status-err">\u2715 File exceeds the free limit \u2014 <a href="#pricing" style="color:#F2C14E">upgrade to Pro</a> for files up to 25 MB.</span>';
     $('upgradeNudge')?.classList.add('show');
     track('limit_hit', { mode: currentMode, reason: 'file_size' });
+    recordPaywallHit('file_size');
     return;
   }
   if (currentMode === 'diffCsv' && !isPro()) {
@@ -801,6 +893,7 @@ async function runCurrentMode() {
       statusEl.innerHTML = `<span class="status-err">\u2715 Free tier compares up to ${CSV_COMPARE_FREE_ROW_LIMIT} rows per file \u2014 <a href="#pricing" style="color:#F2C14E">upgrade to Pro</a>, or <a href="#" onclick="startCheckout('day_pass');return false;" style="color:#F2C14E">get a 24-hour pass \u2014 \u00a32.99</a> for just this one.</span>`;
       $('upgradeNudge')?.classList.add('show');
       track('limit_hit', { mode: currentMode, reason: 'row_count' });
+      recordPaywallHit('row_count');
       return;
     }
   }
@@ -849,6 +942,8 @@ async function runCurrentMode() {
     }
     updateCounts();
     renderHl($('hlOutput'), outputEl, cfg.hlOut);
+    if (outputTableActive) renderCsvTableInto($('outputTableWrap'), outputEl.value, getDelim());
+    if (outputGraphActive) RecastGraph.render($('outputGraphWrap'), outputEl.value);
 
     RecastHistory.add(cfg.dual
       ? { mode: currentMode, inputA: $('inputA').value, inputB: $('inputB').value }
@@ -1001,6 +1096,124 @@ function openPopoutMirror(sourceEl, label, opts) {
   w.addEventListener('beforeunload', cleanup);
   track('popout_open', { field: opts.id || label });
 }
+// ---------------- CSV table preview ----------------
+// A read view of whatever's currently in a panel, rendered as an actual
+// sortable table rather than raw delimited text — for eyeballing or
+// re-ordering tabular data without needing a spreadsheet app open.
+let inputTableActive = false;
+let outputTableActive = false;
+let tableSortState = { input: null, output: null }; // { col, dir } | null
+
+function renderCsvTableInto(wrapEl, text, delimiter, side) {
+  if (!wrapEl) return;
+  wrapEl.innerHTML = '';
+  let parsed;
+  try { parsed = RecastEngine.csvToRows(text || '', delimiter || ','); }
+  catch (e) { parsed = { headers: [], rows: [] }; }
+  if (!parsed.headers.length || !parsed.rows.length) {
+    const empty = document.createElement('div');
+    empty.className = 'csv-table-empty';
+    empty.textContent = text && text.trim() ? "This doesn't look like CSV \u2014 nothing to show as a table." : 'Nothing to preview yet.';
+    wrapEl.appendChild(empty);
+    return;
+  }
+  let rows = parsed.rows.slice();
+  const sort = tableSortState[side];
+  if (sort) {
+    const col = sort.col;
+    const allNumeric = rows.every(r => r[col] === '' || !isNaN(parseFloat(r[col])));
+    rows.sort((a, b) => {
+      const av = a[col], bv = b[col];
+      let cmp;
+      if (allNumeric) cmp = (parseFloat(av) || 0) - (parseFloat(bv) || 0);
+      else cmp = String(av).localeCompare(String(bv));
+      return sort.dir === 'desc' ? -cmp : cmp;
+    });
+  }
+  const table = document.createElement('table');
+  table.className = 'csv-table';
+  const thead = document.createElement('thead');
+  const headRow = document.createElement('tr');
+  parsed.headers.forEach(h => {
+    const th = document.createElement('th');
+    th.textContent = h;
+    if (sort && sort.col === h) {
+      const arrow = document.createElement('span');
+      arrow.className = 'sort-arrow';
+      arrow.textContent = sort.dir === 'desc' ? '\u2193' : '\u2191';
+      th.appendChild(arrow);
+    }
+    th.addEventListener('click', () => {
+      const cur = tableSortState[side];
+      tableSortState[side] = (cur && cur.col === h && cur.dir === 'asc') ? { col: h, dir: 'desc' } : { col: h, dir: 'asc' };
+      renderCsvTableInto(wrapEl, text, delimiter, side);
+    });
+    headRow.appendChild(th);
+  });
+  thead.appendChild(headRow);
+  table.appendChild(thead);
+  const tbody = document.createElement('tbody');
+  rows.forEach(r => {
+    const tr = document.createElement('tr');
+    parsed.headers.forEach(h => {
+      const td = document.createElement('td');
+      td.textContent = r[h] !== undefined ? r[h] : '';
+      tr.appendChild(td);
+    });
+    tbody.appendChild(tr);
+  });
+  table.appendChild(tbody);
+  wrapEl.appendChild(table);
+}
+
+let inputGraphActive = false;
+let outputGraphActive = false;
+
+function toggleTableView(side) {
+  const taWrap = side === 'input' ? $('singleInputWrap') : $('outputTableWrap').closest('.ta-wrap');
+  const btn = $(side === 'input' ? 'inputTableBtn' : 'outputTableBtn');
+  const el = side === 'input' ? inputEl : outputEl;
+  const wrap = $(side === 'input' ? 'inputTableWrap' : 'outputTableWrap');
+  if (side === 'input') inputTableActive = !inputTableActive; else outputTableActive = !outputTableActive;
+  const active = side === 'input' ? inputTableActive : outputTableActive;
+  if (active) setGraphActive(side, false); // mutually exclusive with graph view on the same panel
+  taWrap.classList.toggle('table-active', active);
+  btn.classList.toggle('active', active);
+  btn.title = active ? 'Back to text view' : 'Toggle table view';
+  if (active) renderCsvTableInto(wrap, el.value, getDelim(), side);
+  track('table_view_toggle', { mode: currentMode, side, active });
+}
+$('inputTableBtn')?.addEventListener('click', () => toggleTableView('input'));
+$('outputTableBtn')?.addEventListener('click', () => toggleTableView('output'));
+inputEl.addEventListener('input', () => {
+  if (inputTableActive) renderCsvTableInto($('inputTableWrap'), inputEl.value, getDelim(), 'input');
+  if (inputGraphActive) RecastGraph.render($('inputGraphWrap'), inputEl.value);
+});
+
+function setGraphActive(side, active) {
+  const taWrap = side === 'input' ? $('singleInputWrap') : $('outputGraphWrap').closest('.ta-wrap');
+  const btn = $(side === 'input' ? 'inputGraphBtn' : 'outputGraphBtn');
+  if (side === 'input') inputGraphActive = active; else outputGraphActive = active;
+  taWrap.classList.toggle('graph-active', active);
+  btn.classList.toggle('active', active);
+  btn.title = active ? 'Back to text view' : 'Toggle graph view';
+}
+function toggleGraphView(side) {
+  const active = side === 'input' ? !inputGraphActive : !outputGraphActive;
+  if (active) { // mutually exclusive with table view on the same panel
+    if (side === 'input' && inputTableActive) toggleTableView('input');
+    if (side === 'output' && outputTableActive) toggleTableView('output');
+  }
+  setGraphActive(side, active);
+  const el = side === 'input' ? inputEl : outputEl;
+  const wrap = $(side === 'input' ? 'inputGraphWrap' : 'outputGraphWrap');
+  if (active) RecastGraph.render(wrap, el.value);
+  track('graph_view_toggle', { mode: currentMode, side, active });
+}
+$('inputGraphBtn')?.addEventListener('click', () => toggleGraphView('input'));
+$('outputGraphBtn')?.addEventListener('click', () => toggleGraphView('output'));
+inputEl.addEventListener('input', () => { if (inputGraphActive) RecastGraph.render($('inputGraphWrap'), inputEl.value); });
+
 $('inputPopoutBtn')?.addEventListener('click', () => openPopoutMirror(inputEl, modeConfig[currentMode]?.inFmt ? modeConfig[currentMode].inFmt + ' input' : 'Input', { id: 'input' }));
 $('outputPopoutBtn')?.addEventListener('click', () => openPopoutMirror(outputEl, modeConfig[currentMode]?.outFmt ? modeConfig[currentMode].outFmt + ' output' : 'Output', { id: 'output', readOnly: true }));
 $('playgroundPopoutBtn')?.addEventListener('click', () => openPopoutMirror($('playgroundInput'), 'API playground request', { id: 'playground_request' }));
@@ -1118,7 +1331,7 @@ wireDropZone($('inputPanel'), $('dropZone'), async (files) => {
     return;
   }
   const panel = $('batchPanel');
-  panel.querySelector('.batch-head').style.display = '';
+  $('batchHeadSingle').style.display = '';
   panel.classList.add('show');
   await addFilesToBatch(files);
   showToast(`Added ${files.length} files to batch`);
@@ -1136,20 +1349,23 @@ wireDropZone($('inputB')?.closest('.ta-wrap'), $('dropZoneB'), async (files) => 
   track('file_drop', { mode: currentMode, side: 'B', count: 1 });
 });
 
-// Batch panel — append dropped files to the existing queue.
+// Batch panel — append dropped files to the existing queue. Diff mode has
+// two separate sides (original/modified), so a generic drop is ambiguous
+// there; only single-file batch modes get this shortcut, matching the
+// "enabled" pattern used for the main input drop zone above.
 wireDropZone($('batchPanel'), $('batchDropZone'), async (files) => {
   if (!isPro()) { showBatchLocked(); return; }
   await addFilesToBatch(files);
   track('file_drop', { mode: currentMode, batch: true, count: files.length });
   showToast(`Added ${files.length} file${files.length === 1 ? '' : 's'} to batch`);
-});
+}, { enabled: () => !(modeConfig[currentMode]?.dual && RecastBatch.isBatchDiffSupported(currentMode)) });
 
 document.addEventListener('keydown', (e) => { if ((e.metaKey || e.ctrlKey) && e.key === 'Enter') { e.preventDefault(); $('convertBtn')?.click(); } });
 
 $('copyBtn').addEventListener('click', () => { if (!outputEl.value) return; navigator.clipboard.writeText(outputEl.value).then(() => { statusEl.innerHTML = '<span class="status-ok">\u2713 Copied to clipboard</span>'; track('copy_output', { mode: currentMode }); }); });
 $('downloadBtn').addEventListener('click', () => {
   if (!outputEl.value) return;
-  const ext = { json2csv:'csv', csv2json:'json', json2xml:'xml', xml2json:'json', flatten:'json', unflatten:'json', jsonSchema:'json', json2yaml:'yaml', yaml2json:'json', json2markdown:'md', markdown2json:'json', json2python:'py', json2pydantic:'py', json2go:'go' }[currentMode] || 'txt';
+  const ext = { json2csv:'csv', csv2json:'json', json2xml:'xml', xml2json:'json', flatten:'json', unflatten:'json', jsonSchema:'json', jsonStructure:'txt', json2yaml:'yaml', yaml2json:'json', json2markdown:'md', markdown2json:'json', json2python:'py', json2pydantic:'py', json2go:'go', json2kotlin:'kt', json2rust:'rs', jsonMock:'json' }[currentMode] || 'txt';
   const mime = { csv:'text/csv', json:'application/json', xml:'application/xml' }[ext] || 'text/plain';
   const blob = new Blob([outputEl.value], { type: mime + ';charset=utf-8' });
   const a = document.createElement('a');
@@ -1219,6 +1435,20 @@ async function restoreFromShareLink() {
 
 // ---------------- Batch conversion (Pro) ----------------
 let batchFiles = []; // { name, text }
+let batchFilesA = []; let batchFilesB = []; // dual-mode (diff) staging, paired by matching filename
+let batchDiffPairs = [];
+let batchDiffResults = null;
+
+function updateBatchPanelForMode(mode) {
+  const cfg = modeConfig[mode];
+  const isDiff = cfg?.dual && RecastBatch.isBatchDiffSupported(mode);
+  $('batchHeadSingle').style.display = isDiff ? 'none' : '';
+  $('batchHeadDual').style.display = isDiff ? '' : 'none';
+  $('batchDiffHint').style.display = isDiff ? '' : 'none';
+  const chip = document.querySelector(`.mode-chip[data-mode="${mode}"]`);
+  if (isDiff) $('batchModeLabelDual').textContent = 'Batch diff: ' + (chip ? chip.textContent : mode);
+  else if ($('batchModeLabel')) $('batchModeLabel').textContent = 'Batch: ' + (chip ? chip.textContent : mode);
+}
 let batchResults = null;
 
 function currentOptionsSnapshot() {
@@ -1242,7 +1472,32 @@ function applyOptionsSnapshot(opts) {
 }
 
 function renderBatchFileList() {
+  const cfg = modeConfig[currentMode];
+  const isDiff = cfg?.dual && RecastBatch.isBatchDiffSupported(currentMode);
   const listEl = $('batchFileList');
+  if (isDiff) {
+    if (!batchDiffPairs.length && !batchFilesA.length && !batchFilesB.length) {
+      listEl.innerHTML = '<div class="batch-empty">Add original files and modified files \u2014 they\'ll be paired by matching filename.</div>';
+      return;
+    }
+    const paired = RecastBatch.pairBatchFiles(batchFilesA, batchFilesB);
+    batchDiffPairs = paired.pairs;
+    let html = paired.pairs.map((p, i) => {
+      const r = batchDiffResults && batchDiffResults[i];
+      const statusClass = !r ? 'pending' : (r.ok ? 'ok' : 'err');
+      const statusText = !r ? 'pending' : (r.ok ? 'done' : 'error');
+      return `<div class="batch-file-row" data-idx="${i}">
+        <span class="fname">${RecastHighlight.escapeHtml(p.nameA)} \u2194 ${RecastHighlight.escapeHtml(p.nameB)}</span>
+        <span class="fstatus ${statusClass}">${statusText}</span>
+      </div>`;
+    }).join('');
+    const unmatched = paired.unmatchedA.concat(paired.unmatchedB);
+    if (unmatched.length) {
+      html += `<div class="batch-empty">Unmatched, not compared: ${unmatched.map(n => RecastHighlight.escapeHtml(n)).join(', ')}</div>`;
+    }
+    listEl.innerHTML = html;
+    return;
+  }
   if (!batchFiles.length) { listEl.innerHTML = '<div class="batch-empty">No files added yet \u2014 tap "Add files" to select several at once.</div>'; return; }
   listEl.innerHTML = batchFiles.map((f, i) => {
     const r = batchResults && batchResults[i];
@@ -1277,31 +1532,92 @@ async function addFilesToBatch(fileList) {
   renderBatchFileList();
 }
 
+async function addFilesToBatchSide(fileList, side) {
+  const target = side === 'A' ? batchFilesA : batchFilesB;
+  for (const file of Array.from(fileList)) {
+    const text = await file.text();
+    target.push({ name: file.name, text });
+  }
+  batchDiffResults = null;
+  $('batchSummary').style.display = 'none';
+  $('batchDownloadBtn2').style.display = 'none';
+  renderBatchFileList();
+}
+
+// ---------------- Usage-triggered upgrade prompts ----------------
+// Tracks locally (never sent anywhere — this is separate from the GA
+// event) how many times someone's actually hit a free-tier wall this
+// browser. The generic banner shows every time; this escalates to a
+// specific, contextual one every 3rd hit rather than repeating the same
+// message endlessly, which is closer to what actually moves a repeat
+// visitor to upgrade than a static banner.
+const PAYWALL_HITS_KEY = 'recast_paywall_hits_v1';
+function loadPaywallHits() {
+  try { return JSON.parse(localStorage.getItem(PAYWALL_HITS_KEY)) || { reasons: {}, lastEscalation: 0 }; }
+  catch (e) { return { reasons: {}, lastEscalation: 0 }; }
+}
+function savePaywallHits(state) {
+  try { localStorage.setItem(PAYWALL_HITS_KEY, JSON.stringify(state)); } catch (e) { /* fail silently */ }
+}
+const PAYWALL_REASON_COPY = {
+  file_size: 'the file size limit',
+  row_count: 'the CSV compare row limit',
+  batch_locked: 'batch conversion being Pro-only',
+};
+function recordPaywallHit(reason) {
+  const state = loadPaywallHits();
+  state.reasons[reason] = (state.reasons[reason] || 0) + 1;
+  const total = Object.values(state.reasons).reduce((a, b) => a + b, 0);
+  savePaywallHits(state);
+  if (total >= 3 && total % 3 === 0 && total !== state.lastEscalation) {
+    state.lastEscalation = total;
+    savePaywallHits(state);
+    const topReason = Object.keys(state.reasons).sort((a, b) => state.reasons[b] - state.reasons[a])[0];
+    const reasonText = PAYWALL_REASON_COPY[topReason] || 'a free-tier limit';
+    $('paywallEscalationText').textContent = `You've hit ${reasonText} ${total} time${total === 1 ? '' : 's'} \u2014 Pro removes that entirely.`;
+    $('paywallEscalation').style.display = 'flex';
+    track('paywall_escalation_shown', { total, top_reason: topReason });
+  }
+}
+$('paywallEscalationClose')?.addEventListener('click', () => { $('paywallEscalation').style.display = 'none'; });
+
 function showBatchLocked() {
   $('batchFileList').innerHTML = '';
   const panel = $('batchPanel');
   panel.classList.add('show');
-  const head = panel.querySelector('.batch-head');
-  head.style.display = 'none';
+  $('batchHeadSingle').style.display = 'none';
+  $('batchHeadDual').style.display = 'none';
+  $('batchDiffHint').style.display = 'none';
   $('batchSummary').style.display = 'block';
   $('batchSummary').innerHTML = `<div class="batch-locked"><p>Batch conversion is a Pro feature \u2014 convert up to 100 files at once instead of one at a time.</p><a href="#pricing" class="btn btn-gold">Upgrade to Pro \u2014 \u00a39/mo</a></div>`;
+  recordPaywallHit('batch_locked');
 }
 
 $('batchToggleBtn')?.addEventListener('click', () => {
   const panel = $('batchPanel');
+  $('recipePanel')?.classList.remove('show');
   if (!isPro()) {
     if (panel.classList.contains('show')) { panel.classList.remove('show'); return; }
     showBatchLocked();
     return;
   }
-  panel.querySelector('.batch-head').style.display = '';
-  $('batchSummary').style.display = batchResults ? 'block' : 'none';
+  updateBatchPanelForMode(currentMode);
+  $('batchSummary').style.display = (batchResults || batchDiffResults) ? 'block' : 'none';
   panel.classList.toggle('show');
   if (panel.classList.contains('show')) renderBatchFileList();
 });
 
 $('batchFileInput')?.addEventListener('change', async (e) => {
   if (e.target.files && e.target.files.length) await addFilesToBatch(e.target.files);
+  e.target.value = '';
+});
+
+$('batchFileInputA')?.addEventListener('change', async (e) => {
+  if (e.target.files && e.target.files.length) await addFilesToBatchSide(e.target.files, 'A');
+  e.target.value = '';
+});
+$('batchFileInputB')?.addEventListener('change', async (e) => {
+  if (e.target.files && e.target.files.length) await addFilesToBatchSide(e.target.files, 'B');
   e.target.value = '';
 });
 
@@ -1344,7 +1660,173 @@ $('batchClearBtn')?.addEventListener('click', () => {
   $('batchDownloadBtn').style.display = 'none';
 });
 
-// ---------------- Presets (Pro) ----------------
+$('batchRunDiffBtn')?.addEventListener('click', async () => {
+  if (!isPro()) { showBatchLocked(); return; }
+  const paired = RecastBatch.pairBatchFiles(batchFilesA, batchFilesB);
+  batchDiffPairs = paired.pairs;
+  if (!batchDiffPairs.length) { showToast('Add original and modified files first'); return; }
+  setWorking(true);
+  const opts = currentOptionsSnapshot();
+  batchDiffResults = await RecastBatch.runBatchDiff(batchDiffPairs, currentMode, opts, () => renderBatchFileList());
+  setWorking(false);
+  renderBatchFileList();
+  const okCount = batchDiffResults.filter(r => r.ok).length;
+  const errCount = batchDiffResults.length - okCount;
+  $('batchSummary').style.display = 'block';
+  $('batchSummary').textContent = `${okCount} compared, ${errCount} failed`;
+  $('batchDownloadBtn2').style.display = okCount ? '' : 'none';
+  track('batch_convert', { mode: currentMode, batch_diff: true, file_count: batchDiffResults.length, ok_count: okCount, err_count: errCount });
+});
+
+$('batchDownloadBtn2')?.addEventListener('click', async () => {
+  if (!batchDiffResults) return;
+  const ok = batchDiffResults.filter(r => r.ok);
+  if (!ok.length) return;
+  if (typeof JSZip === 'undefined') { showToast('Zip library failed to load \u2014 check your connection and retry'); return; }
+  const zip = new JSZip();
+  ok.forEach(r => zip.file(r.outName, r.output));
+  const blob = await zip.generateAsync({ type: 'blob' });
+  const a = document.createElement('a');
+  a.href = URL.createObjectURL(blob);
+  a.download = 'recast-batch-diff.zip';
+  a.click();
+  URL.revokeObjectURL(a.href);
+});
+
+$('batchClearBtn2')?.addEventListener('click', () => {
+  batchFilesA = [];
+  batchFilesB = [];
+  batchDiffPairs = [];
+  batchDiffResults = null;
+  renderBatchFileList();
+  $('batchSummary').style.display = 'none';
+  $('batchDownloadBtn2').style.display = 'none';
+});
+
+// ---------------- Recipes ----------------
+// Chain several single-input transforms into one saved, reusable pipeline.
+// Free feature, unlike Batch/Presets — a recipe with N steps run once is
+// meaningfully different from "convert 100 files," so it doesn't compete
+// with the same upgrade trigger.
+let recipeSteps = [];
+
+function recipeStepLabel(mode) {
+  const chip = document.querySelector(`.mode-chip[data-mode="${mode}"]`);
+  return chip ? chip.textContent.trim() : mode;
+}
+
+function populateRecipeStepDropdown() {
+  const sel = $('recipeAddStep');
+  if (!sel || !window.RecastBatch) return;
+  const modes = Object.keys(RecastBatch.BATCH_OPS);
+  sel.innerHTML = '<option value="">+ Add step\u2026</option>' +
+    modes.map(m => `<option value="${m}">${RecastHighlight.escapeHtml(recipeStepLabel(m))}</option>`).join('');
+}
+
+function renderRecipeSteps() {
+  const listEl = $('recipeStepList');
+  if (!recipeSteps.length) {
+    listEl.innerHTML = '<div class="batch-empty">No steps yet \u2014 add one below. Each step\'s output feeds into the next.</div>';
+    return;
+  }
+  listEl.innerHTML = recipeSteps.map((s, i) => `
+    <div class="batch-file-row" data-idx="${i}">
+      <span class="recipe-step-num">${i + 1}</span>
+      <span class="fname">${RecastHighlight.escapeHtml(recipeStepLabel(s.mode))}</span>
+      <div class="recipe-step-btns">
+        <button data-up="${i}" ${i === 0 ? 'disabled' : ''} title="Move up">\u2191</button>
+        <button data-down="${i}" ${i === recipeSteps.length - 1 ? 'disabled' : ''} title="Move down">\u2193</button>
+        <button data-remove="${i}" title="Remove">\u2715</button>
+      </div>
+    </div>
+  `).join('');
+  listEl.querySelectorAll('[data-remove]').forEach(btn => btn.addEventListener('click', () => {
+    recipeSteps.splice(parseInt(btn.dataset.remove, 10), 1);
+    renderRecipeSteps();
+  }));
+  listEl.querySelectorAll('[data-up]').forEach(btn => btn.addEventListener('click', () => {
+    const i = parseInt(btn.dataset.up, 10);
+    [recipeSteps[i - 1], recipeSteps[i]] = [recipeSteps[i], recipeSteps[i - 1]];
+    renderRecipeSteps();
+  }));
+  listEl.querySelectorAll('[data-down]').forEach(btn => btn.addEventListener('click', () => {
+    const i = parseInt(btn.dataset.down, 10);
+    [recipeSteps[i + 1], recipeSteps[i]] = [recipeSteps[i], recipeSteps[i + 1]];
+    renderRecipeSteps();
+  }));
+}
+
+function renderSavedRecipes() {
+  const recipes = RecastRecipes.load();
+  const wrap = $('recipeSavedWrap');
+  const listEl = $('recipeSavedList');
+  if (!recipes.length) { wrap.style.display = 'none'; return; }
+  wrap.style.display = '';
+  listEl.innerHTML = recipes.map(r => `
+    <div class="recipe-saved-row" data-name="${RecastHighlight.escapeHtml(r.name)}">
+      <span class="rname" data-load="${RecastHighlight.escapeHtml(r.name)}">${RecastHighlight.escapeHtml(r.name)}</span>
+      <span class="rsteps">${r.steps.map(s => recipeStepLabel(s.mode)).join(' \u2192 ')}</span>
+      <button class="fremove" data-delete="${RecastHighlight.escapeHtml(r.name)}" title="Delete">\u2715</button>
+    </div>
+  `).join('');
+  listEl.querySelectorAll('[data-load]').forEach(el => el.addEventListener('click', () => {
+    const r = recipes.find(x => x.name === el.dataset.load);
+    if (r) { recipeSteps = r.steps.map(s => ({ mode: s.mode })); renderRecipeSteps(); showToast(`Loaded recipe "${r.name}"`); }
+  }));
+  listEl.querySelectorAll('[data-delete]').forEach(el => el.addEventListener('click', () => {
+    RecastRecipes.remove(el.dataset.delete);
+    renderSavedRecipes();
+  }));
+}
+
+populateRecipeStepDropdown();
+renderRecipeSteps();
+renderSavedRecipes();
+
+$('recipeToggleBtn')?.addEventListener('click', () => {
+  $('batchPanel')?.classList.remove('show');
+  $('recipePanel').classList.toggle('show');
+  if ($('recipePanel').classList.contains('show')) { renderRecipeSteps(); renderSavedRecipes(); }
+});
+$('recipeAddStep')?.addEventListener('change', (e) => {
+  if (!e.target.value) return;
+  if (recipeSteps.length >= RecastRecipes.MAX_STEPS) { showToast(`Recipes are capped at ${RecastRecipes.MAX_STEPS} steps`); e.target.value = ''; return; }
+  recipeSteps.push({ mode: e.target.value });
+  e.target.value = '';
+  renderRecipeSteps();
+});
+$('recipeClearBtn')?.addEventListener('click', () => {
+  recipeSteps = [];
+  renderRecipeSteps();
+  $('recipeSummary').style.display = 'none';
+});
+$('recipeRunBtn')?.addEventListener('click', () => {
+  if (!recipeSteps.length) { showToast('Add at least one step first'); return; }
+  const result = RecastRecipes.runRecipe(inputEl.value, recipeSteps, currentOptionsSnapshot());
+  $('recipeSummary').style.display = 'block';
+  if (result.ok) {
+    outputEl.value = result.finalOutput;
+    updateCounts();
+    renderHl($('hlOutput'), outputEl, 'plain');
+    $('recipeSummary').innerHTML = `<span class="status-ok">\u2713 ${result.stepResults.length} step${result.stepResults.length===1?'':'s'} ran successfully</span>`;
+  } else {
+    const failedIdx = result.stepResults.length - 1;
+    const failedStep = result.stepResults[failedIdx];
+    $('recipeSummary').innerHTML = `<span class="status-err">\u2715 Failed at step ${failedIdx + 1} (${RecastHighlight.escapeHtml(recipeStepLabel(failedStep.mode))}): ${RecastHighlight.escapeHtml(failedStep.error)}</span>`;
+  }
+  track('recipe_run', { steps: recipeSteps.length, success: result.ok });
+});
+$('recipeSaveBtn')?.addEventListener('click', () => {
+  if (!recipeSteps.length) { showToast('Add at least one step first'); return; }
+  const name = (prompt('Name this recipe:') || '').trim();
+  if (!name) return;
+  RecastRecipes.upsert({ name, steps: recipeSteps });
+  renderSavedRecipes();
+  showToast(`Saved recipe "${name}"`);
+  track('recipe_save', { steps: recipeSteps.length });
+});
+
+
 function renderPresetsList() {
   const presets = RecastPresets.load();
   const listEl = $('presetsList');
@@ -1482,6 +1964,133 @@ updatePlaygroundSnippet();
 // that tool instead of the general default — same engine, same page,
 // just a different starting point so each URL matches its search intent.
 const initialMode = (typeof window !== 'undefined' && window.RECAST_DEFAULT_MODE && modeConfig[window.RECAST_DEFAULT_MODE]) ? window.RECAST_DEFAULT_MODE : 'json2csv';
+// ---------------- Command palette (Cmd/Ctrl+K) ----------------
+// Jump straight to any of the 23+ modes by name instead of hunting through
+// the group tabs — built for the daily-use crowd Pro is priced for.
+const cmdkItems = Array.from(document.querySelectorAll('.mode-chip[data-mode]')).map(chip => ({
+  mode: chip.dataset.mode,
+  group: chip.dataset.group,
+  label: chip.textContent.trim(),
+}));
+let cmdkActiveIndex = -1;
+let cmdkFiltered = [];
+
+function cmdkGroupLabel(group) {
+  const btn = document.querySelector(`.mode-group-btn[data-group="${group}"]`);
+  return btn ? btn.textContent.trim() : group;
+}
+
+function updateCmdkActiveClass() {
+  const items = $('cmdkResults').querySelectorAll('.cmdk-item');
+  items.forEach((el, i) => el.classList.toggle('active', i === cmdkActiveIndex));
+  const activeEl = $('cmdkResults').querySelector('.cmdk-item.active');
+  if (activeEl) activeEl.scrollIntoView({ block: 'nearest' });
+}
+
+function selectCmdkItem(idx) {
+  const item = cmdkFiltered[idx];
+  if (!item) return;
+  closeCmdk();
+  setMode(item.mode); // setMode already switches to the item's own group internally
+  track('command_palette_select', { mode: item.mode });
+}
+
+function renderCmdkResults(query) {
+  const q = query.trim().toLowerCase();
+  cmdkFiltered = q ? cmdkItems.filter(it => it.label.toLowerCase().includes(q)) : cmdkItems;
+  cmdkActiveIndex = cmdkFiltered.length ? 0 : -1;
+  const resultsEl = $('cmdkResults');
+  if (!cmdkFiltered.length) {
+    resultsEl.innerHTML = '<div class="cmdk-empty">No matching tool.</div>';
+    return;
+  }
+  resultsEl.innerHTML = cmdkFiltered.map((it, i) => `
+    <div class="cmdk-item${i === 0 ? ' active' : ''}" data-idx="${i}">
+      <svg class="ico"><use href="#ico-json"/></svg>
+      <span>${RecastHighlight.escapeHtml(it.label)}</span>
+      <span class="cmdk-group">${RecastHighlight.escapeHtml(cmdkGroupLabel(it.group))}</span>
+    </div>
+  `).join('');
+  resultsEl.querySelectorAll('.cmdk-item').forEach(el => {
+    el.addEventListener('click', () => selectCmdkItem(parseInt(el.dataset.idx, 10)));
+    el.addEventListener('mouseenter', () => { cmdkActiveIndex = parseInt(el.dataset.idx, 10); updateCmdkActiveClass(); });
+  });
+}
+
+function openCmdk() {
+  $('cmdkOverlay').classList.add('show');
+  $('cmdkInput').value = '';
+  renderCmdkResults('');
+  setTimeout(() => $('cmdkInput').focus(), 10);
+  track('command_palette_open', { mode: currentMode });
+}
+function closeCmdk() { $('cmdkOverlay').classList.remove('show'); }
+
+document.addEventListener('keydown', (e) => {
+  if ((e.metaKey || e.ctrlKey) && e.key.toLowerCase() === 'k') {
+    e.preventDefault();
+    if ($('cmdkOverlay').classList.contains('show')) closeCmdk(); else openCmdk();
+  }
+});
+$('cmdkInput')?.addEventListener('input', (e) => renderCmdkResults(e.target.value));
+$('cmdkInput')?.addEventListener('keydown', (e) => {
+  if (e.key === 'ArrowDown') { e.preventDefault(); cmdkActiveIndex = Math.min(cmdkActiveIndex + 1, cmdkFiltered.length - 1); updateCmdkActiveClass(); }
+  else if (e.key === 'ArrowUp') { e.preventDefault(); cmdkActiveIndex = Math.max(cmdkActiveIndex - 1, 0); updateCmdkActiveClass(); }
+  else if (e.key === 'Enter') { e.preventDefault(); selectCmdkItem(cmdkActiveIndex); }
+  else if (e.key === 'Escape') { closeCmdk(); }
+});
+$('cmdkOverlay')?.addEventListener('click', (e) => { if (e.target.id === 'cmdkOverlay') closeCmdk(); });
+
+// ---------------- Fix: #tool/#pricing/#api anchor links from other pages ----------------
+// The browser's native "scroll to URL fragment on load" fires once, early —
+// before Google Fonts finish loading and swap in, which reflows/shifts
+// everything below the hero and leaves the scroll position wrong (verified:
+// landed at a different wrong offset on every run, never the correct one).
+// It also doesn't know about the sticky header, so even a correct native
+// jump would sit partly underneath it. Re-doing the scroll ourselves after
+// the page has actually finished settling fixes both at once.
+function scrollToHashTarget() {
+  const hash = location.hash;
+  if (!hash) return;
+  const target = document.getElementById(hash.slice(1));
+  if (!target) return;
+  const header = document.querySelector('header.titleblock');
+  const headerH = header ? header.getBoundingClientRect().height : 0;
+  const y = target.getBoundingClientRect().top + window.scrollY - headerH - 12;
+  // 'instant' explicitly overrides the site's global CSS scroll-behavior:
+  // smooth — without it, 'auto' defers to that CSS, meaning every one of
+  // the retry checkpoints below would kick off its own multi-hundred-ms
+  // animation and interrupt whichever one was still mid-flight, landing
+  // wherever the last interruption happened to catch it rather than the
+  // actual target.
+  window.scrollTo({ top: Math.max(0, y), behavior: 'instant' });
+}
+if (location.hash) {
+  // Multiple checkpoints rather than one — whatever exact combination of
+  // fonts/images/icons is still settling, by a couple seconds in everything
+  // real has finished loading on any normal connection, so the last
+  // correction wins regardless of which earlier one was still premature.
+  [50, 200, 500, 1000, 1800].forEach(delay => setTimeout(scrollToHashTarget, delay));
+  if (document.fonts && document.fonts.ready) document.fonts.ready.then(scrollToHashTarget);
+  window.addEventListener('load', () => setTimeout(scrollToHashTarget, 60));
+}
+// Same-page anchor clicks (e.g. #pricing while already on a tool page,
+// which embeds its own copy of that section) are a *different* problem:
+// the browser's native jump and any reactive fix both end up racing each
+// other, since both are trying to scroll at once. Taking the click over
+// entirely — prevent the native jump, do the corrected scroll ourselves —
+// removes the race instead of trying to win it.
+document.addEventListener('click', (e) => {
+  const link = e.target.closest('a[href^="#"]');
+  if (!link) return;
+  const id = link.getAttribute('href').slice(1);
+  const target = id && document.getElementById(id);
+  if (!target) return;
+  e.preventDefault();
+  history.pushState(null, '', '#' + id);
+  scrollToHashTarget();
+});
+
 setMode(initialMode);
 inputEl.value = samples[initialMode] || samples.json2csv;
 updateCounts();

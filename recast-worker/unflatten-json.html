@@ -9,6 +9,9 @@
 <link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@400;500;600;700&family=IBM+Plex+Sans:wght@400;500;600&family=IBM+Plex+Mono:wght@400;500&display=swap" rel="stylesheet">
 <link rel="stylesheet" href="../styles.css">
 <link rel="canonical" href="https://tryrecast.app/tools/unflatten-json.html">
+<link rel="manifest" href="/manifest.json">
+<meta name="theme-color" content="#0E2338">
+<link rel="apple-touch-icon" href="/icons/icon-192.png">
 <script type="application/ld+json">
 {
   "@context": "https://schema.org",
@@ -142,6 +145,7 @@
       <a href="#pricing">Pricing</a>
       <a href="#api">API docs</a>
       <a href="../blog/index.html">Blog</a>
+      <a href="../demo/index.html">Demo</a>
     </nav>
     <div class="header-actions">
       <span class="worker-status" id="workerStatus"><span class="dot"></span>Processing…</span>
@@ -193,6 +197,18 @@
   </div>
 </div>
 
+    <div class="quick-start" id="quickStart">
+      <p class="quick-start-label">Start here</p>
+      <div class="quick-start-grid">
+        <button class="qs-card" data-mode="json2csv"><svg class="ico"><use href="#ico-json"/></svg><span class="qs-title">JSON → CSV</span><span class="qs-desc">Turn API responses into spreadsheet rows</span></button>
+        <button class="qs-card" data-mode="csv2json"><svg class="ico"><use href="#ico-table"/></svg><span class="qs-title">CSV → JSON</span><span class="qs-desc">Typed, nested JSON from a spreadsheet export</span></button>
+        <button class="qs-card" data-mode="validateJson"><svg class="ico"><use href="#ico-check"/></svg><span class="qs-title">Validate JSON</span><span class="qs-desc">Find exactly what's wrong, in plain English</span></button>
+        <button class="qs-card" data-mode="diffJson"><svg class="ico"><use href="#ico-diff"/></svg><span class="qs-title">Diff JSON</span><span class="qs-desc">Key-aware comparison, not line noise</span></button>
+        <button class="qs-card" data-mode="jsonSchema"><svg class="ico"><use href="#ico-schema"/></svg><span class="qs-title">JSON → Schema</span><span class="qs-desc">Infer a schema, then generate real types</span></button>
+        <button class="qs-card" data-mode="formatJson"><svg class="ico"><use href="#ico-json"/></svg><span class="qs-title">Format JSON</span><span class="qs-desc">Pretty-print or minify in one click</span></button>
+      </div>
+    </div>
+
     <div class="mode-nav" id="modeNav">
       <div class="mode-groups" id="modeGroups">
         <button class="mode-group-btn active" data-group="convert">Convert</button>
@@ -223,11 +239,15 @@
         <button class="mode-chip hidden" data-mode="diffCsv" data-group="compare"><svg class="ico"><use href="#ico-diff"/></svg>Diff CSV</button>
         <button class="mode-chip hidden" data-mode="jsonPath" data-group="query"><svg class="ico"><use href="#ico-path"/></svg>JSONPath</button>
         <button class="mode-chip hidden" data-mode="jsonSchema" data-group="schema"><svg class="ico"><use href="#ico-schema"/></svg>JSON → Schema</button>
+        <button class="mode-chip hidden" data-mode="jsonStructure" data-group="schema"><svg class="ico"><use href="#ico-tree"/></svg>JSON → Structure</button>
         <button class="mode-chip hidden" data-mode="json2ts" data-group="schema"><svg class="ico"><use href="#ico-code"/></svg>JSON → TypeScript</button>
         <button class="mode-chip hidden" data-mode="json2zod" data-group="schema"><svg class="ico"><use href="#ico-code"/></svg>JSON → Zod</button>
         <button class="mode-chip hidden" data-mode="json2python" data-group="schema"><svg class="ico"><use href="#ico-code"/></svg>JSON → Python</button>
         <button class="mode-chip hidden" data-mode="json2pydantic" data-group="schema"><svg class="ico"><use href="#ico-code"/></svg>JSON → Pydantic</button>
         <button class="mode-chip hidden" data-mode="json2go" data-group="schema"><svg class="ico"><use href="#ico-code"/></svg>JSON → Go</button>
+        <button class="mode-chip hidden" data-mode="json2kotlin" data-group="schema"><svg class="ico"><use href="#ico-code"/></svg>JSON → Kotlin</button>
+        <button class="mode-chip hidden" data-mode="json2rust" data-group="schema"><svg class="ico"><use href="#ico-code"/></svg>JSON → Rust</button>
+        <button class="mode-chip hidden" data-mode="jsonMock" data-group="schema"><svg class="ico"><use href="#ico-json"/></svg>JSON → Mock data</button>
         <button class="mode-chip hidden" data-mode="validateSchema" data-group="schema"><svg class="ico"><use href="#ico-check"/></svg>Validate against Schema</button>
       </div>
     </div>
@@ -243,6 +263,8 @@
           <div class="panel-head">
             <div class="fmt-count"><span class="fmt" id="inFmt">JSON</span><span id="inCount">0 chars</span></div>
             <div class="head-actions">
+              <button class="win-btn" id="inputTableBtn" title="Toggle table view"><svg class="ico"><use href="#ico-table"/></svg></button>
+              <button class="win-btn" id="inputGraphBtn" title="Toggle graph view"><svg class="ico"><use href="#ico-tree"/></svg></button>
               <button class="win-btn" id="inputPopoutBtn" title="Pop out into a separate window"><svg class="ico"><use href="#ico-popout"/></svg></button>
               <button class="win-btn" id="inputExpandBtn" title="Expand to full screen"><svg class="ico"><use href="#ico-expand"/></svg></button>
             </div>
@@ -250,6 +272,8 @@
           <div class="ta-wrap single-input" id="singleInputWrap">
             <pre class="hl-layer" id="hlInput" aria-hidden="true"></pre>
             <textarea id="input" spellcheck="false" placeholder="Paste data here, drop a file, or click Load sample."></textarea>
+            <div class="csv-table-wrap" id="inputTableWrap"></div>
+            <div class="graph-wrap" id="inputGraphWrap"></div>
           </div>
           <div class="dual-input" id="dualInput">
             <div class="ta-wrap" style="min-height:160px;border-bottom:1px solid rgba(140,182,214,0.16);">
@@ -271,6 +295,7 @@
               <input type="file" id="fileInput" accept=".json,.csv,.xml,.txt,application/json,text/csv,text/xml,text/plain" hidden>
             </label>
             <button class="icon-btn" id="batchToggleBtn" title="Convert many files at once">Batch</button>
+            <button class="icon-btn" id="recipeToggleBtn" title="Chain several operations into a saved pipeline">Recipe</button>
             <span class="kb-hint" title="Keyboard shortcut">⌘/Ctrl + Enter</span>
           </div>
         </div>
@@ -279,12 +304,15 @@
           <button class="swap-btn" id="swapBtn" title="Swap direction">⇄</button>
           <button class="convert-btn" id="convertBtn">Convert</button>
           <button class="win-btn" id="workbenchExpandBtn" title="Expand workbench to full screen"><svg class="ico"><use href="#ico-expand"/></svg></button>
+          <span class="live-validate-badge" id="liveValidateBadge" style="display:none;"></span>
         </div>
 
         <div class="panel" id="outputPanel">
           <div class="panel-head">
             <div class="fmt-count"><span class="fmt" id="outFmt">CSV</span><span id="outCount">0 chars</span></div>
             <div class="head-actions">
+              <button class="win-btn" id="outputTableBtn" title="Toggle table view"><svg class="ico"><use href="#ico-table"/></svg></button>
+              <button class="win-btn" id="outputGraphBtn" title="Toggle graph view"><svg class="ico"><use href="#ico-tree"/></svg></button>
               <button class="win-btn" id="outputPopoutBtn" title="Pop out into a separate window"><svg class="ico"><use href="#ico-popout"/></svg></button>
               <button class="win-btn" id="outputExpandBtn" title="Expand to full screen"><svg class="ico"><use href="#ico-expand"/></svg></button>
             </div>
@@ -292,6 +320,8 @@
           <div class="ta-wrap">
             <pre class="hl-layer" id="hlOutput" aria-hidden="true"></pre>
             <textarea id="output" spellcheck="false" placeholder="Output appears here." readonly></textarea>
+            <div class="csv-table-wrap" id="outputTableWrap"></div>
+            <div class="graph-wrap" id="outputGraphWrap"></div>
           </div>
           <div class="opts-row" id="outOpts">
             <label id="prettyLabel"><input type="checkbox" id="prettyPrint" checked> Pretty</label>
@@ -300,6 +330,10 @@
             <label id="rootNameLabel" style="display:none">
               Type name
               <input type="text" id="schemaRootName" value="Root" style="width:90px;">
+            </label>
+            <label id="mockCountLabel" style="display:none">
+              Records
+              <input type="number" id="mockCount" value="3" min="1" max="50" style="width:60px;">
             </label>
             <label id="delimLabel" style="display:none">
               Delimiter
@@ -313,7 +347,7 @@
           </div>
           <div class="panel-foot">
             <div class="cap-bar"><div class="cap-fill" id="capFill"></div></div>
-            <span class="cap-label" id="capLabel">0 / 256 KB free limit</span>
+            <span class="cap-label" id="capLabel">0 / 3 MB free limit</span>
             <button class="icon-btn" id="copyBtn">Copy</button>
             <button class="icon-btn" id="downloadBtn">Download</button>
             <button class="icon-btn" id="clearOutputBtn" title="Clear output">Clear</button>
@@ -354,7 +388,7 @@
     </div>
 
     <div class="batch-panel" id="batchPanel">
-      <div class="batch-head">
+      <div class="batch-head" id="batchHeadSingle">
         <span class="title" id="batchModeLabel">Batch: JSON → CSV</span>
         <label class="icon-btn" style="cursor:pointer;margin:0;">
           Add files
@@ -364,15 +398,53 @@
         <button class="icon-btn" id="batchDownloadBtn" style="display:none;">Download .zip</button>
         <button class="icon-btn" id="batchClearBtn">Clear</button>
       </div>
+      <div class="batch-head" id="batchHeadDual" style="display:none;">
+        <span class="title" id="batchModeLabelDual">Batch diff</span>
+        <label class="icon-btn" style="cursor:pointer;margin:0;">
+          Add original files
+          <input type="file" id="batchFileInputA" multiple hidden accept=".json,.csv,.xml,.txt">
+        </label>
+        <label class="icon-btn" style="cursor:pointer;margin:0;">
+          Add modified files
+          <input type="file" id="batchFileInputB" multiple hidden accept=".json,.csv,.xml,.txt">
+        </label>
+        <button class="icon-btn" id="batchRunDiffBtn">Run batch</button>
+        <button class="icon-btn" id="batchDownloadBtn2" style="display:none;">Download .zip</button>
+        <button class="icon-btn" id="batchClearBtn2">Clear</button>
+      </div>
+      <p class="batch-diff-hint" id="batchDiffHint" style="display:none;">Files are paired by matching name (after sorting) — upload the "before" set as originals and the "after" set as modified. Unmatched files are listed but not compared.</p>
       <div class="batch-file-list" id="batchFileList"></div>
       <div class="batch-summary" id="batchSummary" style="display:none;"></div>
       <div class="drop-zone" id="batchDropZone">Drop files to add to the batch</div>
+    </div>
+
+    <div class="batch-panel" id="recipePanel">
+      <div class="batch-head">
+        <span class="title">Recipe — chain steps, run them in order</span>
+        <select id="recipeAddStep" class="playground-select" style="width:auto;">
+          <option value="">+ Add step…</option>
+        </select>
+        <button class="icon-btn" id="recipeRunBtn">Run recipe</button>
+        <button class="icon-btn" id="recipeSaveBtn">Save…</button>
+        <button class="icon-btn" id="recipeClearBtn">Clear</button>
+      </div>
+      <div class="batch-file-list" id="recipeStepList"></div>
+      <div class="batch-summary" id="recipeSummary" style="display:none;"></div>
+      <div id="recipeSavedWrap" style="display:none;">
+        <div class="batch-summary" style="border-top:1px solid rgba(140,182,214,0.16);">Saved recipes</div>
+        <div class="batch-file-list" id="recipeSavedList"></div>
+      </div>
     </div>
 
     <div class="status-line" id="status"></div>
     <div class="upgrade-nudge" id="upgradeNudge">
       <span>Free limit reached or nearly full. Pro unlocks 25 MB files, batch convert, and saved presets.</span>
       <a href="#pricing">Upgrade to Pro →</a>
+    </div>
+    <div class="paywall-escalation" id="paywallEscalation" style="display:none;">
+      <span id="paywallEscalationText"></span>
+      <a href="#pricing" class="btn btn-gold" style="padding:5px 12px;font-size:12.5px;">Upgrade to Pro — £9/mo</a>
+      <button id="paywallEscalationClose" title="Dismiss">✕</button>
     </div>
 
     <div class="related-groups">
@@ -413,11 +485,15 @@
       <div class="related-group">
         <span class="rg-label">Schema &amp; types</span>
         <a href="json-schema-generator.html" onclick="setMode('jsonSchema');return false;"><svg class="ico"><use href="#ico-schema"/></svg>JSON → Schema</a>
+        <a href="#" onclick="setMode('jsonStructure');return false;"><svg class="ico"><use href="#ico-tree"/></svg>JSON → Structure</a>
         <a href="json-to-typescript.html" onclick="setMode('json2ts');return false;"><svg class="ico"><use href="#ico-code"/></svg>JSON → TypeScript</a>
         <a href="json-to-zod.html" onclick="setMode('json2zod');return false;"><svg class="ico"><use href="#ico-code"/></svg>JSON → Zod</a>
         <a href="json-to-python.html" onclick="setMode('json2python');return false;"><svg class="ico"><use href="#ico-code"/></svg>JSON → Python</a>
         <a href="json-to-pydantic.html" onclick="setMode('json2pydantic');return false;"><svg class="ico"><use href="#ico-code"/></svg>JSON → Pydantic</a>
         <a href="json-to-go.html" onclick="setMode('json2go');return false;"><svg class="ico"><use href="#ico-code"/></svg>JSON → Go</a>
+        <a href="#" onclick="setMode('json2kotlin');return false;"><svg class="ico"><use href="#ico-code"/></svg>JSON → Kotlin</a>
+        <a href="#" onclick="setMode('json2rust');return false;"><svg class="ico"><use href="#ico-code"/></svg>JSON → Rust</a>
+        <a href="#" onclick="setMode('jsonMock');return false;"><svg class="ico"><use href="#ico-json"/></svg>JSON → Mock data</a>
         <a href="validate-json-schema.html" onclick="setMode('validateSchema');return false;"><svg class="ico"><use href="#ico-check"/></svg>Validate against Schema</a>
       </div>
     </div>
@@ -438,7 +514,7 @@
         <ul>
           <li>Convert, validate, format, diff, JSONPath, schema generate + validate</li>
           <li>CSV compare up to 50 rows per file</li>
-          <li>Files up to 256 KB</li>
+          <li>Files up to 3 MB</li>
           <li>One file at a time</li>
           <li>Runs entirely in-browser</li>
         </ul>
@@ -572,6 +648,7 @@
             <option value="markdown2json">markdown2json</option>
           </select>
           <textarea id="playgroundInput" class="playground-textarea" spellcheck="false">[{"id":1,"name":"Ada","city":"London"}]</textarea>
+          <div class="drop-zone" id="playgroundDropZone">Drop a demo file here</div>
           <button class="btn btn-gold" id="playgroundRunBtn" style="margin-top:10px;">Run</button>
         </div>
         <div class="playground-col">
@@ -600,6 +677,16 @@
       <a href="#pricing" class="btn btn-ghost">See API pricing →</a>
     </div>
   </section>
+  <div class="cmdk-overlay" id="cmdkOverlay">
+    <div class="cmdk-box">
+      <div class="cmdk-input-row">
+        <svg class="ico"><use href="#ico-path"/></svg>
+        <input type="text" id="cmdkInput" placeholder="Jump to a tool…" autocomplete="off" spellcheck="false">
+        <kbd class="cmdk-esc">Esc</kbd>
+      </div>
+      <div class="cmdk-results" id="cmdkResults"></div>
+    </div>
+  </div>
 </main>
 
 <footer>
@@ -619,6 +706,15 @@
 <script src="../lib/share.js"></script>
 <script src="../lib/worker-client.js"></script>
 <script src="../lib/batch.js"></script>
+<script src="../lib/graph.js"></script>
+<script src="../lib/recipes.js"></script>
+<script>
+  if ('serviceWorker' in navigator) {
+    window.addEventListener('load', () => {
+      navigator.serviceWorker.register('/sw.js', { scope: '/' }).catch(() => { /* offline mode just won't be available — the tool still works online */ });
+    });
+  }
+</script>
 <script src="../lib/presets.js"></script>
 <script src="../lib/csv-compare.js"></script>
 <script src="../app.js"></script>

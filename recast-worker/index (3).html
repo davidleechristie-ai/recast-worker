@@ -3,12 +3,12 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Recast — Convert, validate, format, diff & schema for JSON, CSV, XML</title>
-<meta name="description" content="Convert, validate, format, flatten, diff and generate JSON Schema for JSON, CSV and XML — instantly in your browser. Key-aware diffing, JSONPath, Excel-ready CSV. Nothing uploaded. Free for single files.">
+<title>Live Demo — real datasets, thousands of rows | Recast</title>
+<meta name="description" content="Try Recast with real, full-sized datasets — nested JSON orders, a 4,000-row CSV, XML logs, YAML configs, and a genuine diff pair. Drag or tap to load, entirely in your browser.">
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@400;500;600;700&family=IBM+Plex+Sans:wght@400;500;600&family=IBM+Plex+Mono:wght@400;500&display=swap" rel="stylesheet">
-<link rel="stylesheet" href="styles.css">
-<link rel="canonical" href="https://tryrecast.app/">
+<link rel="stylesheet" href="../styles.css">
+<link rel="canonical" href="https://tryrecast.app/demo/index.html">
 <link rel="manifest" href="/manifest.json">
 <meta name="theme-color" content="#0E2338">
 <link rel="apple-touch-icon" href="/icons/icon-192.png">
@@ -17,10 +17,10 @@
   "@context": "https://schema.org",
   "@type": "SoftwareApplication",
   "name": "Recast",
-  "url": "https://tryrecast.app/",
+  "url": "https://tryrecast.app/demo/index.html",
   "applicationCategory": "DeveloperApplication",
   "operatingSystem": "Any (runs in browser)",
-  "description": "Convert, validate, format, diff and generate JSON Schema for JSON, CSV and XML — instantly in your browser. Nothing is uploaded.",
+  "description": "Try Recast with real, full-sized datasets — nested JSON orders, a 4,000-row CSV, XML logs, YAML configs, and a genuine diff pair.",
   "offers": [
     { "@type": "Offer", "name": "Free", "price": "0", "priceCurrency": "GBP" },
     { "@type": "Offer", "name": "Pro", "price": "9", "priceCurrency": "GBP" },
@@ -144,8 +144,8 @@
       <a href="#tool">Tool</a>
       <a href="#pricing">Pricing</a>
       <a href="#api">API docs</a>
-      <a href="blog/index.html">Blog</a>
-      <a href="demo/index.html">Demo</a>
+      <a href="../blog/index.html">Blog</a>
+      <a href="index.html">Demo</a>
     </nav>
     <div class="header-actions">
       <span class="worker-status" id="workerStatus"><span class="dot"></span>Processing…</span>
@@ -172,49 +172,48 @@
 <main>
   <section class="hero" id="tool">
     <p class="eyebrow">Data format toolkit</p>
-    <h1>Reshape, validate &amp; compare<br><em>without leaving the tab.</em></h1>
-    <p class="sub">Convert, format, validate, diff and check data against a JSON Schema — plus batch convert 100 files at once. Entirely in your browser. Nothing is uploaded.</p>
+    <p class="eyebrow">Demo</p>
+    <h1>Real datasets, thousands of rows<br><em>drag one in and see for yourself.</em></h1>
+    <p class="sub">No need to make up test data. These are full-sized, realistic files — nested e-commerce orders, a 4,000-row employee CSV, XML log events, YAML service configs, and a genuine before/after pair for the diff tool. Drag a card onto the input panel below, or just tap it to load instantly. Everything below still runs entirely in your browser — nothing here is uploaded either.</p>
 
-    <div class="privacy-banner">
-      <strong>Your data stays on your machine.</strong> No uploads. No tracking scripts. No server-side processing for browser tools.
-      <span class="privacy-exception">Need server-side processing for a script or pipeline? <a href="#api">That's what the API is for.</a></span>
-    </div>
-
-<div class="hero-preview">
-  <div class="hp-head"><svg class="ico"><use href="#ico-json"/></svg> live example <span class="hp-badge">real output</span></div>
-  <div class="hp-panes">
-    <div class="hp-pane"><div class="hp-pane-label">JSON</div><pre class="hp-code">[
-  {
-    <span class="tok-key">"id":</span> <span class="tok-num">1</span>,
-    <span class="tok-key">"name":</span> <span class="tok-str">"Ada Lovelace"</span>,
-    <span class="tok-key">"role":</span> <span class="tok-str">"Engineer"</span>,
-    <span class="tok-key">"city":</span> <span class="tok-str">"London"</span>
-  },
-  {
-    <span class="tok-key">"id":</span> <span class="tok-num">2</span>,
-    <span class="tok-key">"name":</span> <span class="tok-str">"Grace Hopper"</span>,
-    <span class="tok-key">"role":</span> <span class="tok-str">"Admiral"</span>,
-    <span class="tok-key">"city":</span> <span class="tok-str">"New York"</span>
-  }
-]</pre></div>
-    <div class="hp-mid"><svg class="ico"><use href="#ico-arrow"/></svg></div>
-    <div class="hp-pane"><div class="hp-pane-label">CSV</div><pre class="hp-code"><span class="tok-key">id<span class="tok-punct">,</span>name<span class="tok-punct">,</span>role<span class="tok-punct">,</span>city</span>
-1<span class="tok-punct">,</span>Ada Lovelace<span class="tok-punct">,</span>Engineer<span class="tok-punct">,</span>London
-2<span class="tok-punct">,</span>Grace Hopper<span class="tok-punct">,</span>Admiral<span class="tok-punct">,</span>New York</pre></div>
-  </div>
-</div>
-
-    <div class="quick-start" id="quickStart">
-      <p class="quick-start-label">Start here</p>
-      <div class="quick-start-grid">
-        <button class="qs-card" data-mode="json2csv"><svg class="ico"><use href="#ico-json"/></svg><span class="qs-title">JSON → CSV</span><span class="qs-desc">Turn API responses into spreadsheet rows</span></button>
-        <button class="qs-card" data-mode="csv2json"><svg class="ico"><use href="#ico-table"/></svg><span class="qs-title">CSV → JSON</span><span class="qs-desc">Typed, nested JSON from a spreadsheet export</span></button>
-        <button class="qs-card" data-mode="validateJson"><svg class="ico"><use href="#ico-check"/></svg><span class="qs-title">Validate JSON</span><span class="qs-desc">Find exactly what's wrong, in plain English</span></button>
-        <button class="qs-card" data-mode="diffJson"><svg class="ico"><use href="#ico-diff"/></svg><span class="qs-title">Diff JSON</span><span class="qs-desc">Key-aware comparison, not line noise</span></button>
-        <button class="qs-card" data-mode="jsonSchema"><svg class="ico"><use href="#ico-schema"/></svg><span class="qs-title">JSON → Schema</span><span class="qs-desc">Infer a schema, then generate real types</span></button>
-        <button class="qs-card" data-mode="formatJson"><svg class="ico"><use href="#ico-json"/></svg><span class="qs-title">Format JSON</span><span class="qs-desc">Pretty-print or minify in one click</span></button>
+    <div class="demo-gallery" id="demoGallery">
+      <div class="demo-card" draggable="true" data-demo="orders" data-mode="json2csv" data-side="single">
+        <div class="demo-card-head"><svg class="ico"><use href="#ico-json"/></svg><span class="demo-format">JSON</span></div>
+        <h3>E-commerce orders</h3>
+        <p>Nested customer, shipping address, and line-item arrays — the shape that trips up naive flatteners.</p>
+        <div class="demo-card-loading">Loading…</div>
+        <span class="demo-meta">2,500 records · 1.4 MB</span>
+      </div>
+      <div class="demo-card" draggable="true" data-demo="employees" data-mode="csv2json" data-side="single">
+        <div class="demo-card-head"><svg class="ico"><use href="#ico-table"/></svg><span class="demo-format">CSV</span></div>
+        <h3>Employee directory</h3>
+        <p>Flat, typed columns — salary as a number, remote as a boolean, straight through type inference.</p>
+        <div class="demo-card-loading">Loading…</div>
+        <span class="demo-meta">4,000 rows · 408 KB</span>
+      </div>
+      <div class="demo-card" draggable="true" data-demo="events" data-mode="xml2json" data-side="single">
+        <div class="demo-card-head"><svg class="ico"><use href="#ico-tag"/></svg><span class="demo-format">XML</span></div>
+        <h3>Service log events</h3>
+        <p>2,500 timestamped log entries across 8 services — a realistic ops/observability export.</p>
+        <div class="demo-card-loading">Loading…</div>
+        <span class="demo-meta">2,500 events · 646 KB</span>
+      </div>
+      <div class="demo-card" draggable="true" data-demo="services" data-mode="yaml2json" data-side="single">
+        <div class="demo-card-head"><svg class="ico"><use href="#ico-yaml"/></svg><span class="demo-format">YAML</span></div>
+        <h3>Service configs</h3>
+        <p>150 microservice definitions — replicas, resource limits, env vars, autoscaling — the kind of file that's painful to hand-edit as JSON.</p>
+        <div class="demo-card-loading">Loading…</div>
+        <span class="demo-meta">150 services · 52 KB</span>
+      </div>
+      <div class="demo-card" draggable="true" data-demo="orders_diff" data-mode="diffJson" data-side="pair">
+        <div class="demo-card-head"><svg class="ico"><use href="#ico-diff"/></svg><span class="demo-format">DIFF</span></div>
+        <h3>Order status, before &amp; after</h3>
+        <p>400 orders, one day apart — status changes, a few cancellations, some brand-new orders, a few refunded away entirely. Loads into both sides at once.</p>
+        <div class="demo-card-loading">Loading…</div>
+        <span class="demo-meta">400 → 413 records · 225 real changes</span>
       </div>
     </div>
+
 
     <div class="mode-nav" id="modeNav">
       <div class="mode-groups" id="modeGroups">
@@ -457,51 +456,51 @@
     <div class="related-groups">
       <div class="related-group">
         <span class="rg-label">Convert</span>
-        <a href="tools/json-to-csv.html" onclick="setMode('json2csv');return false;"><svg class="ico"><use href="#ico-json"/></svg>JSON→CSV</a>
-        <a href="tools/csv-to-json.html" onclick="setMode('csv2json');return false;"><svg class="ico"><use href="#ico-table"/></svg>CSV→JSON</a>
-        <a href="tools/json-to-xml.html" onclick="setMode('json2xml');return false;"><svg class="ico"><use href="#ico-json"/></svg>JSON→XML</a>
-        <a href="tools/xml-to-json.html" onclick="setMode('xml2json');return false;"><svg class="ico"><use href="#ico-tag"/></svg>XML→JSON</a>
-        <a href="tools/json-to-yaml.html" onclick="setMode('json2yaml');return false;"><svg class="ico"><use href="#ico-json"/></svg>JSON→YAML</a>
-        <a href="tools/yaml-to-json.html" onclick="setMode('yaml2json');return false;"><svg class="ico"><use href="#ico-yaml"/></svg>YAML→JSON</a>
-        <a href="tools/json-to-markdown.html" onclick="setMode('json2markdown');return false;"><svg class="ico"><use href="#ico-json"/></svg>JSON→Markdown</a>
-        <a href="tools/markdown-to-json.html" onclick="setMode('markdown2json');return false;"><svg class="ico"><use href="#ico-mdtable"/></svg>Markdown→JSON</a>
+        <a href="../tools/json-to-csv.html" onclick="setMode('json2csv');return false;"><svg class="ico"><use href="#ico-json"/></svg>JSON→CSV</a>
+        <a href="../tools/csv-to-json.html" onclick="setMode('csv2json');return false;"><svg class="ico"><use href="#ico-table"/></svg>CSV→JSON</a>
+        <a href="../tools/json-to-xml.html" onclick="setMode('json2xml');return false;"><svg class="ico"><use href="#ico-json"/></svg>JSON→XML</a>
+        <a href="../tools/xml-to-json.html" onclick="setMode('xml2json');return false;"><svg class="ico"><use href="#ico-tag"/></svg>XML→JSON</a>
+        <a href="../tools/json-to-yaml.html" onclick="setMode('json2yaml');return false;"><svg class="ico"><use href="#ico-json"/></svg>JSON→YAML</a>
+        <a href="../tools/yaml-to-json.html" onclick="setMode('yaml2json');return false;"><svg class="ico"><use href="#ico-yaml"/></svg>YAML→JSON</a>
+        <a href="../tools/json-to-markdown.html" onclick="setMode('json2markdown');return false;"><svg class="ico"><use href="#ico-json"/></svg>JSON→Markdown</a>
+        <a href="../tools/markdown-to-json.html" onclick="setMode('markdown2json');return false;"><svg class="ico"><use href="#ico-mdtable"/></svg>Markdown→JSON</a>
       </div>
       <div class="related-group">
         <span class="rg-label">Transform</span>
-        <a href="tools/flatten-json.html" onclick="setMode('flatten');return false;"><svg class="ico"><use href="#ico-tree"/></svg>Flatten</a>
-        <a href="tools/unflatten-json.html" onclick="setMode('unflatten');return false;"><svg class="ico"><use href="#ico-tree"/></svg>Unflatten</a>
+        <a href="../tools/flatten-json.html" onclick="setMode('flatten');return false;"><svg class="ico"><use href="#ico-tree"/></svg>Flatten</a>
+        <a href="../tools/unflatten-json.html" onclick="setMode('unflatten');return false;"><svg class="ico"><use href="#ico-tree"/></svg>Unflatten</a>
         <a href="#" onclick="setMode('sortJson');return false;"><svg class="ico"><use href="#ico-json"/></svg>Sort keys</a>
       </div>
       <div class="related-group">
         <span class="rg-label">Validate &amp; format</span>
-        <a href="tools/json-validator.html" onclick="setMode('validateJson');return false;"><svg class="ico"><use href="#ico-check"/></svg>Validate JSON</a>
+        <a href="../tools/json-validator.html" onclick="setMode('validateJson');return false;"><svg class="ico"><use href="#ico-check"/></svg>Validate JSON</a>
         <a href="#" onclick="setMode('validateXml');return false;"><svg class="ico"><use href="#ico-check"/></svg>Validate XML</a>
-        <a href="tools/json-formatter.html" onclick="setMode('formatJson');return false;"><svg class="ico"><use href="#ico-json"/></svg>Format JSON</a>
+        <a href="../tools/json-formatter.html" onclick="setMode('formatJson');return false;"><svg class="ico"><use href="#ico-json"/></svg>Format JSON</a>
         <a href="#" onclick="setMode('formatXml');return false;"><svg class="ico"><use href="#ico-tag"/></svg>Format XML</a>
       </div>
       <div class="related-group">
         <span class="rg-label">Compare</span>
-        <a href="tools/json-diff.html" onclick="setMode('diffJson');return false;"><svg class="ico"><use href="#ico-diff"/></svg>Diff JSON</a>
-        <a href="tools/xml-diff.html" onclick="setMode('diffXml');return false;"><svg class="ico"><use href="#ico-diff"/></svg>Diff XML</a>
-        <a href="tools/csv-diff.html" onclick="setMode('diffCsv');return false;"><svg class="ico"><use href="#ico-diff"/></svg>Diff CSV</a>
+        <a href="../tools/json-diff.html" onclick="setMode('diffJson');return false;"><svg class="ico"><use href="#ico-diff"/></svg>Diff JSON</a>
+        <a href="../tools/xml-diff.html" onclick="setMode('diffXml');return false;"><svg class="ico"><use href="#ico-diff"/></svg>Diff XML</a>
+        <a href="../tools/csv-diff.html" onclick="setMode('diffCsv');return false;"><svg class="ico"><use href="#ico-diff"/></svg>Diff CSV</a>
       </div>
       <div class="related-group">
         <span class="rg-label">Query</span>
-        <a href="tools/jsonpath-tester.html" onclick="setMode('jsonPath');return false;"><svg class="ico"><use href="#ico-path"/></svg>JSONPath</a>
+        <a href="../tools/jsonpath-tester.html" onclick="setMode('jsonPath');return false;"><svg class="ico"><use href="#ico-path"/></svg>JSONPath</a>
       </div>
       <div class="related-group">
         <span class="rg-label">Schema &amp; types</span>
-        <a href="tools/json-schema-generator.html" onclick="setMode('jsonSchema');return false;"><svg class="ico"><use href="#ico-schema"/></svg>JSON → Schema</a>
+        <a href="../tools/json-schema-generator.html" onclick="setMode('jsonSchema');return false;"><svg class="ico"><use href="#ico-schema"/></svg>JSON → Schema</a>
         <a href="#" onclick="setMode('jsonStructure');return false;"><svg class="ico"><use href="#ico-tree"/></svg>JSON → Structure</a>
-        <a href="tools/json-to-typescript.html" onclick="setMode('json2ts');return false;"><svg class="ico"><use href="#ico-code"/></svg>JSON → TypeScript</a>
-        <a href="tools/json-to-zod.html" onclick="setMode('json2zod');return false;"><svg class="ico"><use href="#ico-code"/></svg>JSON → Zod</a>
-        <a href="tools/json-to-python.html" onclick="setMode('json2python');return false;"><svg class="ico"><use href="#ico-code"/></svg>JSON → Python</a>
-        <a href="tools/json-to-pydantic.html" onclick="setMode('json2pydantic');return false;"><svg class="ico"><use href="#ico-code"/></svg>JSON → Pydantic</a>
-        <a href="tools/json-to-go.html" onclick="setMode('json2go');return false;"><svg class="ico"><use href="#ico-code"/></svg>JSON → Go</a>
+        <a href="../tools/json-to-typescript.html" onclick="setMode('json2ts');return false;"><svg class="ico"><use href="#ico-code"/></svg>JSON → TypeScript</a>
+        <a href="../tools/json-to-zod.html" onclick="setMode('json2zod');return false;"><svg class="ico"><use href="#ico-code"/></svg>JSON → Zod</a>
+        <a href="../tools/json-to-python.html" onclick="setMode('json2python');return false;"><svg class="ico"><use href="#ico-code"/></svg>JSON → Python</a>
+        <a href="../tools/json-to-pydantic.html" onclick="setMode('json2pydantic');return false;"><svg class="ico"><use href="#ico-code"/></svg>JSON → Pydantic</a>
+        <a href="../tools/json-to-go.html" onclick="setMode('json2go');return false;"><svg class="ico"><use href="#ico-code"/></svg>JSON → Go</a>
         <a href="#" onclick="setMode('json2kotlin');return false;"><svg class="ico"><use href="#ico-code"/></svg>JSON → Kotlin</a>
         <a href="#" onclick="setMode('json2rust');return false;"><svg class="ico"><use href="#ico-code"/></svg>JSON → Rust</a>
         <a href="#" onclick="setMode('jsonMock');return false;"><svg class="ico"><use href="#ico-json"/></svg>JSON → Mock data</a>
-        <a href="tools/validate-json-schema.html" onclick="setMode('validateSchema');return false;"><svg class="ico"><use href="#ico-check"/></svg>Validate against Schema</a>
+        <a href="../tools/validate-json-schema.html" onclick="setMode('validateSchema');return false;"><svg class="ico"><use href="#ico-check"/></svg>Validate against Schema</a>
       </div>
     </div>
   </section>
@@ -706,14 +705,14 @@
 <div class="share-toast" id="shareToast"></div>
 
 <!-- Shared, tested engine + feature modules (also power the recast-cli npm package and worker) -->
-<script src="lib/engine.js"></script>
-<script src="lib/highlight.js"></script>
-<script src="lib/history.js"></script>
-<script src="lib/share.js"></script>
-<script src="lib/worker-client.js"></script>
-<script src="lib/batch.js"></script>
-<script src="lib/graph.js"></script>
-<script src="lib/recipes.js"></script>
+<script src="../lib/engine.js"></script>
+<script src="../lib/highlight.js"></script>
+<script src="../lib/history.js"></script>
+<script src="../lib/share.js"></script>
+<script src="../lib/worker-client.js"></script>
+<script src="../lib/batch.js"></script>
+<script src="../lib/graph.js"></script>
+<script src="../lib/recipes.js"></script>
 <script>
   if ('serviceWorker' in navigator) {
     window.addEventListener('load', () => {
@@ -721,9 +720,10 @@
     });
   }
 </script>
-<script src="lib/presets.js"></script>
-<script src="lib/csv-compare.js"></script>
-<script src="app.js"></script>
+<script src="../lib/presets.js"></script>
+<script src="../lib/csv-compare.js"></script>
+<script src="../app.js"></script>
+<script src="../lib/demo.js"></script>
 <!--
   Cloudflare Web Analytics — free, no cookies, no consent banner needed.
   Get your token: Cloudflare Dashboard -> Analytics & Logs -> Web Analytics
