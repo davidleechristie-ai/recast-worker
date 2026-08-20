@@ -738,11 +738,12 @@ function setMode(mode) {
   if ($('inputA')) $('inputA').placeholder = (cfg.dualLabels && cfg.dualLabels[0]) || 'Original / left side\u2026';
   if ($('inputB')) $('inputB').placeholder = (cfg.dualLabels && cfg.dualLabels[1]) || 'Modified / right side\u2026';
 
-  // Table view is a CSV-specific reading aid — drop it on any mode switch
-  // so it doesn't linger showing stale/irrelevant data in an unrelated mode.
+  // Table/graph view are reading aids — drop them on any mode switch so
+  // they don't linger showing stale/irrelevant data in an unrelated mode.
   if (inputTableActive) { inputTableActive = false; singleWrap?.classList.remove('table-active'); $('inputTableBtn')?.classList.remove('active'); if ($('inputTableBtn')) $('inputTableBtn').title = 'Toggle table view'; }
   if (outputTableActive) { outputTableActive = false; $('outputTableWrap')?.closest('.ta-wrap')?.classList.remove('table-active'); $('outputTableBtn')?.classList.remove('active'); if ($('outputTableBtn')) $('outputTableBtn').title = 'Toggle table view'; }
   tableSortState = { input: null, output: null };
+  if (typeof setGraphActive === 'function') { setGraphActive('input', false); setGraphActive('output', false); }
 
   if (typeof liveValidateIfApplicable === 'function') liveValidateIfApplicable();
 
@@ -785,6 +786,11 @@ function setGroup(group) {
 }
 document.querySelectorAll('.mode-group-btn').forEach(btn => btn.addEventListener('click', () => setGroup(btn.dataset.group)));
 document.querySelectorAll('.mode-chip[data-mode]').forEach(chip => chip.addEventListener('click', () => { setMode(chip.dataset.mode); track('select_tool', { mode: chip.dataset.mode }); }));
+document.querySelectorAll('.qs-card[data-mode]').forEach(card => card.addEventListener('click', () => {
+  setMode(card.dataset.mode);
+  $('inputPanel')?.scrollIntoView({ behavior: 'smooth', block: 'start' });
+  track('quick_start_select', { mode: card.dataset.mode });
+}));
 
 function updateCounts() {
   const cfg = modeConfig[currentMode];
@@ -925,6 +931,7 @@ async function runCurrentMode() {
     updateCounts();
     renderHl($('hlOutput'), outputEl, cfg.hlOut);
     if (outputTableActive) renderCsvTableInto($('outputTableWrap'), outputEl.value, getDelim());
+    if (outputGraphActive) RecastGraph.render($('outputGraphWrap'), outputEl.value);
 
     RecastHistory.add(cfg.dual
       ? { mode: currentMode, inputA: $('inputA').value, inputB: $('inputB').value }
@@ -1147,6 +1154,9 @@ function renderCsvTableInto(wrapEl, text, delimiter, side) {
   wrapEl.appendChild(table);
 }
 
+let inputGraphActive = false;
+let outputGraphActive = false;
+
 function toggleTableView(side) {
   const taWrap = side === 'input' ? $('singleInputWrap') : $('outputTableWrap').closest('.ta-wrap');
   const btn = $(side === 'input' ? 'inputTableBtn' : 'outputTableBtn');
@@ -1154,6 +1164,7 @@ function toggleTableView(side) {
   const wrap = $(side === 'input' ? 'inputTableWrap' : 'outputTableWrap');
   if (side === 'input') inputTableActive = !inputTableActive; else outputTableActive = !outputTableActive;
   const active = side === 'input' ? inputTableActive : outputTableActive;
+  if (active) setGraphActive(side, false); // mutually exclusive with graph view on the same panel
   taWrap.classList.toggle('table-active', active);
   btn.classList.toggle('active', active);
   btn.title = active ? 'Back to text view' : 'Toggle table view';
@@ -1162,7 +1173,34 @@ function toggleTableView(side) {
 }
 $('inputTableBtn')?.addEventListener('click', () => toggleTableView('input'));
 $('outputTableBtn')?.addEventListener('click', () => toggleTableView('output'));
-inputEl.addEventListener('input', () => { if (inputTableActive) renderCsvTableInto($('inputTableWrap'), inputEl.value, getDelim(), 'input'); });
+inputEl.addEventListener('input', () => {
+  if (inputTableActive) renderCsvTableInto($('inputTableWrap'), inputEl.value, getDelim(), 'input');
+  if (inputGraphActive) RecastGraph.render($('inputGraphWrap'), inputEl.value);
+});
+
+function setGraphActive(side, active) {
+  const taWrap = side === 'input' ? $('singleInputWrap') : $('outputGraphWrap').closest('.ta-wrap');
+  const btn = $(side === 'input' ? 'inputGraphBtn' : 'outputGraphBtn');
+  if (side === 'input') inputGraphActive = active; else outputGraphActive = active;
+  taWrap.classList.toggle('graph-active', active);
+  btn.classList.toggle('active', active);
+  btn.title = active ? 'Back to text view' : 'Toggle graph view';
+}
+function toggleGraphView(side) {
+  const active = side === 'input' ? !inputGraphActive : !outputGraphActive;
+  if (active) { // mutually exclusive with table view on the same panel
+    if (side === 'input' && inputTableActive) toggleTableView('input');
+    if (side === 'output' && outputTableActive) toggleTableView('output');
+  }
+  setGraphActive(side, active);
+  const el = side === 'input' ? inputEl : outputEl;
+  const wrap = $(side === 'input' ? 'inputGraphWrap' : 'outputGraphWrap');
+  if (active) RecastGraph.render(wrap, el.value);
+  track('graph_view_toggle', { mode: currentMode, side, active });
+}
+$('inputGraphBtn')?.addEventListener('click', () => toggleGraphView('input'));
+$('outputGraphBtn')?.addEventListener('click', () => toggleGraphView('output'));
+inputEl.addEventListener('input', () => { if (inputGraphActive) RecastGraph.render($('inputGraphWrap'), inputEl.value); });
 
 $('inputPopoutBtn')?.addEventListener('click', () => openPopoutMirror(inputEl, modeConfig[currentMode]?.inFmt ? modeConfig[currentMode].inFmt + ' input' : 'Input', { id: 'input' }));
 $('outputPopoutBtn')?.addEventListener('click', () => openPopoutMirror(outputEl, modeConfig[currentMode]?.outFmt ? modeConfig[currentMode].outFmt + ' output' : 'Output', { id: 'output', readOnly: true }));

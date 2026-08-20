@@ -9,6 +9,9 @@
 <link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@400;500;600;700&family=IBM+Plex+Sans:wght@400;500;600&family=IBM+Plex+Mono:wght@400;500&display=swap" rel="stylesheet">
 <link rel="stylesheet" href="../styles.css">
 <link rel="canonical" href="https://tryrecast.app/tools/jsonpath-tester.html">
+<link rel="manifest" href="/manifest.json">
+<meta name="theme-color" content="#0E2338">
+<link rel="apple-touch-icon" href="/icons/icon-192.png">
 <script type="application/ld+json">
 {
   "@context": "https://schema.org",
@@ -190,6 +193,18 @@
   <div class="hp-pane"><div class="hp-pane-label">MATCHED</div><pre class="hp-code">[<span class="tok-str">"Ada"</span>,<span class="tok-str">"Grace"</span>]</pre></div>
 </div>
 
+    <div class="quick-start">
+      <p class="quick-start-label">Start here</p>
+      <div class="quick-start-grid">
+        <button class="qs-card" data-mode="json2csv"><svg class="ico"><use href="#ico-json"/></svg><span class="qs-title">JSON → CSV</span><span class="qs-desc">Turn API responses into spreadsheet rows</span></button>
+        <button class="qs-card" data-mode="csv2json"><svg class="ico"><use href="#ico-table"/></svg><span class="qs-title">CSV → JSON</span><span class="qs-desc">Typed, nested JSON from a spreadsheet export</span></button>
+        <button class="qs-card" data-mode="validateJson"><svg class="ico"><use href="#ico-check"/></svg><span class="qs-title">Validate JSON</span><span class="qs-desc">Find exactly what's wrong, in plain English</span></button>
+        <button class="qs-card" data-mode="diffJson"><svg class="ico"><use href="#ico-diff"/></svg><span class="qs-title">Diff JSON</span><span class="qs-desc">Key-aware comparison, not line noise</span></button>
+        <button class="qs-card" data-mode="jsonSchema"><svg class="ico"><use href="#ico-schema"/></svg><span class="qs-title">JSON → Schema</span><span class="qs-desc">Infer a schema, then generate real types</span></button>
+        <button class="qs-card" data-mode="formatJson"><svg class="ico"><use href="#ico-json"/></svg><span class="qs-title">Format JSON</span><span class="qs-desc">Pretty-print or minify in one click</span></button>
+      </div>
+    </div>
+
     <div class="mode-nav" id="modeNav">
       <div class="mode-groups" id="modeGroups">
         <button class="mode-group-btn active" data-group="convert">Convert</button>
@@ -245,6 +260,7 @@
             <div class="fmt-count"><span class="fmt" id="inFmt">JSON</span><span id="inCount">0 chars</span></div>
             <div class="head-actions">
               <button class="win-btn" id="inputTableBtn" title="Toggle table view"><svg class="ico"><use href="#ico-table"/></svg></button>
+              <button class="win-btn" id="inputGraphBtn" title="Toggle graph view"><svg class="ico"><use href="#ico-tree"/></svg></button>
               <button class="win-btn" id="inputPopoutBtn" title="Pop out into a separate window"><svg class="ico"><use href="#ico-popout"/></svg></button>
               <button class="win-btn" id="inputExpandBtn" title="Expand to full screen"><svg class="ico"><use href="#ico-expand"/></svg></button>
             </div>
@@ -253,6 +269,7 @@
             <pre class="hl-layer" id="hlInput" aria-hidden="true"></pre>
             <textarea id="input" spellcheck="false" placeholder="Paste data here, drop a file, or click Load sample."></textarea>
             <div class="csv-table-wrap" id="inputTableWrap"></div>
+            <div class="graph-wrap" id="inputGraphWrap"></div>
           </div>
           <div class="dual-input" id="dualInput">
             <div class="ta-wrap" style="min-height:160px;border-bottom:1px solid rgba(140,182,214,0.16);">
@@ -291,6 +308,7 @@
             <div class="fmt-count"><span class="fmt" id="outFmt">CSV</span><span id="outCount">0 chars</span></div>
             <div class="head-actions">
               <button class="win-btn" id="outputTableBtn" title="Toggle table view"><svg class="ico"><use href="#ico-table"/></svg></button>
+              <button class="win-btn" id="outputGraphBtn" title="Toggle graph view"><svg class="ico"><use href="#ico-tree"/></svg></button>
               <button class="win-btn" id="outputPopoutBtn" title="Pop out into a separate window"><svg class="ico"><use href="#ico-popout"/></svg></button>
               <button class="win-btn" id="outputExpandBtn" title="Expand to full screen"><svg class="ico"><use href="#ico-expand"/></svg></button>
             </div>
@@ -299,6 +317,7 @@
             <pre class="hl-layer" id="hlOutput" aria-hidden="true"></pre>
             <textarea id="output" spellcheck="false" placeholder="Output appears here." readonly></textarea>
             <div class="csv-table-wrap" id="outputTableWrap"></div>
+            <div class="graph-wrap" id="outputGraphWrap"></div>
           </div>
           <div class="opts-row" id="outOpts">
             <label id="prettyLabel"><input type="checkbox" id="prettyPrint" checked> Pretty</label>
@@ -389,7 +408,7 @@
         <button class="icon-btn" id="batchDownloadBtn2" style="display:none;">Download .zip</button>
         <button class="icon-btn" id="batchClearBtn2">Clear</button>
       </div>
-      <p class="batch-diff-hint" id="batchDiffHint" style="display:none;">Files are paired by matching name (after sorting) \u2014 upload the "before" set as originals and the "after" set as modified. Unmatched files are listed but not compared.</p>
+      <p class="batch-diff-hint" id="batchDiffHint" style="display:none;">Files are paired by matching name (after sorting) — upload the "before" set as originals and the "after" set as modified. Unmatched files are listed but not compared.</p>
       <div class="batch-file-list" id="batchFileList"></div>
       <div class="batch-summary" id="batchSummary" style="display:none;"></div>
       <div class="drop-zone" id="batchDropZone">Drop files to add to the batch</div>
@@ -397,12 +416,12 @@
 
     <div class="batch-panel" id="recipePanel">
       <div class="batch-head">
-        <span class="title">Recipe \u2014 chain steps, run them in order</span>
+        <span class="title">Recipe — chain steps, run them in order</span>
         <select id="recipeAddStep" class="playground-select" style="width:auto;">
-          <option value="">+ Add step\u2026</option>
+          <option value="">+ Add step…</option>
         </select>
         <button class="icon-btn" id="recipeRunBtn">Run recipe</button>
-        <button class="icon-btn" id="recipeSaveBtn">Save\u2026</button>
+        <button class="icon-btn" id="recipeSaveBtn">Save…</button>
         <button class="icon-btn" id="recipeClearBtn">Clear</button>
       </div>
       <div class="batch-file-list" id="recipeStepList"></div>
@@ -420,8 +439,8 @@
     </div>
     <div class="paywall-escalation" id="paywallEscalation" style="display:none;">
       <span id="paywallEscalationText"></span>
-      <a href="#pricing" class="btn btn-gold" style="padding:5px 12px;font-size:12.5px;">Upgrade to Pro \u2014 \u00a39/mo</a>
-      <button id="paywallEscalationClose" title="Dismiss">\u2715</button>
+      <a href="#pricing" class="btn btn-gold" style="padding:5px 12px;font-size:12.5px;">Upgrade to Pro — £9/mo</a>
+      <button id="paywallEscalationClose" title="Dismiss">✕</button>
     </div>
 
     <div class="related-groups">
@@ -657,7 +676,7 @@
     <div class="cmdk-box">
       <div class="cmdk-input-row">
         <svg class="ico"><use href="#ico-path"/></svg>
-        <input type="text" id="cmdkInput" placeholder="Jump to a tool\u2026" autocomplete="off" spellcheck="false">
+        <input type="text" id="cmdkInput" placeholder="Jump to a tool…" autocomplete="off" spellcheck="false">
         <kbd class="cmdk-esc">Esc</kbd>
       </div>
       <div class="cmdk-results" id="cmdkResults"></div>
@@ -682,7 +701,15 @@
 <script src="../lib/share.js"></script>
 <script src="../lib/worker-client.js"></script>
 <script src="../lib/batch.js"></script>
+<script src="../lib/graph.js"></script>
 <script src="../lib/recipes.js"></script>
+<script>
+  if ('serviceWorker' in navigator) {
+    window.addEventListener('load', () => {
+      navigator.serviceWorker.register('/sw.js', { scope: '/' }).catch(() => { /* offline mode just won't be available — the tool still works online */ });
+    });
+  }
+</script>
 <script src="../lib/presets.js"></script>
 <script src="../lib/csv-compare.js"></script>
 <script src="../app.js"></script>
