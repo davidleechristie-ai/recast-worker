@@ -1,0 +1,111 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Stop Making Up Test Data — Try Recast With the Real Thing | Recast</title>
+<meta name="description" content="Why we built a demo page with real, full-sized datasets instead of three-row toy examples — and what it actually shows you that a tiny sample can't.">
+<link rel="canonical" href="https://tryrecast.app/blog/try-recast-with-real-data.html">
+<link rel="stylesheet" href="../styles.css">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@500;600;700&family=IBM+Plex+Mono:wght@400;500&display=swap" rel="stylesheet">
+<script type="application/ld+json">
+{
+  "@context": "https://schema.org",
+  "@type": "Article",
+  "headline": "Stop Making Up Test Data — Try Recast With the Real Thing",
+  "description": "Why we built a demo page with real, full-sized datasets instead of three-row toy examples — and what it actually shows you that a tiny sample can't.",
+  "url": "https://tryrecast.app/blog/try-recast-with-real-data.html",
+  "publisher": { "@type": "Organization", "name": "Recast", "url": "https://tryrecast.app/" },
+  "datePublished": "2026-08-20"
+}
+</script>
+<!-- Google tag (gtag.js) -->
+<script async src="https://www.googletagmanager.com/gtag/js?id=G-MW47YKCSLX"></script>
+<script>
+  window.dataLayer = window.dataLayer || [];
+  function gtag(){dataLayer.push(arguments);}
+  gtag('js', new Date());
+
+  gtag('config', 'G-MW47YKCSLX');
+</script>
+</head>
+<body style="background:#0E2338;color:#EDF3F8;margin:0;min-height:100vh;">
+
+<svg style="display:none" aria-hidden="true">
+  <symbol id="ico-history" viewBox="0 0 18 18" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round">
+    <path d="M3 9a6 6 0 1 0 1.8-4.3"/>
+    <polyline points="1.8,3 2,5.5 4.5,5.2"/>
+    <polyline points="9,5.5 9,9 11.5,10.5"/>
+  </symbol>
+  <symbol id="ico-settings" viewBox="0 0 18 18" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round">
+    <circle cx="9" cy="9" r="2.8"/>
+    <path d="M9 3v2.2M9 12.8V15M15 9h-2.2M5.2 9H3"/>
+  </symbol>
+  <symbol id="ico-link" viewBox="0 0 18 18" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round">
+    <path d="M7.5 10.5a3 3 0 0 0 4.3.2l2-2a3 3 0 0 0-4.2-4.2l-1.1 1.1"/>
+    <path d="M10.5 7.5a3 3 0 0 0-4.3-.2l-2 2a3 3 0 0 0 4.2 4.2l1.1-1.1"/>
+  </symbol>
+</svg>
+
+<header class="titleblock">
+  <div class="ruler" id="ruler"></div>
+  <div class="tb-row">
+    <a href="../index.html" class="brand" style="text-decoration:none;color:inherit;"><span class="mark">⇄</span>RECAST</a>
+    <nav class="tb-nav">
+      <a href="../index.html#tool">Tool</a>
+      <a href="../index.html#pricing">Pricing</a>
+      <a href="../index.html#api">API docs</a>
+      <a href="index.html">Blog</a>
+      <a href="../demo/index.html">Demo</a>
+      <a href="../how-to/index.html">How To</a>
+    </nav>
+    <div class="header-actions">
+      <a href="../index.html#tool" class="icon-btn" title="View your conversion history — opens the tool"><svg class="ico"><use href="#ico-history"/></svg><span class="btn-label">History</span></a>
+      <a href="../index.html#tool" class="icon-btn" title="View your saved presets — opens the tool"><svg class="ico"><use href="#ico-settings"/></svg><span class="btn-label">Presets</span></a>
+      <a href="../index.html#tool" class="icon-btn" title="Share a conversion — opens the tool"><svg class="ico"><use href="#ico-link"/></svg><span class="btn-label">Share link</span></a>
+      <a href="../index.html#pricing" class="btn btn-gold" id="accountBtn">Upgrade to Pro</a>
+    </div>
+  </div>
+</header>
+
+<main style="max-width:1180px;margin:0 auto;padding:48px 24px 80px;">
+
+<article class="post">
+  <div class="post-meta">Guide · 20 August 2026</div>
+  <h1>Stop making up test data — try Recast with the real thing</h1>
+
+  <p>Evaluating a data tool usually comes down to two bad options. Either you paste in something of your own — which means handing a piece of your actual data, maybe customer records or business numbers, to a website you've never used before — or you type out three fake rows just to see the tool do something, which tells you almost nothing about how it behaves once the file is real.</p>
+
+  <p>A three-row example can't show you what happens when a CSV export has a column that's missing from half the rows. It can't show you whether a diff tool actually holds up once you're comparing hundreds of records instead of three. So we built a page specifically to skip both problems.</p>
+
+  <h2>What's actually on the demo page</h2>
+  <p>Not placeholder text — real, generated datasets, sized like something you'd actually export from a real system:</p>
+  <ul>
+    <li><strong>2,500 e-commerce orders</strong> (JSON, 1.4 MB) — nested customer info, shipping addresses, and line-item arrays. This is the shape that breaks naive flatteners.</li>
+    <li><strong>4,000 employee records</strong> (CSV, 408 KB) — flat, typed columns: salary as a number, remote status as a boolean, straight through automatic type inference.</li>
+    <li><strong>2,500 service log events</strong> (XML, 646 KB) — timestamped entries across 8 services, the kind of export an ops team would actually pull.</li>
+    <li><strong>150 microservice configs</strong> (YAML, 52 KB) — replicas, resource limits, environment variables, autoscaling rules.</li>
+    <li><strong>A real before/after pair</strong> for the diff tool — 400 orders, then the same set a day later: statuses progressed, a handful cancelled, a few refunded away entirely, some brand-new ones added.</li>
+  </ul>
+
+  <h2>The diff pair is the one worth trying first</h2>
+  <p>Diff tools are hard to evaluate from a tiny example, because a 5-row diff barely tests anything. The demo's order pair is sized to actually show what key-aware diffing is for: run it, and you'll see 225 real changes — 188 status or total changes, 12 orders removed, 25 added — each one matched correctly by order ID rather than by row position, so a removed order in the middle of the list doesn't cascade into false-positive changes on every row after it.</p>
+
+  <h2>Two ways to load it</h2>
+  <p>Tap any card to load it straight into the converter and jump you there — works everywhere, including on a phone. On desktop, you can also drag a card directly onto the input panel, or onto the API playground further down the page, and drop it there — the same drop-zone the file-upload feature already uses, so it behaves exactly like dropping a file from your own computer would.</p>
+
+  <div class="post-cta">
+    <p>Go try it — <a href="../demo/index.html">the demo page is here</a>. Nothing to prepare, nothing of your own required, and like everything else in the browser tool, none of it is uploaded anywhere.</p>
+  </div>
+</article>
+
+</main>
+
+<footer style="max-width:1180px;margin:0 auto;padding:24px;text-align:center;color:#B9CBDA;font-size:12.5px;border-top:1px solid rgba(140,182,214,0.16);">
+  <a href="../index.html" style="color:#B9CBDA;">Recast</a> — convert, validate, diff JSON, CSV and XML in your browser.
+</footer>
+
+<script src="../lib/ruler.js"></script>
+</body>
+</html>

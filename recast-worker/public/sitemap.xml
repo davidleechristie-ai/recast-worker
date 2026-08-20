@@ -32,6 +32,8 @@
   <url><loc>https://tryrecast.app/demo/index.html</loc><changefreq>monthly</changefreq><priority>0.8</priority></url>
   <url><loc>https://tryrecast.app/how-to/index.html</loc><changefreq>monthly</changefreq><priority>0.8</priority></url>
   <url><loc>https://tryrecast.app/blog/json-to-csv-guide.html</loc><changefreq>yearly</changefreq><priority>0.6</priority></url>
+  <url><loc>https://tryrecast.app/blog/whats-new-in-recast.html</loc><changefreq>yearly</changefreq><priority>0.6</priority></url>
+  <url><loc>https://tryrecast.app/blog/try-recast-with-real-data.html</loc><changefreq>yearly</changefreq><priority>0.6</priority></url>
   <url><loc>https://tryrecast.app/blog/csv-diff-explained.html</loc><changefreq>yearly</changefreq><priority>0.6</priority></url>
   <url><loc>https://tryrecast.app/blog/json-schema-validation-guide.html</loc><changefreq>yearly</changefreq><priority>0.6</priority></url>
 </urlset>

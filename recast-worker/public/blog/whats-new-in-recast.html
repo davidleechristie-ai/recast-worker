@@ -1,0 +1,123 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>What's New in Recast: Graphs, Recipes, Offline Mode, and a Real Demo | Recast</title>
+<meta name="description" content="A catalog of what's shipped recently: an interactive JSON graph view, saved conversion recipes, live schema validation, batch diffing, Kotlin and Rust code-gen, offline support, and a demo page with real datasets.">
+<link rel="canonical" href="https://tryrecast.app/blog/whats-new-in-recast.html">
+<link rel="stylesheet" href="../styles.css">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@500;600;700&family=IBM+Plex+Mono:wght@400;500&display=swap" rel="stylesheet">
+<script type="application/ld+json">
+{
+  "@context": "https://schema.org",
+  "@type": "Article",
+  "headline": "What's New in Recast: Graphs, Recipes, Offline Mode, and a Real Demo",
+  "description": "A catalog of what's shipped recently: an interactive JSON graph view, saved conversion recipes, live schema validation, batch diffing, Kotlin and Rust code-gen, offline support, and a demo page with real datasets.",
+  "url": "https://tryrecast.app/blog/whats-new-in-recast.html",
+  "publisher": { "@type": "Organization", "name": "Recast", "url": "https://tryrecast.app/" },
+  "datePublished": "2026-08-20"
+}
+</script>
+<!-- Google tag (gtag.js) -->
+<script async src="https://www.googletagmanager.com/gtag/js?id=G-MW47YKCSLX"></script>
+<script>
+  window.dataLayer = window.dataLayer || [];
+  function gtag(){dataLayer.push(arguments);}
+  gtag('js', new Date());
+
+  gtag('config', 'G-MW47YKCSLX');
+</script>
+</head>
+<body style="background:#0E2338;color:#EDF3F8;margin:0;min-height:100vh;">
+
+<svg style="display:none" aria-hidden="true">
+  <symbol id="ico-history" viewBox="0 0 18 18" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round">
+    <path d="M3 9a6 6 0 1 0 1.8-4.3"/>
+    <polyline points="1.8,3 2,5.5 4.5,5.2"/>
+    <polyline points="9,5.5 9,9 11.5,10.5"/>
+  </symbol>
+  <symbol id="ico-settings" viewBox="0 0 18 18" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round">
+    <circle cx="9" cy="9" r="2.8"/>
+    <path d="M9 3v2.2M9 12.8V15M15 9h-2.2M5.2 9H3"/>
+  </symbol>
+  <symbol id="ico-link" viewBox="0 0 18 18" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round">
+    <path d="M7.5 10.5a3 3 0 0 0 4.3.2l2-2a3 3 0 0 0-4.2-4.2l-1.1 1.1"/>
+    <path d="M10.5 7.5a3 3 0 0 0-4.3-.2l-2 2a3 3 0 0 0 4.2 4.2l1.1-1.1"/>
+  </symbol>
+</svg>
+
+<header class="titleblock">
+  <div class="ruler" id="ruler"></div>
+  <div class="tb-row">
+    <a href="../index.html" class="brand" style="text-decoration:none;color:inherit;"><span class="mark">⇄</span>RECAST</a>
+    <nav class="tb-nav">
+      <a href="../index.html#tool">Tool</a>
+      <a href="../index.html#pricing">Pricing</a>
+      <a href="../index.html#api">API docs</a>
+      <a href="index.html">Blog</a>
+      <a href="../demo/index.html">Demo</a>
+      <a href="../how-to/index.html">How To</a>
+    </nav>
+    <div class="header-actions">
+      <a href="../index.html#tool" class="icon-btn" title="View your conversion history — opens the tool"><svg class="ico"><use href="#ico-history"/></svg><span class="btn-label">History</span></a>
+      <a href="../index.html#tool" class="icon-btn" title="View your saved presets — opens the tool"><svg class="ico"><use href="#ico-settings"/></svg><span class="btn-label">Presets</span></a>
+      <a href="../index.html#tool" class="icon-btn" title="Share a conversion — opens the tool"><svg class="ico"><use href="#ico-link"/></svg><span class="btn-label">Share link</span></a>
+      <a href="../index.html#pricing" class="btn btn-gold" id="accountBtn">Upgrade to Pro</a>
+    </div>
+  </div>
+</header>
+
+<main style="max-width:1180px;margin:0 auto;padding:48px 24px 80px;">
+
+<article class="post">
+  <div class="post-meta">Product update · 20 August 2026</div>
+  <h1>What's new in Recast: graphs, recipes, offline mode, and a real demo</h1>
+
+  <p>Recast started as a converter — JSON to CSV, and back. It's grown a lot since then, faster than the homepage alone can explain. This is a catalog of what's shipped recently, in plain terms: what each thing does, and why it's there.</p>
+
+  <h2>An actual visual graph for JSON</h2>
+  <p>Reading deeply nested JSON as raw text gets hard fast. <strong>Graph view</strong> renders your JSON as an interactive, collapsible node tree instead — click any object or array to fold it away, color-coded by type, connected with real edges rather than indentation you have to trace by eye. It's on both the input and output panels, sitting right next to the existing table view for CSV.</p>
+
+  <h2>Recipes — chain steps, save the pipeline</h2>
+  <p>A lot of real conversion work isn't one step. Flatten, then sort keys, then convert to CSV. <strong>Recipes</strong> let you build that chain once, run it as a single action, and save it with a name so it's there next time — up to 8 steps, each one feeding its output into the next. It's a free feature, not gated behind Pro, since a single saved pipeline isn't the same kind of usage as batch-processing hundreds of files.</p>
+
+  <h2>Live schema validation, as you type</h2>
+  <p>The schema validator used to be click-a-button-see-a-report. Now, in Validate-against-Schema mode, a small badge updates live as you edit — a green check, or a red count of exactly how many issues your data has against the schema — closer to how a real IDE behaves than a static form.</p>
+
+  <h2>Batch diff — not just batch convert</h2>
+  <p>Batch conversion already handled "run this transform on 100 files." Now the diff tools do too: drop a folder of "before" files and a folder of "after" files, and Recast pairs them up by matching filename and runs the same key-aware diffing across every pair at once, downloadable as a single zip of results.</p>
+
+  <h2>Kotlin and Rust joined the code-gen list</h2>
+  <p>JSON → Schema already generated TypeScript, Zod, Python, Pydantic, and Go from one inferred schema. Kotlin data classes and Rust structs (with correct <code>serde</code> attributes, including automatic camelCase-to-snake_case field renaming where needed) are now part of that same list — same inference engine, so a schema, a Go struct, and a Kotlin data class for the same JSON always agree with each other.</p>
+
+  <h2>Mock data, generated from a schema</h2>
+  <p>Need realistic-looking test data and don't have any? JSON → Mock data infers a schema from a sample, then generates however many records you ask for — field-name heuristics fill in sensible values (an <code>email</code> field gets a real-looking email, a <code>city</code> field gets an actual city), all computed locally, no AI involved.</p>
+
+  <h2>A command palette for everything else</h2>
+  <p>With more than two dozen tools now, hunting through the nav gets old. <kbd>Cmd</kbd>/<kbd>Ctrl</kbd> + <kbd>K</kbd> opens a searchable palette — type a few letters of what you want ("kotlin", "diff", "yaml") and jump straight there.</p>
+
+  <h2>It works with no internet connection</h2>
+  <p>Recast is now a proper installable app — add it to your home screen or app dock from the browser's own install prompt, and it keeps working with zero network connection. This isn't a native download; it's a web standard (a service worker) doing the same job, tested by actually disconnecting and running a real conversion offline.</p>
+
+  <h2>A demo page with real, full-sized data</h2>
+  <p>Trying out a data tool usually means either pasting in something of your own (not always something you want to hand a stranger's website, even one that says it doesn't upload anything) or typing three fake rows that don't show you how the tool handles anything real. The <a href="../demo/index.html">Demo page</a> exists to skip both problems: real, full-sized generated datasets — 2,500 nested e-commerce orders, a 4,000-row employee CSV, 2,500 XML log events, 150 YAML service configs, and a genuine before/after order-status pair for the diff tool — that you can drag straight onto the converter or the API playground, or just tap to load. Nothing to make up, nothing of your own at risk.</p>
+
+  <h2>A guide for people who aren't developers</h2>
+  <p>Recast was built for people who already know what JSON and CSV are. Not everyone does, and there's no reason the tool should only be useful to people who do. The <a href="../how-to/index.html">How To guide</a> walks through the whole thing in plain language — what the tool actually does, a step-by-step first conversion with real screenshots, and an honest explanation of when (and whether) you'd ever need the API.</p>
+
+  <div class="post-cta">
+    <p>Most of this is easiest to just try rather than read about. The <a href="../demo/index.html">Demo page</a> has real data already loaded and ready to drag in — including a file pair set up specifically to show the diff tool at work. Or jump straight into <a href="../index.html#tool">the tool</a> with your own.</p>
+  </div>
+</article>
+
+</main>
+
+<footer style="max-width:1180px;margin:0 auto;padding:24px;text-align:center;color:#B9CBDA;font-size:12.5px;border-top:1px solid rgba(140,182,214,0.16);">
+  <a href="../index.html" style="color:#B9CBDA;">Recast</a> — convert, validate, diff JSON, CSV and XML in your browser.
+</footer>
+
+<script src="../lib/ruler.js"></script>
+</body>
+</html>
