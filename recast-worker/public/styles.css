@@ -48,6 +48,14 @@
   }
   nav.tb-nav{display:flex; gap:22px; font-size:14px; color:#B9CBDA;}
   nav.tb-nav a{text-decoration:none; transition:color .15s;}
+
+  @media (max-width:900px){
+    .tb-row{ flex-wrap:wrap; gap:10px 16px; padding:12px 16px; }
+    nav.tb-nav{ order:3; width:100%; gap:16px; font-size:13px; }
+    .header-actions{ order:2; margin-left:auto; gap:6px; flex-wrap:wrap; justify-content:flex-end; }
+    .header-actions .icon-btn{ padding:6px 8px; font-size:11.5px; }
+    .header-actions #accountBtn{ padding:6px 12px; font-size:12.5px; }
+  }
   nav.tb-nav a:hover{color:#EDF3F8;}
   .btn{
     font-family:'IBM Plex Sans', sans-serif; font-weight:600; font-size:13.5px;
@@ -586,3 +594,79 @@ body.wb-lock{ overflow:hidden; }
 
 .playground-label-row .head-actions{ display:flex; align-items:center; gap:4px; margin-left:auto; }
 .playground-label-row{ display:flex; align-items:center; gap:10px; }
+
+/* ================= CSV table preview ================= */
+.csv-table-wrap{
+  display:none; position:absolute; inset:0; overflow:auto; background:#0E2338;
+  font-family:'IBM Plex Mono', monospace; font-size:12.5px;
+}
+.ta-wrap.table-active textarea, .ta-wrap.table-active .hl-layer{ visibility:hidden; }
+.ta-wrap.table-active .csv-table-wrap{ display:block; }
+.win-btn.active{ color:#F2C14E; border-color:rgba(140,182,214,0.32); }
+.csv-table{ border-collapse:collapse; width:max-content; min-width:100%; }
+.csv-table th, .csv-table td{
+  border:1px solid rgba(140,182,214,0.16); padding:6px 12px; text-align:left; white-space:nowrap;
+}
+.csv-table thead th{
+  position:sticky; top:0; background:#12314C; color:#8FCBEB; cursor:pointer; user-select:none;
+  font-weight:600; z-index:1;
+}
+.csv-table thead th:hover{ color:#F2C14E; }
+.csv-table thead th .sort-arrow{ margin-left:4px; opacity:.7; font-size:10px; }
+.csv-table tbody tr:nth-child(even){ background:rgba(140,182,214,0.04); }
+.csv-table tbody td{ color:#EDF3F8; }
+.csv-table-empty{ padding:24px 16px; color:#B9CBDA; font-size:13px; }
+.batch-diff-hint{ padding:8px 16px 0; font-size:12px; color:#B9CBDA; line-height:1.5; }
+
+/* ================= Command palette (Cmd/Ctrl+K) ================= */
+.cmdk-overlay{
+  display:none; position:fixed; inset:0; z-index:400; background:rgba(14,35,56,0.72);
+  align-items:flex-start; justify-content:center; padding-top:14vh;
+}
+.cmdk-overlay.show{ display:flex; }
+.cmdk-box{
+  width:min(560px, 92vw); background:#12314C; border:1px solid rgba(140,182,214,0.32);
+  border-radius:6px; box-shadow:0 20px 60px rgba(0,0,0,0.5); overflow:hidden;
+}
+.cmdk-input-row{ display:flex; align-items:center; gap:10px; padding:14px 16px; border-bottom:1px solid rgba(140,182,214,0.16); }
+.cmdk-input-row .ico{ width:16px; height:16px; color:#7FE7D0; flex-shrink:0; }
+.cmdk-input-row input{
+  flex:1; background:none; border:none; outline:none; color:#EDF3F8; font-family:'IBM Plex Mono', monospace; font-size:14px;
+}
+.cmdk-input-row input::placeholder{ color:#B9CBDA; }
+.cmdk-esc{
+  font-family:'IBM Plex Mono', monospace; font-size:11px; color:#B9CBDA; border:1px solid rgba(140,182,214,0.32);
+  border-radius:3px; padding:2px 6px; flex-shrink:0;
+}
+.cmdk-results{ max-height:min(50vh, 420px); overflow-y:auto; padding:6px; }
+.cmdk-item{
+  display:flex; align-items:center; gap:10px; padding:9px 10px; border-radius:4px; cursor:pointer;
+  font-size:13.5px; color:#EDF3F8;
+}
+.cmdk-item .ico{ width:14px; height:14px; color:#B9CBDA; flex-shrink:0; }
+.cmdk-item .cmdk-group{ margin-left:auto; font-family:'IBM Plex Mono', monospace; font-size:10.5px; color:#B9CBDA; text-transform:uppercase; letter-spacing:.06em; }
+.cmdk-item.active{ background:rgba(242,193,78,0.12); }
+.cmdk-item.active .ico{ color:#F2C14E; }
+.cmdk-empty{ padding:20px 16px; color:#B9CBDA; font-size:13px; text-align:center; }
+.recipe-step-num{ color:#F2C14E; font-weight:600; width:18px; flex-shrink:0; }
+.recipe-step-btns{ display:flex; gap:4px; margin-left:auto; }
+.recipe-step-btns button{ background:none; border:1px solid rgba(140,182,214,0.32); border-radius:2px; color:#B9CBDA; font-size:11px; padding:2px 6px; cursor:pointer; }
+.recipe-step-btns button:hover{ color:#F2C14E; border-color:#F2C14E; }
+.recipe-saved-row{ display:flex; align-items:center; gap:10px; padding:9px 16px; border-bottom:1px solid rgba(140,182,214,0.16); font-size:12.5px; }
+.recipe-saved-row .rname{ font-family:'IBM Plex Mono', monospace; cursor:pointer; }
+.recipe-saved-row .rname:hover{ color:#F2C14E; }
+.recipe-saved-row .rsteps{ color:#B9CBDA; font-size:11px; }
+.live-validate-badge{
+  margin-top:6px; font-family:'IBM Plex Mono', monospace; font-size:11px; padding:3px 8px;
+  border-radius:3px; text-align:center; white-space:nowrap;
+}
+.live-validate-badge.ok{ color:#7FE7D0; border:1px solid rgba(127,231,208,0.4); }
+.live-validate-badge.err{ color:#F2846B; border:1px solid rgba(242,132,107,0.4); }
+.live-validate-badge.wait{ color:#B9CBDA; border:1px solid rgba(140,182,214,0.32); }
+.paywall-escalation{
+  display:flex; align-items:center; gap:14px; flex-wrap:wrap; margin-top:10px; padding:14px 16px;
+  border:1px solid rgba(242,193,78,0.5); background:rgba(242,193,78,0.1); border-radius:3px; font-size:13.5px;
+}
+.paywall-escalation span{ flex:1; min-width:200px; color:#EDF3F8; }
+.paywall-escalation button{ background:none; border:none; color:#B9CBDA; cursor:pointer; font-size:14px; padding:2px 4px; }
+.paywall-escalation button:hover{ color:#F2846B; }

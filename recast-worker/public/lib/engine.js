@@ -132,6 +132,11 @@
     });
   }
 
+  // Raw header/row split for the table-preview UI reuses the internal
+  // csvToRows(text, delim) helper defined below (used by csvDiff) — same
+  // shape (headers + row objects keyed by header) is exactly what the
+  // table view needs, so no separate parser required.
+
   // ---------------- XML <-> JSON (hand-written, no DOM) ----------------
   function xmlEscape(s) {
     return String(s).replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;');
@@ -858,6 +863,71 @@
     return '{\n' + lines.join('\n') + '\n' + closePad + '}';
   }
 
+  // ---------------- Structural summary — "explain this JSON" without AI ----------------
+  // A privacy-preserving alternative to a full visual graph: reuses the same
+  // schema inference already powering the Schema generator (so it's
+  // guaranteed consistent with it) and renders it as a readable indented
+  // tree instead of raw JSON Schema syntax. Everything computed client-side,
+  // nothing sent anywhere — same promise as the rest of the toolkit.
+  function schemaTypeLabel(s) {
+    if (!s || (s.type === undefined && !s.anyOf)) return 'any';
+    if (s.anyOf) return Array.from(new Set(s.anyOf.map(schemaTypeLabel))).join(' | ');
+    return s.type;
+  }
+
+  function renderSchemaTree(s, prefix, lines) {
+    if (!s || s.type !== 'object' || !s.properties) return;
+    const keys = Object.keys(s.properties);
+    const req = {};
+    (s.required || []).forEach(function (k) { req[k] = true; });
+    keys.forEach(function (k, idx) {
+      const isLast = idx === keys.length - 1;
+      const branch = isLast ? '\u2514\u2500 ' : '\u251c\u2500 ';
+      const cont = isLast ? '   ' : '\u2502  ';
+      const child = s.properties[k];
+      const optional = req[k] ? '' : ' (optional)';
+      if (child.type === 'object' && child.properties) {
+        const n = Object.keys(child.properties).length;
+        lines.push(prefix + branch + k + ': object (' + n + ' key' + (n === 1 ? '' : 's') + ')' + optional);
+        renderSchemaTree(child, prefix + cont, lines);
+      } else if (child.type === 'array') {
+        lines.push(prefix + branch + k + ': array of ' + schemaTypeLabel(child.items) + optional);
+        if (child.items && child.items.type === 'object' && child.items.properties) {
+          renderSchemaTree(child.items, prefix + cont, lines);
+        }
+      } else {
+        lines.push(prefix + branch + k + ': ' + schemaTypeLabel(child) + optional);
+      }
+    });
+  }
+
+  function jsonStructureSummary(data) {
+    const schema = inferSchema(data);
+    const lines = [];
+    let rootLabel;
+    if (schema.type === 'array') {
+      rootLabel = 'array of ' + schemaTypeLabel(schema.items);
+      if (schema.items && schema.items.type === 'object' && schema.items.properties) {
+        renderSchemaTree(schema.items, '', lines);
+      }
+    } else if (schema.type === 'object') {
+      const n = schema.properties ? Object.keys(schema.properties).length : 0;
+      rootLabel = 'object (' + n + ' key' + (n === 1 ? '' : 's') + ')';
+      renderSchemaTree(schema, '', lines);
+    } else {
+      rootLabel = schemaTypeLabel(schema);
+    }
+    let maxDepth = 1;
+    lines.forEach(function (l) {
+      const indent = (l.match(/^(\u2502  |   )*/)[0].length) / 3 + 1;
+      if (indent > maxDepth) maxDepth = indent;
+    });
+    const header = 'root: ' + rootLabel + (lines.length
+      ? '  \u2014  ' + lines.length + ' field' + (lines.length === 1 ? '' : 's') + ', max depth ' + maxDepth
+      : '');
+    return [header].concat(lines).join('\n');
+  }
+
   function jsonSchemaToTypescript(schema, rootName) {
     rootName = rootName || 'Root';
     if (schema && schema.type === 'object') {
@@ -1020,6 +1090,164 @@
     return 'type ' + rootName + ' = ' + topType + '\n';
   }
 
+  // ---------------- Kotlin data classes ----------------
+  function schemaToKotlinType(s, nameHint, classes) {
+    if (!s || (s.type === undefined && !s.anyOf)) return 'Any?';
+    if (s.anyOf) return 'Any?'; // Kotlin sealed classes could model this, but that's a much bigger emit — documented limitation
+    if (s.type === 'string') return 'String';
+    if (s.type === 'integer') return 'Int';
+    if (s.type === 'number') return 'Double';
+    if (s.type === 'boolean') return 'Boolean';
+    if (s.type === 'null') return 'Any?';
+    if (s.type === 'array') return 'List<' + schemaToKotlinType(s.items, String(nameHint || 'Item').replace(/s$/, ''), classes) + '>';
+    if (s.type === 'object') {
+      const className = toPascalCase(nameHint || 'Item');
+      emitKotlinClass(s, className, classes);
+      return className;
+    }
+    return 'Any?';
+  }
+
+  function emitKotlinClass(s, className, classes) {
+    const props = s.properties || {};
+    const required = {};
+    (s.required || []).forEach(function (k) { required[k] = true; });
+    const keys = Object.keys(props);
+    const fieldLines = keys.map(function (k, idx) {
+      const baseType = schemaToKotlinType(props[k], k, classes);
+      const isOptional = !required[k];
+      const type = isOptional && !baseType.endsWith('?') ? baseType + '?' : baseType;
+      const defaultVal = isOptional ? ' = null' : '';
+      const comma = idx < keys.length - 1 ? ',' : '';
+      return '    val ' + k + ': ' + type + defaultVal + comma;
+    });
+    const body = fieldLines.length ? '(\n' + fieldLines.join('\n') + '\n)' : '';
+    classes.push('data class ' + className + body);
+  }
+
+  function jsonSchemaToKotlin(schema, rootName) {
+    rootName = rootName || 'Root';
+    const classes = [];
+    const topType = schemaToKotlinType(schema, rootName, classes);
+    if (schema && schema.type === 'object') return classes.join('\n\n') + '\n';
+    return 'typealias ' + rootName + ' = ' + topType + '\n';
+  }
+
+  // ---------------- Rust structs (serde) ----------------
+  function toSnakeCase(name) {
+    return String(name)
+      .replace(/([a-z0-9])([A-Z])/g, '$1_$2')
+      .replace(/[\s\-]+/g, '_')
+      .toLowerCase()
+      .replace(/[^a-z0-9_]/g, '') || 'field';
+  }
+
+  function schemaToRustType(s, nameHint, structs) {
+    if (!s || (s.type === undefined && !s.anyOf)) return 'serde_json::Value';
+    if (s.anyOf) return 'serde_json::Value'; // Rust enums could model this, but that's a much bigger emit — documented limitation
+    if (s.type === 'string') return 'String';
+    if (s.type === 'integer') return 'i64';
+    if (s.type === 'number') return 'f64';
+    if (s.type === 'boolean') return 'bool';
+    if (s.type === 'null') return 'serde_json::Value';
+    if (s.type === 'array') return 'Vec<' + schemaToRustType(s.items, String(nameHint || 'Item').replace(/s$/, ''), structs) + '>';
+    if (s.type === 'object') {
+      const structName = toPascalCase(nameHint || 'Item');
+      emitRustStruct(s, structName, structs);
+      return structName;
+    }
+    return 'serde_json::Value';
+  }
+
+  function emitRustStruct(s, structName, structs) {
+    const props = s.properties || {};
+    const required = {};
+    (s.required || []).forEach(function (k) { required[k] = true; });
+    const keys = Object.keys(props);
+    const fieldLines = keys.map(function (k) {
+      const baseType = schemaToRustType(props[k], k, structs);
+      const type = required[k] ? baseType : 'Option<' + baseType + '>';
+      const snake = toSnakeCase(k);
+      const rename = snake !== k ? '    #[serde(rename = "' + k + '")]\n' : '';
+      return rename + '    pub ' + snake + ': ' + type + ',';
+    });
+    structs.push('#[derive(Debug, Serialize, Deserialize)]\npub struct ' + structName + ' {\n' + fieldLines.join('\n') + '\n}');
+  }
+
+  function jsonSchemaToRust(schema, rootName) {
+    rootName = rootName || 'Root';
+    const structs = [];
+    const topType = schemaToRustType(schema, rootName, structs);
+    const header = 'use serde::{Deserialize, Serialize};\n\n';
+    if (schema && schema.type === 'object') return header + structs.join('\n\n') + '\n';
+    return header + 'pub type ' + rootName + ' = ' + topType + ';\n';
+  }
+
+  // ---------------- Mock data generation from a schema ----------------
+  // Deliberately no AI/LLM involved — small, fast, fully client-side field-
+  // name heuristics (an "email"-named field gets a fake email, a "city"
+  // field gets a city name, etc.) plus type-based fallbacks for everything
+  // else. Good enough for populating a test fixture or a UI mock, not meant
+  // to be indistinguishable from real data.
+  const MOCK_NAMES = ['Ada Lovelace', 'Grace Hopper', 'Alan Turing', 'Katherine Johnson', 'Margaret Hamilton', 'Tim Berners-Lee', 'Radia Perlman', 'Linus Torvalds', 'Barbara Liskov', 'Vint Cerf'];
+  const MOCK_CITIES = ['London', 'New York', 'Berlin', 'Tokyo', 'Toronto', 'Sydney', 'Dublin', 'Amsterdam'];
+  const MOCK_COUNTRIES = ['United Kingdom', 'United States', 'Germany', 'Japan', 'Canada', 'Australia', 'Ireland', 'Netherlands'];
+  const MOCK_WORDS = ['sample', 'value', 'placeholder', 'example', 'demo', 'preview', 'item', 'entry'];
+
+  function mockPick(arr, i) { return arr[i % arr.length]; }
+  function mockInt(min, max) { return min + Math.floor(Math.random() * (max - min + 1)); }
+  function mockFloat(min, max) { return Math.round((min + Math.random() * (max - min)) * 100) / 100; }
+
+  function mockScalarForField(key, type, index) {
+    const k = String(key || '').toLowerCase();
+    if (/email/.test(k)) return mockPick(MOCK_NAMES, index).toLowerCase().replace(/[^a-z]+/g, '.') + '@example.com';
+    if (/(^|_)id$|id$/.test(k) && type === 'integer') return index + 1;
+    if (/(^|_)id$|id$/.test(k)) return 'id_' + Math.random().toString(36).slice(2, 10);
+    if (/name/.test(k)) return mockPick(MOCK_NAMES, index);
+    if (/city/.test(k)) return mockPick(MOCK_CITIES, index);
+    if (/country/.test(k)) return mockPick(MOCK_COUNTRIES, index);
+    if (/(phone|tel)/.test(k)) return '+1-555-' + String(mockInt(1000, 9999)).padStart(4, '0');
+    if (/(url|link|website)/.test(k)) return 'https://example.com/' + mockPick(MOCK_WORDS, index) + '-' + (index + 1);
+    if (/(date|time)/.test(k)) return new Date(Date.now() - mockInt(0, 3650) * 86400000).toISOString().slice(0, 10);
+    if (/(price|amount|cost|total)/.test(k)) return mockFloat(1, 1000);
+    if (type === 'string') return mockPick(MOCK_WORDS, index) + '_' + (index + 1);
+    if (type === 'integer') return mockInt(1, 1000);
+    if (type === 'number') return mockFloat(0, 1000);
+    if (type === 'boolean') return Math.random() < 0.5;
+    return null;
+  }
+
+  function mockValueForSchema(s, keyHint, index, depth) {
+    if (depth > 6) return null; // guard against pathological/deeply-recursive schemas
+    if (!s || (s.type === undefined && !s.anyOf)) return null;
+    if (s.anyOf) return mockValueForSchema(s.anyOf[mockInt(0, s.anyOf.length - 1)], keyHint, index, depth);
+    if (s.type === 'object') {
+      const out = {};
+      Object.keys(s.properties || {}).forEach(function (k) {
+        out[k] = mockValueForSchema(s.properties[k], k, index, depth + 1);
+      });
+      return out;
+    }
+    if (s.type === 'array') {
+      const n = mockInt(1, 3);
+      const items = [];
+      for (let i = 0; i < n; i++) items.push(mockValueForSchema(s.items, keyHint, i, depth + 1));
+      return items;
+    }
+    return mockScalarForField(keyHint, s.type, index);
+  }
+
+  function mockDataFromSchema(schema, opts) {
+    opts = opts || {};
+    const count = Math.max(1, Math.min(50, opts.count || 3));
+    if (schema && schema.type === 'array') {
+      const out = [];
+      for (let i = 0; i < count; i++) out.push(mockValueForSchema(schema.items, 'item', i, 0));
+      return out;
+    }
+    return mockValueForSchema(schema, 'root', 0, 0);
+  }
+
   // Real row count via the actual CSV parser (respects quoted fields with
   // embedded newlines/commas), not a naive newline count — used to gate
   // free-vs-Pro comparison size without misjudging a file that merely has
@@ -1033,6 +1261,7 @@
     unflattenObj: unflattenObj,
     jsonToCsv: jsonToCsv,
     csvToJson: csvToJson,
+    csvToRows: csvToRows,
     jsonToXml: jsonToXml,
     xmlToJson: xmlToJson,
     parseXmlToTree: parseXmlToTree,
@@ -1045,11 +1274,15 @@
     csvDiff: csvDiff,
     csvRowCount: csvRowCount,
     jsonSchemaFromSample: jsonSchemaFromSample,
+    jsonStructureSummary: jsonStructureSummary,
     jsonSchemaToTypescript: jsonSchemaToTypescript,
     jsonSchemaToZod: jsonSchemaToZod,
     jsonSchemaToPython: jsonSchemaToPython,
     jsonSchemaToPydantic: jsonSchemaToPydantic,
     jsonSchemaToGo: jsonSchemaToGo,
+    jsonSchemaToKotlin: jsonSchemaToKotlin,
+    jsonSchemaToRust: jsonSchemaToRust,
+    mockDataFromSchema: mockDataFromSchema,
     validateAgainstSchema: validateAgainstSchema,
     inferCell: inferCell
   };

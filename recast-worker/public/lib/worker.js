@@ -35,12 +35,16 @@ function runDiff(p) {
 
 function runSchema(p) {
   const opts = p.options || {};
+  if (opts.render === 'structure') return E.jsonStructureSummary(JSON.parse(p.text));
   const schema = E.jsonSchemaFromSample(JSON.parse(p.text), opts);
   if (opts.render === 'typescript') return E.jsonSchemaToTypescript(schema, opts.rootName || 'Root');
   if (opts.render === 'zod') return E.jsonSchemaToZod(schema, opts.rootName || 'Root');
   if (opts.render === 'python') return E.jsonSchemaToPython(schema, opts.rootName || 'Root');
   if (opts.render === 'pydantic') return E.jsonSchemaToPydantic(schema, opts.rootName || 'Root');
   if (opts.render === 'go') return E.jsonSchemaToGo(schema, opts.rootName || 'Root');
+  if (opts.render === 'kotlin') return E.jsonSchemaToKotlin(schema, opts.rootName || 'Root');
+  if (opts.render === 'rust') return E.jsonSchemaToRust(schema, opts.rootName || 'Root');
+  if (opts.render === 'mock') return JSON.stringify(E.mockDataFromSchema(schema, { count: opts.count }), null, 2);
   return JSON.stringify(schema, null, 2);
 }
 
