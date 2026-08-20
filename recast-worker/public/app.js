@@ -2054,16 +2054,12 @@ function scrollToHashTarget() {
   if (!hash) return;
   const target = document.getElementById(hash.slice(1));
   if (!target) return;
-  const header = document.querySelector('header.titleblock');
-  const headerH = header ? header.getBoundingClientRect().height : 0;
-  const y = target.getBoundingClientRect().top + window.scrollY - headerH - 12;
-  // 'instant' explicitly overrides the site's global CSS scroll-behavior:
-  // smooth — without it, 'auto' defers to that CSS, meaning every one of
-  // the retry checkpoints below would kick off its own multi-hundred-ms
-  // animation and interrupt whichever one was still mid-flight, landing
-  // wherever the last interruption happened to catch it rather than the
-  // actual target.
-  window.scrollTo({ top: Math.max(0, y), behavior: 'instant' });
+  // Let the browser's own scroll machinery do this, respecting the
+  // scroll-margin-top set in CSS — more robust across devices (especially
+  // mobile Safari's dynamic address bar) than a hand-calculated offset
+  // computed from a header-height snapshot that might be stale by the
+  // time the scroll actually happens.
+  target.scrollIntoView({ behavior: 'instant', block: 'start' });
 }
 if (location.hash) {
   // Multiple checkpoints rather than one — whatever exact combination of

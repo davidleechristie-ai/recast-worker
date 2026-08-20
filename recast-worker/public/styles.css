@@ -168,7 +168,7 @@
   .icon-btn{
     background:none; border:1px solid rgba(140,182,214,0.32); color:#B9CBDA;
     font-family:'IBM Plex Mono', monospace; font-size:11px; padding:6px 10px; border-radius:2px; cursor:pointer;
-    display:inline-flex; align-items:center; gap:6px;
+    display:inline-flex; align-items:center; gap:6px; text-decoration:none;
   }
   .icon-btn .ico{ width:13px; height:13px; flex-shrink:0; }
   .icon-btn:hover{border-color:#EDF3F8; color:#EDF3F8;}
@@ -760,3 +760,12 @@ body.wb-lock{ overflow:hidden; }
 .howto-toc a{ color:#B9CBDA; font-size:13px; text-decoration:none; }
 .howto-toc a:hover{ color:#F2C14E; }
 @media (max-width:640px){ .howto-step{ flex-direction:column; gap:10px; } }
+
+/* ================= Scroll-target offset for anchor links (#tool, #pricing, #api) =================
+   The site has a sticky header, so a plain anchor jump lands the target
+   right underneath it. scroll-margin-top is the browser-native way to
+   account for that — handled by the browser's own scroll machinery,
+   which is far more robust across devices (especially mobile Safari's
+   dynamic address bar) than a hand-calculated JS scroll offset. */
+#tool, #pricing, #api{ scroll-margin-top: 96px; }
+@media (max-width:900px){ #tool, #pricing, #api{ scroll-margin-top: 154px; } }
