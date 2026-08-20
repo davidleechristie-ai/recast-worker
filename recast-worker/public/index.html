@@ -4,7 +4,7 @@
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>Recast — Convert, validate, format, diff & schema for JSON, CSV, XML</title>
-<meta name="description" content="Convert, validate, format, flatten, diff and generate JSON Schema for JSON, CSV and XML — instantly in your browser. Key-aware diffing, JSONPath, Excel-ready CSV. Nothing uploaded. Free for single files.">
+<meta name="description" content="Convert, validate, diff and visualize JSON, CSV, XML, YAML and Markdown. Generate types for 7 languages, batch-process hundreds of files, chain conversions into saved recipes, and work fully offline — entirely in your browser, nothing uploaded.">
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@400;500;600;700&family=IBM+Plex+Sans:wght@400;500;600&family=IBM+Plex+Mono:wght@400;500&display=swap" rel="stylesheet">
 <link rel="stylesheet" href="styles.css">
@@ -20,7 +20,7 @@
   "url": "https://tryrecast.app/",
   "applicationCategory": "DeveloperApplication",
   "operatingSystem": "Any (runs in browser)",
-  "description": "Convert, validate, format, diff and generate JSON Schema for JSON, CSV and XML — instantly in your browser. Nothing is uploaded.",
+  "description": "Convert, validate, diff and visualize JSON, CSV, XML, YAML and Markdown — generate types for 7 languages, batch-process hundreds of files, and work fully offline. Nothing is uploaded.",
   "offers": [
     { "@type": "Offer", "name": "Free", "price": "0", "priceCurrency": "GBP" },
     { "@type": "Offer", "name": "Pro", "price": "9", "priceCurrency": "GBP" },
@@ -133,6 +133,19 @@
     <path d="M10 2.5h5.5V8"/>
     <line x1="15.3" y1="2.7" x2="8.5" y2="9.5"/>
   </symbol>
+  <symbol id="ico-history" viewBox="0 0 18 18" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round">
+    <path d="M3 9a6 6 0 1 0 1.8-4.3"/>
+    <polyline points="1.8,3 2,5.5 4.5,5.2"/>
+    <polyline points="9,5.5 9,9 11.5,10.5"/>
+  </symbol>
+  <symbol id="ico-settings" viewBox="0 0 18 18" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round">
+    <circle cx="9" cy="9" r="2.8"/>
+    <path d="M9 3v2.2M9 12.8V15M15 9h-2.2M5.2 9H3"/>
+  </symbol>
+  <symbol id="ico-link" viewBox="0 0 18 18" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round">
+    <path d="M7.5 10.5a3 3 0 0 0 4.3.2l2-2a3 3 0 0 0-4.2-4.2l-1.1 1.1"/>
+    <path d="M10.5 7.5a3 3 0 0 0-4.3-.2l-2 2a3 3 0 0 0 4.2 4.2l1.1-1.1"/>
+  </symbol>
 </svg>
 
 
@@ -150,12 +163,12 @@
     </nav>
     <div class="header-actions">
       <span class="worker-status" id="workerStatus"><span class="dot"></span>Processing…</span>
-      <button class="icon-btn" id="historyBtn" title="Recent conversions (stored only on this device)">History</button>
+      <button class="icon-btn" id="historyBtn" title="Recent conversions (stored only on this device)"><svg class="ico"><use href="#ico-history"/></svg><span class="btn-label">History</span></button>
       <div class="history-panel" id="historyPanel">
         <div class="history-head"><span>Recent (this device only)</span><button id="historyClearBtn">Clear</button></div>
         <div id="historyList"></div>
       </div>
-      <button class="icon-btn" id="presetsBtn" title="Saved option presets (Pro)">Presets</button>
+      <button class="icon-btn" id="presetsBtn" title="Saved option presets (Pro)"><svg class="ico"><use href="#ico-settings"/></svg><span class="btn-label">Presets</span></button>
       <div class="history-panel" id="presetsPanel">
         <div class="history-head"><span>Saved presets</span><button id="presetsCloseBtn">Close</button></div>
         <div id="presetsList"></div>
@@ -164,7 +177,7 @@
           <button class="icon-btn" id="presetSaveBtn">Save current</button>
         </div>
       </div>
-      <button class="icon-btn" id="shareBtn" title="Copy a link that restores this input — data is compressed into the URL itself, nothing is uploaded">Share link</button>
+      <button class="icon-btn" id="shareBtn" title="Copy a link that restores this input — data is compressed into the URL itself, nothing is uploaded"><svg class="ico"><use href="#ico-link"/></svg><span class="btn-label">Share link</span></button>
       <a href="#pricing" class="btn btn-gold" id="accountBtn">Upgrade to Pro</a>
     </div>
   </div>
@@ -174,7 +187,7 @@
   <section class="hero" id="tool">
     <p class="eyebrow">Data format toolkit</p>
     <h1>Reshape, validate &amp; compare<br><em>without leaving the tab.</em></h1>
-    <p class="sub">Convert, format, validate, diff and check data against a JSON Schema — plus batch convert 100 files at once. Entirely in your browser. Nothing is uploaded.</p>
+    <p class="sub">Convert, validate, diff, and visualize JSON, CSV, XML, YAML and Markdown. Generate types for 7 languages, batch-process hundreds of files, chain conversions into saved recipes, and work fully offline — entirely in your browser, nothing uploaded.</p>
 
     <div class="privacy-banner">
       <strong>Your data stays on your machine.</strong> No uploads. No tracking scripts. No server-side processing for browser tools.
