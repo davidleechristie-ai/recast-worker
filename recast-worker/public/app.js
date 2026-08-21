@@ -2192,7 +2192,20 @@ renderHistoryList();
   const group = params.get('group');
   if (group && window.setGroup) window.setGroup(group);
   const open = params.get('open');
-  if (open === 'recipes') document.getElementById('recipeToggleBtn')?.click();
+  if (open === 'recipes') {
+    document.getElementById('recipeBuilder2ToggleBtn')?.click();
+    // Keep re-applying the scroll for a short window rather than trusting
+    // a single attempt — this runs during a full page navigation, and a
+    // late-arriving layout shift (fonts, images still settling) can silently
+    // undo an early one-time scroll before the user ever sees it land.
+    let attempts = 0;
+    const keepScrolling = () => {
+      const panel = document.getElementById('recipeBuilder2Panel');
+      if (panel) panel.scrollIntoView({ behavior: 'instant', block: 'start' });
+      if (attempts++ < 6) setTimeout(keepScrolling, 150);
+    };
+    keepScrolling();
+  }
   else if (open === 'history') document.getElementById('historyBtn')?.click();
   else if (open === 'presets') document.getElementById('presetsBtn')?.click();
   if (group || open) {

@@ -59,9 +59,15 @@
     if (!opening) closeAllGroups();
   });
 
-  function goToWorkspace(params) {
+  function goToWorkspace(params, includeToolHash) {
     const qs = params ? '?' + new URLSearchParams(params).toString() : '';
-    window.location.href = toWorkspace + qs + '#tool';
+    // The #tool suffix is right for a generic "land on the workspace"
+    // navigation, but actively fights a more specific scroll target (e.g.
+    // recipes/history/presets each scroll to their own panel once loaded)
+    // — the browser's own native hash-scroll can otherwise land after that
+    // more specific scroll and silently override it back to #tool.
+    const suffix = includeToolHash === false ? '' : '#tool';
+    window.location.href = toWorkspace + qs + suffix;
   }
 
   // Wire every dropdown action to the existing implementation — never a
@@ -78,14 +84,38 @@
         if (hasWorkbench && window.setGroup) window.setGroup(group);
         else goToWorkspace({ group: group });
       } else if (action === 'recipes') {
-        if (hasWorkbench) { evt.stopPropagation(); document.getElementById('recipeToggleBtn')?.click(); }
-        else goToWorkspace({ open: 'recipes' });
+        // Points at Recipe Builder 2.0 (the fuller visual workflow builder,
+        // the same one showcased on the Demo page's Automate card) rather
+        // than the older, simpler Recipe panel — that panel is still
+        // reachable from its own button in the workbench, just no longer
+        // this menu item's target.
+        if (hasWorkbench) {
+          evt.stopPropagation();
+          if (!document.getElementById('recipeBuilder2Panel')?.classList.contains('show')) {
+            document.getElementById('recipeBuilder2ToggleBtn')?.click();
+          }
+          document.getElementById('recipeBuilder2Panel')?.scrollIntoView({ behavior: 'instant', block: 'start' });
+        } else {
+          goToWorkspace({ open: 'recipes' }, false);
+        }
       } else if (action === 'history') {
-        if (hasWorkbench) { evt.stopPropagation(); document.getElementById('historyBtn')?.click(); }
-        else goToWorkspace({ open: 'history' });
+        if (hasWorkbench) {
+          evt.stopPropagation();
+          if (!document.getElementById('historyPanel')?.classList.contains('show')) {
+            document.getElementById('historyBtn')?.click();
+          }
+        } else {
+          goToWorkspace({ open: 'history' });
+        }
       } else if (action === 'presets') {
-        if (hasWorkbench) { evt.stopPropagation(); document.getElementById('presetsBtn')?.click(); }
-        else goToWorkspace({ open: 'presets' });
+        if (hasWorkbench) {
+          evt.stopPropagation();
+          if (!document.getElementById('presetsPanel')?.classList.contains('show')) {
+            document.getElementById('presetsBtn')?.click();
+          }
+        } else {
+          goToWorkspace({ open: 'presets' });
+        }
       } else if (action === 'anchor') {
         const id = el.dataset.anchor;
         const target = document.getElementById(id);
