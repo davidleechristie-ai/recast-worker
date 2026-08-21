@@ -103,6 +103,63 @@
 
   const collapsedByContainer = new WeakMap();
 
+  function svgElementFor(containerEl) { return containerEl.querySelector('svg'); }
+
+  function triggerDownload(url, filename) {
+    const a = document.createElement('a');
+    a.href = url;
+    a.download = filename;
+    a.click();
+  }
+
+  function exportSVG(containerEl, filenameBase) {
+    const svg = svgElementFor(containerEl);
+    if (!svg) return;
+    const svgData = new XMLSerializer().serializeToString(svg);
+    const blob = new Blob(['<?xml version="1.0" standalone="no"?>\r\n' + svgData], { type: 'image/svg+xml;charset=utf-8' });
+    const url = URL.createObjectURL(blob);
+    triggerDownload(url, (filenameBase || 'recast-graph') + '.svg');
+    URL.revokeObjectURL(url);
+  }
+
+  function exportPNG(containerEl, filenameBase) {
+    const svg = svgElementFor(containerEl);
+    if (!svg) return;
+    const width = parseInt(svg.getAttribute('width'), 10) || svg.clientWidth || 400;
+    const height = parseInt(svg.getAttribute('height'), 10) || svg.clientHeight || 200;
+    const svgData = new XMLSerializer().serializeToString(svg);
+    const svgBlob = new Blob([svgData], { type: 'image/svg+xml;charset=utf-8' });
+    const url = URL.createObjectURL(svgBlob);
+    const img = new Image();
+    img.onload = function () {
+      const scale = 2; // export at 2x so text stays crisp
+      const canvas = document.createElement('canvas');
+      canvas.width = width * scale;
+      canvas.height = height * scale;
+      const ctx = canvas.getContext('2d');
+      ctx.fillStyle = '#0E2338'; // match the site background instead of a transparent PNG
+      ctx.fillRect(0, 0, canvas.width, canvas.height);
+      ctx.scale(scale, scale);
+      ctx.drawImage(img, 0, 0, width, height);
+      URL.revokeObjectURL(url);
+      canvas.toBlob(function (blob) {
+        const pngUrl = URL.createObjectURL(blob);
+        triggerDownload(pngUrl, (filenameBase || 'recast-graph') + '.png');
+        URL.revokeObjectURL(pngUrl);
+      }, 'image/png');
+    };
+    img.src = url;
+  }
+
+  function injectExportButtons(containerEl) {
+    const bar = document.createElement('div');
+    bar.className = 'graph-export-bar';
+    bar.innerHTML = '<button type="button" data-export="svg" title="Download as SVG">SVG</button><button type="button" data-export="png" title="Download as PNG">PNG</button>';
+    bar.querySelector('[data-export="svg"]').addEventListener('click', (e) => { e.stopPropagation(); exportSVG(containerEl); });
+    bar.querySelector('[data-export="png"]').addEventListener('click', (e) => { e.stopPropagation(); exportPNG(containerEl); });
+    containerEl.insertBefore(bar, containerEl.firstChild);
+  }
+
   function render(containerEl, jsonText, opts) {
     opts = opts || {};
     let data;
@@ -118,6 +175,7 @@
     const yCounter = { v: 0 };
     layout(tree, 0, collapsedPaths, yCounter);
     containerEl.innerHTML = renderSVG(tree, yCounter);
+    injectExportButtons(containerEl);
 
     containerEl.querySelectorAll('.graph-node.clickable').forEach(g => {
       g.addEventListener('click', () => {

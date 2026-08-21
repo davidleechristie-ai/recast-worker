@@ -3,12 +3,13 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
+<script>(function(){try{if(localStorage.getItem('recast_theme')==='light')document.documentElement.setAttribute('data-theme','light');}catch(e){}})();</script>
 <title>Stop Making Up Test Data — Try Recast With the Real Thing | Recast</title>
 <meta name="description" content="Why we built a demo page with real, full-sized datasets instead of three-row toy examples — and what it actually shows you that a tiny sample can't.">
 <link rel="canonical" href="https://tryrecast.app/blog/try-recast-with-real-data.html">
 <link rel="stylesheet" href="../styles.css">
 <link rel="preconnect" href="https://fonts.googleapis.com">
-<link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@500;600;700&family=IBM+Plex+Mono:wght@400;500&display=swap" rel="stylesheet">
+<link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@400;500;600;700&family=IBM+Plex+Sans:wght@400;500;600&family=IBM+Plex+Mono:wght@400;500&display=swap" rel="stylesheet">
 <script type="application/ld+json">
 {
   "@context": "https://schema.org",
@@ -30,7 +31,7 @@
   gtag('config', 'G-MW47YKCSLX');
 </script>
 </head>
-<body style="background:#0E2338;color:#EDF3F8;margin:0;min-height:100vh;">
+<body style="background:var(--bg);color:var(--text);margin:0;min-height:100vh;">
 
 <svg style="display:none" aria-hidden="true">
   <symbol id="ico-history" viewBox="0 0 18 18" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round">
@@ -46,24 +47,63 @@
     <path d="M7.5 10.5a3 3 0 0 0 4.3.2l2-2a3 3 0 0 0-4.2-4.2l-1.1 1.1"/>
     <path d="M10.5 7.5a3 3 0 0 0-4.3-.2l-2 2a3 3 0 0 0 4.2 4.2l1.1-1.1"/>
   </symbol>
+  <symbol id="ico-sun" viewBox="0 0 18 18" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round">
+    <circle cx="9" cy="9" r="3.2"/>
+    <path d="M9 1.8v2M9 14.2v2M16.2 9h-2M3.8 9h-2M14.2 3.8l-1.4 1.4M5.2 12.8l-1.4 1.4M14.2 14.2l-1.4-1.4M5.2 5.2L3.8 3.8"/>
+  </symbol>
+  <symbol id="ico-moon" viewBox="0 0 18 18" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round">
+    <path d="M15 10.2A6.2 6.2 0 0 1 7.8 3 6.5 6.5 0 1 0 15 10.2Z"/>
+  </symbol>
+  <symbol id="ico-chevron" viewBox="0 0 18 18" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round">
+    <polyline points="4.5,7 9,11.5 13.5,7"/>
+  </symbol>
 </svg>
 
 <header class="titleblock">
   <div class="ruler" id="ruler"></div>
   <div class="tb-row">
     <a href="../index.html" class="brand" style="text-decoration:none;color:inherit;"><span class="mark">⇄</span>RECAST</a>
-    <nav class="tb-nav">
-      <a href="../index.html#tool">Tool</a>
-      <a href="../index.html#pricing">Pricing</a>
-      <a href="../index.html#api">API docs</a>
-      <a href="index.html">Blog</a>
-      <a href="../demo/index.html">Demo</a>
-      <a href="../how-to/index.html">How To</a>
+    <nav class="tb-nav" id="primaryNav">
+      <div class="nav-group" data-nav-group="work">
+        <button type="button" class="nav-group-btn" aria-expanded="false" aria-haspopup="true">Work<svg class="ico nav-caret"><use href="#ico-chevron"/></svg></button>
+        <div class="nav-dropdown" role="menu">
+          <button type="button" class="nav-dropdown-item" data-nav-action="group" data-group="convert" role="menuitem">Convert</button>
+          <button type="button" class="nav-dropdown-item" data-nav-action="group" data-group="transform" role="menuitem">Transform</button>
+          <button type="button" class="nav-dropdown-item" data-nav-action="group" data-group="query" role="menuitem">Query</button>
+          <button type="button" class="nav-dropdown-item" data-nav-action="group" data-group="validate" role="menuitem">Validate</button>
+          <button type="button" class="nav-dropdown-item" data-nav-action="group" data-group="compare" role="menuitem">Compare</button>
+          <button type="button" class="nav-dropdown-item" data-nav-action="group" data-group="schema" role="menuitem">Inspect</button>
+        </div>
+      </div>
+      <div class="nav-group" data-nav-group="automate">
+        <button type="button" class="nav-group-btn" aria-expanded="false" aria-haspopup="true">Automate<svg class="ico nav-caret"><use href="#ico-chevron"/></svg></button>
+        <div class="nav-dropdown" role="menu">
+          <button type="button" class="nav-dropdown-item" data-nav-action="recipes" role="menuitem">Recipes</button>
+          <button type="button" class="nav-dropdown-item" data-nav-action="anchor" data-anchor="api" role="menuitem">API</button>
+          <button type="button" class="nav-dropdown-item" data-nav-action="anchor" data-anchor="api" role="menuitem">CLI</button>
+        </div>
+      </div>
+      <div class="nav-group" data-nav-group="data">
+        <button type="button" class="nav-group-btn" aria-expanded="false" aria-haspopup="true">Data<svg class="ico nav-caret"><use href="#ico-chevron"/></svg></button>
+        <div class="nav-dropdown" role="menu">
+          <button type="button" class="nav-dropdown-item" data-nav-action="history" role="menuitem">History</button>
+          <button type="button" class="nav-dropdown-item" data-nav-action="presets" role="menuitem">Presets</button>
+          <button type="button" class="nav-dropdown-item" data-nav-action="group" data-group="schema" role="menuitem">Schemas</button>
+        </div>
+      </div>
+      <a href="../demo/index.html" class="nav-plain-link">Demo</a>
+      <a href="index.html" class="nav-plain-link">Blog</a>
+      <a href="../index.html#pricing" class="nav-plain-link">Pricing</a>
+      <a href="../how-to/index.html" class="nav-plain-link">Docs</a>
     </nav>
+    <button type="button" class="nav-hamburger" id="navHamburger" aria-label="Open menu" aria-expanded="false" aria-controls="primaryNav">
+      <span></span><span></span><span></span>
+    </button>
     <div class="header-actions">
       <a href="../index.html#tool" class="icon-btn" title="View your conversion history — opens the tool"><svg class="ico"><use href="#ico-history"/></svg><span class="btn-label">History</span></a>
       <a href="../index.html#tool" class="icon-btn" title="View your saved presets — opens the tool"><svg class="ico"><use href="#ico-settings"/></svg><span class="btn-label">Presets</span></a>
       <a href="../index.html#tool" class="icon-btn" title="Share a conversion — opens the tool"><svg class="ico"><use href="#ico-link"/></svg><span class="btn-label">Share link</span></a>
+      <button class="icon-btn" id="themeToggleBtn" title="Switch between dark and light theme"><svg class="ico"><use href="#ico-sun" id="themeIconUse"/></svg></button>
       <a href="../index.html#pricing" class="btn btn-gold" id="accountBtn">Upgrade to Pro</a>
     </div>
   </div>
@@ -102,10 +142,12 @@
 
 </main>
 
-<footer style="max-width:1180px;margin:0 auto;padding:24px;text-align:center;color:#B9CBDA;font-size:12.5px;border-top:1px solid rgba(140,182,214,0.16);">
-  <a href="../index.html" style="color:#B9CBDA;">Recast</a> — convert, validate, diff JSON, CSV and XML in your browser.
+<footer style="max-width:1180px;margin:0 auto;padding:24px;text-align:center;color:var(--text-muted);font-size:12.5px;border-top:1px solid rgba(var(--border-rgb),0.16);">
+  <a href="../index.html" style="color:var(--text-muted);">Recast</a> — your private data workbench. Your data doesn't leave your browser. Your workflow can.
 </footer>
 
 <script src="../lib/ruler.js"></script>
+<script src="../lib/theme.js"></script>
+<script src="../lib/nav.js"></script>
 </body>
 </html>

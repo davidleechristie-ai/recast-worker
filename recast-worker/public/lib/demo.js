@@ -15,6 +15,10 @@
     events: { url: 'data/events.xml', mode: 'xml2json' },
     services: { url: 'data/services.yaml', mode: 'yaml2json' },
     orders_diff: { urlA: 'data/orders_before.json', urlB: 'data/orders_after.json', mode: 'diffJson' },
+    orders_code: { url: 'data/orders.json', mode: 'json2java' },
+    orders_inspect: { url: 'data/orders.json', mode: 'json2csv', openPanel: 'dataInspectorToggleBtn', panelEl: 'dataInspectorPanel' },
+    orders_recipe: { url: 'data/orders.json', mode: 'json2csv', openPanel: 'recipeBuilder2ToggleBtn', panelEl: 'recipeBuilder2Panel' },
+    events_validate: { url: 'data/events.xml', mode: 'validateXml' },
   };
 
   const cache = {};
@@ -45,8 +49,13 @@
         const input = document.getElementById('input');
         if (input) { input.value = text; input.dispatchEvent(new Event('input', { bubbles: true })); }
       }
-      const workbench = document.querySelector('.workbench');
-      if (workbench) workbench.scrollIntoView({ behavior: 'smooth', block: 'start' });
+      if (def.openPanel) {
+        const panelEl = def.panelEl && document.getElementById(def.panelEl);
+        const alreadyOpen = panelEl && panelEl.classList.contains('show');
+        if (!alreadyOpen) document.getElementById(def.openPanel)?.click();
+      }
+      const scrollTarget = (def.panelEl && document.getElementById(def.panelEl)) || document.querySelector('.workbench');
+      if (scrollTarget) scrollTarget.scrollIntoView({ behavior: 'smooth', block: 'start' });
       if (window.track) window.track('demo_dataset_load', { dataset: key, mode: def.mode });
     } catch (e) {
       if (window.showToast) window.showToast('Could not load that demo file \u2014 try again in a moment.');

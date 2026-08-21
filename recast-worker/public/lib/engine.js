@@ -810,6 +810,55 @@
     }
   }
 
+  // ---------------- JSONPath (subset: dotted keys, [n] index, [*] wildcard) ----------------
+  // Pure query logic, reused by both the standalone JSONPath tool and the
+  // jsonPath recipe/batch step — same algorithm either way.
+  function jsonPathQuery(obj, path) {
+    path = (path || '').trim();
+    if (!path) throw new Error('Enter a JSONPath expression');
+    if (path.startsWith('$.')) path = path.slice(2);
+    else if (path.startsWith('$')) path = path.slice(1);
+    if (path.startsWith('.')) path = path.slice(1);
+    const parts = [];
+    path.replace(/([^.\[\]]+)|\[(\d+)\]|\[\*\]/g, (_, key, idx) => {
+      if (key !== undefined) parts.push(key);
+      else if (idx !== undefined) parts.push(Number(idx));
+      else parts.push('*');
+    });
+    let current = [obj];
+    for (const part of parts) {
+      const next = [];
+      for (const node of current) {
+        if (part === '*') {
+          if (Array.isArray(node)) node.forEach(v => next.push(v));
+          else if (node && typeof node === 'object') Object.values(node).forEach(v => next.push(v));
+        } else if (node != null && typeof node === 'object') {
+          next.push(node[part]);
+        }
+      }
+      current = next.filter(v => v !== undefined);
+    }
+    return current.length === 1 ? current[0] : current;
+  }
+
+  // ---------------- Lightweight syntax validation (structured, for recipe/batch use) ----------------
+  // Deliberately simple pass/fail — the rich, human-readable validation
+  // report is a presentation concern that stays in the standalone tool;
+  // a recipe step needs a clean, deterministic {valid, error} to act on.
+  function validateJsonSyntax(text) {
+    if (text == null || !String(text).trim()) return { valid: false, error: 'Input is empty' };
+    try { const obj = JSON.parse(text); JSON.stringify(obj); return { valid: true, error: null }; }
+    catch (e) { return { valid: false, error: e.message || String(e) }; }
+  }
+  function validateXmlSyntax(text) {
+    if (text == null || !String(text).trim()) return { valid: false, error: 'Input is empty' };
+    if (!text.trim().startsWith('<')) return { valid: false, error: 'Does not look like XML' };
+    if (typeof DOMParser === 'undefined') return { valid: false, error: 'XML validation is not available in this context' };
+    const doc = new DOMParser().parseFromString(text, 'text/xml');
+    const err = doc.querySelector('parsererror');
+    return err ? { valid: false, error: err.textContent.replace(/\s+/g, ' ').trim().slice(0, 240) } : { valid: true, error: null };
+  }
+
   function validateAgainstSchema(data, schema) {
     const errors = [];
     validateNode(data, schema, '', errors);
@@ -1183,6 +1232,219 @@
     return header + 'pub type ' + rootName + ' = ' + topType + ';\n';
   }
 
+  // ---------------- Java records ----------------
+  function schemaToJavaType(s, nameHint, records) {
+    if (!s || (s.type === undefined && !s.anyOf)) return 'Object';
+    if (s.anyOf) return 'Object';
+    if (s.type === 'string') return 'String';
+    if (s.type === 'integer') return 'Integer';
+    if (s.type === 'number') return 'Double';
+    if (s.type === 'boolean') return 'Boolean';
+    if (s.type === 'null') return 'Object';
+    if (s.type === 'array') return 'List<' + schemaToJavaType(s.items, String(nameHint || 'Item').replace(/s$/, ''), records) + '>';
+    if (s.type === 'object') {
+      const recordName = toPascalCase(nameHint || 'Item');
+      emitJavaRecord(s, recordName, records);
+      return recordName;
+    }
+    return 'Object';
+  }
+  function emitJavaRecord(s, recordName, records) {
+    const props = s.properties || {};
+    const keys = Object.keys(props);
+    const fields = keys.map(function (k) { return schemaToJavaType(props[k], k, records) + ' ' + k; });
+    records.push('public record ' + recordName + '(\n    ' + fields.join(',\n    ') + '\n) {}');
+  }
+  function jsonSchemaToJava(schema, rootName) {
+    rootName = rootName || 'Root';
+    const records = [];
+    const header = 'import java.util.List;\n\n';
+    if (schema && schema.type === 'object') {
+      schemaToJavaType(schema, rootName, records);
+      return header + records.join('\n\n') + '\n';
+    }
+    const topType = schemaToJavaType(schema, rootName, records);
+    return header + '// ' + rootName + ' = ' + topType + '\n' + records.join('\n\n') + '\n';
+  }
+
+  // ---------------- Swift (Codable structs) ----------------
+  function schemaToSwiftType(s, nameHint, structs) {
+    if (!s || (s.type === undefined && !s.anyOf)) return 'AnyCodable';
+    if (s.anyOf) return 'AnyCodable';
+    if (s.type === 'string') return 'String';
+    if (s.type === 'integer') return 'Int';
+    if (s.type === 'number') return 'Double';
+    if (s.type === 'boolean') return 'Bool';
+    if (s.type === 'null') return 'AnyCodable?';
+    if (s.type === 'array') return '[' + schemaToSwiftType(s.items, String(nameHint || 'Item').replace(/s$/, ''), structs) + ']';
+    if (s.type === 'object') {
+      const structName = toPascalCase(nameHint || 'Item');
+      emitSwiftStruct(s, structName, structs);
+      return structName;
+    }
+    return 'AnyCodable';
+  }
+  function emitSwiftStruct(s, structName, structs) {
+    const props = s.properties || {};
+    const required = {};
+    (s.required || []).forEach(function (k) { required[k] = true; });
+    const keys = Object.keys(props);
+    const fields = keys.map(function (k) {
+      const baseType = schemaToSwiftType(props[k], k, structs);
+      const type = required[k] ? baseType : (baseType.endsWith('?') ? baseType : baseType + '?');
+      return '    let ' + k + ': ' + type;
+    });
+    structs.push('struct ' + structName + ': Codable {\n' + fields.join('\n') + '\n}');
+  }
+  function jsonSchemaToSwift(schema, rootName) {
+    rootName = rootName || 'Root';
+    const structs = [];
+    if (schema && schema.type === 'object') {
+      schemaToSwiftType(schema, rootName, structs);
+      return structs.join('\n\n') + '\n';
+    }
+    const topType = schemaToSwiftType(schema, rootName, structs);
+    return 'typealias ' + rootName + ' = ' + topType + '\n' + structs.join('\n\n') + '\n';
+  }
+
+  // ---------------- C# classes ----------------
+  function schemaToCSharpType(s, nameHint, classes) {
+    if (!s || (s.type === undefined && !s.anyOf)) return 'object';
+    if (s.anyOf) return 'object';
+    if (s.type === 'string') return 'string';
+    if (s.type === 'integer') return 'int';
+    if (s.type === 'number') return 'double';
+    if (s.type === 'boolean') return 'bool';
+    if (s.type === 'null') return 'object';
+    if (s.type === 'array') return 'List<' + schemaToCSharpType(s.items, String(nameHint || 'Item').replace(/s$/, ''), classes) + '>';
+    if (s.type === 'object') {
+      const className = toPascalCase(nameHint || 'Item');
+      emitCSharpClass(s, className, classes);
+      return className;
+    }
+    return 'object';
+  }
+  function csharpPropName(key) {
+    const pascal = toPascalCase(key);
+    return pascal.length ? pascal : key;
+  }
+  function emitCSharpClass(s, className, classes) {
+    const props = s.properties || {};
+    const required = {};
+    (s.required || []).forEach(function (k) { required[k] = true; });
+    const keys = Object.keys(props);
+    const fields = keys.map(function (k) {
+      const baseType = schemaToCSharpType(props[k], k, classes);
+      const type = required[k] ? baseType : baseType + '?';
+      const propName = csharpPropName(k);
+      const jsonAttr = propName !== k ? '    [JsonPropertyName("' + k + '")]\n' : '';
+      return jsonAttr + '    public ' + type + ' ' + propName + ' { get; set; }';
+    });
+    classes.push('public class ' + className + '\n{\n' + fields.join('\n') + '\n}');
+  }
+  function jsonSchemaToCSharp(schema, rootName) {
+    rootName = rootName || 'Root';
+    const classes = [];
+    const header = 'using System.Collections.Generic;\nusing System.Text.Json.Serialization;\n\n';
+    if (schema && schema.type === 'object') {
+      schemaToCSharpType(schema, rootName, classes);
+      return header + classes.join('\n\n') + '\n';
+    }
+    const topType = schemaToCSharpType(schema, rootName, classes);
+    return header + '// ' + rootName + ' = ' + topType + '\n' + classes.join('\n\n') + '\n';
+  }
+
+  // ---------------- SQL CREATE TABLE (a starting point, not a full ORM) ----------------
+  // Nested single objects flatten into the parent table (dotted paths become
+  // underscore-joined column names, matching the CSV converter's own
+  // flattening convention). Arrays of objects become their own child table
+  // with a foreign key back to the parent, since SQL has no native concept
+  // of a nested array. Arrays of primitives fall back to a JSON-encoded TEXT
+  // column — normalizing a scalar list into its own table is rarely what
+  // anyone actually wants from a generated starting schema.
+  function toSnakeCaseSql(name) {
+    return String(name).replace(/([a-z0-9])([A-Z])/g, '$1_$2').replace(/[\s\-]+/g, '_').toLowerCase().replace(/[^a-z0-9_]/g, '') || 'field';
+  }
+  function sqlType(s) {
+    if (!s || (s.type === undefined && !s.anyOf)) return 'TEXT';
+    if (s.anyOf) return 'TEXT';
+    if (s.type === 'integer') return 'INTEGER';
+    if (s.type === 'number') return 'REAL';
+    if (s.type === 'boolean') return 'BOOLEAN';
+    if (s.type === 'array') return 'TEXT'; // JSON-encoded array of primitives
+    return 'TEXT';
+  }
+  function collectSqlColumns(s, prefix, required, columns) {
+    const props = s.properties || {};
+    Object.keys(props).forEach(function (k) {
+      const child = props[k];
+      const colName = toSnakeCaseSql(prefix ? prefix + '_' + k : k);
+      const isRequired = required[k];
+      if (child && child.type === 'object' && child.properties) {
+        const childRequired = {};
+        (child.required || []).forEach(function (rk) { childRequired[rk] = true; });
+        collectSqlColumns(child, prefix ? prefix + '_' + k : k, childRequired, columns);
+      } else if (child && child.type === 'array' && child.items && child.items.type === 'object') {
+        // handled separately as a child table by the caller
+      } else {
+        columns.push({ name: colName, type: sqlType(child), nullable: !isRequired });
+      }
+    });
+  }
+  function emitSqlTable(s, tableName, parentTable, tables) {
+    const required = {};
+    (s.required || []).forEach(function (k) { required[k] = true; });
+    const props = s.properties || {};
+    const hasNaturalId = !!props.id; // reuse the data's own id field as PK instead of colliding with a synthetic one
+    const columns = hasNaturalId ? [] : [{ name: 'id', type: 'INTEGER', pk: true }];
+    if (parentTable) columns.push({ name: parentTable + '_id', type: 'INTEGER', fk: parentTable });
+    collectSqlColumns(s, '', required, columns);
+    if (hasNaturalId) {
+      const idCol = columns.find(function (c) { return c.name === 'id'; });
+      if (idCol) idCol.pk = true;
+    }
+    const lines = columns.map(function (c) {
+      if (c.pk) return '  ' + c.name + ' ' + (c.type === 'INTEGER' ? 'INTEGER' : c.type) + ' PRIMARY KEY';
+      const nullSql = c.nullable ? '' : ' NOT NULL';
+      return '  ' + c.name + ' ' + c.type + nullSql;
+    });
+    const fkLines = columns.filter(function (c) { return c.fk; }).map(function (c) {
+      return '  FOREIGN KEY (' + c.name + ') REFERENCES ' + c.fk + '(id)';
+    });
+    tables.push('CREATE TABLE ' + tableName + ' (\n' + lines.concat(fkLines).join(',\n') + '\n);');
+    // child tables for arrays of objects
+    Object.keys(props).forEach(function (k) {
+      const child = props[k];
+      if (child && child.type === 'array' && child.items && child.items.type === 'object') {
+        const childTableName = toSnakeCaseSql(tableName + '_' + k);
+        emitSqlTable(child.items, childTableName, tableName, tables);
+      } else if (child && child.type === 'object' && child.properties) {
+        // nested objects with their OWN array-of-object children still need those emitted
+        const grandProps = child.properties || {};
+        Object.keys(grandProps).forEach(function (gk) {
+          const grandChild = grandProps[gk];
+          if (grandChild && grandChild.type === 'array' && grandChild.items && grandChild.items.type === 'object') {
+            const childTableName = toSnakeCaseSql(tableName + '_' + k + '_' + gk);
+            emitSqlTable(grandChild.items, childTableName, tableName, tables);
+          }
+        });
+      }
+    });
+  }
+  function jsonSchemaToSql(schema, rootName) {
+    rootName = rootName || 'Root';
+    const tables = [];
+    const tableName = toSnakeCaseSql(rootName);
+    if (schema && schema.type === 'array' && schema.items && schema.items.type === 'object') {
+      emitSqlTable(schema.items, tableName, null, tables);
+    } else if (schema && schema.type === 'object') {
+      emitSqlTable(schema, tableName, null, tables);
+    } else {
+      return '-- ' + rootName + ' is not an object or array of objects \u2014 nothing to generate a table for.\n';
+    }
+    return tables.join('\n\n') + '\n';
+  }
+
   // ---------------- Mock data generation from a schema ----------------
   // Deliberately no AI/LLM involved — small, fast, fully client-side field-
   // name heuristics (an "email"-named field gets a fake email, a "city"
@@ -1282,8 +1544,15 @@
     jsonSchemaToGo: jsonSchemaToGo,
     jsonSchemaToKotlin: jsonSchemaToKotlin,
     jsonSchemaToRust: jsonSchemaToRust,
+    jsonSchemaToJava: jsonSchemaToJava,
+    jsonSchemaToSwift: jsonSchemaToSwift,
+    jsonSchemaToCSharp: jsonSchemaToCSharp,
+    jsonSchemaToSql: jsonSchemaToSql,
     mockDataFromSchema: mockDataFromSchema,
     validateAgainstSchema: validateAgainstSchema,
+    jsonPathQuery: jsonPathQuery,
+    validateJsonSyntax: validateJsonSyntax,
+    validateXmlSyntax: validateXmlSyntax,
     inferCell: inferCell
   };
 });

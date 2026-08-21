@@ -404,31 +404,7 @@ function sortKeys(obj) {
 }
 
 function jsonPathQuery(obj, path) {
-  path = path.trim();
-  if (!path) throw new Error('Enter a JSONPath expression');
-  if (path.startsWith('$.')) path = path.slice(2);
-  else if (path.startsWith('$')) path = path.slice(1);
-  if (path.startsWith('.')) path = path.slice(1);
-  const parts = [];
-  path.replace(/([^.\[\]]+)|\[(\d+)\]|\[\*\]/g, (_, key, idx) => {
-    if (key !== undefined) parts.push(key);
-    else if (idx !== undefined) parts.push(Number(idx));
-    else parts.push('*');
-  });
-  let current = [obj];
-  for (const part of parts) {
-    const next = [];
-    for (const node of current) {
-      if (part === '*') {
-        if (Array.isArray(node)) node.forEach(v => next.push(v));
-        else if (node && typeof node === 'object') Object.values(node).forEach(v => next.push(v));
-      } else if (node != null && typeof node === 'object') {
-        next.push(node[part]);
-      }
-    }
-    current = next.filter(v => v !== undefined);
-  }
-  return current.length === 1 ? current[0] : current;
+  return RecastEngine.jsonPathQuery(obj, path);
 }
 
 // ---------------- Diff rendering ----------------
@@ -625,6 +601,14 @@ const modeConfig = {
     task: () => ({ task:'schema', payload:{ text: inputEl.value, options:{ render:'kotlin', rootName: document.getElementById('schemaRootName')?.value || 'Root' } } }) },
   json2rust: { inFmt:'JSON (sample)', outFmt:'Rust structs', dual:false, path:false, showDelim:false, showBom:false, showPretty:false, showInfer:false, showRootName:true, btn:'Generate Rust structs', hl:'json', hlOut:'plain', batchSupported:true, outExt:'rs',
     task: () => ({ task:'schema', payload:{ text: inputEl.value, options:{ render:'rust', rootName: document.getElementById('schemaRootName')?.value || 'Root' } } }) },
+  json2java: { inFmt:'JSON (sample)', outFmt:'Java records', dual:false, path:false, showDelim:false, showBom:false, showPretty:false, showInfer:false, showRootName:true, btn:'Generate Java records', hl:'json', hlOut:'plain', batchSupported:true, outExt:'java',
+    task: () => ({ task:'schema', payload:{ text: inputEl.value, options:{ render:'java', rootName: document.getElementById('schemaRootName')?.value || 'Root' } } }) },
+  json2swift: { inFmt:'JSON (sample)', outFmt:'Swift structs', dual:false, path:false, showDelim:false, showBom:false, showPretty:false, showInfer:false, showRootName:true, btn:'Generate Swift structs', hl:'json', hlOut:'plain', batchSupported:true, outExt:'swift',
+    task: () => ({ task:'schema', payload:{ text: inputEl.value, options:{ render:'swift', rootName: document.getElementById('schemaRootName')?.value || 'Root' } } }) },
+  json2csharp: { inFmt:'JSON (sample)', outFmt:'C# classes', dual:false, path:false, showDelim:false, showBom:false, showPretty:false, showInfer:false, showRootName:true, btn:'Generate C# classes', hl:'json', hlOut:'plain', batchSupported:true, outExt:'cs',
+    task: () => ({ task:'schema', payload:{ text: inputEl.value, options:{ render:'csharp', rootName: document.getElementById('schemaRootName')?.value || 'Root' } } }) },
+  json2sql: { inFmt:'JSON (sample)', outFmt:'SQL CREATE TABLE', dual:false, path:false, showDelim:false, showBom:false, showPretty:false, showInfer:false, showRootName:true, btn:'Generate SQL schema', hl:'json', hlOut:'plain', batchSupported:true, outExt:'sql',
+    task: () => ({ task:'schema', payload:{ text: inputEl.value, options:{ render:'sql', rootName: document.getElementById('schemaRootName')?.value || 'Root' } } }) },
   jsonMock: { inFmt:'JSON (sample)', outFmt:'Mock data', dual:false, path:false, showDelim:false, showBom:false, showPretty:false, showInfer:false, showMockCount:true, btn:'Generate mock data', hl:'json', hlOut:'json', batchSupported:true, outExt:'json',
     task: () => ({ task:'schema', payload:{ text: inputEl.value, options:{ render:'mock', count: parseInt(document.getElementById('mockCount')?.value, 10) || 3 } } }) },
   validateSchema: { inFmt:'Schema / Data', outFmt:'Validation report', dual:true, path:false, showDelim:false, showBom:false, showPretty:false, showInfer:false, btn:'Validate against schema', hl:'json', hlOut:'plain', isSchemaCheck:true,
@@ -663,6 +647,10 @@ const samples = {
   json2ts: JSON.stringify({ id: 1, name: "Ada Lovelace", active: true, tags: ["math","computing"], address: { city: "London", zip: null } }, null, 2),
   json2kotlin: JSON.stringify({ id: 1, name: "Ada Lovelace", active: true, tags: ["math","computing"], address: { city: "London", zip: null } }, null, 2),
   json2rust: JSON.stringify({ id: 1, name: "Ada Lovelace", active: true, tags: ["math","computing"], address: { city: "London", zip: null } }, null, 2),
+  json2java: JSON.stringify({ id: 1, name: "Ada Lovelace", active: true, tags: ["math","computing"], address: { city: "London", zip: null } }, null, 2),
+  json2swift: JSON.stringify({ id: 1, name: "Ada Lovelace", active: true, tags: ["math","computing"], address: { city: "London", zip: null } }, null, 2),
+  json2csharp: JSON.stringify({ id: 1, name: "Ada Lovelace", active: true, tags: ["math","computing"], address: { city: "London", zip: null } }, null, 2),
+  json2sql: JSON.stringify([{ id: 1, customer: "Ada Lovelace", items: [{ sku: "A1", qty: 2 }, { sku: "B2", qty: 1 }], shipping: { city: "London", zip: "E1" } }], null, 2),
   jsonMock: JSON.stringify({ id: 1, name: "Ada Lovelace", email: "ada@example.com", city: "London", joinedDate: "2020-01-01", active: true }, null, 2),
   json2zod: JSON.stringify({ id: 1, name: "Ada Lovelace", active: true, tags: ["math","computing"], address: { city: "London", zip: null } }, null, 2),
 };
@@ -1365,7 +1353,7 @@ document.addEventListener('keydown', (e) => { if ((e.metaKey || e.ctrlKey) && e.
 $('copyBtn').addEventListener('click', () => { if (!outputEl.value) return; navigator.clipboard.writeText(outputEl.value).then(() => { statusEl.innerHTML = '<span class="status-ok">\u2713 Copied to clipboard</span>'; track('copy_output', { mode: currentMode }); }); });
 $('downloadBtn').addEventListener('click', () => {
   if (!outputEl.value) return;
-  const ext = { json2csv:'csv', csv2json:'json', json2xml:'xml', xml2json:'json', flatten:'json', unflatten:'json', jsonSchema:'json', jsonStructure:'txt', json2yaml:'yaml', yaml2json:'json', json2markdown:'md', markdown2json:'json', json2python:'py', json2pydantic:'py', json2go:'go', json2kotlin:'kt', json2rust:'rs', jsonMock:'json' }[currentMode] || 'txt';
+  const ext = { json2csv:'csv', csv2json:'json', json2xml:'xml', xml2json:'json', flatten:'json', unflatten:'json', jsonSchema:'json', jsonStructure:'txt', json2yaml:'yaml', yaml2json:'json', json2markdown:'md', markdown2json:'json', json2python:'py', json2pydantic:'py', json2go:'go', json2kotlin:'kt', json2rust:'rs', json2java:'java', json2swift:'swift', json2csharp:'cs', json2sql:'sql', jsonMock:'json' }[currentMode] || 'txt';
   const mime = { csv:'text/csv', json:'application/json', xml:'application/xml' }[ext] || 'text/plain';
   const blob = new Blob([outputEl.value], { type: mime + ';charset=utf-8' });
   const a = document.createElement('a');
@@ -1710,7 +1698,13 @@ $('batchClearBtn2')?.addEventListener('click', () => {
 // with the same upgrade trigger.
 let recipeSteps = [];
 
+const TRANSFORM_STEP_LABELS = {
+  transformSelect: 'Select fields', transformRemove: 'Remove fields', transformRename: 'Rename field',
+  transformFilter: 'Filter records', transformSort: 'Sort records', transformConvertType: 'Convert type',
+  transformAddField: 'Add / default field', transformCombine: 'Combine fields',
+};
 function recipeStepLabel(mode) {
+  if (TRANSFORM_STEP_LABELS[mode]) return TRANSFORM_STEP_LABELS[mode];
   const chip = document.querySelector(`.mode-chip[data-mode="${mode}"]`);
   return chip ? chip.textContent.trim() : mode;
 }
@@ -1718,7 +1712,12 @@ function recipeStepLabel(mode) {
 function populateRecipeStepDropdown() {
   const sel = $('recipeAddStep');
   if (!sel || !window.RecastBatch) return;
-  const modes = Object.keys(RecastBatch.BATCH_OPS);
+  // The transformXxx modes need a params form to be useful (a bare "Filter
+  // records" step with no field/condition is a no-op) — that form lives in
+  // the Transform Builder, not here, so they're left off this raw dropdown
+  // to avoid a step that silently does nothing. They still run correctly
+  // when a Transform Builder recipe is loaded into this same panel.
+  const modes = Object.keys(RecastBatch.BATCH_OPS).filter(m => !TRANSFORM_STEP_LABELS[m]);
   sel.innerHTML = '<option value="">+ Add step\u2026</option>' +
     modes.map(m => `<option value="${m}">${RecastHighlight.escapeHtml(recipeStepLabel(m))}</option>`).join('');
 }
@@ -1771,7 +1770,7 @@ function renderSavedRecipes() {
   `).join('');
   listEl.querySelectorAll('[data-load]').forEach(el => el.addEventListener('click', () => {
     const r = recipes.find(x => x.name === el.dataset.load);
-    if (r) { recipeSteps = r.steps.map(s => ({ mode: s.mode })); renderRecipeSteps(); showToast(`Loaded recipe "${r.name}"`); }
+    if (r) { recipeSteps = r.steps.map(s => s.params ? ({ mode: s.mode, params: s.params }) : ({ mode: s.mode })); renderRecipeSteps(); showToast(`Loaded recipe "${r.name}"`); }
   }));
   listEl.querySelectorAll('[data-delete]').forEach(el => el.addEventListener('click', () => {
     RecastRecipes.remove(el.dataset.delete);
@@ -1929,17 +1928,19 @@ function runPlayground() {
   try {
     outputEl2.textContent = runPlaygroundConversion(modeEl.value, inputEl2.value);
     outputEl2.classList.remove('playground-error');
+    $('playgroundResponseActions').style.display = 'flex';
     track('api_playground_run', { mode: modeEl.value, success: true });
   } catch (e) {
     outputEl2.textContent = 'Error: ' + e.message;
     outputEl2.classList.add('playground-error');
+    $('playgroundResponseActions').style.display = 'none';
     track('api_playground_run', { mode: modeEl.value, success: false });
   }
   updatePlaygroundSnippet();
 }
 $('playgroundRunBtn')?.addEventListener('click', runPlayground);
-$('playgroundMode')?.addEventListener('change', updatePlaygroundSnippet);
-$('playgroundInput')?.addEventListener('input', updatePlaygroundSnippet);
+$('playgroundMode')?.addEventListener('change', () => { updatePlaygroundSnippet(); $('playgroundResponseActions').style.display = 'none'; });
+$('playgroundInput')?.addEventListener('input', () => { updatePlaygroundSnippet(); $('playgroundResponseActions').style.display = 'none'; });
 document.querySelectorAll('.playground-snippet-tab').forEach(tab => {
   tab.addEventListener('click', () => {
     playgroundLang = tab.dataset.lang;
@@ -1955,6 +1956,70 @@ $('playgroundCopyBtn')?.addEventListener('click', () => {
   const original = btn.textContent;
   btn.textContent = 'Copied!';
   setTimeout(() => { btn.textContent = original; }, 1500);
+});
+
+// ---------------- "Use response in" (API playground -> the rest of the toolkit) ----------------
+// The response is already sitting in memory as outputEl2.textContent; every
+// action below assigns it directly to the target textarea's .value in one
+// step, no intermediate serialize/parse round-trip, no localStorage bounce.
+function scrollToWorkbench() {
+  document.querySelector('.workbench')?.scrollIntoView({ behavior: 'instant', block: 'start' });
+}
+function loadResponseIntoMainInput(response) {
+  inputEl.value = response;
+  updateCounts();
+  updateHighlightLayers();
+}
+// Describes the request as data, never a secret: the body mirrors exactly
+// what the visible curl/JS/Python snippets already show (mode + input),
+// and auth is captured only as a symbolic reference — the same
+// rk_live_YOUR_KEY-style placeholder already used in those snippets, never
+// a real, collected key, because the playground never collects one.
+function currentPlaygroundRequestParams() {
+  return {
+    method: 'POST',
+    url: 'https://tryrecast.app/v1/convert',
+    body: JSON.stringify({ mode: $('playgroundMode').value, input: $('playgroundInput').value }),
+    authRef: 'RECAST_API_KEY',
+  };
+}
+
+document.querySelectorAll('[data-response-action]').forEach(btn => {
+  btn.addEventListener('click', () => {
+    const action = btn.dataset.responseAction;
+    const response = $('playgroundOutput').textContent;
+    if (action === 'inspect') {
+      loadResponseIntoMainInput(response);
+      setGroup('schema');
+      if (!$('inputGraphBtn')?.classList.contains('active')) $('inputGraphBtn')?.click();
+    } else if (action === 'transform') {
+      loadResponseIntoMainInput(response);
+      if (!$('transformBuilderPanel').classList.contains('show')) $('transformBuilderToggleBtn')?.click();
+    } else if (action === 'query') {
+      loadResponseIntoMainInput(response);
+      setMode('jsonPath');
+    } else if (action === 'validate') {
+      loadResponseIntoMainInput(response);
+      setMode(response.trim().startsWith('<') ? 'validateXml' : 'validateJson');
+    } else if (action === 'compare') {
+      setMode(response.trim().startsWith('<') ? 'diffXml' : 'diffJson');
+      $('inputA').value = response;
+      updateCounts();
+      updateHighlightLayers();
+    } else if (action === 'recipe') {
+      loadResponseIntoMainInput(response);
+      window.RecastRecipeBuilder2.openWithApiRequestStep(currentPlaygroundRequestParams());
+    }
+    scrollToWorkbench();
+    track('playground_use_response', { action });
+  });
+});
+
+$('playgroundSaveRequestBtn')?.addEventListener('click', () => {
+  const name = (prompt('Save this request as a recipe named:') || '').trim();
+  if (!name) return;
+  RecastRecipes.upsert({ name, steps: [{ mode: 'apiRequestStep', params: currentPlaygroundRequestParams() }] });
+  showToast(`Saved recipe "${name}" starting with this request`);
 });
 updatePlaygroundSnippet();
 
@@ -2093,3 +2158,55 @@ updateCounts();
 updateHighlightLayers();
 restoreFromShareLink();
 renderHistoryList();
+
+// ---------------- Cross-page nav actions (from lib/nav.js on pages without
+// a workbench, e.g. blog/how-to) — reuses the exact same triggers a click
+// in the workbench itself would use, just applied once on load. ----------
+(function handleNavParams() {
+  const params = new URLSearchParams(location.search);
+  const group = params.get('group');
+  if (group && window.setGroup) window.setGroup(group);
+  const open = params.get('open');
+  if (open === 'recipes') document.getElementById('recipeToggleBtn')?.click();
+  else if (open === 'history') document.getElementById('historyBtn')?.click();
+  else if (open === 'presets') document.getElementById('presetsBtn')?.click();
+  if (group || open) {
+    // Keep the URL clean once applied — avoids re-triggering on refresh/back.
+    history.replaceState(null, '', location.pathname + location.hash);
+  }
+})();
+
+// ---------------- Persistent current input (workspace only) ----------------
+// A light "your current work follows you" feature — not the full workflow
+// engine, just remembering the input across a page reload of the workspace
+// itself. Deliberately scoped to index.html only: tool pages intentionally
+// show a mode-specific sample as their landing state, and a share link
+// already has its own, higher-priority restore path above.
+(function persistInput() {
+  const isWorkspaceHome = !window.RECAST_DEFAULT_MODE; // tool pages set this global before engine.js loads
+  const KEY = 'recast_session_input';
+  const KEY_MODE = 'recast_session_mode';
+  if (isWorkspaceHome && !location.hash.includes('s=') && !new URLSearchParams(location.search).get('group')) {
+    try {
+      const saved = sessionStorage.getItem(KEY);
+      const savedMode = sessionStorage.getItem(KEY_MODE);
+      if (saved && saved.trim() && saved !== samples[initialMode]) {
+        if (savedMode && document.querySelector(`.mode-chip[data-mode="${savedMode}"]`)) setMode(savedMode);
+        inputEl.value = saved;
+        updateCounts();
+        updateHighlightLayers();
+      }
+    } catch (e) { /* private browsing — persistence just won't happen */ }
+  }
+  let saveTimer;
+  function saveSoon() {
+    clearTimeout(saveTimer);
+    saveTimer = setTimeout(() => {
+      try {
+        sessionStorage.setItem(KEY, inputEl.value);
+        sessionStorage.setItem(KEY_MODE, currentMode);
+      } catch (e) { /* ignore */ }
+    }, 400);
+  }
+  inputEl.addEventListener('input', saveSoon);
+})();

@@ -3,8 +3,9 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
+<script>(function(){try{if(localStorage.getItem('recast_theme')==='light')document.documentElement.setAttribute('data-theme','light');}catch(e){}})();</script>
 <title>Live Demo — real datasets, thousands of rows | Recast</title>
-<meta name="description" content="Try Recast with real, full-sized datasets — nested JSON orders, a 4,000-row CSV, XML logs, YAML configs, and a genuine diff pair. Drag or tap to load, entirely in your browser.">
+<meta name="description" content="Try Recast with real, full-sized datasets — Inspect, Transform, Validate, Compare, and Automate, one demo card per step. Drag or tap to load, entirely in your browser.">
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@400;500;600;700&family=IBM+Plex+Sans:wght@400;500;600&family=IBM+Plex+Mono:wght@400;500&display=swap" rel="stylesheet">
 <link rel="stylesheet" href="../styles.css">
@@ -20,7 +21,7 @@
   "url": "https://tryrecast.app/demo/index.html",
   "applicationCategory": "DeveloperApplication",
   "operatingSystem": "Any (runs in browser)",
-  "description": "Try Recast with real, full-sized datasets — nested JSON orders, a 4,000-row CSV, XML logs, YAML configs, and a genuine diff pair.",
+  "description": "Try Recast with real, full-sized datasets — Inspect, Transform, Validate, Compare, and Automate, one demo card per step.",
   "offers": [
     { "@type": "Offer", "name": "Free", "price": "0", "priceCurrency": "GBP" },
     { "@type": "Offer", "name": "Pro", "price": "9", "priceCurrency": "GBP" },
@@ -40,7 +41,7 @@
 </script>
 </head>
 
-<body style="background:#0E2338;color:#EDF3F8;margin:0;min-height:100vh;">
+<body style="background:var(--bg);color:var(--text);margin:0;min-height:100vh;">
 <svg style="display:none" aria-hidden="true">
   <symbol id="ico-json" viewBox="0 0 18 18" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round">
     <path d="M6.5 2.5c-1.4 0-1.9.5-1.9 1.9v1.7c0 1-.5 1.5-1.4 1.5.9 0 1.4.5 1.4 1.5v1.7c0 1.4.5 1.9 1.9 1.9"/>
@@ -146,21 +147,59 @@
     <path d="M7.5 10.5a3 3 0 0 0 4.3.2l2-2a3 3 0 0 0-4.2-4.2l-1.1 1.1"/>
     <path d="M10.5 7.5a3 3 0 0 0-4.3-.2l-2 2a3 3 0 0 0 4.2 4.2l1.1-1.1"/>
   </symbol>
+  <symbol id="ico-sun" viewBox="0 0 18 18" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round">
+    <circle cx="9" cy="9" r="3.2"/>
+    <path d="M9 1.8v2M9 14.2v2M16.2 9h-2M3.8 9h-2M14.2 3.8l-1.4 1.4M5.2 12.8l-1.4 1.4M14.2 14.2l-1.4-1.4M5.2 5.2L3.8 3.8"/>
+  </symbol>
+  <symbol id="ico-moon" viewBox="0 0 18 18" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round">
+    <path d="M15 10.2A6.2 6.2 0 0 1 7.8 3 6.5 6.5 0 1 0 15 10.2Z"/>
+  </symbol>
+  <symbol id="ico-chevron" viewBox="0 0 18 18" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round">
+    <polyline points="4.5,7 9,11.5 13.5,7"/>
+  </symbol>
 </svg>
 
 
 <header class="titleblock">
   <div class="ruler" id="ruler"></div>
   <div class="tb-row">
-    <div class="brand"><span class="mark">⇄</span>RECAST</div>
-    <nav class="tb-nav">
-      <a href="#tool">Tool</a>
-      <a href="#pricing">Pricing</a>
-      <a href="#api">API docs</a>
-      <a href="../blog/index.html">Blog</a>
-      <a href="index.html">Demo</a>
-      <a href="../how-to/index.html">How To</a>
+    <a href="../index.html" class="brand" style="text-decoration:none;color:inherit;"><span class="mark">⇄</span>RECAST</a>
+    <nav class="tb-nav" id="primaryNav">
+      <div class="nav-group" data-nav-group="work">
+        <button type="button" class="nav-group-btn" aria-expanded="false" aria-haspopup="true">Work<svg class="ico nav-caret"><use href="#ico-chevron"/></svg></button>
+        <div class="nav-dropdown" role="menu">
+          <button type="button" class="nav-dropdown-item" data-nav-action="group" data-group="convert" role="menuitem">Convert</button>
+          <button type="button" class="nav-dropdown-item" data-nav-action="group" data-group="transform" role="menuitem">Transform</button>
+          <button type="button" class="nav-dropdown-item" data-nav-action="group" data-group="query" role="menuitem">Query</button>
+          <button type="button" class="nav-dropdown-item" data-nav-action="group" data-group="validate" role="menuitem">Validate</button>
+          <button type="button" class="nav-dropdown-item" data-nav-action="group" data-group="compare" role="menuitem">Compare</button>
+          <button type="button" class="nav-dropdown-item" data-nav-action="group" data-group="schema" role="menuitem">Inspect</button>
+        </div>
+      </div>
+      <div class="nav-group" data-nav-group="automate">
+        <button type="button" class="nav-group-btn" aria-expanded="false" aria-haspopup="true">Automate<svg class="ico nav-caret"><use href="#ico-chevron"/></svg></button>
+        <div class="nav-dropdown" role="menu">
+          <button type="button" class="nav-dropdown-item" data-nav-action="recipes" role="menuitem">Recipes</button>
+          <button type="button" class="nav-dropdown-item" data-nav-action="anchor" data-anchor="api" role="menuitem">API</button>
+          <button type="button" class="nav-dropdown-item" data-nav-action="anchor" data-anchor="api" role="menuitem">CLI</button>
+        </div>
+      </div>
+      <div class="nav-group" data-nav-group="data">
+        <button type="button" class="nav-group-btn" aria-expanded="false" aria-haspopup="true">Data<svg class="ico nav-caret"><use href="#ico-chevron"/></svg></button>
+        <div class="nav-dropdown" role="menu">
+          <button type="button" class="nav-dropdown-item" data-nav-action="history" role="menuitem">History</button>
+          <button type="button" class="nav-dropdown-item" data-nav-action="presets" role="menuitem">Presets</button>
+          <button type="button" class="nav-dropdown-item" data-nav-action="group" data-group="schema" role="menuitem">Schemas</button>
+        </div>
+      </div>
+      <a href="index.html" class="nav-plain-link">Demo</a>
+      <a href="../blog/index.html" class="nav-plain-link">Blog</a>
+      <a href="#pricing" class="nav-plain-link">Pricing</a>
+      <a href="../how-to/index.html" class="nav-plain-link">Docs</a>
     </nav>
+    <button type="button" class="nav-hamburger" id="navHamburger" aria-label="Open menu" aria-expanded="false" aria-controls="primaryNav">
+      <span></span><span></span><span></span>
+    </button>
     <div class="header-actions">
       <span class="worker-status" id="workerStatus"><span class="dot"></span>Processing…</span>
       <button class="icon-btn" id="historyBtn" title="Recent conversions (stored only on this device)"><svg class="ico"><use href="#ico-history"/></svg><span class="btn-label">History</span></button>
@@ -173,11 +212,12 @@
         <div class="history-head"><span>Saved presets</span><button id="presetsCloseBtn">Close</button></div>
         <div id="presetsList"></div>
         <div style="padding:10px 14px; border-top:1px solid rgba(140,182,214,0.16); display:flex; gap:6px;">
-          <input type="text" id="presetNameInput" placeholder="Preset name" style="flex:1; min-width:0; background:#0E2338; border:1px solid rgba(140,182,214,0.32); color:#EDF3F8; padding:6px 8px; border-radius:2px; font-size:12px;">
+          <input type="text" id="presetNameInput" placeholder="Preset name" style="flex:1; min-width:0; background:var(--bg); border:1px solid rgba(var(--border-rgb),0.32); color:var(--text); padding:6px 8px; border-radius:2px; font-size:12px;">
           <button class="icon-btn" id="presetSaveBtn">Save current</button>
         </div>
       </div>
       <button class="icon-btn" id="shareBtn" title="Copy a link that restores this input — data is compressed into the URL itself, nothing is uploaded"><svg class="ico"><use href="#ico-link"/></svg><span class="btn-label">Share link</span></button>
+      <button class="icon-btn" id="themeToggleBtn" title="Switch between dark and light theme"><svg class="ico"><use href="#ico-sun" id="themeIconUse"/></svg></button>
       <a href="#pricing" class="btn btn-gold" id="accountBtn">Upgrade to Pro</a>
     </div>
   </div>
@@ -185,16 +225,26 @@
 
 <main>
   <section class="hero" id="tool">
-    <p class="eyebrow">Data format toolkit</p>
-    <p class="eyebrow">Demo</p>
-    <h1>Real datasets, thousands of rows<br><em>drag one in and see for yourself.</em></h1>
-    <p class="sub">No need to make up test data. These are full-sized, realistic files — nested e-commerce orders, a 4,000-row employee CSV, XML log events, YAML service configs, and a genuine before/after pair for the diff tool. Drag a card onto the input panel below, or just tap it to load instantly. Everything below still runs entirely in your browser — nothing here is uploaded either.</p>
+    <p class="eyebrow">Demo — Inspect. Transform. Validate. Compare. Automate.</p>
+    <h1>Real datasets, thousands of rows<br><em>the whole workbench, in five steps.</em></h1>
+    <p class="sub">No need to make up test data or read the docs first. Every card below loads a real, full-sized file — some jump straight into a specific tool, so you can see each stage of Recast in action with data that actually looks like something you'd work with. Drag a card onto the input panel below, or just tap it. Everything still runs entirely in your browser — nothing here is uploaded either.</p>
 
     <div class="demo-gallery" id="demoGallery">
+
+      <div class="demo-group-label"><span class="demo-group-num">1</span> Inspect — see what you're working with, automatically</div>
+      <div class="demo-card" draggable="true" data-demo="orders_inspect" data-mode="json2csv" data-side="single">
+        <div class="demo-card-head"><svg class="ico"><use href="#ico-json"/></svg><span class="demo-format">INSPECT</span></div>
+        <h3>Profile 2,500 orders instantly</h3>
+        <p>Opens the Data Inspector directly — record and field counts, detected types, null rates, and real quality warnings (duplicate IDs, malformed values), with zero configuration.</p>
+        <div class="demo-card-loading">Loading…</div>
+        <span class="demo-meta">2,500 records · auto-profiled</span>
+      </div>
+
+      <div class="demo-group-label"><span class="demo-group-num">2</span> Transform — reshape it, visually or by converting formats</div>
       <div class="demo-card" draggable="true" data-demo="orders" data-mode="json2csv" data-side="single">
         <div class="demo-card-head"><svg class="ico"><use href="#ico-json"/></svg><span class="demo-format">JSON</span></div>
         <h3>E-commerce orders</h3>
-        <p>Nested customer, shipping address, and line-item arrays — the shape that trips up naive flatteners.</p>
+        <p>Nested customer, shipping address, and line-item arrays. Convert it straight to CSV, or open Transform Builder above to select, rename, and filter fields with clicks instead of code.</p>
         <div class="demo-card-loading">Loading…</div>
         <span class="demo-meta">2,500 records · 1.4 MB</span>
       </div>
@@ -219,13 +269,41 @@
         <div class="demo-card-loading">Loading…</div>
         <span class="demo-meta">150 services · 52 KB</span>
       </div>
+      <div class="demo-card" draggable="true" data-demo="orders_code" data-mode="json2java" data-side="single">
+        <div class="demo-card-head"><svg class="ico"><use href="#ico-code"/></svg><span class="demo-format">CODE-GEN</span></div>
+        <h3>Orders, as real typed code</h3>
+        <p>The same nested order data, generated straight into Java records — switch the mode picker afterward and the identical data becomes Swift, C#, Kotlin, Rust, Go, Python, TypeScript, or a SQL schema instead.</p>
+        <div class="demo-card-loading">Loading…</div>
+        <span class="demo-meta">11 languages, one schema</span>
+      </div>
+
+      <div class="demo-group-label"><span class="demo-group-num">3</span> Validate — catch a broken file before it breaks something downstream</div>
+      <div class="demo-card" draggable="true" data-demo="events_validate" data-mode="validateXml" data-side="single">
+        <div class="demo-card-head"><svg class="ico"><use href="#ico-check"/></svg><span class="demo-format">VALIDATE</span></div>
+        <h3>Check real XML for syntax errors</h3>
+        <p>Loads straight into Validate mode — a clean, specific pass/fail report instead of a browser's cryptic parser error.</p>
+        <div class="demo-card-loading">Loading…</div>
+        <span class="demo-meta">2,500 events · instant check</span>
+      </div>
+
+      <div class="demo-group-label"><span class="demo-group-num">4</span> Compare — know exactly what changed, and whether it's safe</div>
       <div class="demo-card" draggable="true" data-demo="orders_diff" data-mode="diffJson" data-side="pair">
         <div class="demo-card-head"><svg class="ico"><use href="#ico-diff"/></svg><span class="demo-format">DIFF</span></div>
         <h3>Order status, before &amp; after</h3>
-        <p>400 orders, one day apart — status changes, a few cancellations, some brand-new orders, a few refunded away entirely. Loads into both sides at once.</p>
+        <p>400 orders, one day apart — status changes, a few cancellations, some brand-new orders, a few refunded away entirely. Loads into both sides at once. Open Structural Analysis above to see which changes are breaking versus safe.</p>
         <div class="demo-card-loading">Loading…</div>
         <span class="demo-meta">400 → 413 records · 225 real changes</span>
       </div>
+
+      <div class="demo-group-label"><span class="demo-group-num">5</span> Automate — turn what you just did into a saved, repeatable workflow</div>
+      <div class="demo-card" draggable="true" data-demo="orders_recipe" data-mode="json2csv" data-side="single">
+        <div class="demo-card-head"><svg class="ico"><use href="#ico-json"/></svg><span class="demo-format">AUTOMATE</span></div>
+        <h3>Build a recipe from real data</h3>
+        <p>Opens Recipe Builder 2.0 with the orders data ready to go — chain steps visually, preview the result after any step, then save it as a recipe the API and CLI can run too.</p>
+        <div class="demo-card-loading">Loading…</div>
+        <span class="demo-meta">visual, step-by-step</span>
+      </div>
+
     </div>
 
 
@@ -267,6 +345,10 @@
         <button class="mode-chip hidden" data-mode="json2go" data-group="schema"><svg class="ico"><use href="#ico-code"/></svg>JSON → Go</button>
         <button class="mode-chip hidden" data-mode="json2kotlin" data-group="schema"><svg class="ico"><use href="#ico-code"/></svg>JSON → Kotlin</button>
         <button class="mode-chip hidden" data-mode="json2rust" data-group="schema"><svg class="ico"><use href="#ico-code"/></svg>JSON → Rust</button>
+        <button class="mode-chip hidden" data-mode="json2java" data-group="schema"><svg class="ico"><use href="#ico-code"/></svg>JSON → Java</button>
+        <button class="mode-chip hidden" data-mode="json2swift" data-group="schema"><svg class="ico"><use href="#ico-code"/></svg>JSON → Swift</button>
+        <button class="mode-chip hidden" data-mode="json2csharp" data-group="schema"><svg class="ico"><use href="#ico-code"/></svg>JSON → C#</button>
+        <button class="mode-chip hidden" data-mode="json2sql" data-group="schema"><svg class="ico"><use href="#ico-schema"/></svg>JSON → SQL</button>
         <button class="mode-chip hidden" data-mode="jsonMock" data-group="schema"><svg class="ico"><use href="#ico-json"/></svg>JSON → Mock data</button>
         <button class="mode-chip hidden" data-mode="validateSchema" data-group="schema"><svg class="ico"><use href="#ico-check"/></svg>Validate against Schema</button>
       </div>
@@ -274,7 +356,7 @@
 
     <div class="workbench">
       <div class="path-row" id="pathRow">
-        <span style="font-family:'IBM Plex Mono', monospace;font-size:12px;color:#B9CBDA;">JSONPath</span>
+        <span style="font-family:'IBM Plex Mono', monospace;font-size:12px;color:var(--text-muted);">JSONPath</span>
         <input type="text" id="jsonPathInput" placeholder="e.g. $.users[*].name  or  address.city" spellcheck="false">
       </div>
       <div class="wb-grid">
@@ -316,6 +398,10 @@
             </label>
             <button class="icon-btn" id="batchToggleBtn" title="Convert many files at once">Batch</button>
             <button class="icon-btn" id="recipeToggleBtn" title="Chain several operations into a saved pipeline">Recipe</button>
+            <button class="icon-btn" id="transformBuilderToggleBtn" title="Build a multi-step transformation visually, with a live preview">Transform Builder</button>
+            <button class="icon-btn" id="recipeBuilder2ToggleBtn" title="Build a full multi-step recipe visually — Input through Output">Recipe Builder 2.0</button>
+            <button class="icon-btn" id="dataInspectorToggleBtn" title="Profile the current dataset — field types, nulls, quality warnings">Data Inspector</button>
+            <button class="icon-btn" id="structuralAnalysisToggleBtn" title="Classify JSON differences as breaking, structural, or value changes">Structural Analysis</button>
             <span class="kb-hint" title="Keyboard shortcut">⌘/Ctrl + Enter</span>
           </div>
         </div>
@@ -456,6 +542,147 @@
       </div>
     </div>
 
+    <div class="tb-builder" id="transformBuilderPanel">
+      <div class="tb-builder-head">
+        <span class="title">Transform Builder — build a multi-step transformation visually</span>
+        <span class="tb-counts" id="tbCounts">0 in → 0 out</span>
+        <button class="icon-btn" id="tbUndoBtn" title="Undo" disabled>Undo</button>
+        <button class="icon-btn" id="tbRedoBtn" title="Redo" disabled>Redo</button>
+        <button class="icon-btn" id="tbResetBtn" title="Clear all steps">Reset</button>
+        <button class="icon-btn" id="tbRunBtn" title="Re-run the pipeline against the current input">Run</button>
+        <button class="icon-btn" id="tbSaveRecipeBtn" title="Save these steps as a recipe">Save as Recipe…</button>
+        <button class="icon-btn" id="tbCloseBtn" title="Close and return to the normal workbench view">✕ Close</button>
+      </div>
+
+      <div class="tb-builder-body">
+        <div class="tb-col tb-col-source">
+          <div class="tb-col-head">Source fields <span class="tb-hint">click to add to the open step</span></div>
+          <div class="tb-field-tree" id="tbFieldTree"></div>
+        </div>
+
+        <div class="tb-col tb-col-steps">
+          <div class="tb-col-head">
+            Transform steps
+            <select id="tbAddStep" class="playground-select" style="width:auto;">
+              <option value="">+ Add step…</option>
+              <option value="select">Select fields</option>
+              <option value="remove">Remove fields</option>
+              <option value="rename">Rename field</option>
+              <option value="filter">Filter records</option>
+              <option value="sort">Sort records</option>
+              <option value="convertType">Convert type</option>
+              <option value="addField">Add / default field</option>
+              <option value="combine">Combine fields</option>
+              <option value="flatten">Flatten nested objects</option>
+              <option value="unflatten">Unflatten fields</option>
+              <option value="sortKeys">Sort keys (existing)</option>
+            </select>
+          </div>
+          <div class="tb-step-form" id="tbStepForm" style="display:none;"></div>
+          <div class="batch-file-list" id="tbStepList"></div>
+        </div>
+
+        <div class="tb-col tb-col-output">
+          <div class="tb-col-head">Output preview</div>
+          <textarea class="tb-output" id="tbOutput" readonly spellcheck="false" placeholder="Add a step to see a live preview here."></textarea>
+          <div class="tb-errors" id="tbErrors" style="display:none;"></div>
+        </div>
+      </div>
+    </div>
+
+    <div class="rb2" id="recipeBuilder2Panel">
+      <div class="rb2-head">
+        <span class="title">Recipe Builder 2.0 — a full Input → Output workflow, visually</span>
+        <input type="text" id="rb2NameInput" placeholder="Recipe name" style="width:160px;">
+        <button class="icon-btn" id="rb2RunBtn" title="Run the whole recipe">Run recipe</button>
+        <button class="icon-btn" id="rb2SaveBtn" title="Save this recipe">Save</button>
+        <button class="icon-btn" id="rb2DuplicateBtn" title="Duplicate this recipe under a new name">Duplicate</button>
+        <button class="icon-btn" id="rb2ResetBtn" title="Clear all steps">Reset</button>
+        <button class="icon-btn" id="rb2CloseBtn" title="Close and return to the normal workbench view">✕ Close</button>
+      </div>
+
+      <div class="rb2-body">
+        <div class="rb2-flow" id="rb2Flow">
+          <div class="rb2-node rb2-node-endpoint" id="rb2InputNode">
+            <div class="rb2-node-label">INPUT</div>
+            <div class="rb2-node-summary" id="rb2InputSummary">0 records</div>
+          </div>
+          <div class="rb2-arrow">&#8595;</div>
+
+          <div id="rb2StepNodes"></div>
+
+          <div class="rb2-add-step-row">
+            <select id="rb2AddStep" class="playground-select" style="width:auto;">
+              <option value="">+ Add step…</option>
+            </select>
+          </div>
+
+          <div class="rb2-arrow">&#8595;</div>
+          <div class="rb2-node rb2-node-endpoint" id="rb2OutputNode">
+            <div class="rb2-node-label">OUTPUT</div>
+            <div class="rb2-node-summary" id="rb2OutputSummary">0 records</div>
+          </div>
+        </div>
+
+        <div class="rb2-side">
+          <div class="rb2-side-head" id="rb2SideHead">Select a step to configure it, or click Run to see the full result.</div>
+          <div class="rb2-config" id="rb2Config"></div>
+          <div class="rb2-preview-head">Preview <span id="rb2PreviewLabel"></span></div>
+          <textarea class="tb-output" id="rb2Preview" readonly spellcheck="false" placeholder="Output preview appears here."></textarea>
+          <div class="tb-errors" id="rb2Errors" style="display:none;"></div>
+        </div>
+      </div>
+
+      <div class="rb2-saved" id="rb2SavedWrap" style="display:none;">
+        <div class="batch-summary" style="border-top:1px solid rgba(var(--border-rgb),0.16);">Saved recipes</div>
+        <div class="batch-file-list" id="rb2SavedList"></div>
+      </div>
+    </div>
+
+    <div class="di-panel" id="dataInspectorPanel">
+      <div class="di-head">
+        <span class="title">Data Inspector — a profile of your current dataset</span>
+        <button class="icon-btn" id="diRefreshBtn" title="Re-profile the current input">Refresh</button>
+        <button class="icon-btn" id="diCloseBtn" title="Close and return to the normal workbench view">✕ Close</button>
+      </div>
+
+      <div class="di-summary" id="diSummary"></div>
+
+      <div class="di-warnings" id="diWarnings"></div>
+
+      <div class="di-fields-wrap">
+        <table class="di-fields-table" id="diFieldsTable">
+          <thead>
+            <tr>
+              <th>Field</th><th>Type</th><th>Nulls</th><th>Unique</th><th>Sample values</th><th>Range</th><th></th>
+            </tr>
+          </thead>
+          <tbody id="diFieldsBody"></tbody>
+        </table>
+      </div>
+    </div>
+
+    <div class="sa-panel" id="structuralAnalysisPanel">
+      <div class="sa-head">
+        <span class="title">Structural Analysis — breaking vs. structural vs. value changes</span>
+        <button class="icon-btn" id="saRefreshBtn" title="Re-analyze the current A / B comparison">Analyze</button>
+        <button class="icon-btn" id="saCloseBtn" title="Close and return to the normal workbench view">✕ Close</button>
+      </div>
+
+      <div id="saBody">
+        <div class="sa-summary" id="saSummary"></div>
+
+        <div class="sa-filters" id="saFilters">
+          <button class="sa-filter active" data-filter="all">All</button>
+          <button class="sa-filter" data-filter="breaking">Breaking</button>
+          <button class="sa-filter" data-filter="structural">Structural</button>
+          <button class="sa-filter" data-filter="value">Values</button>
+        </div>
+
+        <div class="sa-list" id="saList"></div>
+      </div>
+    </div>
+
     <div class="status-line" id="status"></div>
     <div class="upgrade-nudge" id="upgradeNudge">
       <span>Free limit reached or nearly full. Pro unlocks 25 MB files, batch convert, and saved presets.</span>
@@ -513,6 +740,10 @@
         <a href="../tools/json-to-go.html" onclick="setMode('json2go');return false;"><svg class="ico"><use href="#ico-code"/></svg>JSON → Go</a>
         <a href="#" onclick="setMode('json2kotlin');return false;"><svg class="ico"><use href="#ico-code"/></svg>JSON → Kotlin</a>
         <a href="#" onclick="setMode('json2rust');return false;"><svg class="ico"><use href="#ico-code"/></svg>JSON → Rust</a>
+        <a href="#" onclick="setMode('json2java');return false;"><svg class="ico"><use href="#ico-code"/></svg>JSON → Java</a>
+        <a href="#" onclick="setMode('json2swift');return false;"><svg class="ico"><use href="#ico-code"/></svg>JSON → Swift</a>
+        <a href="#" onclick="setMode('json2csharp');return false;"><svg class="ico"><use href="#ico-code"/></svg>JSON → C#</a>
+        <a href="#" onclick="setMode('json2sql');return false;"><svg class="ico"><use href="#ico-schema"/></svg>JSON → SQL</a>
         <a href="#" onclick="setMode('jsonMock');return false;"><svg class="ico"><use href="#ico-json"/></svg>JSON → Mock data</a>
         <a href="../tools/validate-json-schema.html" onclick="setMode('validateSchema');return false;"><svg class="ico"><use href="#ico-check"/></svg>Validate against Schema</a>
       </div>
@@ -631,7 +862,7 @@
 
 # -&gt; {"output":"id,name\n1,Ada","usage":{"calls_this_month":1,"limit":10000}}</pre>
 
-      <p style="margin-bottom:6px;font-size:13.5px;color:#B9CBDA;line-height:1.7;">
+      <p style="margin-bottom:6px;font-size:13.5px;color:var(--text-muted);line-height:1.7;">
         <code style="color:#7FE7D0;">POST /v1/convert</code> — <code>mode</code>: json2csv, csv2json, json2xml, xml2json, flatten, unflatten, json2yaml, yaml2json, json2markdown, markdown2json<br>
         <code style="color:#7FE7D0;">POST /v1/diff</code> — <code>mode</code>: diffJson, diffXml, diffCsv (send <code>inputA</code>/<code>inputB</code> instead of <code>input</code>)<br>
         <code style="color:#7FE7D0;">POST /v1/schema</code> — infers a JSON Schema (draft-07) from a sample <code>input</code>
@@ -670,6 +901,7 @@
           <textarea id="playgroundInput" class="playground-textarea" spellcheck="false">[{"id":1,"name":"Ada","city":"London"}]</textarea>
           <div class="drop-zone" id="playgroundDropZone">Drop a demo file here</div>
           <button class="btn btn-gold" id="playgroundRunBtn" style="margin-top:10px;">Run</button>
+          <button class="icon-btn" id="playgroundSaveRequestBtn" style="margin-top:6px;" title="Save this request's shape as a recipe you can build on — no need to run it first">Save request as recipe</button>
         </div>
         <div class="playground-col">
           <div class="playground-label-row">
@@ -679,6 +911,15 @@
             </div>
           </div>
           <pre class="playground-output" id="playgroundOutput">// click Run to see the output</pre>
+          <div class="playground-response-actions" id="playgroundResponseActions" style="display:none;">
+            <span class="pra-label">Use response in:</span>
+            <button class="icon-btn" data-response-action="inspect">Inspect Response</button>
+            <button class="icon-btn" data-response-action="transform">Transform Response</button>
+            <button class="icon-btn" data-response-action="query">Query Response</button>
+            <button class="icon-btn" data-response-action="validate">Validate Response</button>
+            <button class="icon-btn" data-response-action="compare">Compare Response</button>
+            <button class="icon-btn" data-response-action="recipe">Create Recipe</button>
+          </div>
         </div>
       </div>
       <div class="playground-snippets">
@@ -712,7 +953,7 @@
 <footer>
   <div class="tb-row foot-row" style="max-width:1180px;margin:0 auto;padding:0 24px;">
     <span>© 2026 Recast · tryrecast.app · Built with care, no tracking scripts.</span>
-    <span class="priv">→ your data never leaves this tab</span>
+    <span class="priv">→ your data never leaves this tab. your workflow can.</span>
   </div>
 </footer>
 
@@ -724,9 +965,18 @@
 <script src="../lib/history.js"></script>
 <script src="../lib/share.js"></script>
 <script src="../lib/worker-client.js"></script>
+<script src="../lib/transform-builder.js"></script>
 <script src="../lib/batch.js"></script>
 <script src="../lib/graph.js"></script>
 <script src="../lib/recipes.js"></script>
+<script src="../lib/theme.js"></script>
+<script src="../lib/nav.js"></script>
+<script src="../lib/transform-ui.js"></script>
+<script src="../lib/recipe-builder-2.js"></script>
+<script src="../lib/data-profiler.js"></script>
+<script src="../lib/data-inspector-ui.js"></script>
+<script src="../lib/structural-analysis.js"></script>
+<script src="../lib/structural-analysis-ui.js"></script>
 <script>
   if ('serviceWorker' in navigator) {
     window.addEventListener('load', () => {
@@ -734,8 +984,8 @@
     });
   }
 </script>
-<script src="../lib/presets.js"></script>
-<script src="../lib/csv-compare.js"></script>
+<script src="lib/presets.js"></script>
+<script src="lib/csv-compare.js"></script>
 <script src="../app.js"></script>
 <script src="../lib/demo.js"></script>
 <!--

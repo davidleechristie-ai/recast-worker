@@ -3,12 +3,13 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
+<script>(function(){try{if(localStorage.getItem('recast_theme')==='light')document.documentElement.setAttribute('data-theme','light');}catch(e){}})();</script>
 <title>How to Use Recast — A Beginner's Guide | Recast</title>
 <meta name="description" content="No coding experience needed. A plain-English, visual walkthrough of how to convert your files with Recast — what it does, how to use it step by step, and how the API playground works.">
 <link rel="canonical" href="https://tryrecast.app/how-to/index.html">
 <link rel="stylesheet" href="../styles.css">
 <link rel="preconnect" href="https://fonts.googleapis.com">
-<link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@500;600;700&family=IBM+Plex+Mono:wght@400;500&display=swap" rel="stylesheet">
+<link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@400;500;600;700&family=IBM+Plex+Sans:wght@400;500;600&family=IBM+Plex+Mono:wght@400;500&display=swap" rel="stylesheet">
 <link rel="manifest" href="../manifest.json">
 <meta name="theme-color" content="#0E2338">
 <link rel="apple-touch-icon" href="../icons/icon-192.png">
@@ -33,7 +34,7 @@
   gtag('config', 'G-MW47YKCSLX');
 </script>
 </head>
-<body style="background:#0E2338;color:#EDF3F8;margin:0;min-height:100vh;">
+<body style="background:var(--bg);color:var(--text);margin:0;min-height:100vh;">
 
 <svg style="display:none" aria-hidden="true">
   <symbol id="ico-json" viewBox="0 0 18 18" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round">
@@ -140,24 +141,63 @@
     <path d="M7.5 10.5a3 3 0 0 0 4.3.2l2-2a3 3 0 0 0-4.2-4.2l-1.1 1.1"/>
     <path d="M10.5 7.5a3 3 0 0 0-4.3-.2l-2 2a3 3 0 0 0 4.2 4.2l1.1-1.1"/>
   </symbol>
+  <symbol id="ico-sun" viewBox="0 0 18 18" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round">
+    <circle cx="9" cy="9" r="3.2"/>
+    <path d="M9 1.8v2M9 14.2v2M16.2 9h-2M3.8 9h-2M14.2 3.8l-1.4 1.4M5.2 12.8l-1.4 1.4M14.2 14.2l-1.4-1.4M5.2 5.2L3.8 3.8"/>
+  </symbol>
+  <symbol id="ico-moon" viewBox="0 0 18 18" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round">
+    <path d="M15 10.2A6.2 6.2 0 0 1 7.8 3 6.5 6.5 0 1 0 15 10.2Z"/>
+  </symbol>
+  <symbol id="ico-chevron" viewBox="0 0 18 18" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round">
+    <polyline points="4.5,7 9,11.5 13.5,7"/>
+  </symbol>
 </svg>
 
 <header class="titleblock">
   <div class="ruler" id="ruler"></div>
   <div class="tb-row">
     <a href="../index.html" class="brand" style="text-decoration:none;color:inherit;"><span class="mark">⇄</span>RECAST</a>
-    <nav class="tb-nav">
-      <a href="../index.html#tool">Tool</a>
-      <a href="../index.html#pricing">Pricing</a>
-      <a href="../index.html#api">API docs</a>
-      <a href="../blog/index.html">Blog</a>
-      <a href="../demo/index.html">Demo</a>
-      <a href="index.html">How To</a>
+    <nav class="tb-nav" id="primaryNav">
+      <div class="nav-group" data-nav-group="work">
+        <button type="button" class="nav-group-btn" aria-expanded="false" aria-haspopup="true">Work<svg class="ico nav-caret"><use href="#ico-chevron"/></svg></button>
+        <div class="nav-dropdown" role="menu">
+          <button type="button" class="nav-dropdown-item" data-nav-action="group" data-group="convert" role="menuitem">Convert</button>
+          <button type="button" class="nav-dropdown-item" data-nav-action="group" data-group="transform" role="menuitem">Transform</button>
+          <button type="button" class="nav-dropdown-item" data-nav-action="group" data-group="query" role="menuitem">Query</button>
+          <button type="button" class="nav-dropdown-item" data-nav-action="group" data-group="validate" role="menuitem">Validate</button>
+          <button type="button" class="nav-dropdown-item" data-nav-action="group" data-group="compare" role="menuitem">Compare</button>
+          <button type="button" class="nav-dropdown-item" data-nav-action="group" data-group="schema" role="menuitem">Inspect</button>
+        </div>
+      </div>
+      <div class="nav-group" data-nav-group="automate">
+        <button type="button" class="nav-group-btn" aria-expanded="false" aria-haspopup="true">Automate<svg class="ico nav-caret"><use href="#ico-chevron"/></svg></button>
+        <div class="nav-dropdown" role="menu">
+          <button type="button" class="nav-dropdown-item" data-nav-action="recipes" role="menuitem">Recipes</button>
+          <button type="button" class="nav-dropdown-item" data-nav-action="anchor" data-anchor="api" role="menuitem">API</button>
+          <button type="button" class="nav-dropdown-item" data-nav-action="anchor" data-anchor="api" role="menuitem">CLI</button>
+        </div>
+      </div>
+      <div class="nav-group" data-nav-group="data">
+        <button type="button" class="nav-group-btn" aria-expanded="false" aria-haspopup="true">Data<svg class="ico nav-caret"><use href="#ico-chevron"/></svg></button>
+        <div class="nav-dropdown" role="menu">
+          <button type="button" class="nav-dropdown-item" data-nav-action="history" role="menuitem">History</button>
+          <button type="button" class="nav-dropdown-item" data-nav-action="presets" role="menuitem">Presets</button>
+          <button type="button" class="nav-dropdown-item" data-nav-action="group" data-group="schema" role="menuitem">Schemas</button>
+        </div>
+      </div>
+      <a href="../demo/index.html" class="nav-plain-link">Demo</a>
+      <a href="../blog/index.html" class="nav-plain-link">Blog</a>
+      <a href="../index.html#pricing" class="nav-plain-link">Pricing</a>
+      <a href="index.html" class="nav-plain-link">Docs</a>
     </nav>
+    <button type="button" class="nav-hamburger" id="navHamburger" aria-label="Open menu" aria-expanded="false" aria-controls="primaryNav">
+      <span></span><span></span><span></span>
+    </button>
     <div class="header-actions">
       <a href="../index.html#tool" class="icon-btn" title="View your conversion history — opens the tool"><svg class="ico"><use href="#ico-history"/></svg><span class="btn-label">History</span></a>
       <a href="../index.html#tool" class="icon-btn" title="View your saved presets — opens the tool"><svg class="ico"><use href="#ico-settings"/></svg><span class="btn-label">Presets</span></a>
       <a href="../index.html#tool" class="icon-btn" title="Share a conversion — opens the tool"><svg class="ico"><use href="#ico-link"/></svg><span class="btn-label">Share link</span></a>
+      <button class="icon-btn" id="themeToggleBtn" title="Switch between dark and light theme"><svg class="ico"><use href="#ico-sun" id="themeIconUse"/></svg></button>
       <a href="../index.html#pricing" class="btn btn-gold" id="accountBtn">Upgrade to Pro</a>
     </div>
   </div>
@@ -176,7 +216,11 @@
     <a href="#steps">Step-by-step</a>
     <a href="#example">A real example</a>
     <a href="#privacy">Is my data safe?</a>
-    <a href="#other-tools">What else can it do?</a>
+    <a href="#inspect">Inspect</a>
+    <a href="#transform">Transform</a>
+    <a href="#validate">Validate</a>
+    <a href="#compare">Compare</a>
+    <a href="#automate">Automate</a>
     <a href="#api">Using the API</a>
   </div>
 
@@ -186,10 +230,10 @@
   <div class="howto-diagram">
 <svg viewBox="0 0 720 160" xmlns="http://www.w3.org/2000/svg" style="width:100%;max-width:600px;height:auto;">
   <style>
-    .box{fill:#12314C;stroke:rgba(140,182,214,0.4);stroke-width:1.5;}
-    .box-accent{fill:#12314C;stroke:#F2C14E;stroke-width:1.5;}
-    .lbl{font-family:'Space Grotesk',sans-serif;font-size:14px;font-weight:600;fill:#EDF3F8;}
-    .sub{font-family:'IBM Plex Mono',monospace;font-size:10.5px;fill:#B9CBDA;}
+    .box{fill:var(--panel);stroke:rgba(var(--border-rgb),0.4);stroke-width:1.5;}
+    .box-accent{fill:var(--panel);stroke:#F2C14E;stroke-width:1.5;}
+    .lbl{font-family:'Space Grotesk',sans-serif;font-size:14px;font-weight:600;fill:var(--text);}
+    .sub{font-family:'IBM Plex Mono',monospace;font-size:10.5px;fill:var(--text-muted);}
     .arrow{stroke:#F2C14E;stroke-width:2;fill:none;marker-end:url(#arrowhead);}
   </style>
   <defs>
@@ -218,7 +262,7 @@
 
   <p>You don't need to know what "JSON" or "CSV" technically means to use it. You just need to know: "I have a file, and I need it in a different format." Recast handles the rest.</p>
 
-  <div class="howto-callout">Here's what the tool actually looks like when you open it — the box on the left is where your original file goes, and the box on the right shows the converted result.</div>
+  <div class="howto-callout">Here's what the tool actually looks like when you open it — the box on the left is where your original file goes, and the box on the right shows the converted result. (If dark backgrounds aren't your thing, there's a sun/moon icon in the top-right of the page that switches to a light theme — it remembers your choice next time too.)</div>
   <img class="howto-img" src="images/overview.png" alt="The Recast homepage, showing the privacy notice and a live before-and-after example converting JSON to CSV">
 
   <h2 id="steps">Step-by-step: converting your first file</h2>
@@ -273,11 +317,11 @@
   <div class="howto-diagram">
 <svg viewBox="0 0 720 190" xmlns="http://www.w3.org/2000/svg" style="width:100%;max-width:600px;height:auto;">
   <style>
-    .box{fill:#12314C;stroke:rgba(140,182,214,0.4);stroke-width:1.5;}
-    .box-accent{fill:#12314C;stroke:#7FE7D0;stroke-width:1.5;}
-    .box-x{fill:#12314C;stroke:rgba(242,132,107,0.5);stroke-width:1.5;stroke-dasharray:5,4;}
-    .lbl{font-family:'Space Grotesk',sans-serif;font-size:14px;font-weight:600;fill:#EDF3F8;}
-    .sub{font-family:'IBM Plex Mono',monospace;font-size:10.5px;fill:#B9CBDA;}
+    .box{fill:var(--panel);stroke:rgba(var(--border-rgb),0.4);stroke-width:1.5;}
+    .box-accent{fill:var(--panel);stroke:#7FE7D0;stroke-width:1.5;}
+    .box-x{fill:var(--panel);stroke:rgba(242,132,107,0.5);stroke-width:1.5;stroke-dasharray:5,4;}
+    .lbl{font-family:'Space Grotesk',sans-serif;font-size:14px;font-weight:600;fill:var(--text);}
+    .sub{font-family:'IBM Plex Mono',monospace;font-size:10.5px;fill:var(--text-muted);}
     .arrow{stroke:#7FE7D0;stroke-width:2;fill:none;marker-end:url(#arrowhead2);}
     .nope{font-family:'IBM Plex Mono',monospace;font-size:22px;fill:#F2846B;font-weight:700;}
   </style>
@@ -292,7 +336,7 @@
   <text x="95" y="115" text-anchor="middle" class="sub">the whole tool runs here</text>
 
   <path d="M185,100 C230,100 230,55 275,55" class="arrow"/>
-  <text x="230" y="45" text-anchor="middle" class="sub" fill="#B9CBDA">converting</text>
+  <text x="230" y="45" text-anchor="middle" class="sub" fill="var(--text-muted)">converting</text>
 
   <rect x="280" y="15" width="170" height="80" rx="6" class="box-accent"/>
   <text x="365" y="50" text-anchor="middle" class="lbl">Result</text>
@@ -308,14 +352,26 @@
 
   <p>The one exception: if a developer on your team uses the <a href="#api">API</a> to connect Recast to their own software, that specific request does go to our server to be processed automatically — but a one-off paste-and-convert in your browser never leaves your machine.</p>
 
-  <h2 id="other-tools">What else can it do?</h2>
-  <p>Converting between formats is the most common use, but a few other buttons are worth knowing about, explained simply:</p>
-  <ul>
-    <li><strong>Validate</strong> — checks your file for mistakes (like a missing comma or bracket) and tells you exactly where the problem is, instead of just saying "error."</li>
-    <li><strong>Diff</strong> — short for "difference." Give it two versions of the same file (an old one and a new one) and it highlights exactly what changed between them, like tracked changes in a Word document.</li>
-    <li><strong>Schema</strong> — looks at a sample of your data and works out the "rules" it follows (which fields exist, whether they're text or numbers, which ones are optional) — useful if you need to describe your data's structure to someone else, or another piece of software.</li>
-  </ul>
-  <p>All of these work the same way as converting: pick the option, paste your data, click the button. The <a href="../demo/index.html">Demo page</a> is the fastest way to see any of them in action.</p>
+  <h2 id="other-tools">Beyond converting: the rest of the workbench</h2>
+  <p>Converting between formats is the most common use, but Recast now covers five stages of working with data — the same five that show up across the site: <strong>Inspect, Transform, Validate, Compare, Automate.</strong> Here's what each one actually does, in plain terms.</p>
+
+  <h3 id="inspect">Inspect — understand your data before you touch it</h3>
+  <p>Paste anything in and open <strong>Data Inspector</strong> (the button sits right above the input box): it automatically counts your records and fields, works out each field's type, tells you how many values are missing, and flags real problems on its own — duplicate IDs, fields that are mostly-but-not-entirely valid emails or dates, values that look suspiciously long. No setup, no schema to write first.</p>
+  <p>Two more tools live under this umbrella: <strong>Graph</strong> turns nested JSON into a clickable diagram instead of a wall of text (with a download button, if you want to save it as an image), and <strong>Schema</strong> looks at a sample and works out the "rules" it follows — useful if you need to describe your data's shape to someone else, or another piece of software.</p>
+
+  <h3 id="transform">Transform — reshape your data without writing code</h3>
+  <p>Beyond converting formats, <strong>Transform Builder</strong> lets you pick fields to keep or remove, rename them, filter records down to the ones you care about, and combine fields into new ones — all by clicking, with a live preview that updates as you go. It's built for the situation where you don't just want a different format, you want a different, smaller, cleaner version of what you already have.</p>
+
+  <h3 id="validate">Validate — catch mistakes before they cause problems</h3>
+  <p>Checks your file for errors (like a missing comma or bracket) and tells you exactly where the problem is, instead of just saying "error." Works for both JSON and XML.</p>
+
+  <h3 id="compare">Compare — know exactly what changed</h3>
+  <p><strong>Diff</strong> takes two versions of the same file (an old one and a new one) and highlights exactly what changed between them, like tracked changes in a Word document. For JSON specifically, <strong>Structural Analysis</strong> goes a step further: it sorts what changed into fields removed, fields added, values changed, and — the one that actually matters when you're deciding whether to ship something — which of those changes are likely to <em>break</em> whatever reads that data, versus which are safe. It's deliberately cautious: if it can't tell confidently, it says so rather than guessing.</p>
+
+  <h3 id="automate">Automate — turn a one-off into something repeatable</h3>
+  <p>Anything you do more than once is worth saving as a <strong>Recipe</strong>: a named, ordered list of steps you can re-run in one click. <strong>Recipe Builder 2.0</strong> makes this visual — build the whole chain from Input through to Output, reorder steps by dragging them, preview the result after any individual step (not just the final one), and edit a step without rebuilding the recipe from scratch. Once saved, the same recipe can be run from the API or the command line too, so a workflow you built by clicking can end up automated somewhere else entirely.</p>
+
+  <p>All of these work the same way: pick the tool, paste your data, click the button. The <a href="../demo/index.html">Demo page</a> is the fastest way to see any of them in action — it's organized around these same five stages, with a real dataset ready to load for each one.</p>
 
   <h2 id="api">Using the API playground</h2>
   <p>This part is more technical, and it's genuinely optional — most people never need it. It's for one specific situation: you (or someone on your team) wants your <em>own</em> software to convert files automatically, without a person copying and pasting each time.</p>
@@ -335,10 +391,12 @@
 
 </main>
 
-<footer style="max-width:1180px;margin:0 auto;padding:24px;text-align:center;color:#B9CBDA;font-size:12.5px;border-top:1px solid rgba(140,182,214,0.16);">
-  <a href="../index.html" style="color:#B9CBDA;">Recast</a> — convert, validate, diff JSON, CSV and XML in your browser.
+<footer style="max-width:1180px;margin:0 auto;padding:24px;text-align:center;color:var(--text-muted);font-size:12.5px;border-top:1px solid rgba(var(--border-rgb),0.16);">
+  <a href="../index.html" style="color:var(--text-muted);">Recast</a> — your private data workbench. Your data doesn't leave your browser. Your workflow can.
 </footer>
 
 <script src="../lib/ruler.js"></script>
+<script src="../lib/theme.js"></script>
+<script src="../lib/nav.js"></script>
 </body>
 </html>

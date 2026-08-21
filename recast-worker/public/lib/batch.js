@@ -8,6 +8,7 @@
   'use strict';
 
   const E = root.RecastEngine;
+  const RecastTransformBuilder = root.RecastTransformBuilder;
 
   // Mirrors the single-file task-building logic in app.js's modeConfig, but
   // takes explicit text + options instead of reading the DOM, so it can run
@@ -28,6 +29,10 @@
     json2go: { outExt: 'go', run: (text, opts) => E.jsonSchemaToGo(E.jsonSchemaFromSample(JSON.parse(text)), opts.rootName || 'Root') },
     json2kotlin: { outExt: 'kt', run: (text, opts) => E.jsonSchemaToKotlin(E.jsonSchemaFromSample(JSON.parse(text)), opts.rootName || 'Root') },
     json2rust: { outExt: 'rs', run: (text, opts) => E.jsonSchemaToRust(E.jsonSchemaFromSample(JSON.parse(text)), opts.rootName || 'Root') },
+    json2java: { outExt: 'java', run: (text, opts) => E.jsonSchemaToJava(E.jsonSchemaFromSample(JSON.parse(text)), opts.rootName || 'Root') },
+    json2swift: { outExt: 'swift', run: (text, opts) => E.jsonSchemaToSwift(E.jsonSchemaFromSample(JSON.parse(text)), opts.rootName || 'Root') },
+    json2csharp: { outExt: 'cs', run: (text, opts) => E.jsonSchemaToCSharp(E.jsonSchemaFromSample(JSON.parse(text)), opts.rootName || 'Root') },
+    json2sql: { outExt: 'sql', run: (text, opts) => E.jsonSchemaToSql(E.jsonSchemaFromSample(JSON.parse(text)), opts.rootName || 'Root') },
     jsonMock: { outExt: 'json', run: (text, opts) => JSON.stringify(E.mockDataFromSchema(E.jsonSchemaFromSample(JSON.parse(text)), { count: opts.count }), null, 2) },
     sortJson: { outExt: 'json', run: (text, opts) => {
       function sortKeys(o) {
@@ -37,6 +42,50 @@
       }
       return JSON.stringify(sortKeys(JSON.parse(text)), null, opts.pretty === false ? 0 : 2);
     }},
+    // ---- Enhanced Transform Builder steps. Each one is a thin (text, opts)
+    // wrapper around the pure functions in transform-builder.js, so a
+    // builder step is a completely ordinary recipe step — same storage,
+    // same runner, same everything, just with its own params.
+    transformSelect: { outExt: 'json', run: (text, opts) => JSON.stringify(RecastTransformBuilder.selectFields(JSON.parse(text), opts.paths || []), null, opts.pretty === false ? 0 : 2) },
+    transformRemove: { outExt: 'json', run: (text, opts) => JSON.stringify(RecastTransformBuilder.removeFields(JSON.parse(text), opts.paths || []), null, opts.pretty === false ? 0 : 2) },
+    transformRename: { outExt: 'json', run: (text, opts) => JSON.stringify(RecastTransformBuilder.renameField(JSON.parse(text), opts.from, opts.to), null, opts.pretty === false ? 0 : 2) },
+    transformFilter: { outExt: 'json', run: (text, opts) => JSON.stringify(RecastTransformBuilder.filterRecords(JSON.parse(text), opts.field, opts.condition, opts.value), null, opts.pretty === false ? 0 : 2) },
+    transformSort: { outExt: 'json', run: (text, opts) => JSON.stringify(RecastTransformBuilder.sortRecords(JSON.parse(text), opts.field, opts.direction), null, opts.pretty === false ? 0 : 2) },
+    transformConvertType: { outExt: 'json', run: (text, opts) => JSON.stringify(RecastTransformBuilder.convertType(JSON.parse(text), opts.field, opts.type), null, opts.pretty === false ? 0 : 2) },
+    transformAddField: { outExt: 'json', run: (text, opts) => JSON.stringify(RecastTransformBuilder.addField(JSON.parse(text), opts.field, opts.value), null, opts.pretty === false ? 0 : 2) },
+    transformCombine: { outExt: 'json', run: (text, opts) => JSON.stringify(RecastTransformBuilder.combineFields(JSON.parse(text), opts.template, opts.newField), null, opts.pretty === false ? 0 : 2) },
+    // ---- Recipe Builder 2.0 additions: JSONPath, Validate, Compare-against-reference.
+    jsonPath: { outExt: 'json', run: (text, opts) => JSON.stringify(E.jsonPathQuery(JSON.parse(text), opts.path || ''), null, opts.pretty === false ? 0 : 2) },
+    validateJsonStep: { outExt: 'txt', run: (text) => {
+      const r = E.validateJsonSyntax(text);
+      if (!r.valid) throw new Error('Invalid JSON: ' + r.error);
+      return text; // pass the data through unchanged so later steps can still use it
+    }},
+    validateXmlStep: { outExt: 'txt', run: (text) => {
+      const r = E.validateXmlSyntax(text);
+      if (!r.valid) throw new Error('Invalid XML: ' + r.error);
+      return text;
+    }},
+    // Diffs the current pipeline value against a fixed reference text
+    // supplied when the step was configured. Recipes are a linear
+    // single-value chain, so a genuine two-input Compare can't sit mid-chain
+    // the way it does in the standalone Diff tool — this compares against
+    // a snapshot instead, which is what "did my data change since X" means
+    // in a scripted/API context anyway.
+    compareStep: { outExt: 'txt', run: (text, opts) => {
+      const format = opts.format || 'json';
+      if (format === 'csv') return flatTextFromCsvDiff(E.csvDiff(opts.reference || '', text, opts));
+      const a = format === 'xml' ? E.xmlToJson(opts.reference || '{}') : JSON.parse(opts.reference || '{}');
+      const b = format === 'xml' ? E.xmlToJson(text) : JSON.parse(text);
+      return flatTextFromChanges(E.deepDiff(a, b));
+    }},
+    // Represents "this is how the recipe's data arrived" — an API request
+    // description, not a transform. Making a real network call from here
+    // is out of scope for this release (a future API/CLI executor is the
+    // intended consumer of this step's params); the in-browser runner
+    // treats it as an identity pass-through so a recipe that starts with
+    // one still runs locally against whatever data is already loaded.
+    apiRequestStep: { outExt: 'json', run: (text) => text },
   };
 
   function isBatchSupported(mode) { return !!BATCH_OPS[mode]; }
