@@ -109,6 +109,9 @@
       const changes = E.deepDiff(before, after);
       return root.RecastStructuralAnalysis.analyzeStructure(changes, before);
     }
+    if (task === 'recipeStepsPartial') {
+      return root.RecastRecipes.runRecipe(payload.text, payload.steps || [], {});
+    }
     throw new Error('Unknown task: ' + task);
   }
 

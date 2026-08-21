@@ -30,10 +30,37 @@
     flatten: 'Flatten nested objects', unflatten: 'Unflatten fields', sortKeys: 'Sort keys',
   };
 
-  function currentInputData() {
+  // The single point where "what text is Transform Builder actually
+  // working on" is decided: a working dataset (a JSON view derived from
+  // CSV/XML, e.g. via Data Inspector's Transform action) takes priority
+  // over #input when one is active — #input itself is never read from or
+  // written to by that path.
+  function effectiveInputText() {
+    if (window.RecastWorkingDataset && window.RecastWorkingDataset.isActive()) return window.RecastWorkingDataset.getJson();
     const inputEl = $('input');
-    if (!inputEl || !inputEl.value.trim()) return null;
-    try { return JSON.parse(inputEl.value); } catch (e) { return null; }
+    return inputEl ? inputEl.value : '';
+  }
+
+  function currentInputData() {
+    const text = effectiveInputText();
+    if (!text || !text.trim()) return null;
+    try { return JSON.parse(text); } catch (e) { return null; }
+  }
+
+  // The index of the step currently being configured — or steps.length
+  // when adding a brand-new step at the end. Fields available at that
+  // point are whatever steps.slice(0, contextIndex) would produce; index 0
+  // means "before any step runs", i.e. the original input.
+  function currentContextIndex() {
+    return editingIndex != null ? editingIndex : steps.length;
+  }
+  // A render token guards against a slower, older field-resolution promise
+  // overwriting a newer one if the user switches steps while one is still
+  // in flight.
+  let fieldRenderToken = 0;
+  async function resolveFieldsForContext(contextIndex) {
+    const text = effectiveInputText();
+    return window.RecastPipelineFields.resolveFields(text, steps.slice(0, contextIndex));
   }
 
   function pushHistory() {
@@ -41,6 +68,7 @@
     history.push(JSON.parse(JSON.stringify(steps)));
     historyIndex = history.length - 1;
     updateUndoRedoButtons();
+    window.RecastPipelineFields.invalidate(); // an earlier step may have just changed — every downstream field lookup is now stale
   }
   function updateUndoRedoButtons() {
     $('tbUndoBtn').disabled = historyIndex <= 0;
@@ -48,13 +76,16 @@
   }
 
   // ---------------- Field tree ----------------
-  function renderFieldTree() {
-    const data = currentInputData();
+  async function renderFieldTree() {
     const el = $('tbFieldTree');
-    if (!data) { el.innerHTML = '<div class="batch-empty">Paste valid JSON in the input to see its fields here.</div>'; return; }
-    const tree = TB.discoverFieldTree(data);
-    const paths = TB.flattenFieldTree(tree);
-    if (!paths.length) { el.innerHTML = '<div class="batch-empty">No object fields found \u2014 the top level isn\u2019t an object or array of objects.</div>'; return; }
+    const contextIndex = currentContextIndex();
+    const token = ++fieldRenderToken;
+    el.innerHTML = '<div class="batch-empty">Resolving available fields\u2026</div>';
+    const { paths, error } = await resolveFieldsForContext(contextIndex);
+    if (token !== fieldRenderToken) return; // a newer request superseded this one
+    if (error) { el.innerHTML = `<div class="batch-empty">${escapeHtml(error)}</div>`; return; }
+    if (!currentInputData() && !steps.length) { el.innerHTML = '<div class="batch-empty">Paste valid JSON in the input to see its fields here.</div>'; return; }
+    if (!paths.length) { el.innerHTML = '<div class="batch-empty">No object fields found at this point in the pipeline.</div>'; return; }
     el.innerHTML = paths.map((p) => {
       const depth = p.path.split('.').length - 1;
       return `<div class="tb-field-row" data-path="${escapeHtml(p.path)}" style="padding-left:${depth * 14 + 4}px;">${escapeHtml(p.path.split('.').pop())}<span class="tb-field-type">${p.type}</span></div>`;
@@ -87,46 +118,61 @@
   function cssEscape(s) { return String(s).replace(/["\\]/g, '\\$&'); }
 
   // ---------------- Step forms ----------------
-  function fieldOptions(selectedValue) {
-    const data = currentInputData();
-    const paths = data ? TB.flattenFieldTree(TB.discoverFieldTree(data)) : [];
+  // Pure, synchronous — both take an already-resolved paths array. The one
+  // place field resolution actually happens is showStepForm, below.
+  function fieldOptionsHtml(paths, selectedValue) {
     return paths.map((p) => `<option value="${escapeHtml(p.path)}" ${p.path === selectedValue ? 'selected' : ''}>${escapeHtml(p.path)}</option>`).join('');
   }
-  function checkboxList(selectedPaths) {
-    const data = currentInputData();
-    const paths = data ? TB.flattenFieldTree(TB.discoverFieldTree(data)) : [];
+  function checkboxListHtml(paths, selectedPaths) {
     const sel = new Set(selectedPaths || []);
     return '<div class="tb-checkbox-list">' + paths.map((p) => `
       <label class="tb-checkbox-row"><input type="checkbox" value="${escapeHtml(p.path)}" ${sel.has(p.path) ? 'checked' : ''}> ${escapeHtml(p.path)}</label>
     `).join('') + '</div>';
   }
 
-  function showStepForm(op, existingParams, editIdx) {
+  async function showStepForm(op, existingParams, editIdx) {
     editingIndex = editIdx ?? null;
     const p = existingParams || {};
     const form = $('tbStepForm');
+    const contextIndex = currentContextIndex();
+    const token = ++fieldRenderToken;
+
+    form.innerHTML = '<p class="tb-step-summary">Resolving fields available at this point in the pipeline\u2026</p>';
+    form.style.display = 'block';
+    form.dataset.op = op;
+
+    const { paths, error } = await resolveFieldsForContext(contextIndex);
+    if (token !== fieldRenderToken) return; // superseded by a newer showStepForm call
+
+    if (error) {
+      form.innerHTML = `<p class="tb-step-summary" style="color:#F2846B;">Can\u2019t determine the fields available here yet: ${escapeHtml(error)}</p>
+        <div class="tb-form-actions"><button class="icon-btn" id="tbFormCancel">Cancel</button></div>`;
+      $('tbFormCancel').addEventListener('click', closeStepForm);
+      return;
+    }
+
     let html = '';
     if (op === 'select' || op === 'remove') {
-      html = `<label>Fields</label>${checkboxList(p.paths)}`;
+      html = `<label>Fields</label>${checkboxListHtml(paths, p.paths)}`;
     } else if (op === 'rename') {
-      html = `<label>From field</label><select data-field-picker>${fieldOptions(p.from)}</select>
+      html = `<label>From field</label><select data-field-picker>${fieldOptionsHtml(paths, p.from)}</select>
               <label>New field name</label><input type="text" id="tbInputTo" value="${escapeHtml(p.to || '')}" placeholder="e.g. city">`;
     } else if (op === 'filter') {
-      html = `<label>Field</label><select data-field-picker>${fieldOptions(p.field)}</select>
+      html = `<label>Field</label><select data-field-picker>${fieldOptionsHtml(paths, p.field)}</select>
               <label>Condition</label>
               <select id="tbInputCondition">${TB.FILTER_OPS.map((o) => `<option value="${o}" ${o === p.condition ? 'selected' : ''}>${o}</option>`).join('')}</select>
               <label>Value</label><input type="text" id="tbInputValue" value="${escapeHtml(p.value ?? '')}" placeholder="(not needed for exists / is null)">`;
     } else if (op === 'sort') {
-      html = `<label>Field</label><select data-field-picker>${fieldOptions(p.field)}</select>
+      html = `<label>Field</label><select data-field-picker>${fieldOptionsHtml(paths, p.field)}</select>
               <label>Direction</label><select id="tbInputDirection"><option value="asc" ${p.direction === 'asc' ? 'selected' : ''}>Ascending</option><option value="desc" ${p.direction === 'desc' ? 'selected' : ''}>Descending</option></select>`;
     } else if (op === 'convertType') {
-      html = `<label>Field</label><select data-field-picker>${fieldOptions(p.field)}</select>
+      html = `<label>Field</label><select data-field-picker>${fieldOptionsHtml(paths, p.field)}</select>
               <label>Convert to</label><select id="tbInputType">${TB.TYPE_CONVERTERS.map((t) => `<option value="${t}" ${t === p.type ? 'selected' : ''}>${t}</option>`).join('')}</select>`;
     } else if (op === 'addField') {
       html = `<label>Field name</label><input type="text" id="tbInputField" value="${escapeHtml(p.field || '')}" placeholder="e.g. status">
               <label>Default value</label><input type="text" id="tbInputValue" value="${escapeHtml(p.value ?? '')}" placeholder="e.g. pending">`;
     } else if (op === 'combine') {
-      html = `<label>Fields (click to insert into template)</label>${checkboxList([])}
+      html = `<label>Fields (click to insert into template)</label>${checkboxListHtml(paths, [])}
               <label>Template</label><input type="text" data-template-input id="tbInputTemplate" value="${escapeHtml(p.template || '')}" placeholder="e.g. {firstName} {lastName}">
               <label>New field name</label><input type="text" id="tbInputNewField" value="${escapeHtml(p.newField || '')}" placeholder="e.g. fullName">`;
     } else {
@@ -149,6 +195,7 @@
     $('tbStepForm').innerHTML = '';
     $('tbAddStep').value = '';
     editingIndex = null;
+    renderFieldTree(); // editingIndex just changed, so the field-tree context did too
   }
 
   function submitStepForm(op) {
@@ -254,8 +301,7 @@
     previewTimer = setTimeout(doRunPipeline, 150); // debounced so rapid edits don't queue up redundant runs
   }
   async function doRunPipeline() {
-    const inputEl = $('input');
-    const text = inputEl ? inputEl.value : '';
+    const text = effectiveInputText();
     $('tbErrors').style.display = 'none';
     if (!text.trim()) { $('tbOutput').value = ''; $('tbCounts').textContent = '0 in \u2192 0 out'; return; }
     try {
@@ -275,21 +321,49 @@
   // ---------------- Undo / redo / reset ----------------
   function restoreFromHistory() {
     steps = JSON.parse(JSON.stringify(history[historyIndex]));
+    window.RecastPipelineFields.invalidate(); // the step sequence just changed underneath any cached field lookups
     closeStepForm();
     renderStepList();
     runPipelinePreview();
     updateUndoRedoButtons();
   }
 
+  // ---------------- Working dataset banner ----------------
+  function renderWorkingBanner() {
+    const banner = $('tbWorkingBanner');
+    if (!banner) return;
+    const active = window.RecastWorkingDataset && window.RecastWorkingDataset.isActive();
+    banner.style.display = active ? 'flex' : 'none';
+    if (active) $('tbWorkingBannerText').textContent = window.RecastWorkingDataset.getState().label;
+  }
+  $('tbUseOriginalBtn')?.addEventListener('click', () => {
+    window.RecastWorkingDataset.clear();
+    renderWorkingBanner();
+    window.RecastPipelineFields.invalidate();
+    editingIndex = null;
+    closeStepForm();
+    renderFieldTree();
+    runPipelinePreview();
+  });
+  window.RecastWorkingDataset?.onChange(() => {
+    if ($('transformBuilderPanel').classList.contains('show')) {
+      renderWorkingBanner();
+      renderFieldTree();
+      runPipelinePreview();
+    }
+  });
+
   // ---------------- Open / close / wiring ----------------
   function openBuilder() {
     $('transformBuilderPanel').classList.add('show');
+    renderWorkingBanner();
     renderFieldTree();
     renderStepList();
     runPipelinePreview();
   }
   function closeBuilder() {
     $('transformBuilderPanel').classList.remove('show');
+    window.RecastWorkingDataset?.clear(); // reopening later (e.g. via the toggle button) should behave normally against #input, not a stale derived view
   }
 
   $('transformBuilderToggleBtn')?.addEventListener('click', () => {
@@ -322,9 +396,14 @@
   });
 
   // Re-discover fields whenever the underlying input changes, so the tree
-  // and dropdowns stay in sync with whatever the user pastes.
+  // and dropdowns stay in sync with whatever the user pastes. Skipped
+  // while a working dataset is active — #input's raw text (which might be
+  // unrelated CSV/XML at that point) isn't what the builder is working
+  // on, so reacting to it here would be wrong, not just redundant.
   $('input')?.addEventListener('input', () => {
+    if (window.RecastWorkingDataset && window.RecastWorkingDataset.isActive()) return;
     if ($('transformBuilderPanel').classList.contains('show')) {
+      window.RecastPipelineFields.invalidate(); // the input text is part of every cache key, but clear it here too rather than let it grow unbounded across a long editing session
       renderFieldTree();
       runPipelinePreview();
     }

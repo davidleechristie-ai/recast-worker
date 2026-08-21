@@ -3,7 +3,7 @@
  * paste doesn't freeze the tab. Pure engine logic only (no DOM), so the
  * exact same engine.js that powers the CLI runs here unmodified.
  */
-importScripts('engine.js', 'transform-builder.js', 'data-profiler.js', 'structural-analysis.js');
+importScripts('engine.js', 'transform-builder.js', 'batch.js', 'recipes.js', 'data-profiler.js', 'structural-analysis.js');
 const E = self.RecastEngine;
 
 function runConvert(p) {
@@ -86,6 +86,15 @@ function runStructuralAnalysis(p) {
   return self.RecastStructuralAnalysis.analyzeStructure(changes, before);
 }
 
+// Runs a prefix of a Recipe Builder 2.0-style ({mode, params}) step
+// sequence — used for pipeline-aware field discovery there, the same way
+// runTransformPipeline is used for Transform Builder's ({op, params})
+// steps. Reuses the existing recipe runner unchanged.
+function runRecipeStepsPartial(p) {
+  const result = self.RecastRecipes.runRecipe(p.text, p.steps || [], {});
+  return result;
+}
+
 self.onmessage = function (e) {
   const msg = e.data;
   try {
@@ -97,6 +106,7 @@ self.onmessage = function (e) {
     else if (msg.task === 'transformPipeline') result = runTransformPipeline(msg.payload);
     else if (msg.task === 'profileDataset') result = runProfileDataset(msg.payload);
     else if (msg.task === 'structuralAnalysis') result = runStructuralAnalysis(msg.payload);
+    else if (msg.task === 'recipeStepsPartial') result = runRecipeStepsPartial(msg.payload);
     else throw new Error('Unknown task: ' + msg.task);
     self.postMessage({ id: msg.id, ok: true, result: result });
   } catch (err) {

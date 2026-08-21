@@ -23,9 +23,10 @@
 
   function renderSummary(summary) {
     $('saSummary').innerHTML = `
-      <div class="sa-summary-stat"><div class="sa-summary-num breaking">${summary.breaking}</div><div class="sa-summary-label">Breaking changes</div></div>
-      <div class="sa-summary-stat"><div class="sa-summary-num structural">${summary.structural}</div><div class="sa-summary-label">Structural changes</div></div>
-      <div class="sa-summary-stat"><div class="sa-summary-num value">${summary.value}</div><div class="sa-summary-label">Value changes</div></div>
+      <div class="sa-summary-stat"><div class="sa-summary-num breaking">${summary.breaking}</div><div class="sa-summary-label">Breaking</div></div>
+      <div class="sa-summary-stat"><div class="sa-summary-num non-breaking">${summary.nonBreaking}</div><div class="sa-summary-label">Non-breaking</div></div>
+      <div class="sa-summary-stat"><div class="sa-summary-num uncertain">${summary.uncertain}</div><div class="sa-summary-label">Uncertain</div></div>
+      <div class="sa-summary-stat"><div class="sa-summary-num value">${summary.value}</div><div class="sa-summary-label">Value</div></div>
     `;
   }
 
@@ -39,7 +40,8 @@
   function matchesFilter(c, filter) {
     if (filter === 'all') return true;
     if (filter === 'breaking') return c.severity === 'breaking';
-    if (filter === 'structural') return c.category === 'structural';
+    if (filter === 'nonBreaking') return c.severity === 'non-breaking';
+    if (filter === 'uncertain') return c.severity === 'uncertain';
     if (filter === 'value') return c.category === 'value';
     return true;
   }

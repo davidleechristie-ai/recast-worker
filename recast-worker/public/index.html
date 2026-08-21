@@ -322,6 +322,10 @@
         <span style="font-family:'IBM Plex Mono', monospace;font-size:12px;color:var(--text-muted);">JSONPath</span>
         <input type="text" id="jsonPathInput" placeholder="e.g. $.users[*].name  or  address.city" spellcheck="false">
       </div>
+      <div class="jsonpath-working-banner" id="jsonPathWorkingBanner">
+        <span id="jsonPathWorkingBannerText"></span>
+        <button class="icon-btn" id="jsonPathUseOriginalBtn">Use original input instead</button>
+      </div>
       <div class="wb-grid">
         <div class="panel" id="inputPanel">
           <div class="drop-zone" id="dropZone">Drop 1 file to load — or several to batch convert</div>
@@ -364,7 +368,7 @@
             <button class="icon-btn" id="transformBuilderToggleBtn" title="Build a multi-step transformation visually, with a live preview">Transform Builder</button>
             <button class="icon-btn" id="recipeBuilder2ToggleBtn" title="Build a full multi-step recipe visually — Input through Output">Recipe Builder 2.0</button>
             <button class="icon-btn" id="dataInspectorToggleBtn" title="Profile the current dataset — field types, nulls, quality warnings">Data Inspector</button>
-            <button class="icon-btn" id="structuralAnalysisToggleBtn" title="Classify JSON differences as breaking, structural, or value changes">Structural Analysis</button>
+            <button class="icon-btn" id="structuralAnalysisToggleBtn" title="Classify JSON differences as breaking, non-breaking, uncertain, or value changes">Structural Analysis</button>
             <span class="kb-hint" title="Keyboard shortcut">⌘/Ctrl + Enter</span>
           </div>
         </div>
@@ -516,6 +520,10 @@
         <button class="icon-btn" id="tbSaveRecipeBtn" title="Save these steps as a recipe">Save as Recipe…</button>
         <button class="icon-btn" id="tbCloseBtn" title="Close and return to the normal workbench view">✕ Close</button>
       </div>
+      <div class="tb-working-banner" id="tbWorkingBanner" style="display:none;">
+        <span id="tbWorkingBannerText"></span>
+        <button class="icon-btn" id="tbUseOriginalBtn">Use original input instead</button>
+      </div>
 
       <div class="tb-builder-body">
         <div class="tb-col tb-col-source">
@@ -627,7 +635,7 @@
 
     <div class="sa-panel" id="structuralAnalysisPanel">
       <div class="sa-head">
-        <span class="title">Structural Analysis — breaking vs. structural vs. value changes</span>
+        <span class="title">Structural Analysis — breaking, non-breaking, uncertain, and value changes</span>
         <button class="icon-btn" id="saRefreshBtn" title="Re-analyze the current A / B comparison">Analyze</button>
         <button class="icon-btn" id="saCloseBtn" title="Close and return to the normal workbench view">✕ Close</button>
       </div>
@@ -638,8 +646,9 @@
         <div class="sa-filters" id="saFilters">
           <button class="sa-filter active" data-filter="all">All</button>
           <button class="sa-filter" data-filter="breaking">Breaking</button>
-          <button class="sa-filter" data-filter="structural">Structural</button>
-          <button class="sa-filter" data-filter="value">Values</button>
+          <button class="sa-filter" data-filter="nonBreaking">Non-breaking</button>
+          <button class="sa-filter" data-filter="uncertain">Uncertain</button>
+          <button class="sa-filter" data-filter="value">Value</button>
         </div>
 
         <div class="sa-list" id="saList"></div>
@@ -924,11 +933,13 @@
 
 <!-- Shared, tested engine + feature modules (also power the recast-cli npm package and worker) -->
 <script src="lib/engine.js"></script>
+<script src="lib/working-dataset.js"></script>
 <script src="lib/highlight.js"></script>
 <script src="lib/history.js"></script>
 <script src="lib/share.js"></script>
 <script src="lib/worker-client.js"></script>
 <script src="lib/transform-builder.js"></script>
+<script src="lib/pipeline-field-resolver.js"></script>
 <script src="lib/batch.js"></script>
 <script src="lib/graph.js"></script>
 <script src="lib/recipes.js"></script>

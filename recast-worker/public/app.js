@@ -582,7 +582,10 @@ const modeConfig = {
   diffCsv: { inFmt:'CSV A / B', outFmt:'Diff', dual:true, path:false, showDelim:true, showBom:false, showPretty:false, showInfer:false, btn:'Compare', hl:'csv', hlOut:'plain', isDiff:true, diffKind:'csv',
     task: () => ({ task:'diff', payload:{ op:'diffCsv', textA: document.getElementById('inputA').value, textB: document.getElementById('inputB').value, options:{ delimiter:getDelim(), ignoreWhitespace: document.getElementById('compareIgnoreWs')?.checked } } }) },
   jsonPath: { inFmt:'JSON', outFmt:'Result', dual:false, path:true, showDelim:false, showBom:false, showPretty:true, showInfer:false, btn:'Query', hl:'json', hlOut:'json',
-    sync: t => JSON.stringify(jsonPathQuery(JSON.parse(t), document.getElementById('jsonPathInput').value), null, document.getElementById('prettyPrint')?.checked ? 2 : 0) },
+    sync: t => {
+      const effectiveText = (window.RecastWorkingDataset && window.RecastWorkingDataset.isActive()) ? window.RecastWorkingDataset.getJson() : t;
+      return JSON.stringify(jsonPathQuery(JSON.parse(effectiveText), document.getElementById('jsonPathInput').value), null, document.getElementById('prettyPrint')?.checked ? 2 : 0);
+    } },
   jsonSchema: { inFmt:'JSON (sample)', outFmt:'JSON Schema', dual:false, path:false, showDelim:false, showBom:false, showPretty:false, showInfer:false, btn:'Generate schema', hl:'json', hlOut:'json', batchSupported:true, outExt:'json',
     task: () => ({ task:'schema', payload:{ text: inputEl.value, options:{ title: '' } } }) },
   jsonStructure: { inFmt:'JSON', outFmt:'Structure summary', dual:false, path:false, showDelim:false, showBom:false, showPretty:false, showInfer:false, btn:'Summarize structure', hl:'json', hlOut:'plain', batchSupported:true, outExt:'txt',
@@ -737,6 +740,7 @@ function setMode(mode) {
 
   const pathRow = $('pathRow');
   if (cfg.path) pathRow?.classList.add('show'); else pathRow?.classList.remove('show');
+  renderJsonPathWorkingBanner();
 
   if ($('prettyLabel')) $('prettyLabel').style.display = cfg.showPretty ? '' : 'none';
   if ($('bomLabel')) $('bomLabel').style.display = cfg.showBom ? '' : 'none';
@@ -1965,6 +1969,24 @@ $('playgroundCopyBtn')?.addEventListener('click', () => {
 function scrollToWorkbench() {
   document.querySelector('.workbench')?.scrollIntoView({ behavior: 'instant', block: 'start' });
 }
+
+// ---------------- Working dataset banner (JSONPath) ----------------
+// Transform Builder's equivalent banner lives in transform-ui.js, next to
+// the rest of its own wiring; this one is here because it's tied to
+// setMode's JSONPath-specific UI (the path row), not a separate panel.
+function renderJsonPathWorkingBanner() {
+  const banner = $('jsonPathWorkingBanner');
+  if (!banner) return;
+  const active = currentMode === 'jsonPath' && window.RecastWorkingDataset && window.RecastWorkingDataset.isActive();
+  banner.style.display = active ? 'flex' : 'none';
+  if (active) $('jsonPathWorkingBannerText').textContent = window.RecastWorkingDataset.getState().label;
+}
+$('jsonPathUseOriginalBtn')?.addEventListener('click', () => {
+  window.RecastWorkingDataset.clear();
+  renderJsonPathWorkingBanner();
+  runCurrentMode();
+});
+window.RecastWorkingDataset?.onChange(renderJsonPathWorkingBanner);
 function loadResponseIntoMainInput(response) {
   inputEl.value = response;
   updateCounts();
@@ -1990,8 +2012,7 @@ document.querySelectorAll('[data-response-action]').forEach(btn => {
     const response = $('playgroundOutput').textContent;
     if (action === 'inspect') {
       loadResponseIntoMainInput(response);
-      setGroup('schema');
-      if (!$('inputGraphBtn')?.classList.contains('active')) $('inputGraphBtn')?.click();
+      window.RecastDataInspector.openAndProfile();
     } else if (action === 'transform') {
       loadResponseIntoMainInput(response);
       if (!$('transformBuilderPanel').classList.contains('show')) $('transformBuilderToggleBtn')?.click();
@@ -2010,7 +2031,11 @@ document.querySelectorAll('[data-response-action]').forEach(btn => {
       loadResponseIntoMainInput(response);
       window.RecastRecipeBuilder2.openWithApiRequestStep(currentPlaygroundRequestParams());
     }
-    scrollToWorkbench();
+    if (action === 'inspect') {
+      $('dataInspectorPanel')?.scrollIntoView({ behavior: 'instant', block: 'start' });
+    } else {
+      scrollToWorkbench();
+    }
     track('playground_use_response', { action });
   });
 });

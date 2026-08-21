@@ -50,11 +50,24 @@
     if (!inputEl || !inputEl.value.trim()) return null;
     try { return JSON.parse(inputEl.value); } catch (e) { return null; }
   }
-  function fieldPaths() {
-    const data = currentInputData();
-    return data ? window.RecastTransformBuilder.flattenFieldTree(window.RecastTransformBuilder.discoverFieldTree(data)) : [];
-  }
   function escapeHtml(s) { return String(s).replace(/[&<>"']/g, (c) => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;' }[c])); }
+
+  // The steps (in recipe {mode, params} shape) that run before a given
+  // step id — i.e. exactly what that step will see. Selecting a step not
+  // currently in the list (id === null, "nothing selected") resolves
+  // against every current step, matching "what a brand-new step appended
+  // now would see".
+  function recipeStepsBefore(stepId) {
+    const index = stepId == null ? steps.length : steps.findIndex((s) => s.id === stepId);
+    const upTo = index === -1 ? steps.length : index;
+    return steps.slice(0, upTo).map((s) => ({ mode: s.mode, params: s.params || {} }));
+  }
+  let fieldRenderToken = 0;
+  async function resolveFieldsBeforeStep(stepId) {
+    const inputEl = $('input');
+    const text = inputEl ? inputEl.value : '';
+    return window.RecastPipelineFields.resolveFields(text, recipeStepsBefore(stepId), 'recipe');
+  }
 
   // ---------------- Step summaries ----------------
   function stepSummary(step) {
@@ -83,17 +96,19 @@
   }
 
   // ---------------- Config forms (mirrors Transform Builder's form patterns) ----------------
-  function fieldOptions(selected) {
-    return fieldPaths().map((p) => `<option value="${escapeHtml(p.path)}" ${p.path === selected ? 'selected' : ''}>${escapeHtml(p.path)}</option>`).join('');
+  // Pure, synchronous — both take an already-resolved paths array. Field
+  // resolution itself happens once, in renderSidePanel, below.
+  function fieldOptionsHtml(paths, selected) {
+    return paths.map((p) => `<option value="${escapeHtml(p.path)}" ${p.path === selected ? 'selected' : ''}>${escapeHtml(p.path)}</option>`).join('');
   }
-  function checkboxList(selectedPaths) {
+  function checkboxListHtml(paths, selectedPaths) {
     const sel = new Set(selectedPaths || []);
-    return '<div class="tb-checkbox-list">' + fieldPaths().map((p) => `
+    return '<div class="tb-checkbox-list">' + paths.map((p) => `
       <label class="tb-checkbox-row"><input type="checkbox" value="${escapeHtml(p.path)}" ${sel.has(p.path) ? 'checked' : ''}> ${escapeHtml(p.path)}</label>
     `).join('') + '</div>';
   }
 
-  function renderConfigForm(step) {
+  function renderConfigForm(step, paths) {
     const type = STEP_TYPES[step.type];
     const p = step.params || {};
     let html = '';
@@ -107,26 +122,26 @@
       html += `<label>Sort by</label>
         <select id="rb2Mode">${type.modes.map((m) => `<option value="${m}" ${m === step.mode ? 'selected' : ''}>${escapeHtml(MODE_LABELS[m])}</option>`).join('')}</select>`;
       html += `<div id="rb2SortFieldWrap" style="${step.mode === 'transformSort' ? '' : 'display:none;'}">
-        <label>Field</label><select id="rb2Field">${fieldOptions(p.field)}</select>
+        <label>Field</label><select id="rb2Field">${fieldOptionsHtml(paths, p.field)}</select>
         <label>Direction</label><select id="rb2Direction"><option value="asc" ${p.direction === 'asc' ? 'selected' : ''}>Ascending</option><option value="desc" ${p.direction === 'desc' ? 'selected' : ''}>Descending</option></select>
       </div>`;
     } else if (step.type === 'select' || step.type === 'remove') {
-      html += `<label>Fields</label>${checkboxList(p.paths)}`;
+      html += `<label>Fields</label>${checkboxListHtml(paths, p.paths)}`;
     } else if (step.type === 'rename') {
-      html += `<label>From field</label><select id="rb2Field">${fieldOptions(p.from)}</select>
+      html += `<label>From field</label><select id="rb2Field">${fieldOptionsHtml(paths, p.from)}</select>
         <label>New field name</label><input type="text" id="rb2To" value="${escapeHtml(p.to || '')}">`;
     } else if (step.type === 'filter') {
-      html += `<label>Field</label><select id="rb2Field">${fieldOptions(p.field)}</select>
+      html += `<label>Field</label><select id="rb2Field">${fieldOptionsHtml(paths, p.field)}</select>
         <label>Condition</label><select id="rb2Condition">${window.RecastTransformBuilder.FILTER_OPS.map((o) => `<option value="${o}" ${o === p.condition ? 'selected' : ''}>${o}</option>`).join('')}</select>
         <label>Value</label><input type="text" id="rb2Value" value="${escapeHtml(p.value ?? '')}">`;
     } else if (step.type === 'typeConversion') {
-      html += `<label>Field</label><select id="rb2Field">${fieldOptions(p.field)}</select>
+      html += `<label>Field</label><select id="rb2Field">${fieldOptionsHtml(paths, p.field)}</select>
         <label>Convert to</label><select id="rb2Type">${window.RecastTransformBuilder.TYPE_CONVERTERS.map((t) => `<option value="${t}" ${t === p.type ? 'selected' : ''}>${t}</option>`).join('')}</select>`;
     } else if (step.type === 'addField') {
       html += `<label>Field name</label><input type="text" id="rb2FieldName" value="${escapeHtml(p.field || '')}">
         <label>Default value</label><input type="text" id="rb2Value" value="${escapeHtml(p.value ?? '')}">`;
     } else if (step.type === 'transform') {
-      html += `<label>Fields (click to insert)</label>${checkboxList([])}
+      html += `<label>Fields (click to insert)</label>${checkboxListHtml(paths, [])}
         <label>Template</label><input type="text" id="rb2Template" data-template-input value="${escapeHtml(p.template || '')}" placeholder="e.g. {firstName} {lastName}">
         <label>New field name</label><input type="text" id="rb2NewField" value="${escapeHtml(p.newField || '')}">`;
     } else if (step.type === 'jsonPath') {
@@ -219,6 +234,7 @@
         const [moved] = steps.splice(dragSrcIndex, 1);
         steps.splice(destIndex, 0, moved);
         dragSrcIndex = null;
+        window.RecastPipelineFields.invalidate(); // step order just changed
         renderFlow();
         runFullPreview();
       });
@@ -229,11 +245,13 @@
       const copy = JSON.parse(JSON.stringify(steps[idx]));
       copy.id = newStepId();
       steps.splice(idx + 1, 0, copy);
+      window.RecastPipelineFields.invalidate();
       renderFlow();
       runFullPreview();
     }));
     container.querySelectorAll('[data-del]').forEach((b) => b.addEventListener('click', () => {
       steps = steps.filter((s) => s.id !== b.dataset.del);
+      window.RecastPipelineFields.invalidate();
       if (selectedId === b.dataset.del) { selectedId = null; renderSidePanel(); }
       renderFlow();
       runFullPreview();
@@ -254,7 +272,7 @@
   }
 
   // ---------------- Side panel (config + preview) ----------------
-  function renderSidePanel() {
+  async function renderSidePanel() {
     const step = steps.find((s) => s.id === selectedId);
     if (!step) {
       $('rb2SideHead').textContent = 'Select a step to configure it, or click Run to see the full result.';
@@ -262,10 +280,19 @@
       return;
     }
     $('rb2SideHead').textContent = 'Configuring: ' + stepDisplayName(step);
-    $('rb2Config').innerHTML = renderConfigForm(step);
+    const token = ++fieldRenderToken;
+    $('rb2Config').innerHTML = '<p class="tb-step-summary">Resolving fields available at this point in the workflow\u2026</p>';
+    const { paths, error } = await resolveFieldsBeforeStep(selectedId);
+    if (token !== fieldRenderToken) return; // a newer selection superseded this one
+    if (error) {
+      $('rb2Config').innerHTML = `<p class="tb-step-summary" style="color:#F2846B;">Can\u2019t determine the fields available here yet: ${escapeHtml(error)}</p>`;
+      return;
+    }
+    $('rb2Config').innerHTML = renderConfigForm(step, paths);
     const applyBtn = $('rb2ApplyBtn');
     applyBtn.addEventListener('click', () => {
       readConfigForm(step);
+      window.RecastPipelineFields.invalidate(); // this step's params just changed, invalidating every downstream field lookup
       renderFlow();
       renderSidePanel();
       runPreviewUpToSelected();
@@ -384,6 +411,7 @@
     const recipe = window.RecastRecipes.load().find((r) => r.name === name);
     if (!recipe) return;
     steps = (recipe.steps || []).map((s) => ({ id: newStepId(), type: typeForMode(s.mode), mode: s.mode, params: s.params || {} }));
+    window.RecastPipelineFields.invalidate();
     $('rb2NameInput').value = recipe.name;
     selectedId = null;
     renderFlow();
@@ -410,6 +438,7 @@
   $('rb2CloseBtn')?.addEventListener('click', closeBuilder);
   $('rb2ResetBtn')?.addEventListener('click', () => {
     steps = []; selectedId = null;
+    window.RecastPipelineFields.invalidate();
     renderFlow(); renderSidePanel(); runFullPreview();
   });
   $('rb2RunBtn')?.addEventListener('click', () => { selectedId = null; renderFlow(); renderSidePanel(); runFullPreview(); });
@@ -420,6 +449,7 @@
     const mode = STEP_TYPES[type].modes[0];
     const id = newStepId();
     steps.push({ id, type, mode, params: {} });
+    window.RecastPipelineFields.invalidate();
     e.target.value = '';
     renderFlow();
     selectStep(id);
@@ -442,6 +472,7 @@
 
   $('input')?.addEventListener('input', () => {
     if ($('recipeBuilder2Panel').classList.contains('show')) {
+      window.RecastPipelineFields.invalidate(); // input text is part of the cache key already, but clear it here too rather than let it grow unbounded
       if (selectedId) runPreviewUpToSelected(); else runFullPreview();
     }
   });
@@ -451,6 +482,7 @@
   function openWithApiRequestStep(apiParams) {
     steps = [{ id: newStepId(), type: 'apiRequest', mode: 'apiRequestStep', params: apiParams }];
     selectedId = steps[0].id;
+    window.RecastPipelineFields.invalidate();
     $('recipeBuilder2Panel').classList.add('show');
     renderFlow();
     renderSidePanel();

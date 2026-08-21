@@ -19,33 +19,81 @@
     return typeof v; // 'object' | 'string' | 'number' | 'boolean'
   }
 
-  function fieldNameFromPath(path) {
-    const m = path.match(/([^.\[\]]+)$/);
-    return m ? m[1] : path;
+  function asArray(v) { return Array.isArray(v) ? v : [v]; }
+
+  // The portion of a change path that applies *within* one record — i.e.
+  // with a leading array-item selector (e.g. "[id=1]." or "[3].") stripped
+  // off, since that selector identifies *which* record, not a field
+  // within it. "[id=1].address.zip" -> "address.zip"; a top-level "name"
+  // with no array wrapper is returned unchanged.
+  function perRecordFieldPath(changePath) {
+    const m = changePath.match(/^\[[^\]]+\]\.?(.*)$/);
+    return m ? m[1] : changePath;
   }
 
-  // For a removed object field, checks whether it was present on every
-  // record of `beforeData` (when beforeData is an array) as weak evidence
-  // it was effectively required — used only to add an extra, clearly-
-  // labeled detail, never to change the underlying breaking/non-breaking
-  // verdict, which is already decided by "was a field removed at all".
-  function wasPresentOnEveryRecord(beforeData, fieldName) {
-    if (!Array.isArray(beforeData) || !beforeData.length) return null; // not enough evidence either way
-    if (!beforeData.every((r) => r !== null && typeof r === 'object' && !Array.isArray(r))) return null;
-    return beforeData.every((r) => Object.prototype.hasOwnProperty.call(r, fieldName));
+  function pathExistsIn(record, dotPath) {
+    if (!dotPath) return false;
+    const parts = dotPath.split('.');
+    let cur = record;
+    for (const p of parts) {
+      if (cur === null || typeof cur !== 'object' || Array.isArray(cur)) return false;
+      if (!Object.prototype.hasOwnProperty.call(cur, p)) return false;
+      cur = cur[p];
+    }
+    return true;
   }
 
-  function classifyOne(change, beforeData) {
+  // The actual evidence a "field removed" verdict is based on: was this
+  // field present on every record of beforeData, some, or is there not
+  // enough to go on? A single (non-array) beforeData object is treated as
+  // one record — since the field must have existed on it for deepDiff to
+  // report a removal, that counts as 100% presence, i.e. true.
+  //
+  // Returns true (every record had it — strong evidence), false (some but
+  // not all — the exact case this fix targets), or null (not enough
+  // evidence either way, e.g. beforeData isn't a usable array of plain
+  // objects). true and only true justifies "breaking"; false and null are
+  // both "uncertain" — the distinction is kept separate in case a caller
+  // wants to explain *why* later, not to treat them differently now.
+  function presenceEvidence(beforeData, changePath) {
+    if (beforeData === null || beforeData === undefined) return null;
+    const records = asArray(beforeData);
+    if (!records.length) return null;
+    if (!records.every((r) => r !== null && typeof r === 'object' && !Array.isArray(r))) return null;
+    const fieldPath = perRecordFieldPath(changePath);
+    if (!fieldPath) return null;
+    const presentCount = records.filter((r) => pathExistsIn(r, fieldPath)).length;
+    if (presentCount === records.length) return true;
+    if (presentCount === 0) return null; // shouldn't normally happen for a genuine removal, but stay conservative rather than assume
+    return false;
+  }
+
+  function classifyOne(change, beforeData, options) {
+    options = options || {};
     const isArrayItem = ARRAY_ITEM_RE.test(change.path);
 
     if (change.type === 'removed') {
       if (isArrayItem) {
         return Object.assign({}, change, { category: 'structural', severity: 'non-breaking', label: 'Array item removed', detail: 'Arrays are expected to vary in length; a shorter array on its own is not treated as breaking.' });
       }
-      const fieldName = fieldNameFromPath(change.path);
-      const everyRecord = wasPresentOnEveryRecord(beforeData, fieldName);
-      const label = everyRecord === true ? 'Required field removed' : 'Field removed';
-      return Object.assign({}, change, { category: 'structural', severity: 'breaking', label, detail: everyRecord === true ? 'Present on every record before this change.' : null });
+
+      // Explicit schema evidence, when supplied, wins outright — it's
+      // stronger evidence than statistical presence across records. No
+      // caller currently supplies this (Structural Analysis has no schema
+      // input yet), but the hook is here and tested for when one does.
+      const fieldPath = perRecordFieldPath(change.path);
+      if (options.requiredFields && options.requiredFields.has(fieldPath)) {
+        return Object.assign({}, change, { category: 'structural', severity: 'breaking', label: 'Required field removed', detail: 'Marked required by the supplied schema.' });
+      }
+
+      const evidence = presenceEvidence(beforeData, change.path);
+      if (evidence === true) {
+        return Object.assign({}, change, { category: 'structural', severity: 'breaking', label: 'Required field removed', detail: 'Present on every record before this change.' });
+      }
+      if (evidence === false) {
+        return Object.assign({}, change, { category: 'structural', severity: 'uncertain', label: 'Field removed', detail: 'Present on some but not all records before this change \u2014 not confidently classified as breaking.' });
+      }
+      return Object.assign({}, change, { category: 'structural', severity: 'uncertain', label: 'Field removed', detail: 'Not enough evidence to tell whether this field was consistently present.' });
     }
 
     if (change.type === 'added') {
@@ -85,15 +133,18 @@
 
   /**
    * Classifies the output of RecastEngine.deepDiff(before, after).
-   * Returns { changes: [...enriched], summary: {breaking, structural, value, uncertain} }.
+   * `options.requiredFields` (optional) is a Set of per-record dot-paths
+   * (e.g. "address.zip") known from an external schema to be required —
+   * see classifyOne for how it's used.
+   * Returns { changes: [...enriched], summary: {breaking, nonBreaking, uncertain, value} }.
    */
-  function analyzeStructure(changes, beforeData) {
-    const enriched = changes.map((c) => classifyOne(c, beforeData));
+  function analyzeStructure(changes, beforeData, options) {
+    const enriched = changes.map((c) => classifyOne(c, beforeData, options));
     const summary = {
       breaking: enriched.filter((c) => c.severity === 'breaking').length,
-      structural: enriched.filter((c) => c.category === 'structural').length,
-      value: enriched.filter((c) => c.category === 'value').length,
+      nonBreaking: enriched.filter((c) => c.severity === 'non-breaking').length,
       uncertain: enriched.filter((c) => c.severity === 'uncertain').length,
+      value: enriched.filter((c) => c.category === 'value').length,
     };
     return { changes: enriched, summary };
   }

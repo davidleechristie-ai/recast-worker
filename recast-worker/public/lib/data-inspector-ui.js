@@ -86,15 +86,22 @@
   // parsers the profiler itself uses) so those tools receive data they can
   // actually work with, rather than leaving raw CSV/XML sitting in a
   // JSON-only tool.
-  function ensureJsonInput() {
+  // Ensures Transform/Query have a JSON representation to work with,
+  // without ever touching #input — the user's original CSV/XML stays
+  // exactly as they left it. For CSV/XML input, the conversion is kept as
+  // a separate "working dataset" (see working-dataset.js) that Transform
+  // Builder and JSONPath read from instead of #input while it's active.
+  function ensureWorkingJson() {
     const text = document.getElementById('input').value;
     const format = detectFormat(text);
-    if (format === 'json') return true;
+    if (format === 'json') {
+      window.RecastWorkingDataset?.clear(); // already JSON — no derived view needed; drop any stale one from an earlier CSV/XML action
+      return true;
+    }
     try {
       const data = format === 'csv' ? window.RecastEngine.csvToJson(text, {}) : window.RecastEngine.xmlToJson(text);
-      document.getElementById('input').value = JSON.stringify(data, null, 2);
-      window.updateCounts?.();
-      window.updateHighlightLayers?.();
+      const json = JSON.stringify(data, null, 2);
+      window.RecastWorkingDataset.setDerived(text, format, json);
       return true;
     } catch (e) {
       window.showToast?.('Could not convert the current input to JSON for this action.');
@@ -103,11 +110,11 @@
   }
 
   function transformField(path) {
-    if (!ensureJsonInput()) return;
+    if (!ensureWorkingJson()) return;
     window.RecastTransformUI.openWithSelectField(path);
   }
   function queryField(path) {
-    if (!ensureJsonInput()) return;
+    if (!ensureWorkingJson()) return;
     window.setMode('jsonPath');
     const pathInput = $('jsonPathInput');
     if (pathInput) { pathInput.value = path; pathInput.dispatchEvent(new Event('input', { bubbles: true })); }
@@ -166,4 +173,15 @@
     clearTimeout(debounceTimer);
     debounceTimer = setTimeout(runProfile, 400);
   });
+
+  // ---------------- Public API (used by the API playground's "Use
+  // response in \u2192 Inspect" action) ----------------
+  // Guarantees the panel is open AND freshly profiled, regardless of
+  // whether it was already open — unlike the toggle button above, this
+  // never closes an already-open panel, and always re-runs profiling
+  // against whatever is currently in #input.
+  function openAndProfile() {
+    openInspector(); // adds .show (harmless no-op if already present) and calls runProfile()
+  }
+  window.RecastDataInspector = { openAndProfile: openAndProfile };
 })();
