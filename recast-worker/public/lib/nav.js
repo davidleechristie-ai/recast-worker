@@ -32,6 +32,25 @@
     closeAllGroups();
   }
 
+  // Runs `fn` once it's safe to measure layout for a scroll target — either
+  // right away (desktop, or the mobile menu wasn't open), or after the
+  // mobile menu's own collapse transition genuinely finishes. Without this,
+  // scrolling right after closeMobileNav() measures a layout that's still
+  // mid-collapse, undershooting badly once the transition finishes on its
+  // own a moment later. `wasMobileNavOpen` must be captured *before*
+  // closeMobileNav() runs, since that call removes the class this would
+  // otherwise be checking for.
+  function afterLayoutSettles(wasMobileNavOpen, fn) {
+    if (!wasMobileNavOpen) {
+      requestAnimationFrame(fn);
+      return;
+    }
+    let done = false;
+    const finish = () => { if (done) return; done = true; fn(); };
+    nav.addEventListener('transitionend', finish, { once: true });
+    setTimeout(finish, 300); // fallback in case transitionend doesn't fire for any reason
+  }
+
   // Dropdown toggle (desktop click, or mobile accordion within the open panel)
   document.querySelectorAll('.nav-group-btn').forEach((btn) => {
     btn.addEventListener('click', (e) => {
@@ -76,13 +95,38 @@
   document.querySelectorAll('[data-nav-action]').forEach((el) => {
     el.addEventListener('click', (evt) => {
       const action = el.dataset.navAction;
+      const wasMobileNavOpen = nav.classList.contains('nav-open');
       closeAllGroups();
       closeMobileNav();
 
       if (action === 'group') {
         const group = el.dataset.group;
-        if (hasWorkbench && window.setGroup) window.setGroup(group);
-        else goToWorkspace({ group: group });
+        if (hasWorkbench && window.setGroup) {
+          window.setGroup(group);
+          // Switching the mode group only updates state — if the user is
+          // scrolled elsewhere on the page (e.g. down at #api), nothing
+          // visibly happens unless we also bring the tool back into view.
+          // Targets .workbench specifically (not the #tool hero further
+          // up) since the user is already on this page and wants to see
+          // the tool they just picked, not scroll back through the hero
+          // copy again first. afterLayoutSettles accounts for both: mode
+          // groups that change the workbench's height (dual-input Compare,
+          // Schema's extra options row), and — on mobile — the menu's own
+          // collapse transition, which otherwise leaves this measuring a
+          // layout that's still mid-animation.
+          afterLayoutSettles(wasMobileNavOpen, () => {
+            // Clearing the hash first stops the page's own delayed
+            // scroll-to-hash re-triggers (queued whenever the page loaded
+            // with a #fragment, to defend against mobile Safari's address
+            // bar and font-loading shifts) from firing later and dragging
+            // the page back to wherever that old hash pointed — that
+            // function explicitly no-ops once location.hash is empty.
+            if (location.hash) history.replaceState(null, '', location.pathname + location.search);
+            document.querySelector('.workbench')?.scrollIntoView({ behavior: 'instant', block: 'start' });
+          });
+        } else {
+          goToWorkspace({ group: group });
+        }
       } else if (action === 'recipes') {
         // Points at Recipe Builder 2.0 (the fuller visual workflow builder,
         // the same one showcased on the Demo page's Automate card) rather

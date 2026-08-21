@@ -22,7 +22,7 @@
 // expiry. This bit someone on the "Demo" page launch: the nav link update
 // never reached anyone with the SW already active, because this file was
 // otherwise unchanged.
-const CACHE_VERSION = 'recast-v24';
+const CACHE_VERSION = 'recast-v26';
 const CORE_ASSETS = [
   '/',
   '/index.html',
@@ -46,7 +46,21 @@ const CORE_ASSETS = [
 self.addEventListener('install', (event) => {
   event.waitUntil(
     caches.open(CACHE_VERSION)
-      .then((cache) => cache.addAll(CORE_ASSETS))
+      .then((cache) => {
+        // cache.addAll() is all-or-nothing — a single failed asset (a
+        // redirect, a transient network blip, anything at all) rejects the
+        // WHOLE install, and a failed install never reaches 'activate'.
+        // That leaves whatever service worker was already running stuck in
+        // place indefinitely — including any caching bugs *that* version
+        // had — regardless of what's actually deployed on the server since
+        // then. Caching each asset independently means one bad asset can
+        // no longer block every future visitor from ever getting an update.
+        return Promise.all(
+          CORE_ASSETS.map((url) => cache.add(url).catch((err) => {
+            console.warn('[sw] failed to precache', url, err);
+          }))
+        );
+      })
       .then(() => self.skipWaiting())
   );
 });
