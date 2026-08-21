@@ -327,6 +327,15 @@ export default {
   async fetch(request, env, ctx) {
     const apiResponse = await route(request, env, defaultDeps);
     if (apiResponse) return apiResponse;
+
+    const url = new URL(request.url);
+
+    // html_handling is "none" — Assets will not map "/" → "/index.html"
+    if (url.pathname === '/' || url.pathname === '') {
+      url.pathname = '/index.html';
+      return env.ASSETS.fetch(new Request(url.toString(), request));
+    }
+    
     return env.ASSETS.fetch(request);
   },
 };
