@@ -1,0 +1,388 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<script>(function(){try{if(localStorage.getItem('recast_theme')==='light')document.documentElement.setAttribute('data-theme','light');}catch(e){}})();</script>
+<title>How To — API Workbench | Recast</title>
+<meta name="description" content="Work directly with APIs — send a real request, see the real response, and hand it straight to another tool.">
+<link rel="canonical" href="https://tryrecast.app/how-to/api-workbench.html">
+<link rel="stylesheet" href="../styles.css">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@400;500;600;700&family=IBM+Plex+Sans:wght@400;500;600&family=IBM+Plex+Mono:wght@400;500&display=swap" rel="stylesheet">
+<link rel="manifest" href="../manifest.json">
+<meta name="theme-color" content="#0E2338">
+<link rel="apple-touch-icon" href="../icons/icon-192.png">
+<script type="application/ld+json">
+{
+  "@context": "https://schema.org",
+  "@type": "Article",
+  "headline": "How To — API Workbench",
+  "description": "Work directly with APIs — send a real request, see the real response, and hand it straight to another tool.",
+  "url": "https://tryrecast.app/how-to/api-workbench.html",
+  "publisher": { "@type": "Organization", "name": "Recast", "url": "https://tryrecast.app/" },
+  "datePublished": "2026-08-20",
+  "dateModified": "2026-08-22"
+}
+</script>
+<script async src="https://www.googletagmanager.com/gtag/js?id=G-MW47YKCSLX"></script>
+<script>
+  window.dataLayer = window.dataLayer || [];
+  function gtag(){dataLayer.push(arguments);}
+  gtag('js', new Date());
+  gtag('config', 'G-MW47YKCSLX');
+</script>
+</head>
+<body style="background:var(--bg);color:var(--text);margin:0;min-height:100vh;">
+<svg style="display:none" aria-hidden="true">
+  <symbol id="ico-json" viewBox="0 0 18 18" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round">
+    <path d="M6.5 2.5c-1.4 0-1.9.5-1.9 1.9v1.7c0 1-.5 1.5-1.4 1.5.9 0 1.4.5 1.4 1.5v1.7c0 1.4.5 1.9 1.9 1.9"/>
+    <path d="M11.5 2.5c1.4 0 1.9.5 1.9 1.9v1.7c0 1 .5 1.5 1.4 1.5-.9 0-1.4.5-1.4 1.5v1.7c0 1.4-.5 1.9-1.9 1.9"/>
+  </symbol>
+  <symbol id="ico-table" viewBox="0 0 18 18" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round">
+    <rect x="2.2" y="3" width="13.6" height="12" rx="1"/>
+    <line x1="2.2" y1="7.4" x2="15.8" y2="7.4"/>
+    <line x1="7.3" y1="3" x2="7.3" y2="15"/>
+    <line x1="11.7" y1="3" x2="11.7" y2="15"/>
+  </symbol>
+  <symbol id="ico-mdtable" viewBox="0 0 18 18" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round">
+    <rect x="2.2" y="3" width="13.6" height="12" rx="1"/>
+    <rect x="2.2" y="3" width="13.6" height="3.6" fill="currentColor" fill-opacity="0.22" stroke="none"/>
+    <line x1="2.2" y1="7.4" x2="15.8" y2="7.4"/>
+    <line x1="7.3" y1="3" x2="7.3" y2="15"/>
+    <line x1="11.7" y1="3" x2="11.7" y2="15"/>
+  </symbol>
+  <symbol id="ico-tag" viewBox="0 0 18 18" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round">
+    <polyline points="6,4 2,9 6,14"/>
+    <polyline points="12,4 16,9 12,14"/>
+    <line x1="9.6" y1="4" x2="9.6" y2="14"/>
+  </symbol>
+  <symbol id="ico-code" viewBox="0 0 18 18" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round">
+    <polyline points="6,4.5 2,9 6,13.5"/>
+    <polyline points="12,4.5 16,9 12,13.5"/>
+    <line x1="10.6" y1="3" x2="7.4" y2="15"/>
+  </symbol>
+  <symbol id="ico-yaml" viewBox="0 0 18 18" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round">
+    <circle cx="3" cy="5" r=".55" fill="currentColor" stroke="none"/>
+    <line x1="5" y1="5" x2="11" y2="5"/>
+    <circle cx="3" cy="9" r=".55" fill="currentColor" stroke="none"/>
+    <line x1="5" y1="9" x2="15" y2="9"/>
+    <circle cx="3" cy="13" r=".55" fill="currentColor" stroke="none"/>
+    <line x1="5" y1="13" x2="13" y2="13"/>
+  </symbol>
+  <symbol id="ico-schema" viewBox="0 0 18 18" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round">
+    <rect x="3" y="3" width="12" height="12" rx="1" stroke-dasharray="2.4 2.1"/>
+    <line x1="3" y1="9" x2="1.2" y2="9" stroke-dasharray="none"/>
+    <line x1="15" y1="9" x2="16.8" y2="9" stroke-dasharray="none"/>
+    <line x1="9" y1="3" x2="9" y2="1.2" stroke-dasharray="none"/>
+    <line x1="9" y1="15" x2="9" y2="16.8" stroke-dasharray="none"/>
+  </symbol>
+  <symbol id="ico-diff" viewBox="0 0 18 18" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round">
+    <rect x="2" y="2" width="9.5" height="9.5" rx="1"/>
+    <rect x="6.5" y="6.5" width="9.5" height="9.5" rx="1"/>
+  </symbol>
+  <symbol id="ico-path" viewBox="0 0 18 18" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round">
+    <rect x="2" y="2" width="14" height="14" rx="2.5"/>
+    <path d="M9 4.5v9"/>
+    <path d="M11.4 6.2c0-.85-1-1.5-2.4-1.5s-2.4.7-2.4 1.6c0 2.3 4.8 1 4.8 3.3 0 1-1.1 1.7-2.4 1.7s-2.4-.6-2.4-1.5"/>
+  </symbol>
+  <symbol id="ico-tree" viewBox="0 0 18 18" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round">
+    <circle cx="2.6" cy="4" r="1"/>
+    <circle cx="2.6" cy="9" r="1"/>
+    <circle cx="2.6" cy="14" r="1"/>
+    <circle cx="15.4" cy="9" r="1"/>
+    <path d="M3.6 4H8a2 2 0 012 2"/>
+    <path d="M3.6 9h10.8"/>
+    <path d="M3.6 14H8a2 2 0 002-2"/>
+  </symbol>
+  <symbol id="ico-check" viewBox="0 0 18 18" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round">
+    <circle cx="9" cy="9" r="7"/>
+    <polyline points="5.5,9.2 8,11.7 12.7,6.4"/>
+  </symbol>
+  <symbol id="ico-arrow" viewBox="0 0 18 18" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round">
+    <line x1="2" y1="9" x2="14.5" y2="9"/>
+    <polyline points="10.5,5 14.5,9 10.5,13"/>
+  </symbol>
+  <symbol id="ico-bolt" viewBox="0 0 18 18" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round">
+    <polygon points="9.5,2 4,10.5 8,10.5 7.2,16 14,7 9.6,7"/>
+  </symbol>
+  <symbol id="ico-star" viewBox="0 0 18 18" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round">
+    <polygon points="9,2.3 11.1,7 16,7.5 12.3,10.8 13.4,15.7 9,13.1 4.6,15.7 5.7,10.8 2,7.5 6.9,7"/>
+  </symbol>
+  <symbol id="ico-expand" viewBox="0 0 18 18" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round">
+    <polyline points="6.5,2.5 2.5,2.5 2.5,6.5"/>
+    <polyline points="11.5,2.5 15.5,2.5 15.5,6.5"/>
+    <polyline points="6.5,15.5 2.5,15.5 2.5,11.5"/>
+    <polyline points="11.5,15.5 15.5,15.5 15.5,11.5"/>
+  </symbol>
+  <symbol id="ico-collapse" viewBox="0 0 18 18" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round">
+    <polyline points="2.5,6.5 6.5,6.5 6.5,2.5"/>
+    <polyline points="15.5,6.5 11.5,6.5 11.5,2.5"/>
+    <polyline points="2.5,11.5 6.5,11.5 6.5,15.5"/>
+    <polyline points="15.5,11.5 11.5,11.5 11.5,15.5"/>
+  </symbol>
+  <symbol id="ico-popout" viewBox="0 0 18 18" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round">
+    <path d="M7 3H3.5a1 1 0 00-1 1v10a1 1 0 001 1h10a1 1 0 001-1V11"/>
+    <path d="M10 2.5h5.5V8"/>
+    <line x1="15.3" y1="2.7" x2="8.5" y2="9.5"/>
+  </symbol>
+  <symbol id="ico-history" viewBox="0 0 18 18" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round">
+    <path d="M3 9a6 6 0 1 0 1.8-4.3"/>
+    <polyline points="1.8,3 2,5.5 4.5,5.2"/>
+    <polyline points="9,5.5 9,9 11.5,10.5"/>
+  </symbol>
+  <symbol id="ico-settings" viewBox="0 0 18 18" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round">
+    <circle cx="9" cy="9" r="2.8"/>
+    <path d="M9 3v2.2M9 12.8V15M15 9h-2.2M5.2 9H3"/>
+  </symbol>
+  <symbol id="ico-link" viewBox="0 0 18 18" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round">
+    <path d="M7.5 10.5a3 3 0 0 0 4.3.2l2-2a3 3 0 0 0-4.2-4.2l-1.1 1.1"/>
+    <path d="M10.5 7.5a3 3 0 0 0-4.3-.2l-2 2a3 3 0 0 0 4.2 4.2l1.1-1.1"/>
+  </symbol>
+  <symbol id="ico-sun" viewBox="0 0 18 18" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round">
+    <circle cx="9" cy="9" r="3.2"/>
+    <path d="M9 1.8v2M9 14.2v2M16.2 9h-2M3.8 9h-2M14.2 3.8l-1.4 1.4M5.2 12.8l-1.4 1.4M14.2 14.2l-1.4-1.4M5.2 5.2L3.8 3.8"/>
+  </symbol>
+  <symbol id="ico-moon" viewBox="0 0 18 18" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round">
+    <path d="M15 10.2A6.2 6.2 0 0 1 7.8 3 6.5 6.5 0 1 0 15 10.2Z"/>
+  </symbol>
+  <symbol id="ico-chevron" viewBox="0 0 18 18" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round">
+    <polyline points="4.5,7 9,11.5 13.5,7"/>
+  </symbol>
+  <symbol id="ico-search" viewBox="0 0 18 18" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round">
+    <circle cx="7.8" cy="7.8" r="5.3"/>
+    <line x1="11.7" y1="11.7" x2="16" y2="16"/>
+  </symbol>
+  <symbol id="ico-copy" viewBox="0 0 18 18" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round">
+    <rect x="6.5" y="6.5" width="9" height="9" rx="1.2"/>
+    <path d="M4.5 11.5h-1a1 1 0 01-1-1v-7a1 1 0 011-1h7a1 1 0 011 1v1"/>
+  </symbol>
+</svg>
+<header class="titleblock">
+  <div class="ruler" id="ruler"></div>
+  <div class="tb-row">
+    <a href="../index.html" class="brand" style="text-decoration:none;color:inherit;"><span class="mark">⇄</span>RECAST</a>
+    <nav class="tb-nav" id="primaryNav">
+      <div class="nav-group" data-nav-group="work">
+        <button type="button" class="nav-group-btn" aria-expanded="false" aria-haspopup="true">Work<svg class="ico nav-caret"><use href="#ico-chevron"/></svg></button>
+        <div class="nav-dropdown" role="menu">
+          <button type="button" class="nav-dropdown-item" data-nav-action="group" data-group="convert" role="menuitem">Convert</button>
+          <button type="button" class="nav-dropdown-item" data-nav-action="group" data-group="transform" role="menuitem">Transform</button>
+          <button type="button" class="nav-dropdown-item" data-nav-action="group" data-group="query" role="menuitem">Query</button>
+          <button type="button" class="nav-dropdown-item" data-nav-action="group" data-group="validate" role="menuitem">Validate</button>
+          <button type="button" class="nav-dropdown-item" data-nav-action="group" data-group="compare" role="menuitem">Compare</button>
+          <button type="button" class="nav-dropdown-item" data-nav-action="group" data-group="schema" role="menuitem">Inspect</button>
+        </div>
+      </div>
+      <div class="nav-group" data-nav-group="automate">
+        <button type="button" class="nav-group-btn" aria-expanded="false" aria-haspopup="true">Automate<svg class="ico nav-caret"><use href="#ico-chevron"/></svg></button>
+        <div class="nav-dropdown" role="menu">
+          <button type="button" class="nav-dropdown-item" data-nav-action="recipes" role="menuitem">Recipes</button>
+          <button type="button" class="nav-dropdown-item" data-nav-action="anchor" data-anchor="api" role="menuitem">API</button>
+          <button type="button" class="nav-dropdown-item" data-nav-action="anchor" data-anchor="api" role="menuitem">CLI</button>
+        </div>
+      </div>
+      <div class="nav-group" data-nav-group="data">
+        <button type="button" class="nav-group-btn" aria-expanded="false" aria-haspopup="true">Data<svg class="ico nav-caret"><use href="#ico-chevron"/></svg></button>
+        <div class="nav-dropdown" role="menu">
+          <button type="button" class="nav-dropdown-item" data-nav-action="history" role="menuitem">History</button>
+          <button type="button" class="nav-dropdown-item" data-nav-action="presets" role="menuitem">Presets</button>
+          <button type="button" class="nav-dropdown-item" data-nav-action="group" data-group="schema" role="menuitem">Schemas</button>
+        </div>
+      </div>
+      <a href="../demo/index.html" class="nav-plain-link">Demo</a>
+      <a href="../blog/index.html" class="nav-plain-link">Blog</a>
+      <a href="../index.html#pricing" class="nav-plain-link">Pricing</a>
+      <a href="index.html" class="nav-plain-link">Docs</a>
+    </nav>
+    <button type="button" class="nav-hamburger" id="navHamburger" aria-label="Open menu" aria-expanded="false" aria-controls="primaryNav">
+      <span></span><span></span><span></span>
+    </button>
+    <div class="header-actions">
+      <a href="../index.html#tool" class="icon-btn" title="View your conversion history — opens the tool"><svg class="ico"><use href="#ico-history"/></svg><span class="btn-label">History</span></a>
+      <a href="../index.html#tool" class="icon-btn" title="View your saved presets — opens the tool"><svg class="ico"><use href="#ico-settings"/></svg><span class="btn-label">Presets</span></a>
+      <a href="../index.html#tool" class="icon-btn" title="Share a conversion — opens the tool"><svg class="ico"><use href="#ico-link"/></svg><span class="btn-label">Share link</span></a>
+      <button class="icon-btn" id="themeToggleBtn" title="Switch between dark and light theme"><svg class="ico"><use href="#ico-sun" id="themeIconUse"/></svg></button>
+      <a href="../index.html#pricing" class="btn btn-gold" id="accountBtn">Upgrade to Pro</a>
+    </div>
+  </div>
+</header>
+
+<main style="max-width:1180px;margin:0 auto;padding:48px 24px 80px;">
+
+<article class="post tour-post" style="max-width:1000px;">
+  <div class="post-meta">How To &rarr; API Workbench</div>
+<nav class="howto-subnav" aria-label="How To navigation">
+  <a href="index.html" class="howto-subnav-link">Overview</a>
+  <a href="convert.html" class="howto-subnav-link">Convert</a>
+  <a href="transform.html" class="howto-subnav-link">Transform</a>
+  <a href="find-inspect.html" class="howto-subnav-link">Find &amp; Inspect</a>
+  <a href="compare.html" class="howto-subnav-link">Compare</a>
+  <a href="validate.html" class="howto-subnav-link">Validate</a>
+  <a href="api-workbench.html" class="howto-subnav-link howto-subnav-active" aria-current="page">API Workbench</a>
+</nav>
+  <h2 id="api-workbench">Work directly with APIs</h2>
+  <p>An API is simply a way for one computer system to ask another system for information.</p>
+
+  <div class="tour-flow-diagram">
+    <div class="tour-flow-box tour-flow-messy"><span>API request</span></div>
+    <div class="tour-flow-arrow">&darr;</div>
+    <div class="tour-flow-box tour-flow-step"><span>API response</span></div>
+    <div class="tour-flow-arrow">&darr;</div>
+    <div class="tour-flow-box tour-flow-step"><span>Inspect</span></div>
+    <div class="tour-flow-arrow">&darr;</div>
+    <div class="tour-flow-box tour-flow-step"><span>Transform</span></div>
+    <div class="tour-flow-arrow">&darr;</div>
+    <div class="tour-flow-box tour-flow-step"><span>Compare</span></div>
+    <div class="tour-flow-arrow">&darr;</div>
+    <div class="tour-flow-box tour-flow-useful"><span>Export</span></div>
+  </div>
+
+  <p>Recast's <strong>API Workbench</strong> is a live playground further down the main tool page where you can send a real request and see the real response — no code required to try it. Once you have a response, six buttons let you immediately hand it to another tool without retyping anything:</p>
+  <div class="tour-card-grid tour-card-grid-compact">
+    <div class="tour-mini-card"><strong>Inspect Response</strong><span>opens Data Inspector on it</span></div>
+    <div class="tour-mini-card"><strong>Transform Response</strong><span>opens Transform Builder on it</span></div>
+    <div class="tour-mini-card"><strong>Query Response</strong><span>opens JSONPath on it</span></div>
+    <div class="tour-mini-card"><strong>Validate Response</strong><span>runs it through Validate</span></div>
+    <div class="tour-mini-card"><strong>Compare Response</strong><span>opens it in Compare</span></div>
+    <div class="tour-mini-card"><strong>Create Recipe</strong><span>opens Recipe Builder 2.0 with this request as the first step</span></div>
+  </div>
+  <p>If the response happens to be CSV or XML rather than JSON, the tools that need JSON convert it into a working copy automatically — your original response is never silently overwritten, and a small banner tells you when you're looking at that converted copy.</p>
+
+  <div class="howto-callout tour-dev-callout">This page explains what API Workbench is useful for. The full technical API reference — request formats, authentication, endpoints — lives in the <a href="../index.html#api">API documentation</a> on the main tool page.</div>
+
+  <div class="post-cta"><p><strong>Try it:</strong> <a href="../index.html#api">Try API Workbench &rarr;</a></p></div>
+
+</article>
+
+</main>
+
+<footer style="max-width:1180px;margin:0 auto;padding:24px;text-align:center;color:var(--text-muted);font-size:12.5px;border-top:1px solid rgba(var(--border-rgb),0.16);">
+  <a href="../index.html" style="color:var(--text-muted);">Recast</a> — your private data workbench. Your data doesn't leave your browser. Your workflow can.
+</footer>
+
+<script src="../lib/engine.js"></script>
+<script src="../lib/transform-builder.js"></script>
+<script src="../lib/highlight.js"></script>
+<script src="../lib/data-profiler.js"></script>
+<script src="../lib/ruler.js"></script>
+<script src="../lib/theme.js"></script>
+<script src="../lib/nav.js"></script>
+<script>
+  document.getElementById('tourSeeMoreBtn')?.addEventListener('click', () => {
+    document.getElementById('what-is-it')?.scrollIntoView({ behavior: 'smooth', block: 'start' });
+  });
+  document.getElementById('problemCardGrid')?.addEventListener('click', (evt) => {
+    const card = evt.target.closest('[data-scroll-target]');
+    if (!card) return;
+    document.getElementById(card.dataset.scrollTarget)?.scrollIntoView({ behavior: 'smooth', block: 'start' });
+  });
+  document.querySelectorAll('.tour-copy-btn').forEach((btn) => {
+    btn.addEventListener('click', async () => {
+      const code = btn.closest('.tour-code-block')?.querySelector('.tour-code');
+      if (!code) return;
+      try {
+        await navigator.clipboard.writeText(code.textContent);
+        const original = btn.innerHTML;
+        btn.classList.add('copied');
+        btn.textContent = 'Copied';
+        setTimeout(() => { btn.classList.remove('copied'); btn.innerHTML = original; }, 1500);
+      } catch (e) { /* clipboard permission denied or unavailable — fail silently, nothing else to do */ }
+    });
+  });
+
+  // Live JSONPath demo — genuinely runs the same engine the real tool uses
+  // (RecastEngine.jsonPathQuery), against a small fixed sample, so typing a
+  // different expression here shows a real result, not a canned one.
+  (function () {
+    const sampleData = {
+      customers: [
+        { name: 'Ada', email: 'email@example.com' },
+        { name: 'Grace', email: 'email2@example.com' },
+        { name: 'Alan', email: 'email3@example.com' },
+      ],
+    };
+    const exprInput = document.getElementById('tourJsonPathExpr');
+    const resultEl = document.getElementById('tourJsonPathResult');
+    if (!exprInput || !resultEl) return;
+
+    function run() {
+      if (!window.RecastEngine) { resultEl.textContent = 'Loading…'; return; }
+      try {
+        const value = window.RecastEngine.jsonPathQuery(sampleData, exprInput.value);
+        const text = JSON.stringify(value, null, 2);
+        resultEl.innerHTML = window.RecastHighlight ? window.RecastHighlight.highlightFor('json', text) : text;
+        resultEl.classList.remove('tour-code-error');
+      } catch (e) {
+        resultEl.textContent = e.message || String(e);
+        resultEl.classList.add('tour-code-error');
+      }
+    }
+    exprInput.addEventListener('input', run);
+    run();
+  })();
+
+  // Live Data Inspector demo — genuinely profiles a real, generated sample
+  // using the same RecastDataProfiler.profileDataset the real tool calls,
+  // right here in the browser, not a hard-coded snapshot dressed up to
+  // look computed.
+  (function () {
+    const countEl = document.getElementById('tourInspectCount');
+    const fieldsEl = document.getElementById('tourInspectFields');
+    if (!countEl || !fieldsEl || !window.RecastDataProfiler) return;
+
+    const statuses = ['active', 'pending', 'cancelled', 'active', 'active'];
+    const records = [];
+    for (let i = 1; i <= 48; i++) {
+      const rec = { id: i, status: statuses[i % statuses.length] };
+      rec.email = (i % 24 === 0) ? null : 'user' + i + '@example.com';
+      rec.age = (i % 11 === 0) ? String(20 + (i % 40)) : 20 + (i % 40);
+      rec.signup_date = (i % 17 === 0) ? 'not-a-date' : ('2025-0' + (1 + (i % 9)) + '-1' + (i % 9));
+      records.push(rec);
+    }
+
+    const result = window.RecastDataProfiler.profileDataset(records);
+    const byPath = {};
+    result.fields.forEach((f) => { byPath[f.path] = f; });
+
+    countEl.textContent = result.summary.recordCount;
+
+    function fieldCard(label, field, facts) {
+      const factsHtml = facts.map((f) => `<span class="tour-inspect-field-fact${f.warn ? ' tour-inspect-warn' : ''}">${f.text}</span>`).join('');
+      return `<div class="tour-inspect-field"><span class="tour-inspect-field-name">${label}</span>${factsHtml}</div>`;
+    }
+
+    const email = byPath.email;
+    const age = byPath.age;
+    const signupDate = byPath.signup_date;
+    const status = byPath.status;
+    let html = '';
+    if (email) {
+      const uniquePct = Math.round((email.uniqueCount / email.total) * 100);
+      html += fieldCard('Email', email, [
+        { text: uniquePct + '% unique' },
+        { text: email.nullPercent + '% empty' },
+      ]);
+    }
+    if (age) {
+      const mixed = Object.keys(age.typeCounts).filter((t) => t !== 'null').length > 1;
+      html += fieldCard('Age', age, [
+        { text: mixed ? 'Mixed values — mostly numbers, some text' : 'Consistent type', warn: mixed },
+      ]);
+    }
+    if (signupDate) {
+      html += fieldCard('Signup date', signupDate, [
+        signupDate.invalidDateCount > 0
+          ? { text: signupDate.invalidDateCount + ' value' + (signupDate.invalidDateCount === 1 ? '' : 's') + " don't look like valid dates", warn: true }
+          : { text: 'All values look like valid dates' },
+      ]);
+    }
+    if (status) {
+      html += fieldCard('Status', status, [{ text: status.uniqueCount + ' unique values' }]);
+    }
+    fieldsEl.innerHTML = html;
+  })();
+
+</script>
+</body>
+</html>
