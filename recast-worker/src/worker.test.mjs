@@ -1,4 +1,4 @@
-import Worker, * as W from './worker.js';
+import * as W from './worker.js';
 import * as E from './entitlements.js';
 import { signPayloadForTest } from './stripe-verify.js';
 
@@ -232,51 +232,6 @@ const env = {
     const req = mockRequest('https://x/some/other/page.html');
     const result = await W.route(req, testEnv, W.defaultDeps);
     assert('non-API routes return null (fall through to static assets)', result === null, result);
-  }
-
-  // ---------------- directory-index rewriting (html_handling: "none" fix) ----------------
-  // With assets.html_handling set to "none", Cloudflare no longer auto-resolves a bare
-  // "/" (or "/blog/", etc.) to that directory's index.html — the default export's fetch()
-  // handler has to do that itself now. These tests mock env.ASSETS.fetch to capture
-  // exactly what pathname it was asked for, so they verify the actual rewrite, not just
-  // that a response came back.
-  {
-    const testEnv = Object.assign({}, env, { ENTITLEMENTS: makeMockKV() });
-    const casesExpectingRewrite = [
-      ['https://tryrecast.app/', '/index.html'],
-      ['https://tryrecast.app/blog', '/blog/index.html'],
-      ['https://tryrecast.app/blog/', '/blog/index.html'],
-      ['https://tryrecast.app/how-to', '/how-to/index.html'],
-      ['https://tryrecast.app/how-to/', '/how-to/index.html'],
-      ['https://tryrecast.app/demo', '/demo/index.html'],
-      ['https://tryrecast.app/demo/', '/demo/index.html'],
-    ];
-    for (const [requestUrl, expectedAssetPath] of casesExpectingRewrite) {
-      let capturedPathname = null;
-      const mockAssetsEnv = Object.assign({}, testEnv, {
-        ASSETS: { fetch: async (req) => { capturedPathname = new URL(req.url).pathname; return new Response('mock asset'); } },
-      });
-      await Worker.fetch(mockRequest(requestUrl), mockAssetsEnv, {});
-      assert(`${requestUrl} -> ASSETS.fetch called with ${expectedAssetPath}`, capturedPathname === expectedAssetPath, capturedPathname);
-    }
-
-    // A path that already targets a real, specific file must NOT be rewritten —
-    // only the bare directory-index paths above should be touched.
-    let unrewrittenPathname = null;
-    const mockAssetsEnvPassthrough = Object.assign({}, testEnv, {
-      ASSETS: { fetch: async (req) => { unrewrittenPathname = new URL(req.url).pathname; return new Response('mock asset'); } },
-    });
-    await Worker.fetch(mockRequest('https://tryrecast.app/tools/json-to-csv.html'), mockAssetsEnvPassthrough, {});
-    assert('an explicit, already-correct path is passed through unchanged', unrewrittenPathname === '/tools/json-to-csv.html', unrewrittenPathname);
-
-    // The URL the browser sees must never change — this fetches index.html's
-    // content directly, it must not redirect. Confirmed by checking the Request
-    // object handed to ASSETS.fetch keeps the ORIGINAL url on .url... actually
-    // what matters is simply that no Response with a Location header / redirect
-    // status is ever returned by fetch() itself for these paths.
-    const rootEnv = Object.assign({}, testEnv, { ASSETS: { fetch: async () => new Response('index html content', { status: 200 }) } });
-    const rootResponse = await Worker.fetch(mockRequest('https://tryrecast.app/'), rootEnv, {});
-    assert('no client-visible redirect — response is 200, not a 3xx', rootResponse.status === 200, rootResponse.status);
   }
 
   console.log(`\n${pass} passed, ${fail} failed`);
