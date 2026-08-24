@@ -4,9 +4,9 @@
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <script>(function(){try{if(localStorage.getItem('recast_theme')!=='dark')document.documentElement.setAttribute('data-theme','light');}catch(e){}})();</script>
-<title>How To — Compare | Recast</title>
-<meta name="description" content="Find out exactly what changed between two versions of your data — JSON and CSV, added/removed/changed/unchanged.">
-<link rel="canonical" href="https://tryrecast.app/how-to/compare.html">
+<title>How To — Automate | Recast</title>
+<meta name="description" content="Do it once, automate it forever — recipes, batch processing, and API/CLI, so a workflow you build once keeps running without you.">
+<link rel="canonical" href="https://tryrecast.app/how-to/automate.html">
 <link rel="stylesheet" href="../styles.css">
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@400;500;600;700&family=IBM+Plex+Sans:wght@400;500;600&family=IBM+Plex+Mono:wght@400;500&display=swap" rel="stylesheet">
@@ -17,9 +17,9 @@
 {
   "@context": "https://schema.org",
   "@type": "Article",
-  "headline": "How To — Compare",
-  "description": "Find out exactly what changed between two versions of your data — JSON and CSV, added/removed/changed/unchanged.",
-  "url": "https://tryrecast.app/how-to/compare.html",
+  "headline": "How To — Automate",
+  "description": "Do it once, automate it forever — recipes, batch processing, and API/CLI, so a workflow you build once keeps running without you.",
+  "url": "https://tryrecast.app/how-to/automate.html",
   "publisher": { "@type": "Organization", "name": "Recast", "url": "https://tryrecast.app/" },
   "datePublished": "2026-08-20",
   "dateModified": "2026-08-22"
@@ -211,93 +211,150 @@
 <main style="max-width:1180px;margin:0 auto;padding:48px 24px 80px;">
 
 <article class="post tour-post" style="max-width:1000px;">
-  <div class="post-meta">How To &rarr; Compare</div>
+  <div class="post-meta">How To &rarr; Automate</div>
 <nav class="howto-subnav" aria-label="How To navigation">
   <a href="index.html" class="howto-subnav-link">Overview</a>
   <a href="convert.html" class="howto-subnav-link">Convert</a>
   <a href="transform.html" class="howto-subnav-link">Transform</a>
   <a href="find-inspect.html" class="howto-subnav-link">Find &amp; Inspect</a>
-  <a href="compare.html" class="howto-subnav-link howto-subnav-active" aria-current="page">Compare</a>
+  <a href="compare.html" class="howto-subnav-link">Compare</a>
   <a href="validate.html" class="howto-subnav-link">Validate</a>
   <a href="api-workbench.html" class="howto-subnav-link">API Workbench</a>
-  <a href="automate.html" class="howto-subnav-link">Automate</a>
+  <a href="automate.html" class="howto-subnav-link howto-subnav-active" aria-current="page">Automate</a>
   <a href="examples.html" class="howto-subnav-link">Examples</a>
   <a href="choose-a-tool.html" class="howto-subnav-link">Choose a Tool</a>
   <a href="capability-map.html" class="howto-subnav-link">Full Capability Map</a>
 </nav>
-  <h2 id="compare">Compare data</h2>
-  <p><strong>Diff</strong> takes two versions of the same file and highlights exactly what changed, like tracked changes in a document. For JSON specifically, <strong>Structural Analysis</strong> goes further — it doesn't just say something changed, it tells you whether that change is actually safe.</p>
+  <h1>Do it once. Automate it forever.</h1>
+  <p class="tour-lede">If you repeatedly perform the same data task, Recast can help turn that process into a repeatable workflow.</p>
 
-  <div class="tour-ba">
-    <div class="tour-ba-side">
-      <span class="tour-ba-label">Before</span>
-      <div class="howto-example">[
-  { "id": 1, "name": "John" },
-  { "id": 2 }
-]</div>
-    </div>
-    <div class="tour-ba-arrow"><svg class="ico"><use href="#ico-arrow"/></svg></div>
-    <div class="tour-ba-side">
-      <span class="tour-ba-label">After</span>
-      <div class="howto-example">[
-  { "id": 1 },
-  { "id": 2 }
-]</div>
-    </div>
+  <div class="tour-flow-diagram">
+    <div class="tour-flow-box tour-flow-messy"><span>Get data</span></div>
+    <div class="tour-flow-arrow">↓</div>
+    <div class="tour-flow-box tour-flow-step"><span>Transform</span></div>
+    <div class="tour-flow-arrow">↓</div>
+    <div class="tour-flow-box tour-flow-step"><span>Validate</span></div>
+    <div class="tour-flow-arrow">↓</div>
+    <div class="tour-flow-box tour-flow-step"><span>Output</span></div>
+    <div class="tour-flow-arrow">↓</div>
+    <div class="tour-flow-box tour-flow-useful"><span>Automate</span></div>
   </div>
-  <p class="tour-caption">The <code>name</code> field disappeared from record 1 — but it was only ever present on <em>some</em> records to start with, so Structural Analysis correctly calls this <strong>Uncertain</strong>, not Breaking. If a field had been on every single record before disappearing, that's when it's confidently flagged as Breaking. It's deliberately cautious: never guesses when the evidence isn't there.</p>
 
-  <div class="post-cta"><p><strong>Try it:</strong> <a href="../index.html?group=compare#tool">Open Compare</a>, then click "Structural Analysis" once you've run a JSON diff — or <a href="../demo/index.html?card=orders_diff">load the real orders demo</a> to see a genuine before/after pair.</p></div>
+  <h2 id="automation">1. Automation</h2>
+  <p>Anything you find yourself doing more than once is worth saving instead of repeating. Build a workflow once by clicking through it — reshaping, filtering, converting, checking — then save it as a named, reusable sequence. From there, the exact same sequence can be re-run in one click, called from a script through the API, or run from the command line. You build it visually once; where it runs after that is up to you.</p>
+  <p>A few examples of what that looks like in practice — built from the real steps above, chained for a specific job:</p>
 
-  <h2 id="compare-visual">Find out what changed</h2>
-  <p>You have yesterday's data and today's data. They look almost identical. Recast tells you exactly what changed.</p>
-
-  <div class="tour-ba">
-    <div class="tour-ba-side">
-      <span class="tour-ba-label">Yesterday</span>
-      <pre class="tour-code">{
-  <span class="tok-key">"name":</span> <span class="tok-str">"Sarah"</span>,
-  <span class="tok-key">"email":</span> <span class="tok-str">"sarah@example.com"</span>
-}</pre>
-    </div>
-    <div class="tour-ba-arrow"><svg class="ico"><use href="#ico-arrow"/></svg></div>
-    <div class="tour-ba-side">
-      <span class="tour-ba-label">Today</span>
-      <pre class="tour-code tour-diff-sample">{
-  <span class="tok-key">"name":</span> <span class="tok-str">"Sarah"</span>,
-  <span class="tok-key">"email":</span> <span class="tok-str">"sarah@example.com"</span>,
-  <mark class="tour-mark"><span class="tok-key">"phone":</span> <span class="tok-str">"0123456789"</span></mark>
-}</pre>
+  <div class="tour-workflow-card">
+    <h4>Daily sales</h4>
+    <div class="tour-mini-flow">
+      <span class="tour-mini-flow-step">Get data</span>
+      <span class="tour-mini-flow-arrow">→</span>
+      <span class="tour-mini-flow-step">Clean</span>
+      <span class="tour-mini-flow-arrow">→</span>
+      <span class="tour-mini-flow-step">Convert</span>
+      <span class="tour-mini-flow-arrow">→</span>
+      <span class="tour-mini-flow-step">Output</span>
     </div>
   </div>
-  <p class="tour-caption"><span class="tour-diff-badge tour-diff-added">+ Added</span> <code>phone</code> — the one thing that's genuinely different between the two.</p>
+  <div class="tour-workflow-card">
+    <h4>API monitoring</h4>
+    <div class="tour-mini-flow">
+      <span class="tour-mini-flow-step">Get API response</span>
+      <span class="tour-mini-flow-arrow">→</span>
+      <span class="tour-mini-flow-step">Validate</span>
+      <span class="tour-mini-flow-arrow">→</span>
+      <span class="tour-mini-flow-step">Compare</span>
+      <span class="tour-mini-flow-arrow">→</span>
+      <span class="tour-mini-flow-step">Output</span>
+    </div>
+  </div>
+  <div class="tour-workflow-card">
+    <h4>Incoming files</h4>
+    <div class="tour-mini-flow">
+      <span class="tour-mini-flow-step">Receive file</span>
+      <span class="tour-mini-flow-arrow">→</span>
+      <span class="tour-mini-flow-step">Transform</span>
+      <span class="tour-mini-flow-arrow">→</span>
+      <span class="tour-mini-flow-step">Validate</span>
+      <span class="tour-mini-flow-arrow">→</span>
+      <span class="tour-mini-flow-step">Output</span>
+    </div>
+  </div>
+  <p class="tour-caption">These are patterns, not pre-built templates — Recast doesn't ship a "daily sales" workflow out of the box. Each one is built from the same real steps (Select, Filter, Rename, Convert, Validate, Compare) chained together in Recipe Builder for your specific data.</p>
 
-  <p>A real comparison usually involves more than just additions. Here's the same idea with a few more changes at once:</p>
-  <div class="tour-diff-list">
-    <div class="tour-diff-row"><span class="tour-diff-badge tour-diff-unchanged">= Unchanged</span><span class="tour-diff-field">name</span><span class="tour-diff-detail">"Sarah"</span></div>
-    <div class="tour-diff-row"><span class="tour-diff-badge tour-diff-changed">~ Changed</span><span class="tour-diff-field">email</span><span class="tour-diff-detail"><span class="tour-diff-old">"sarah@example.com"</span> → <span class="tour-diff-new">"sarah@work.com"</span></span></div>
-    <div class="tour-diff-row"><span class="tour-diff-badge tour-diff-removed">− Removed</span><span class="tour-diff-field">city</span><span class="tour-diff-detail">was "London"</span></div>
-    <div class="tour-diff-row"><span class="tour-diff-badge tour-diff-added">+ Added</span><span class="tour-diff-field">phone</span><span class="tour-diff-detail">"0123456789"</span></div>
+  <h2 id="recipes">2. Recipes</h2>
+  <p>If you perform the same steps repeatedly, save your workflow and run it again.</p>
+
+  <div class="tour-flow-diagram">
+    <div class="tour-flow-box tour-flow-messy"><span>Input</span></div>
+    <div class="tour-flow-arrow">↓</div>
+    <div class="tour-flow-box tour-flow-step"><span>Transform</span></div>
+    <div class="tour-flow-arrow">↓</div>
+    <div class="tour-flow-box tour-flow-step"><span>Validate</span></div>
+    <div class="tour-flow-arrow">↓</div>
+    <div class="tour-flow-box tour-flow-useful"><span>Output</span></div>
   </div>
 
-  <div class="howto-callout tour-dev-callout">Developers often call this a <strong>diff</strong>.</div>
-
-  <h3>Compare CSV files</h3>
-  <p>The same idea works for spreadsheets, not just JSON — and it's genuinely row-aware: if you reorder or delete a row, Recast still matches it up correctly by its actual content, instead of comparing by line position and reporting dozens of false changes.</p>
-
-  <div class="tour-hero-actions">
-    <a class="btn btn-gold" href="../tools/json-diff.html">Try JSON Compare →</a>
-    <a class="btn btn-ghost" href="../tools/csv-diff.html">Try CSV Compare →</a>
+  <div class="tour-mini-flow" style="justify-content:center;margin:20px 0 28px;">
+    <span class="tour-mini-flow-step" style="background:#A855F7;color:#FFFFFF;border-color:#A855F7;">Save workflow</span>
+    <span class="tour-mini-flow-arrow">→</span>
+    <span class="tour-mini-flow-step" style="border-color:#3AA2FC;color:#3AA2FC;">Run again</span>
   </div>
 
-<div class="howto-crosslinks">
-  <div class="howto-crosslinks-title">Where next</div>
-  <div class="howto-crosslinks-list">
-    <div><a href="find-inspect.html">Need to understand the data first? &rarr; Find &amp; Inspect</a></div>
-    <div><a href="validate.html">Need to check whether it's valid? &rarr; Validate</a></div>
-    <div><a href="automate.html">Want to automate comparisons? &rarr; Automate</a></div>
+  <p>A recipe is a named, ordered list of steps you can re-run without rebuilding it — this is live, working functionality today, not a preview. There are two ways to build one:</p>
+  <ul>
+    <li><strong>The Recipe panel</strong> — the simpler, original version. Add steps, save, run.</li>
+    <li><strong>Recipe Builder 2.0</strong> — a full visual Input → Output workflow. Steps run down the page as connected cards; drag to reorder them; click any step to preview the result <em>at that point</em>, not just the final output; edit a step's settings without rebuilding the whole chain. Field pickers throughout stay aware of what earlier steps already did — rename a field in step 1 and step 3's dropdown correctly offers the new name, not the old one.</li>
+  </ul>
+  <p>Once saved, either kind of recipe can be run again from the API or the CLI — a workflow you built by clicking becomes something a script can call automatically.</p>
+
+  <div class="post-cta"><p><strong>Try it:</strong> <a href="../index.html?open=recipes#tool">Open Recipe Builder 2.0</a>, or <a href="../demo/index.html?card=orders_recipe">load the real orders demo</a> to see it pre-loaded.</p></div>
+
+  <h2 id="batch">3. Batch processing</h2>
+  <p>One file is easy. 100 files shouldn't mean 100 separate jobs.</p>
+
+  <div class="tour-files-flow">
+    <div class="tour-files-row">
+      <span class="tour-file-chip"><svg class="ico"><use href="#ico-json"/></svg>file1.csv</span>
+      <span class="tour-file-chip"><svg class="ico"><use href="#ico-json"/></svg>file2.csv</span>
+      <span class="tour-file-chip"><svg class="ico"><use href="#ico-json"/></svg>file3.csv</span>
+      <span class="tour-file-chip"><svg class="ico"><use href="#ico-json"/></svg>file4.csv</span>
+      <span class="tour-file-chip"><svg class="ico"><use href="#ico-json"/></svg>…</span>
+    </div>
+    <div class="tour-flow-arrow">↓</div>
+    <div class="tour-flow-box tour-flow-recast" style="max-width:220px;"><span class="tour-flow-mark">⇄</span><span>Recast</span></div>
+    <div class="tour-flow-arrow">↓</div>
+    <div class="tour-flow-box tour-flow-useful" style="max-width:260px;"><span>One pass, one result per file</span></div>
   </div>
-</div>
+
+  <p>The <strong>Batch</strong> button (next to Upload) lets you drop in multiple files and run the same conversion, validation, or diff across all of them in one pass, instead of pasting them in one at a time. Most conversion, validation, and diff modes support it.</p>
+  <p>Batch conversion is a <strong>Pro feature</strong>, currently supporting up to <strong>100 files at once</strong> per batch.</p>
+  <span class="tour-pro-note">⚡ Pro feature — up to 100 files</span>
+
+  <div class="post-cta"><p><strong>Try it:</strong> <a href="../index.html#tool">Open the tool</a> and click "Batch."</p></div>
+
+  <h2 id="api-cli">4. API / CLI</h2>
+  <p>This part is genuinely optional — most people never need it. It's for one specific situation: you want your <em>own</em> software to do this automatically, without a person copying and pasting each time.</p>
+  <img class="howto-img" src="images/step3-api.png" alt="The Recast API playground, showing an example request and the list of available endpoints">
+  <p>Two ways to get there, both currently live:</p>
+  <ul>
+    <li><strong>REST API</strong> — send the same conversions, transforms, validations, and diffs over HTTP, from any backend, script, or internal tool. Saved recipes can be called the same way.</li>
+    <li><strong><a href="https://www.npmjs.com/package/recast-cli" style="color:#A855F7;">recast-cli</a></strong> — an npm package running the identical engine locally, no network dependency at all.</li>
+  </ul>
+  <div class="howto-callout">If none of that meant much to you, that's fine — it means you don't need it. Everything above (recipes, batch, the visual builder) covers the vast majority of what people actually use Recast's automation tools for.</div>
+  <p>Exact request formats, authentication, and code examples in several languages live in the full API documentation on the main tool page.</p>
+
+  <div class="post-cta"><p><strong>Try it:</strong> <a href="../index.html#api">Open the API Workbench</a>.</p></div>
+
+  <div class="howto-crosslinks" style="margin-top:44px;">
+    <div class="howto-crosslinks-title">Ready to automate?</div>
+    <div class="howto-crosslinks-list">
+      <div><a href="../index.html#tool">Try Recast →</a></div>
+      <div><a href="../index.html#api">API →</a></div>
+      <div><a href="https://www.npmjs.com/package/recast-cli">Developer documentation →</a></div>
+    </div>
+  </div>
+
 </article>
 
 </main>

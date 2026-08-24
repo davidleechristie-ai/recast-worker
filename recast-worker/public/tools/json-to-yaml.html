@@ -11,7 +11,7 @@
 <link rel="stylesheet" href="../styles.css">
 <link rel="canonical" href="https://tryrecast.app/tools/json-to-yaml.html">
 <link rel="manifest" href="/manifest.json">
-<meta name="theme-color" content="#0E2338">
+<meta name="theme-color" content="#0A0E1F">
 <link rel="apple-touch-icon" href="/icons/icon-192.png">
 <script type="application/ld+json">
 {
@@ -163,7 +163,7 @@
 <header class="titleblock">
   <div class="ruler" id="ruler"></div>
   <div class="tb-row">
-    <a href="../index.html" class="brand" style="text-decoration:none;color:inherit;"><span class="mark">⇄</span>RECAST</a>
+    <a href="../index.html" class="brand" style="text-decoration:none;color:inherit;"><svg class="mark" viewBox="0 0 32 32" fill="none" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><defs><linearGradient id="logoGradA" x1="0%" y1="0%" x2="100%" y2="100%"><stop offset="0%" stop-color="#BE6FF8"/><stop offset="100%" stop-color="#8B5CF6"/></linearGradient><linearGradient id="logoGradB" x1="0%" y1="0%" x2="100%" y2="100%"><stop offset="0%" stop-color="#6D8FF8"/><stop offset="100%" stop-color="#3AA2FC"/></linearGradient></defs><path d="M13 5 L4 16 L13 27" stroke="url(#logoGradA)" stroke-width="4.5"/><path d="M19 5 L28 16 L19 27" stroke="url(#logoGradB)" stroke-width="4.5"/></svg>RECAST</a>
     <nav class="tb-nav" id="primaryNav">
       <div class="nav-group" data-nav-group="work">
         <button type="button" class="nav-group-btn" aria-expanded="false" aria-haspopup="true">Work<svg class="ico nav-caret"><use href="#ico-chevron"/></svg></button>
@@ -641,7 +641,7 @@ city: London
       </details>
       <details class="faq-item">
         <summary>Can I use Recast in a script or CI pipeline?</summary>
-        <p>Yes — the same engine that powers the browser tool is available as <a href="https://www.npmjs.com/package/recast-cli" style="color:#F2C14E;">recast-cli</a>, an npm package with no network dependency, plus a REST API on the API plan.</p>
+        <p>Yes — the same engine that powers the browser tool is available as <a href="https://www.npmjs.com/package/recast-cli" style="color:#A855F7;">recast-cli</a>, an npm package with no network dependency, plus a REST API on the API plan.</p>
       </details>
     </div>
   </section>
@@ -650,7 +650,7 @@ city: London
     <div class="section-head">
       <p class="eyebrow">API</p>
       <h2>Convert from your scripts and pipelines.</h2>
-      <p>Same conversions as the browser tool, available over a simple REST API. Ideal for backends, CLIs, and internal tools. Prefer zero network dependency? The <a href="https://www.npmjs.com/package/recast-cli" style="color:#F2C14E;">recast-cli</a> npm package runs the identical engine locally.</p>
+      <p>Same conversions as the browser tool, available over a simple REST API. Ideal for backends, CLIs, and internal tools. Prefer zero network dependency? The <a href="https://www.npmjs.com/package/recast-cli" style="color:#A855F7;">recast-cli</a> npm package runs the identical engine locally.</p>
     </div>
 
     <div class="api-card">
@@ -671,9 +671,9 @@ city: London
 # -&gt; {"output":"id,name\n1,Ada","usage":{"calls_this_month":1,"limit":10000}}</pre>
 
       <p style="margin-bottom:6px;font-size:13.5px;color:var(--text-muted);line-height:1.7;">
-        <code style="color:#7FE7D0;">POST /v1/convert</code> — <code>mode</code>: json2csv, csv2json, json2xml, xml2json, flatten, unflatten, json2yaml, yaml2json, json2markdown, markdown2json<br>
-        <code style="color:#7FE7D0;">POST /v1/diff</code> — <code>mode</code>: diffJson, diffXml, diffCsv (send <code>inputA</code>/<code>inputB</code> instead of <code>input</code>)<br>
-        <code style="color:#7FE7D0;">POST /v1/schema</code> — infers a JSON Schema (draft-07) from a sample <code>input</code>
+        <code style="color:#3AA2FC;">POST /v1/convert</code> — <code>mode</code>: json2csv, csv2json, json2xml, xml2json, flatten, unflatten, json2yaml, yaml2json, json2markdown, markdown2json<br>
+        <code style="color:#3AA2FC;">POST /v1/diff</code> — <code>mode</code>: diffJson, diffXml, diffCsv (send <code>inputA</code>/<code>inputB</code> instead of <code>input</code>)<br>
+        <code style="color:#3AA2FC;">POST /v1/schema</code> — infers a JSON Schema (draft-07) from a sample <code>input</code>
       </p>
 
       <div id="apiKeyBox" class="api-key-box" style="display:none;">

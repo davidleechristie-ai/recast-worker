@@ -16,7 +16,7 @@
     if (theme === 'light') document.documentElement.setAttribute('data-theme', 'light');
     else document.documentElement.removeAttribute('data-theme');
     const meta = document.querySelector('meta[name="theme-color"]');
-    if (meta) meta.setAttribute('content', theme === 'light' ? '#F4F7FA' : '#0E2338');
+    if (meta) meta.setAttribute('content', theme === 'light' ? '#FFFFFF' : '#0A0E1F');
     const use = document.getElementById('themeIconUse');
     if (use) use.setAttribute('href', theme === 'light' ? '#ico-moon' : '#ico-sun');
     const btn = document.getElementById('themeToggleBtn');

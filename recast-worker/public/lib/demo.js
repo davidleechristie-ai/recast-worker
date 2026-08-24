@@ -126,4 +126,14 @@
     }
   }
   wireDemoDropTarget(document.getElementById('playgroundInput')?.closest('.playground-col'), document.getElementById('playgroundDropZone'), loadDemoIntoPlayground);
+
+  // Deep-linking from the How To pages — e.g. demo/index.html?card=orders_inspect
+  // scrolls to and loads that card automatically, using the exact same
+  // loadDemo() the cards themselves call, so this adds navigation only,
+  // not a second implementation of the loading logic.
+  const requestedCard = new URLSearchParams(location.search).get('card');
+  if (requestedCard && DEMO_FILES[requestedCard]) {
+    const card = document.querySelector(`.demo-card[data-demo="${requestedCard}"]`);
+    loadDemo(requestedCard, card);
+  }
 })();

@@ -4,9 +4,9 @@
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <script>(function(){try{if(localStorage.getItem('recast_theme')!=='dark')document.documentElement.setAttribute('data-theme','light');}catch(e){}})();</script>
-<title>How To — Compare | Recast</title>
-<meta name="description" content="Find out exactly what changed between two versions of your data — JSON and CSV, added/removed/changed/unchanged.">
-<link rel="canonical" href="https://tryrecast.app/how-to/compare.html">
+<title>How To — Examples | Recast</title>
+<meta name="description" content="Six real, practical workflows — cleaning a supplier file, working with an API, converting customer data, and more — showing exactly what you'd actually use Recast for.">
+<link rel="canonical" href="https://tryrecast.app/how-to/examples.html">
 <link rel="stylesheet" href="../styles.css">
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@400;500;600;700&family=IBM+Plex+Sans:wght@400;500;600&family=IBM+Plex+Mono:wght@400;500&display=swap" rel="stylesheet">
@@ -17,9 +17,9 @@
 {
   "@context": "https://schema.org",
   "@type": "Article",
-  "headline": "How To — Compare",
-  "description": "Find out exactly what changed between two versions of your data — JSON and CSV, added/removed/changed/unchanged.",
-  "url": "https://tryrecast.app/how-to/compare.html",
+  "headline": "How To — Examples",
+  "description": "Six real, practical workflows — cleaning a supplier file, working with an API, converting customer data, and more — showing exactly what you'd actually use Recast for.",
+  "url": "https://tryrecast.app/how-to/examples.html",
   "publisher": { "@type": "Organization", "name": "Recast", "url": "https://tryrecast.app/" },
   "datePublished": "2026-08-20",
   "dateModified": "2026-08-22"
@@ -211,91 +211,223 @@
 <main style="max-width:1180px;margin:0 auto;padding:48px 24px 80px;">
 
 <article class="post tour-post" style="max-width:1000px;">
-  <div class="post-meta">How To &rarr; Compare</div>
+  <div class="post-meta">How To &rarr; Examples</div>
 <nav class="howto-subnav" aria-label="How To navigation">
   <a href="index.html" class="howto-subnav-link">Overview</a>
   <a href="convert.html" class="howto-subnav-link">Convert</a>
   <a href="transform.html" class="howto-subnav-link">Transform</a>
   <a href="find-inspect.html" class="howto-subnav-link">Find &amp; Inspect</a>
-  <a href="compare.html" class="howto-subnav-link howto-subnav-active" aria-current="page">Compare</a>
+  <a href="compare.html" class="howto-subnav-link">Compare</a>
   <a href="validate.html" class="howto-subnav-link">Validate</a>
   <a href="api-workbench.html" class="howto-subnav-link">API Workbench</a>
   <a href="automate.html" class="howto-subnav-link">Automate</a>
-  <a href="examples.html" class="howto-subnav-link">Examples</a>
+  <a href="examples.html" class="howto-subnav-link howto-subnav-active" aria-current="page">Examples</a>
   <a href="choose-a-tool.html" class="howto-subnav-link">Choose a Tool</a>
   <a href="capability-map.html" class="howto-subnav-link">Full Capability Map</a>
 </nav>
-  <h2 id="compare">Compare data</h2>
-  <p><strong>Diff</strong> takes two versions of the same file and highlights exactly what changed, like tracked changes in a document. For JSON specifically, <strong>Structural Analysis</strong> goes further — it doesn't just say something changed, it tells you whether that change is actually safe.</p>
+  <h1>What would I actually use Recast for?</h1>
+  <p class="tour-lede">Six real workflows, not a features list — pick the one closest to your own situation.</p>
 
-  <div class="tour-ba">
-    <div class="tour-ba-side">
-      <span class="tour-ba-label">Before</span>
-      <div class="howto-example">[
-  { "id": 1, "name": "John" },
-  { "id": 2 }
-]</div>
-    </div>
-    <div class="tour-ba-arrow"><svg class="ico"><use href="#ico-arrow"/></svg></div>
-    <div class="tour-ba-side">
-      <span class="tour-ba-label">After</span>
-      <div class="howto-example">[
-  { "id": 1 },
-  { "id": 2 }
-]</div>
-    </div>
+  <div class="tour-example-filters" id="exampleFilters" role="group" aria-label="Filter examples by type">
+    <button type="button" class="tour-example-filter-btn active" data-filter="all">All</button>
+    <button type="button" class="tour-example-filter-btn" data-filter="beginner">Beginner</button>
+    <button type="button" class="tour-example-filter-btn" data-filter="developer">Developer</button>
+    <button type="button" class="tour-example-filter-btn" data-filter="automation">Automation</button>
   </div>
-  <p class="tour-caption">The <code>name</code> field disappeared from record 1 — but it was only ever present on <em>some</em> records to start with, so Structural Analysis correctly calls this <strong>Uncertain</strong>, not Breaking. If a field had been on every single record before disappearing, that's when it's confidently flagged as Breaking. It's deliberately cautious: never guesses when the evidence isn't there.</p>
 
-  <div class="post-cta"><p><strong>Try it:</strong> <a href="../index.html?group=compare#tool">Open Compare</a>, then click "Structural Analysis" once you've run a JSON diff — or <a href="../demo/index.html?card=orders_diff">load the real orders demo</a> to see a genuine before/after pair.</p></div>
+  <div id="exampleCards">
 
-  <h2 id="compare-visual">Find out what changed</h2>
-  <p>You have yesterday's data and today's data. They look almost identical. Recast tells you exactly what changed.</p>
+  <div class="tour-example-card" data-categories="beginner">
+    <div class="tour-example-header">
+      <span class="tour-example-num">1</span>
+      <h3>Clean a supplier file</h3>
+      <div class="tour-example-tags"><span class="tour-example-tag">Beginner</span></div>
+    </div>
+    <div class="tour-mini-flow">
+      <span class="tour-mini-flow-step">CSV</span><span class="tour-mini-flow-arrow">→</span>
+      <span class="tour-mini-flow-step">Transform</span><span class="tour-mini-flow-arrow">→</span>
+      <span class="tour-mini-flow-step">Validate</span><span class="tour-mini-flow-arrow">→</span>
+      <span class="tour-mini-flow-step">Export</span>
+    </div>
+    <div class="tour-example-section"><span class="tour-example-label">The problem</span><p>A supplier sends you a CSV every week, and it's never quite clean — extra columns you don't need, inconsistent headers, a stray blank row.</p></div>
+    <div class="tour-example-section"><span class="tour-example-label">How Recast helps</span><p>Transform Builder keeps only the fields you need, renames them, and fixes types — by clicking, not scripting. Validate catches anything still wrong before you trust it.</p></div>
+    <div class="tour-example-section"><span class="tour-example-label">The result</span><p>A clean, consistent file ready to import — and since the steps are saved, next week's file is one click, not another manual pass.</p></div>
+    <details class="tour-dev-details">
+      <summary>See the technical implementation</summary>
+      <p>The real steps this uses, in the same format Transform Builder saves as a recipe:</p>
+      <pre class="tour-code tour-jsonpath-sample">[
+  {
+    <span class="tok-key">"op":</span> <span class="tok-str">"select"</span>,
+    <span class="tok-key">"params":</span> {
+      <span class="tok-key">"paths":</span> [<span class="tok-str">"SKU"</span>, <span class="tok-str">"Qty"</span>]
+    }
+  },
+  {
+    <span class="tok-key">"op":</span> <span class="tok-str">"rename"</span>,
+    <span class="tok-key">"params":</span> {
+      <span class="tok-key">"from":</span> <span class="tok-str">"Qty"</span>,
+      <span class="tok-key">"to":</span> <span class="tok-str">"quantity"</span>
+    }
+  },
+  {
+    <span class="tok-key">"op":</span> <span class="tok-str">"convertType"</span>,
+    <span class="tok-key">"params":</span> {
+      <span class="tok-key">"field":</span> <span class="tok-str">"quantity"</span>,
+      <span class="tok-key">"type":</span> <span class="tok-str">"number"</span>
+    }
+  }
+]</pre>
+    </details>
+    <div class="tour-hero-actions"><a class="btn btn-gold" href="../index.html?open=transform#tool">Try it &rarr;</a></div>
+  </div>
 
-  <div class="tour-ba">
-    <div class="tour-ba-side">
-      <span class="tour-ba-label">Yesterday</span>
-      <pre class="tour-code">{
-  <span class="tok-key">"name":</span> <span class="tok-str">"Sarah"</span>,
-  <span class="tok-key">"email":</span> <span class="tok-str">"sarah@example.com"</span>
+  <div class="tour-example-card" data-categories="developer">
+    <div class="tour-example-header">
+      <span class="tour-example-num">2</span>
+      <h3>Work with an API</h3>
+      <div class="tour-example-tags"><span class="tour-example-tag">Developer</span></div>
+    </div>
+    <div class="tour-mini-flow">
+      <span class="tour-mini-flow-step">API</span><span class="tour-mini-flow-arrow">→</span>
+      <span class="tour-mini-flow-step">API Workbench</span><span class="tour-mini-flow-arrow">→</span>
+      <span class="tour-mini-flow-step">Inspect</span><span class="tour-mini-flow-arrow">→</span>
+      <span class="tour-mini-flow-step">Transform</span><span class="tour-mini-flow-arrow">→</span>
+      <span class="tour-mini-flow-step">Compare</span>
+    </div>
+    <div class="tour-example-section"><span class="tour-example-label">The problem</span><p>You've got a response from your own API, and understanding it means bouncing it between three or four separate tools, retyping it each time.</p></div>
+    <div class="tour-example-section"><span class="tour-example-label">How Recast helps</span><p>Paste the response into API Workbench once. From there, buttons hand that exact response straight to Inspect, Transform, or Compare — no retyping between tools.</p></div>
+    <div class="tour-example-section"><span class="tour-example-label">The result</span><p>One response, understood, reshaped, and checked against yesterday's version, all without leaving the page.</p></div>
+    <details class="tour-dev-details">
+      <summary>See the technical implementation</summary>
+      <p>The same request over HTTP, using your access token as a Bearer token:</p>
+      <pre class="tour-code tour-curl-narrow">curl https://tryrecast.app/v1/convert \
+  -H <span class="tok-str">"Authorization:</span>
+     <span class="tok-str">Bearer rk_live_..."</span> \
+  -d <span class="tok-str">'{"mode":"json2csv",</span>
+     <span class="tok-str">"input":"[...]"}'</span></pre>
+    </details>
+    <div class="tour-hero-actions"><a class="btn btn-gold" href="../index.html#api">Try it &rarr;</a></div>
+  </div>
+
+  <div class="tour-example-card" data-categories="beginner">
+    <div class="tour-example-header">
+      <span class="tour-example-num">3</span>
+      <h3>Convert customer data</h3>
+      <div class="tour-example-tags"><span class="tour-example-tag">Beginner</span></div>
+    </div>
+    <div class="tour-mini-flow">
+      <span class="tour-mini-flow-step">JSON</span><span class="tour-mini-flow-arrow">→</span>
+      <span class="tour-mini-flow-step">CSV</span>
+    </div>
+    <div class="tour-example-section"><span class="tour-example-label">The problem</span><p>Your customer list comes out of an app as JSON, but the CRM or spreadsheet you need to load it into only accepts CSV.</p></div>
+    <div class="tour-example-section"><span class="tour-example-label">How Recast helps</span><p>Paste the JSON in, pick JSON → CSV, and convert. No script to write, nothing installed.</p></div>
+    <div class="tour-example-section"><span class="tour-example-label">The result</span><p>A ready-to-import CSV, in under a second:</p></div>
+    <pre class="tour-code tour-example-result">customer_id,name,email,plan
+501,Ada Lovelace,ada@example.com,Pro
+502,Grace Hopper,grace@example.com,Free</pre>
+    <details class="tour-dev-details">
+      <summary>See the technical implementation</summary>
+      <p>The same conversion over the API:</p>
+      <pre class="tour-code tour-curl-narrow">curl https://tryrecast.app/v1/convert \
+  -d <span class="tok-str">'{"mode":"json2csv",</span>
+     <span class="tok-str">"input":"[...]"}'</span></pre>
+    </details>
+    <div class="tour-hero-actions"><a class="btn btn-gold" href="../tools/json-to-csv.html">Try it &rarr;</a></div>
+  </div>
+
+  <div class="tour-example-card" data-categories="beginner developer">
+    <div class="tour-example-header">
+      <span class="tour-example-num">4</span>
+      <h3>Find information</h3>
+      <div class="tour-example-tags"><span class="tour-example-tag">Beginner</span><span class="tour-example-tag">Developer</span></div>
+    </div>
+    <div class="tour-mini-flow">
+      <span class="tour-mini-flow-step">JSON</span><span class="tour-mini-flow-arrow">→</span>
+      <span class="tour-mini-flow-step">JSONPath</span><span class="tour-mini-flow-arrow">→</span>
+      <span class="tour-mini-flow-step">Extract</span>
+    </div>
+    <div class="tour-example-section"><span class="tour-example-label">The problem</span><p>You have a large, nested JSON file and only need one specific thing out of it — not the whole structure, scrolled through by eye.</p></div>
+    <div class="tour-example-section"><span class="tour-example-label">How Recast helps</span><p>Write a short JSONPath expression instead. It tells Recast exactly what to pull out.</p></div>
+    <div class="tour-example-section"><span class="tour-example-label">The result</span><p>Every matching value, extracted at once:</p></div>
+    <pre class="tour-code">Path:   $.orders[*].sku
+Result: ["A100", "B200"]</pre>
+    <details class="tour-dev-details">
+      <summary>See the technical implementation</summary>
+      <p>Supported path syntax: named keys, numeric <code>[N]</code> indices, and <code>[*]</code> wildcards on arrays or objects. No filter expressions or recursive descent yet — those characters are simply not part of the path grammar.</p>
+    </details>
+    <div class="tour-hero-actions"><a class="btn btn-gold" href="../tools/jsonpath-tester.html">Try it &rarr;</a></div>
+  </div>
+
+  <div class="tour-example-card" data-categories="developer automation">
+    <div class="tour-example-header">
+      <span class="tour-example-num">5</span>
+      <h3>Check incoming data</h3>
+      <div class="tour-example-tags"><span class="tour-example-tag">Developer</span><span class="tour-example-tag">Automation</span></div>
+    </div>
+    <div class="tour-mini-flow">
+      <span class="tour-mini-flow-step">Data</span><span class="tour-mini-flow-arrow">→</span>
+      <span class="tour-mini-flow-step">Schema</span><span class="tour-mini-flow-arrow">→</span>
+      <span class="tour-mini-flow-step">Validate</span><span class="tour-mini-flow-arrow">→</span>
+      <span class="tour-mini-flow-step">Errors</span>
+    </div>
+    <div class="tour-example-section"><span class="tour-example-label">The problem</span><p>You receive data regularly from an external source, and every so often its shape quietly changes — a field turns up missing, or the wrong type — breaking whatever reads it downstream.</p></div>
+    <div class="tour-example-section"><span class="tour-example-label">How Recast helps</span><p>Generate a schema once from a good sample. From then on, validate every new batch against it, and it tells you exactly what's wrong before it reaches your pipeline.</p></div>
+    <div class="tour-example-section"><span class="tour-example-label">The result</span><p>A field came through as text instead of a number:</p></div>
+    <div class="tour-diff-list">
+      <div class="tour-diff-row"><span class="tour-diff-badge tour-diff-removed">&#10005; Problem</span><span class="tour-diff-field">age</span><span class="tour-diff-detail">should be a number, but it's text</span></div>
+    </div>
+    <details class="tour-dev-details">
+      <summary>See the technical implementation</summary>
+      <p>The real, unmodified output of <code>validateAgainstSchema</code>:</p>
+      <pre class="tour-code tour-dev-json">{
+  <span class="tok-key">"valid":</span> <span class="tok-bool">false</span>,
+  <span class="tok-key">"errors":</span> [
+    {
+      <span class="tok-key">"path":</span> <span class="tok-str">"age"</span>,
+      <span class="tok-key">"message":</span>
+      <span class="tok-str">"expected type integer, got string"</span>
+    }
+  ]
 }</pre>
-    </div>
-    <div class="tour-ba-arrow"><svg class="ico"><use href="#ico-arrow"/></svg></div>
-    <div class="tour-ba-side">
-      <span class="tour-ba-label">Today</span>
-      <pre class="tour-code tour-diff-sample">{
-  <span class="tok-key">"name":</span> <span class="tok-str">"Sarah"</span>,
-  <span class="tok-key">"email":</span> <span class="tok-str">"sarah@example.com"</span>,
-  <mark class="tour-mark"><span class="tok-key">"phone":</span> <span class="tok-str">"0123456789"</span></mark>
-}</pre>
-    </div>
-  </div>
-  <p class="tour-caption"><span class="tour-diff-badge tour-diff-added">+ Added</span> <code>phone</code> — the one thing that's genuinely different between the two.</p>
-
-  <p>A real comparison usually involves more than just additions. Here's the same idea with a few more changes at once:</p>
-  <div class="tour-diff-list">
-    <div class="tour-diff-row"><span class="tour-diff-badge tour-diff-unchanged">= Unchanged</span><span class="tour-diff-field">name</span><span class="tour-diff-detail">"Sarah"</span></div>
-    <div class="tour-diff-row"><span class="tour-diff-badge tour-diff-changed">~ Changed</span><span class="tour-diff-field">email</span><span class="tour-diff-detail"><span class="tour-diff-old">"sarah@example.com"</span> → <span class="tour-diff-new">"sarah@work.com"</span></span></div>
-    <div class="tour-diff-row"><span class="tour-diff-badge tour-diff-removed">− Removed</span><span class="tour-diff-field">city</span><span class="tour-diff-detail">was "London"</span></div>
-    <div class="tour-diff-row"><span class="tour-diff-badge tour-diff-added">+ Added</span><span class="tour-diff-field">phone</span><span class="tour-diff-detail">"0123456789"</span></div>
+    </details>
+    <div class="tour-hero-actions"><a class="btn btn-gold" href="../index.html?group=schema#tool">Try it &rarr;</a></div>
   </div>
 
-  <div class="howto-callout tour-dev-callout">Developers often call this a <strong>diff</strong>.</div>
+  <div class="tour-example-card" data-categories="automation">
+    <div class="tour-example-header">
+      <span class="tour-example-num">6</span>
+      <h3>Automate a repeated job</h3>
+      <div class="tour-example-tags"><span class="tour-example-tag">Automation</span></div>
+    </div>
+    <div class="tour-mini-flow">
+      <span class="tour-mini-flow-step">Input</span><span class="tour-mini-flow-arrow">→</span>
+      <span class="tour-mini-flow-step">Transform</span><span class="tour-mini-flow-arrow">→</span>
+      <span class="tour-mini-flow-step">Validate</span><span class="tour-mini-flow-arrow">→</span>
+      <span class="tour-mini-flow-step">Output</span><span class="tour-mini-flow-arrow">→</span>
+      <span class="tour-mini-flow-step">Automation</span>
+    </div>
+    <div class="tour-example-section"><span class="tour-example-label">The problem</span><p>You do the exact same multi-step process every day or every week, and clicking through it manually each time is the actual bottleneck, not the steps themselves.</p></div>
+    <div class="tour-example-section"><span class="tour-example-label">How Recast helps</span><p>Build the chain once in Recipe Builder 2.0 — transform, validate, output — then save it. From there, run it again in one click, or call it from the API or CLI.</p></div>
+    <div class="tour-example-section"><span class="tour-example-label">The result</span><p>The exact same multi-step job, without repeating the clicks — today, tomorrow, or from a script on a schedule.</p></div>
+    <details class="tour-dev-details">
+      <summary>See the technical implementation</summary>
+      <p>A saved recipe is just this step list, run again on new input — the same format the API and CLI use:</p>
+      <pre class="tour-code tour-jsonpath-sample">[
+  { <span class="tok-key">"op":</span> <span class="tok-str">"select"</span>, ... },
+  { <span class="tok-key">"op":</span> <span class="tok-str">"rename"</span>, ... },
+  { <span class="tok-key">"op":</span> <span class="tok-str">"flatten"</span> }
+]</pre>
+    </details>
+    <div class="tour-hero-actions"><a class="btn btn-gold" href="../index.html?open=recipes#tool">Try it &rarr;</a></div>
+  </div>
 
-  <h3>Compare CSV files</h3>
-  <p>The same idea works for spreadsheets, not just JSON — and it's genuinely row-aware: if you reorder or delete a row, Recast still matches it up correctly by its actual content, instead of comparing by line position and reporting dozens of false changes.</p>
-
-  <div class="tour-hero-actions">
-    <a class="btn btn-gold" href="../tools/json-diff.html">Try JSON Compare →</a>
-    <a class="btn btn-ghost" href="../tools/csv-diff.html">Try CSV Compare →</a>
   </div>
 
 <div class="howto-crosslinks">
   <div class="howto-crosslinks-title">Where next</div>
   <div class="howto-crosslinks-list">
-    <div><a href="find-inspect.html">Need to understand the data first? &rarr; Find &amp; Inspect</a></div>
-    <div><a href="validate.html">Need to check whether it's valid? &rarr; Validate</a></div>
-    <div><a href="automate.html">Want to automate comparisons? &rarr; Automate</a></div>
+    <div><a href="automate.html">Want the full picture on automation? &rarr; Automate</a></div>
+    <div><a href="../demo/index.html">Prefer to just click through real data? &rarr; Interactive demos</a></div>
   </div>
 </div>
 </article>
@@ -426,6 +558,24 @@
       html += fieldCard('Status', status, [{ text: status.uniqueCount + ' unique values' }]);
     }
     fieldsEl.innerHTML = html;
+  })();
+
+  // Examples page: category filter — real show/hide, not decorative buttons
+  (function () {
+    const filterBar = document.getElementById('exampleFilters');
+    if (!filterBar) return;
+    const cards = document.querySelectorAll('.tour-example-card');
+    filterBar.addEventListener('click', (evt) => {
+      const btn = evt.target.closest('[data-filter]');
+      if (!btn) return;
+      filterBar.querySelectorAll('.tour-example-filter-btn').forEach((b) => b.classList.toggle('active', b === btn));
+      const filter = btn.dataset.filter;
+      cards.forEach((card) => {
+        const cats = (card.dataset.categories || '').split(' ');
+        const show = filter === 'all' || cats.includes(filter);
+        card.classList.toggle('tour-example-hidden', !show);
+      });
+    });
   })();
 
 </script>

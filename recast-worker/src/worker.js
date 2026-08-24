@@ -323,12 +323,41 @@ async function route(request, env, deps) {
   return null;
 }
 
+// Paths that need to resolve to a directory's index.html. Necessary
+// because assets.html_handling is set to "none" (deliberately, to avoid a
+// redirect-plus-service-worker interaction that previously caused
+// ERR_FAILED on direct /index.html navigation — see the "none" config in
+// wrangler.jsonc) — but per Cloudflare's own documented behavior, "none"
+// also disables the automatic directory-index resolution that
+// "auto-trailing-slash" would otherwise provide for free. Rewriting these
+// specific paths here restores that behavior without reintroducing the
+// redirect (this fetches and returns the index.html content directly; the
+// browser's address bar is never touched, so no redirect ever occurs).
+const DIRECTORY_INDEX_PATHS = {
+  '/': '/index.html',
+  '/blog': '/blog/index.html',
+  '/blog/': '/blog/index.html',
+  '/how-to': '/how-to/index.html',
+  '/how-to/': '/how-to/index.html',
+  '/demo': '/demo/index.html',
+  '/demo/': '/demo/index.html',
+};
+
 export default {
   async fetch(request, env, ctx) {
     const apiResponse = await route(request, env, defaultDeps);
     if (apiResponse) return apiResponse;
+
+    const url = new URL(request.url);
+    const indexPath = DIRECTORY_INDEX_PATHS[url.pathname];
+    if (indexPath) {
+      const rewritten = new URL(url);
+      rewritten.pathname = indexPath;
+      return env.ASSETS.fetch(new Request(rewritten, request));
+    }
+
     return env.ASSETS.fetch(request);
   },
 };
 
-export { route, handleVerifySession, handleVerifyToken, handleWebhook, handlePortal, handleApiConvert, handleApiDiff, handleApiSchema, authenticateApiToken, checkAndIncrementUsage, planFromPriceId, defaultDeps };
+export { route, handleVerifySession, handleVerifyToken, handleWebhook, handlePortal, handleApiConvert, handleApiDiff, handleApiSchema, authenticateApiToken, checkAndIncrementUsage, planFromPriceId, defaultDeps, DIRECTORY_INDEX_PATHS };

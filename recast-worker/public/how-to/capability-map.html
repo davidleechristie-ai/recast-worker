@@ -4,9 +4,9 @@
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <script>(function(){try{if(localStorage.getItem('recast_theme')!=='dark')document.documentElement.setAttribute('data-theme','light');}catch(e){}})();</script>
-<title>How To — Compare | Recast</title>
-<meta name="description" content="Find out exactly what changed between two versions of your data — JSON and CSV, added/removed/changed/unchanged.">
-<link rel="canonical" href="https://tryrecast.app/how-to/compare.html">
+<title>How To — Full Capability Map | Recast</title>
+<meta name="description" content="Every capability Recast supports, organized as a visual map — understand, change, check, compare, work with APIs, and automate — with a direct link to every tool.">
+<link rel="canonical" href="https://tryrecast.app/how-to/capability-map.html">
 <link rel="stylesheet" href="../styles.css">
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@400;500;600;700&family=IBM+Plex+Sans:wght@400;500;600&family=IBM+Plex+Mono:wght@400;500&display=swap" rel="stylesheet">
@@ -17,9 +17,9 @@
 {
   "@context": "https://schema.org",
   "@type": "Article",
-  "headline": "How To — Compare",
-  "description": "Find out exactly what changed between two versions of your data — JSON and CSV, added/removed/changed/unchanged.",
-  "url": "https://tryrecast.app/how-to/compare.html",
+  "headline": "How To — Full Capability Map",
+  "description": "Every capability Recast supports, organized as a visual map — understand, change, check, compare, work with APIs, and automate — with a direct link to every tool.",
+  "url": "https://tryrecast.app/how-to/capability-map.html",
   "publisher": { "@type": "Organization", "name": "Recast", "url": "https://tryrecast.app/" },
   "datePublished": "2026-08-20",
   "dateModified": "2026-08-22"
@@ -211,93 +211,193 @@
 <main style="max-width:1180px;margin:0 auto;padding:48px 24px 80px;">
 
 <article class="post tour-post" style="max-width:1000px;">
-  <div class="post-meta">How To &rarr; Compare</div>
+  <div class="post-meta">How To &rarr; Full Capability Map</div>
 <nav class="howto-subnav" aria-label="How To navigation">
   <a href="index.html" class="howto-subnav-link">Overview</a>
   <a href="convert.html" class="howto-subnav-link">Convert</a>
   <a href="transform.html" class="howto-subnav-link">Transform</a>
   <a href="find-inspect.html" class="howto-subnav-link">Find &amp; Inspect</a>
-  <a href="compare.html" class="howto-subnav-link howto-subnav-active" aria-current="page">Compare</a>
+  <a href="compare.html" class="howto-subnav-link">Compare</a>
   <a href="validate.html" class="howto-subnav-link">Validate</a>
   <a href="api-workbench.html" class="howto-subnav-link">API Workbench</a>
   <a href="automate.html" class="howto-subnav-link">Automate</a>
   <a href="examples.html" class="howto-subnav-link">Examples</a>
   <a href="choose-a-tool.html" class="howto-subnav-link">Choose a Tool</a>
-  <a href="capability-map.html" class="howto-subnav-link">Full Capability Map</a>
+  <a href="capability-map.html" class="howto-subnav-link howto-subnav-active" aria-current="page">Full Capability Map</a>
 </nav>
-  <h2 id="compare">Compare data</h2>
-  <p><strong>Diff</strong> takes two versions of the same file and highlights exactly what changed, like tracked changes in a document. For JSON specifically, <strong>Structural Analysis</strong> goes further — it doesn't just say something changed, it tells you whether that change is actually safe.</p>
+  <h1>Everything Recast can help you do</h1>
+  <p class="tour-lede">The complete reference — every capability, organized as a map rather than a flat list, with a direct link to its guide and to the actual tool.</p>
 
-  <div class="tour-ba">
-    <div class="tour-ba-side">
-      <span class="tour-ba-label">Before</span>
-      <div class="howto-example">[
-  { "id": 1, "name": "John" },
-  { "id": 2 }
-]</div>
+  <div class="tour-capmap-grid">
+
+    <div class="tour-capmap-category">
+      <div class="tour-capmap-category-head">
+        <div class="tour-capmap-category-icon"><svg class="ico"><use href="#ico-search"/></svg></div>
+        <h2>Understand</h2>
+      </div>
+      <div class="tour-capmap-capability">
+        <div class="tour-capmap-capability-head"><a class="tour-capmap-howto-link" href="find-inspect.html#inspect">Inspect<svg class="ico"><use href="#ico-arrow"/></svg></a></div>
+        <p class="tour-capmap-capability-desc">Record counts, field types, and quality warnings, found automatically.</p>
+        <div class="tour-capmap-capability-sub">
+          <a class="tour-capmap-tool-link" href="../index.html?open=inspect#tool">Data Inspector</a>
+          <a class="tour-capmap-tool-link" href="../index.html?group=schema#tool">Graph view</a>
+        </div>
+      </div>
+      <div class="tour-capmap-capability">
+        <div class="tour-capmap-capability-head"><a class="tour-capmap-howto-link" href="find-inspect.html#jsonpath">JSONPath<svg class="ico"><use href="#ico-arrow"/></svg></a></div>
+        <p class="tour-capmap-capability-desc">Pull one specific value out of a large file with a short path expression.</p>
+        <div class="tour-capmap-capability-sub">
+          <a class="tour-capmap-tool-link" href="../tools/jsonpath-tester.html">JSONPath tester</a>
+        </div>
+      </div>
     </div>
-    <div class="tour-ba-arrow"><svg class="ico"><use href="#ico-arrow"/></svg></div>
-    <div class="tour-ba-side">
-      <span class="tour-ba-label">After</span>
-      <div class="howto-example">[
-  { "id": 1 },
-  { "id": 2 }
-]</div>
+
+    <div class="tour-capmap-category">
+      <div class="tour-capmap-category-head">
+        <div class="tour-capmap-category-icon"><svg class="ico"><use href="#ico-json"/></svg></div>
+        <h2>Change</h2>
+      </div>
+      <div class="tour-capmap-capability">
+        <div class="tour-capmap-capability-head"><a class="tour-capmap-howto-link" href="convert.html#convert">Convert<svg class="ico"><use href="#ico-arrow"/></svg></a></div>
+        <p class="tour-capmap-capability-desc">Turn one file format into another — no script required.</p>
+        <div class="tour-capmap-capability-sub">
+          <a class="tour-capmap-tool-link" href="../tools/json-to-csv.html">JSON→CSV</a>
+          <a class="tour-capmap-tool-link" href="../tools/csv-to-json.html">CSV→JSON</a>
+          <a class="tour-capmap-tool-link" href="../tools/json-to-xml.html">JSON→XML</a>
+          <a class="tour-capmap-tool-link" href="../tools/xml-to-json.html">XML→JSON</a>
+          <a class="tour-capmap-tool-link" href="../tools/json-to-yaml.html">JSON→YAML</a>
+          <a class="tour-capmap-tool-link" href="../tools/yaml-to-json.html">YAML→JSON</a>
+          <a class="tour-capmap-tool-link" href="../tools/json-to-markdown.html">JSON→Markdown</a>
+          <a class="tour-capmap-tool-link" href="../tools/markdown-to-json.html">Markdown→JSON</a>
+        </div>
+      </div>
+      <div class="tour-capmap-capability">
+        <div class="tour-capmap-capability-head"><a class="tour-capmap-howto-link" href="transform.html#transform">Transform<svg class="ico"><use href="#ico-arrow"/></svg></a></div>
+        <p class="tour-capmap-capability-desc">Select, filter, rename, and reshape the contents — by clicking, not scripting.</p>
+        <div class="tour-capmap-capability-sub">
+          <a class="tour-capmap-tool-link" href="../index.html?open=transform#tool">Transform Builder</a>
+          <a class="tour-capmap-tool-link" href="../tools/flatten-json.html">Flatten</a>
+          <a class="tour-capmap-tool-link" href="../tools/unflatten-json.html">Unflatten</a>
+          <a class="tour-capmap-tool-link" href="../index.html?group=transform#tool">Sort keys</a>
+        </div>
+      </div>
+    </div>
+
+    <div class="tour-capmap-category">
+      <div class="tour-capmap-category-head">
+        <div class="tour-capmap-category-icon"><svg class="ico"><use href="#ico-check"/></svg></div>
+        <h2>Check</h2>
+      </div>
+      <div class="tour-capmap-capability">
+        <div class="tour-capmap-capability-head"><a class="tour-capmap-howto-link" href="validate.html#validate">Schema<svg class="ico"><use href="#ico-arrow"/></svg></a></div>
+        <p class="tour-capmap-capability-desc">Generate the rules from a sample, or generate real types in another language.</p>
+        <div class="tour-capmap-capability-sub">
+          <a class="tour-capmap-tool-link" href="../tools/json-schema-generator.html">JSON→Schema</a>
+          <a class="tour-capmap-tool-link" href="../tools/json-to-typescript.html">TypeScript</a>
+          <a class="tour-capmap-tool-link" href="../tools/json-to-zod.html">Zod</a>
+          <a class="tour-capmap-tool-link" href="../tools/json-to-python.html">Python</a>
+          <a class="tour-capmap-tool-link" href="../tools/json-to-pydantic.html">Pydantic</a>
+          <a class="tour-capmap-tool-link" href="../tools/json-to-go.html">Go</a>
+          <a class="tour-capmap-tool-link" href="../index.html?group=schema#tool">Kotlin, Rust, Java, Swift, C#, SQL</a>
+        </div>
+      </div>
+      <div class="tour-capmap-capability">
+        <div class="tour-capmap-capability-head"><a class="tour-capmap-howto-link" href="validate.html#validate">Validation<svg class="ico"><use href="#ico-arrow"/></svg></a></div>
+        <p class="tour-capmap-capability-desc">Catch real syntax errors, or check real data against a schema, in plain English first.</p>
+        <div class="tour-capmap-capability-sub">
+          <a class="tour-capmap-tool-link" href="../tools/json-validator.html">Validate JSON</a>
+          <a class="tour-capmap-tool-link" href="../index.html?group=validate#tool">Validate XML</a>
+          <a class="tour-capmap-tool-link" href="../tools/json-formatter.html">Format JSON</a>
+          <a class="tour-capmap-tool-link" href="../tools/validate-json-schema.html">Validate against Schema</a>
+        </div>
+      </div>
+    </div>
+
+    <div class="tour-capmap-category">
+      <div class="tour-capmap-category-head">
+        <div class="tour-capmap-category-icon"><svg class="ico"><use href="#ico-diff"/></svg></div>
+        <h2>Compare</h2>
+      </div>
+      <div class="tour-capmap-capability">
+        <div class="tour-capmap-capability-head"><a class="tour-capmap-howto-link" href="compare.html#compare">JSON comparison<svg class="ico"><use href="#ico-arrow"/></svg></a></div>
+        <p class="tour-capmap-capability-desc">Added, removed, and changed fields — plus whether a change is actually breaking.</p>
+        <div class="tour-capmap-capability-sub">
+          <a class="tour-capmap-tool-link" href="../tools/json-diff.html">Diff JSON</a>
+          <a class="tour-capmap-tool-link" href="../tools/xml-diff.html">Diff XML</a>
+          <a class="tour-capmap-tool-link" href="../index.html?group=compare#tool">Structural Analysis</a>
+        </div>
+      </div>
+      <div class="tour-capmap-capability">
+        <div class="tour-capmap-capability-head"><a class="tour-capmap-howto-link" href="compare.html#compare">CSV comparison<svg class="ico"><use href="#ico-arrow"/></svg></a></div>
+        <p class="tour-capmap-capability-desc">Row-aware — a reordered or deleted row is matched by its content, not by line position.</p>
+        <div class="tour-capmap-capability-sub">
+          <a class="tour-capmap-tool-link" href="../tools/csv-diff.html">Diff CSV</a>
+        </div>
+      </div>
+    </div>
+
+    <div class="tour-capmap-category">
+      <div class="tour-capmap-category-head">
+        <div class="tour-capmap-category-icon"><svg class="ico"><use href="#ico-code"/></svg></div>
+        <h2>Work with APIs</h2>
+      </div>
+      <div class="tour-capmap-capability">
+        <div class="tour-capmap-capability-head"><a class="tour-capmap-howto-link" href="api-workbench.html#api-workbench">API Workbench<svg class="ico"><use href="#ico-arrow"/></svg></a></div>
+        <p class="tour-capmap-capability-desc">Send a real request, see the real response, then hand it straight to another tool.</p>
+        <div class="tour-capmap-capability-sub">
+          <a class="tour-capmap-tool-link" href="../index.html#api">Open the playground</a>
+        </div>
+      </div>
+      <div class="tour-capmap-capability">
+        <div class="tour-capmap-capability-head"><a class="tour-capmap-howto-link" href="api-workbench.html#api-workbench">API<svg class="ico"><use href="#ico-arrow"/></svg></a></div>
+        <p class="tour-capmap-capability-desc">The same engine over REST — <code>POST /v1/convert</code>, <code>/v1/diff</code>, <code>/v1/schema</code>.</p>
+        <div class="tour-capmap-capability-sub">
+          <a class="tour-capmap-tool-link" href="../index.html#api">API documentation</a>
+        </div>
+      </div>
+    </div>
+
+    <div class="tour-capmap-category">
+      <div class="tour-capmap-category-head">
+        <div class="tour-capmap-category-icon"><svg class="ico"><use href="#ico-bolt"/></svg></div>
+        <h2>Automate</h2>
+      </div>
+      <div class="tour-capmap-capability">
+        <div class="tour-capmap-capability-head"><a class="tour-capmap-howto-link" href="automate.html#recipes">Recipes<svg class="ico"><use href="#ico-arrow"/></svg></a></div>
+        <p class="tour-capmap-capability-desc">Save a multi-step workflow once, then run it again in one click.</p>
+        <div class="tour-capmap-capability-sub">
+          <a class="tour-capmap-tool-link" href="../index.html?open=recipes#tool">Recipe Builder 2.0</a>
+        </div>
+      </div>
+      <div class="tour-capmap-capability">
+        <div class="tour-capmap-capability-head"><a class="tour-capmap-howto-link" href="automate.html#batch">Batch<svg class="ico"><use href="#ico-arrow"/></svg></a></div>
+        <p class="tour-capmap-capability-desc">Convert, validate, or diff up to 100 files at once. Pro feature.</p>
+        <div class="tour-capmap-capability-sub">
+          <a class="tour-capmap-tool-link" href="../index.html#tool">Open the tool</a>
+        </div>
+      </div>
+      <div class="tour-capmap-capability">
+        <div class="tour-capmap-capability-head"><a class="tour-capmap-howto-link" href="automate.html#api-cli">CLI<svg class="ico"><use href="#ico-arrow"/></svg></a></div>
+        <p class="tour-capmap-capability-desc">The identical engine, running locally — no network dependency at all.</p>
+        <div class="tour-capmap-capability-sub">
+          <a class="tour-capmap-tool-link" href="https://www.npmjs.com/package/recast-cli">recast-cli</a>
+        </div>
+      </div>
+      <div class="tour-capmap-capability">
+        <div class="tour-capmap-capability-head"><a class="tour-capmap-howto-link" href="automate.html#automation">Automation<svg class="ico"><use href="#ico-arrow"/></svg></a></div>
+        <p class="tour-capmap-capability-desc">Build a workflow visually once; run it by click, API, or CLI from then on.</p>
+      </div>
+    </div>
+
+  </div>
+
+  <div class="howto-crosslinks">
+    <div class="howto-crosslinks-title">Still not sure which one?</div>
+    <div class="howto-crosslinks-list">
+      <div><a href="choose-a-tool.html">Answer one question &rarr; Choose a Tool</a></div>
+      <div><a href="examples.html">See real, worked-through workflows &rarr; Examples</a></div>
     </div>
   </div>
-  <p class="tour-caption">The <code>name</code> field disappeared from record 1 — but it was only ever present on <em>some</em> records to start with, so Structural Analysis correctly calls this <strong>Uncertain</strong>, not Breaking. If a field had been on every single record before disappearing, that's when it's confidently flagged as Breaking. It's deliberately cautious: never guesses when the evidence isn't there.</p>
-
-  <div class="post-cta"><p><strong>Try it:</strong> <a href="../index.html?group=compare#tool">Open Compare</a>, then click "Structural Analysis" once you've run a JSON diff — or <a href="../demo/index.html?card=orders_diff">load the real orders demo</a> to see a genuine before/after pair.</p></div>
-
-  <h2 id="compare-visual">Find out what changed</h2>
-  <p>You have yesterday's data and today's data. They look almost identical. Recast tells you exactly what changed.</p>
-
-  <div class="tour-ba">
-    <div class="tour-ba-side">
-      <span class="tour-ba-label">Yesterday</span>
-      <pre class="tour-code">{
-  <span class="tok-key">"name":</span> <span class="tok-str">"Sarah"</span>,
-  <span class="tok-key">"email":</span> <span class="tok-str">"sarah@example.com"</span>
-}</pre>
-    </div>
-    <div class="tour-ba-arrow"><svg class="ico"><use href="#ico-arrow"/></svg></div>
-    <div class="tour-ba-side">
-      <span class="tour-ba-label">Today</span>
-      <pre class="tour-code tour-diff-sample">{
-  <span class="tok-key">"name":</span> <span class="tok-str">"Sarah"</span>,
-  <span class="tok-key">"email":</span> <span class="tok-str">"sarah@example.com"</span>,
-  <mark class="tour-mark"><span class="tok-key">"phone":</span> <span class="tok-str">"0123456789"</span></mark>
-}</pre>
-    </div>
-  </div>
-  <p class="tour-caption"><span class="tour-diff-badge tour-diff-added">+ Added</span> <code>phone</code> — the one thing that's genuinely different between the two.</p>
-
-  <p>A real comparison usually involves more than just additions. Here's the same idea with a few more changes at once:</p>
-  <div class="tour-diff-list">
-    <div class="tour-diff-row"><span class="tour-diff-badge tour-diff-unchanged">= Unchanged</span><span class="tour-diff-field">name</span><span class="tour-diff-detail">"Sarah"</span></div>
-    <div class="tour-diff-row"><span class="tour-diff-badge tour-diff-changed">~ Changed</span><span class="tour-diff-field">email</span><span class="tour-diff-detail"><span class="tour-diff-old">"sarah@example.com"</span> → <span class="tour-diff-new">"sarah@work.com"</span></span></div>
-    <div class="tour-diff-row"><span class="tour-diff-badge tour-diff-removed">− Removed</span><span class="tour-diff-field">city</span><span class="tour-diff-detail">was "London"</span></div>
-    <div class="tour-diff-row"><span class="tour-diff-badge tour-diff-added">+ Added</span><span class="tour-diff-field">phone</span><span class="tour-diff-detail">"0123456789"</span></div>
-  </div>
-
-  <div class="howto-callout tour-dev-callout">Developers often call this a <strong>diff</strong>.</div>
-
-  <h3>Compare CSV files</h3>
-  <p>The same idea works for spreadsheets, not just JSON — and it's genuinely row-aware: if you reorder or delete a row, Recast still matches it up correctly by its actual content, instead of comparing by line position and reporting dozens of false changes.</p>
-
-  <div class="tour-hero-actions">
-    <a class="btn btn-gold" href="../tools/json-diff.html">Try JSON Compare →</a>
-    <a class="btn btn-ghost" href="../tools/csv-diff.html">Try CSV Compare →</a>
-  </div>
-
-<div class="howto-crosslinks">
-  <div class="howto-crosslinks-title">Where next</div>
-  <div class="howto-crosslinks-list">
-    <div><a href="find-inspect.html">Need to understand the data first? &rarr; Find &amp; Inspect</a></div>
-    <div><a href="validate.html">Need to check whether it's valid? &rarr; Validate</a></div>
-    <div><a href="automate.html">Want to automate comparisons? &rarr; Automate</a></div>
-  </div>
-</div>
 </article>
 
 </main>
@@ -426,6 +526,114 @@
       html += fieldCard('Status', status, [{ text: status.uniqueCount + ' unique values' }]);
     }
     fieldsEl.innerHTML = html;
+  })();
+
+  // Examples page: category filter — real show/hide, not decorative buttons
+  (function () {
+    const filterBar = document.getElementById('exampleFilters');
+    if (!filterBar) return;
+    const cards = document.querySelectorAll('.tour-example-card');
+    filterBar.addEventListener('click', (evt) => {
+      const btn = evt.target.closest('[data-filter]');
+      if (!btn) return;
+      filterBar.querySelectorAll('.tour-example-filter-btn').forEach((b) => b.classList.toggle('active', b === btn));
+      const filter = btn.dataset.filter;
+      cards.forEach((card) => {
+        const cats = (card.dataset.categories || '').split(' ');
+        const show = filter === 'all' || cats.includes(filter);
+        card.classList.toggle('tour-example-hidden', !show);
+      });
+    });
+  })();
+
+  // Choose a Tool: 8 real recommendations, revealed in-page (no popup, no
+  // new window) — the choice buttons update this same result panel; the
+  // "Try it" link inside it is a normal <a href>, so the actual navigation
+  // to the tool is standard page navigation, not JS-faked.
+  (function () {
+    const RECOMMENDATIONS = {
+      convert: {
+        capability: 'Convert',
+        explanation: 'Turns a file from one format into another, so a program that only accepts one format can read data that arrived in a different one.',
+        example: 'You get customer data as JSON, but your CRM only accepts a spreadsheet-style file.',
+        href: '../index.html?group=convert#tool',
+      },
+      transform: {
+        capability: 'Transform Builder',
+        explanation: 'Keeps, renames, and fixes only the fields you need, by clicking through steps instead of writing a script.',
+        example: "A supplier's file has messy column names and a few rows you don't need.",
+        href: '../index.html?open=transform#tool',
+      },
+      find: {
+        capability: 'JSONPath',
+        explanation: 'Lets you point at exactly the piece of information you want inside a large file, instead of searching through it by eye.',
+        example: 'You need one specific value out of a file with thousands of records.',
+        href: '../tools/jsonpath-tester.html',
+      },
+      understand: {
+        capability: 'Data Inspector',
+        explanation: "Looks at a file and tells you what's actually in it — how many records, what fields exist, and anything that looks wrong.",
+        example: "You've been handed a file and have no idea what's really inside it.",
+        href: '../index.html?open=inspect#tool',
+      },
+      compare: {
+        capability: 'Compare',
+        explanation: 'Shows you exactly what changed between two versions of the same data, instead of you having to spot it yourself.',
+        example: "You want to know what's different between yesterday's file and today's.",
+        href: '../index.html?group=compare#tool',
+      },
+      validate: {
+        capability: 'Validate',
+        explanation: "Checks that a file is correctly formed, or matches the rules you expect, and tells you what's wrong in plain English.",
+        example: 'You need to be sure incoming data has the right information before you use it.',
+        href: '../index.html?group=validate#tool',
+      },
+      automate: {
+        capability: 'Recipes',
+        explanation: 'Saves a series of steps you built once, so you can run the whole thing again with a single click instead of repeating it by hand.',
+        example: 'You do the exact same clean-up and conversion every single week.',
+        href: '../index.html?open=recipes#tool',
+      },
+      api: {
+        capability: 'API Workbench',
+        explanation: 'Lets your own software ask Recast to do this directly, so nobody has to click a button by hand.',
+        example: 'You want your own systems to convert files automatically, with no person involved.',
+        href: '../index.html#api',
+      },
+    };
+
+    const choicesEl = document.getElementById('toolFinderChoices');
+    const resultEl = document.getElementById('toolFinderResult');
+    if (!choicesEl || !resultEl) return;
+    const capabilityEl = document.getElementById('toolFinderCapability');
+    const explanationEl = document.getElementById('toolFinderExplanation');
+    const exampleEl = document.getElementById('toolFinderExample');
+    const tryBtn = document.getElementById('toolFinderTryBtn');
+
+    choicesEl.addEventListener('click', (evt) => {
+      const btn = evt.target.closest('[data-choice]');
+      if (!btn) return;
+      const rec = RECOMMENDATIONS[btn.dataset.choice];
+      if (!rec) return;
+
+      choicesEl.querySelectorAll('.tour-finder-choice').forEach((b) => {
+        b.classList.toggle('active', b === btn);
+        b.setAttribute('aria-pressed', b === btn ? 'true' : 'false');
+      });
+
+      capabilityEl.innerHTML = rec.capability + (rec.comingSoon ? '<span class="tour-finder-coming-soon">Coming soon</span>' : '');
+      explanationEl.textContent = rec.explanation;
+      exampleEl.textContent = rec.example;
+      if (rec.comingSoon) {
+        tryBtn.style.display = 'none';
+      } else {
+        tryBtn.style.display = '';
+        tryBtn.href = rec.href;
+      }
+
+      resultEl.style.display = '';
+      resultEl.scrollIntoView({ behavior: 'smooth', block: 'nearest' });
+    });
   })();
 
 </script>

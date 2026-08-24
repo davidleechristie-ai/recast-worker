@@ -806,7 +806,7 @@ function updateCounts() {
   const limit = getLimitBytes();
   const pct = Math.min(100, (bytes / limit) * 100);
   $('capFill').style.width = pct + '%';
-  $('capFill').style.background = pct > 90 ? '#F2846B' : '#7FE7D0';
+  $('capFill').style.background = pct > 90 ? '#F2846B' : '#3AA2FC';
   $('capLabel').textContent = isPro() ? `${Math.round(bytes/1024)} KB \u00b7 Pro` : `${(bytes/1024/1024).toFixed(2)} / 3 MB free limit`;
   const nudge = $('upgradeNudge');
   if (nudge) { if (pct > 80) nudge.classList.add('show'); else nudge.classList.remove('show'); }
@@ -871,7 +871,7 @@ async function runCurrentMode() {
   const sourceText = cfg.dual ? ($('inputA').value + $('inputB').value) : inputEl.value;
   const bytes = new Blob([sourceText]).size;
   if (bytes > getLimitBytes()) {
-    statusEl.innerHTML = '<span class="status-err">\u2715 File exceeds the free limit \u2014 <a href="#pricing" style="color:#F2C14E">upgrade to Pro</a> for files up to 25 MB.</span>';
+    statusEl.innerHTML = '<span class="status-err">\u2715 File exceeds the free limit \u2014 <a href="#pricing" style="color:#A855F7">upgrade to Pro</a> for files up to 25 MB.</span>';
     $('upgradeNudge')?.classList.add('show');
     track('limit_hit', { mode: currentMode, reason: 'file_size' });
     recordPaywallHit('file_size');
@@ -882,7 +882,7 @@ async function runCurrentMode() {
     const rowsA = RecastEngine.csvRowCount($('inputA').value, delim);
     const rowsB = RecastEngine.csvRowCount($('inputB').value, delim);
     if (Math.max(rowsA, rowsB) > CSV_COMPARE_FREE_ROW_LIMIT) {
-      statusEl.innerHTML = `<span class="status-err">\u2715 Free tier compares up to ${CSV_COMPARE_FREE_ROW_LIMIT} rows per file \u2014 <a href="#pricing" style="color:#F2C14E">upgrade to Pro</a>, or <a href="#" onclick="startCheckout('day_pass');return false;" style="color:#F2C14E">get a 24-hour pass \u2014 \u00a32.99</a> for just this one.</span>`;
+      statusEl.innerHTML = `<span class="status-err">\u2715 Free tier compares up to ${CSV_COMPARE_FREE_ROW_LIMIT} rows per file \u2014 <a href="#pricing" style="color:#A855F7">upgrade to Pro</a>, or <a href="#" onclick="startCheckout('day_pass');return false;" style="color:#A855F7">get a 24-hour pass \u2014 \u00a32.99</a> for just this one.</span>`;
       $('upgradeNudge')?.classList.add('show');
       track('limit_hit', { mode: currentMode, reason: 'row_count' });
       recordPaywallHit('row_count');
@@ -1001,10 +1001,10 @@ function openPopoutMirror(sourceEl, label, opts) {
   doc.title = 'Recast \u2014 ' + label;
   const style = doc.createElement('style');
   style.textContent =
-    "html,body{margin:0;height:100%;background:#0E2338;color:#EDF3F8;font-family:'IBM Plex Mono',ui-monospace,monospace;}" +
-    ".head{box-sizing:border-box;display:flex;align-items:center;justify-content:space-between;gap:10px;padding:10px 14px;border-bottom:1px solid rgba(140,182,214,0.32);font-size:12px;letter-spacing:.06em;text-transform:uppercase;color:#B9CBDA;}" +
-    ".head button{font-family:inherit;font-size:11px;background:transparent;border:1px solid rgba(140,182,214,0.32);color:#EDF3F8;border-radius:2px;padding:5px 10px;cursor:pointer;}" +
-    ".head button:hover{border-color:#F2C14E;color:#F2C14E;}" +
+    "html,body{margin:0;height:100%;background:#0A0E1F;color:#EDF3F8;font-family:'IBM Plex Mono',ui-monospace,monospace;}" +
+    ".head{box-sizing:border-box;display:flex;align-items:center;justify-content:space-between;gap:10px;padding:10px 14px;border-bottom:1px solid rgba(120,110,180,0.32);font-size:12px;letter-spacing:.06em;text-transform:uppercase;color:#B9CBDA;}" +
+    ".head button{font-family:inherit;font-size:11px;background:transparent;border:1px solid rgba(120,110,180,0.32);color:#EDF3F8;border-radius:2px;padding:5px 10px;cursor:pointer;}" +
+    ".head button:hover{border-color:#A855F7;color:#A855F7;}" +
     "textarea{box-sizing:border-box;width:100%;height:calc(100% - 41px);border:none;outline:none;background:transparent;color:#EDF3F8;font-family:inherit;font-size:13px;line-height:1.6;padding:16px;resize:none;}";
   doc.head.appendChild(style);
 
@@ -1273,7 +1273,7 @@ $('fileInput')?.addEventListener('change', async (e) => {
 // batch panel accepts drops too, appending to whatever's already queued.
 async function loadFileIntoTextarea(file, textareaEl) {
   if (file.size > getLimitBytes()) {
-    statusEl.innerHTML = '<span class="status-err">\u2715 File exceeds the free limit \u2014 <a href="#pricing" style="color:#F2C14E">upgrade to Pro</a>.</span>';
+    statusEl.innerHTML = '<span class="status-err">\u2715 File exceeds the free limit \u2014 <a href="#pricing" style="color:#A855F7">upgrade to Pro</a>.</span>';
     $('upgradeNudge')?.classList.add('show');
     return false;
   }
@@ -2192,20 +2192,25 @@ renderHistoryList();
   const group = params.get('group');
   if (group && window.setGroup) window.setGroup(group);
   const open = params.get('open');
-  if (open === 'recipes') {
-    document.getElementById('recipeBuilder2ToggleBtn')?.click();
-    // Keep re-applying the scroll for a short window rather than trusting
-    // a single attempt — this runs during a full page navigation, and a
-    // late-arriving layout shift (fonts, images still settling) can silently
-    // undo an early one-time scroll before the user ever sees it land.
+
+  // Keep re-applying the scroll for a short window rather than trusting a
+  // single attempt — this runs during a full page navigation, and a
+  // late-arriving layout shift (fonts, images still settling) can silently
+  // undo an early one-time scroll before the user ever sees it land.
+  function openPanelAndScroll(toggleBtnId, panelId) {
+    document.getElementById(toggleBtnId)?.click();
     let attempts = 0;
     const keepScrolling = () => {
-      const panel = document.getElementById('recipeBuilder2Panel');
+      const panel = document.getElementById(panelId);
       if (panel) panel.scrollIntoView({ behavior: 'instant', block: 'start' });
       if (attempts++ < 6) setTimeout(keepScrolling, 150);
     };
     keepScrolling();
   }
+
+  if (open === 'recipes') openPanelAndScroll('recipeBuilder2ToggleBtn', 'recipeBuilder2Panel');
+  else if (open === 'transform') openPanelAndScroll('transformBuilderToggleBtn', 'transformBuilderPanel');
+  else if (open === 'inspect') openPanelAndScroll('dataInspectorToggleBtn', 'dataInspectorPanel');
   else if (open === 'history') document.getElementById('historyBtn')?.click();
   else if (open === 'presets') document.getElementById('presetsBtn')?.click();
   if (group || open) {

@@ -112,22 +112,22 @@
       cd.changed.length + ' changed \u00b7 ' + (cd.rows.length - cd.added.length - cd.removed.length - cd.changed.length) + ' unchanged';
     const table = buildTableHtml(cd, {});
     return '<!DOCTYPE html><html><head><meta charset="UTF-8"><title>' + esc(title) + '</title><style>' +
-      'body{font-family:-apple-system,Segoe UI,Roboto,sans-serif;background:#0E2338;color:#EDF3F8;padding:24px;margin:0;}' +
+      'body{font-family:-apple-system,Segoe UI,Roboto,sans-serif;background:#0A0E1F;color:#EDF3F8;padding:24px;margin:0;}' +
       'h1{font-size:20px;margin:0 0 6px;}' +
       '.summary{color:#B9CBDA;font-size:13px;margin-bottom:18px;}' +
-      '.diff-table-wrap{overflow-x:auto;border:1px solid rgba(140,182,214,0.32);border-radius:4px;}' +
+      '.diff-table-wrap{overflow-x:auto;border:1px solid rgba(120,110,180,0.32);border-radius:4px;}' +
       '.diff-table{border-collapse:collapse;width:100%;font-family:ui-monospace,Menlo,monospace;font-size:12.5px;}' +
-      '.diff-table th,.diff-table td{padding:7px 10px;border-bottom:1px solid rgba(140,182,214,0.16);text-align:left;white-space:nowrap;}' +
-      '.diff-table th{background:#12314C;position:sticky;top:0;}' +
+      '.diff-table th,.diff-table td{padding:7px 10px;border-bottom:1px solid rgba(120,110,180,0.16);text-align:left;white-space:nowrap;}' +
+      '.diff-table th{background:#131A33;position:sticky;top:0;}' +
       '.col-status{width:70px;}' +
       '.row-badge{font-size:10px;text-transform:uppercase;padding:2px 7px;border-radius:2px;display:inline-block;}' +
-      '.row-added .row-badge{background:#7FE7D0;color:#0E2338;} .row-added{background:rgba(127,231,208,0.06);}' +
-      '.row-removed .row-badge{background:#F2846B;color:#0E2338;} .row-removed{background:rgba(242,132,107,0.06);}' +
-      '.row-changed .row-badge{background:#F2C14E;color:#0E2338;} .row-changed{background:rgba(242,193,78,0.06);}' +
-      '.row-unchanged .row-badge{background:rgba(140,182,214,0.32);color:#EDF3F8;}' +
-      '.cell-changed{background:rgba(242,193,78,0.12);}' +
+      '.row-added .row-badge{background:#3AA2FC;color:#0A0E1F;} .row-added{background:rgba(58,162,252,0.06);}' +
+      '.row-removed .row-badge{background:#F2846B;color:#0A0E1F;} .row-removed{background:rgba(242,132,107,0.06);}' +
+      '.row-changed .row-badge{background:#A855F7;color:#0A0E1F;} .row-changed{background:rgba(168,85,247,0.06);}' +
+      '.row-unchanged .row-badge{background:rgba(120,110,180,0.32);color:#EDF3F8;}' +
+      '.cell-changed{background:rgba(168,85,247,0.12);}' +
       '.cell-old{color:#F2846B;text-decoration:line-through;opacity:.8;font-size:11px;}' +
-      '.cell-new{color:#7FE7D0;}' +
+      '.cell-new{color:#3AA2FC;}' +
       '</style></head><body><h1>' + esc(title) + '</h1><div class="summary">' + esc(summary) +
       ' \u00b7 rows matched by <b>' + esc(cd.keyColumn) + '</b></div>' + table + '</body></html>';
   }

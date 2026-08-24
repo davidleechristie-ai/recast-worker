@@ -1,6 +1,9 @@
-import * as W from './worker.js';
+import Worker, * as W from './worker.js';
 import * as E from './entitlements.js';
 import { signPayloadForTest } from './stripe-verify.js';
+import { readFileSync } from 'node:fs';
+import { fileURLToPath } from 'node:url';
+import path from 'node:path';
 
 let pass = 0, fail = 0;
 function assert(name, cond, detail) {
@@ -232,6 +235,108 @@ const env = {
     const req = mockRequest('https://x/some/other/page.html');
     const result = await W.route(req, testEnv, W.defaultDeps);
     assert('non-API routes return null (fall through to static assets)', result === null, result);
+  }
+
+  // ---------------- directory-index rewriting (html_handling: "none" fix) ----------------
+  // With assets.html_handling set to "none", Cloudflare no longer auto-resolves a bare
+  // "/" (or "/blog/", etc.) to that directory's index.html — the default export's fetch()
+  // handler has to do that itself now. These tests mock env.ASSETS.fetch to capture
+  // exactly what pathname it was asked for, so they verify the actual rewrite, not just
+  // that a response came back.
+  {
+    const testEnv = Object.assign({}, env, { ENTITLEMENTS: makeMockKV() });
+    const casesExpectingRewrite = [
+      ['https://tryrecast.app/', '/index.html'],
+      ['https://tryrecast.app/blog', '/blog/index.html'],
+      ['https://tryrecast.app/blog/', '/blog/index.html'],
+      ['https://tryrecast.app/how-to', '/how-to/index.html'],
+      ['https://tryrecast.app/how-to/', '/how-to/index.html'],
+      ['https://tryrecast.app/demo', '/demo/index.html'],
+      ['https://tryrecast.app/demo/', '/demo/index.html'],
+    ];
+    for (const [requestUrl, expectedAssetPath] of casesExpectingRewrite) {
+      let capturedPathname = null;
+      const mockAssetsEnv = Object.assign({}, testEnv, {
+        ASSETS: { fetch: async (req) => { capturedPathname = new URL(req.url).pathname; return new Response('mock asset'); } },
+      });
+      await Worker.fetch(mockRequest(requestUrl), mockAssetsEnv, {});
+      assert(`${requestUrl} -> ASSETS.fetch called with ${expectedAssetPath}`, capturedPathname === expectedAssetPath, capturedPathname);
+    }
+
+    // A path that already targets a real, specific file must NOT be rewritten —
+    // only the bare directory-index paths above should be touched.
+    let unrewrittenPathname = null;
+    const mockAssetsEnvPassthrough = Object.assign({}, testEnv, {
+      ASSETS: { fetch: async (req) => { unrewrittenPathname = new URL(req.url).pathname; return new Response('mock asset'); } },
+    });
+    await Worker.fetch(mockRequest('https://tryrecast.app/tools/json-to-csv.html'), mockAssetsEnvPassthrough, {});
+    assert('an explicit, already-correct path is passed through unchanged', unrewrittenPathname === '/tools/json-to-csv.html', unrewrittenPathname);
+
+    // The URL the browser sees must never change — this fetches index.html's
+    // content directly, it must not redirect. Confirmed by checking the Request
+    // object handed to ASSETS.fetch keeps the ORIGINAL url on .url... actually
+    // what matters is simply that no Response with a Location header / redirect
+    // status is ever returned by fetch() itself for these paths.
+    const rootEnv = Object.assign({}, testEnv, { ASSETS: { fetch: async () => new Response('index html content', { status: 200 }) } });
+    const rootResponse = await Worker.fetch(mockRequest('https://tryrecast.app/'), rootEnv, {});
+    assert('no client-visible redirect — response is 200, not a 3xx', rootResponse.status === 200, rootResponse.status);
+  }
+
+  // ---------------- wrangler.jsonc / worker.js drift check ----------------
+  // The directory-index rewrite above only ever runs if Cloudflare's asset
+  // server actually falls through to the Worker for these paths in the first
+  // place. That fallthrough is NOT guaranteed by default — it depends on
+  // wrangler.jsonc's assets.run_worker_first list. This bit in production
+  // once already: DIRECTORY_INDEX_PATHS here was correct and fully tested,
+  // but run_worker_first didn't explicitly list these paths, so Cloudflare's
+  // own asset matching could resolve "/" before the Worker ever ran,
+  // silently skipping the rewrite — a 404 no test above could catch, since
+  // every test here calls Worker.fetch() directly and never exercises
+  // Cloudflare's own asset-routing layer at all. This test cross-checks the
+  // two files against each other so that gap can't reopen silently again.
+  {
+    const configPath = path.join(path.dirname(fileURLToPath(import.meta.url)), '..', 'wrangler.jsonc');
+    const configText = readFileSync(configPath, 'utf8');
+
+    // Minimal, string-aware JSONC comment stripper — must not treat "//"
+    // inside a string value (e.g. "https://tryrecast.app/") as a comment.
+    function stripJsonComments(text) {
+      let result = '', inString = false, i = 0;
+      while (i < text.length) {
+        const ch = text[i];
+        if (inString) {
+          result += ch;
+          if (ch === '\\') { result += text[i + 1] || ''; i += 2; continue; }
+          if (ch === '"') inString = false;
+          i++; continue;
+        }
+        if (ch === '"') { inString = true; result += ch; i++; continue; }
+        if (ch === '/' && text[i + 1] === '/') { while (i < text.length && text[i] !== '\n') i++; continue; }
+        result += ch; i++;
+      }
+      return result;
+    }
+
+    let config;
+    try {
+      config = JSON.parse(stripJsonComments(configText));
+    } catch (e) {
+      assert('wrangler.jsonc parses as valid JSON (after stripping // comments)', false, e.message);
+      config = null;
+    }
+
+    if (config) {
+      assert('assets.html_handling is "none"', config.assets && config.assets.html_handling === 'none', config.assets && config.assets.html_handling);
+      const runWorkerFirst = (config.assets && config.assets.run_worker_first) || [];
+      const directoryIndexKeys = Object.keys(W.DIRECTORY_INDEX_PATHS || {});
+      assert('DIRECTORY_INDEX_PATHS is exported for this cross-check', directoryIndexKeys.length > 0, directoryIndexKeys);
+      const missing = directoryIndexKeys.filter((k) => !runWorkerFirst.includes(k));
+      assert(
+        'every DIRECTORY_INDEX_PATHS key is also in assets.run_worker_first, so the Worker is guaranteed to run for it',
+        missing.length === 0,
+        missing
+      );
+    }
   }
 
   console.log(`\n${pass} passed, ${fail} failed`);

@@ -63,7 +63,7 @@
 
   function esc(s) { return String(s).replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;').replace(/"/g, '&quot;'); }
 
-  const TYPE_COLORS = { string: '#7FE7D0', number: '#F2C14E', integer: '#F2C14E', boolean: '#C99FE8', null: '#F2846B', object: '#8FCBEB', array: '#8FCBEB' };
+  const TYPE_COLORS = { string: '#3AA2FC', number: '#A855F7', integer: '#A855F7', boolean: '#C99FE8', null: '#F2846B', object: '#8FCBEB', array: '#8FCBEB' };
 
   function collectVisible(node, out) {
     out.push(node);
@@ -84,7 +84,7 @@
           const x1 = n.x + NODE_PAD_X + 4, y1 = n.y + NODE_H / 2;
           const x2 = c.x, y2 = c.y + NODE_H / 2;
           const midX = (x1 + x2) / 2;
-          edges += `<path d="M${x1},${y1} C${midX},${y1} ${midX},${y2} ${x2},${y2}" fill="none" stroke="rgba(140,182,214,0.35)" stroke-width="1.5"/>`;
+          edges += `<path d="M${x1},${y1} C${midX},${y1} ${midX},${y2} ${x2},${y2}" fill="none" stroke="rgba(120,110,180,0.35)" stroke-width="1.5"/>`;
         });
       }
       const label = (n.key !== null ? esc(n.key) + ': ' : '') + esc(n.display);
@@ -92,8 +92,8 @@
       const clickable = (n.children && n.children.length > 0);
       const width = Math.min(H_SPACING - 16, 10 + label.length * 6.4);
       nodeEls += `<g class="graph-node${clickable ? ' clickable' : ''}" data-path="${esc(n.path)}" transform="translate(${n.x},${n.y})">` +
-        `<rect width="${width}" height="${NODE_H}" rx="3" fill="#12314C" stroke="${clickable ? '#F2C14E' : 'rgba(140,182,214,0.32)'}" stroke-width="1.2"/>` +
-        (clickable ? `<text x="6" y="${NODE_H / 2 + 4}" font-size="10" fill="#F2C14E" font-family="monospace">${n.collapsedButHasChildren ? '\u25b8' : '\u25be'}</text>` : '') +
+        `<rect width="${width}" height="${NODE_H}" rx="3" fill="#131A33" stroke="${clickable ? '#A855F7' : 'rgba(120,110,180,0.32)'}" stroke-width="1.2"/>` +
+        (clickable ? `<text x="6" y="${NODE_H / 2 + 4}" font-size="10" fill="#A855F7" font-family="monospace">${n.collapsedButHasChildren ? '\u25b8' : '\u25be'}</text>` : '') +
         `<text x="${clickable ? 16 : 8}" y="${NODE_H / 2 + 4}" font-size="11.5" fill="${color}" font-family="'IBM Plex Mono', monospace">${label}</text>` +
         `</g>`;
     });
@@ -137,7 +137,7 @@
       canvas.width = width * scale;
       canvas.height = height * scale;
       const ctx = canvas.getContext('2d');
-      ctx.fillStyle = '#0E2338'; // match the site background instead of a transparent PNG
+      ctx.fillStyle = '#0A0E1F'; // match the site background instead of a transparent PNG
       ctx.fillRect(0, 0, canvas.width, canvas.height);
       ctx.scale(scale, scale);
       ctx.drawImage(img, 0, 0, width, height);
