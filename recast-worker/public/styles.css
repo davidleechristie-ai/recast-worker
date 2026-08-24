@@ -133,7 +133,7 @@
     cursor:pointer; text-decoration:none; display:inline-flex; align-items:center; gap:6px;
   }
   .btn-gold{background:#A855F7; color:var(--bg); border-color:#A855F7;}
-  .btn-gold:hover{background:#ffd066;}
+  .btn-gold:hover{background:#BE6FF8;}
   .btn-ghost{border-color:rgba(var(--border-rgb),0.32); color:var(--text);}
   .btn-ghost:hover{border-color:#A855F7; color:#A855F7;}
 
@@ -218,7 +218,7 @@
     font-weight:700; font-size:13.5px; padding:10px 18px; border-radius:2px; cursor:pointer;
     letter-spacing:.02em;
   }
-  .convert-btn:hover{background:#ffd066;}
+  .convert-btn:hover{background:#BE6FF8;}
   .convert-btn:active{transform:scale(0.97);}
 
   .panel-foot{
@@ -503,7 +503,7 @@ tr.diff-row-flash{ animation:diffRowFlash 1s ease-out; }
 /* ================= Day pass note (one-time, non-recurring) ================= */
 .day-pass-note{ max-width:760px; margin:20px auto 0; text-align:center; font-size:13.5px; color:var(--text-muted); padding:14px 18px; border:1px solid rgba(var(--border-rgb),0.2); border-radius:4px; background:rgba(var(--text-rgb),0.02); }
 .day-pass-note a{ color:#A855F7; text-decoration:underline; text-underline-offset:3px; }
-.day-pass-note a:hover{ color:#ffd066; }
+.day-pass-note a:hover{ color:#BE6FF8; }
 
 /* ================= API key display ================= */
 .api-key-box{ display:flex; align-items:center; gap:10px; flex-wrap:wrap; background:var(--bg); border:1px solid rgba(58,162,252,0.35); border-radius:4px; padding:12px 14px; margin:16px 0; }
