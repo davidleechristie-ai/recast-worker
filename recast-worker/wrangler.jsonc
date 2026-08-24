@@ -9,10 +9,15 @@
     "binding": "STRIPE_WEBHOOK_SECRET",
     "store_id": "8fea47bd0f6e47b1b19663d50cf64181",
     "secret_name": "STRIPE_WEBHOOK_SECRET"
+  },
+  {
+    "binding": "RESEND_API_KEY",
+    "store_id": "8fea47bd0f6e47b1b19663d50cf64181",
+    "secret_name": "RESEND_API_KEY"
   }
 ],
   "$schema": "./node_modules/wrangler/config-schema.json",
-  "name": "recast",
+  "name": "falling-cloud-0deb",
   "main": "src/worker.js",
   "compatibility_date": "2026-08-13",
 

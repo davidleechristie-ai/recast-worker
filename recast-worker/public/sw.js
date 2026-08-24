@@ -22,7 +22,7 @@
 // expiry. This bit someone on the "Demo" page launch: the nav link update
 // never reached anyone with the SW already active, because this file was
 // otherwise unchanged.
-const CACHE_VERSION = 'recast-v49';
+const CACHE_VERSION = 'recast-v50';
 const CORE_ASSETS = [
   '/',
   '/index.html',

@@ -50,7 +50,7 @@ to the plan keys the site already uses:
 "PRICE_MAP": "{\"price_1AbC...\":\"pro_monthly\",\"price_1DeF...\":\"pro_yearly\",\"price_1GhI...\":\"api_monthly\",\"price_1JkL...\":\"api_yearly\"}"
 ```
 
-## 4. Set the two secrets (never go in wrangler.jsonc or git)
+## 4. Set the secrets (never go in wrangler.jsonc or git)
 
 ```
 npx wrangler secret put STRIPE_SECRET_KEY
@@ -58,6 +58,15 @@ npx wrangler secret put STRIPE_SECRET_KEY
 
 npx wrangler secret put STRIPE_WEBHOOK_SECRET
 # paste the webhook signing secret — you'll get this in step 6 below
+
+npx wrangler secret put RESEND_API_KEY
+# powers the /contact page's form (POST /api/contact). Sign up free at
+# resend.com, verify the tryrecast.app domain there (adds a couple of DNS
+# records — Resend walks you through it), then create an API key and paste
+# it here. Free tier covers this site's contact-form volume many times
+# over. Until this secret is set, the form correctly reports "not
+# configured yet" instead of silently failing — it won't send anything,
+# but it also won't pretend to.
 ```
 
 ## 5. Deploy

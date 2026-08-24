@@ -212,6 +212,10 @@
   <div class="contact-form-panel">
     <h2>Send a message</h2>
     <form id="contactForm" novalidate>
+      <div class="contact-honeypot" aria-hidden="true">
+        <label for="contactWebsite">Website</label>
+        <input type="text" id="contactWebsite" name="website" tabindex="-1" autocomplete="off">
+      </div>
       <div class="contact-field-row">
         <div class="contact-field">
           <label for="contactName">Name</label>
@@ -240,8 +244,12 @@
         <label for="contactMessage">Message</label>
         <textarea id="contactMessage" name="message" rows="6" required></textarea>
       </div>
-      <button type="button" class="btn btn-gold" id="contactSubmitBtn">Send Message</button>
-      <p class="contact-form-note" id="contactFormNote">This opens your email app with the message pre-filled, addressed to <strong>contact@tryrecast.app</strong> — nothing is sent until you hit send there.</p>
+      <button type="button" class="btn btn-gold contact-submit-btn" id="contactSubmitBtn">
+        <svg class="ico contact-spinner" id="contactSpinner" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round"><path d="M12 3a9 9 0 1 0 9 9"/></svg>
+        <span id="contactSubmitLabel">Send Message</span>
+      </button>
+      <div class="contact-status" id="contactStatus" role="status" aria-live="polite"></div>
+      <p class="contact-form-note">Sent straight from this page to <strong>contact@tryrecast.app</strong> — no email app required.</p>
     </form>
   </div>
 
@@ -271,7 +279,20 @@
   (function () {
     var form = document.getElementById('contactForm');
     var btn = document.getElementById('contactSubmitBtn');
+    var label = document.getElementById('contactSubmitLabel');
+    var statusEl = document.getElementById('contactStatus');
     if (!form || !btn) return;
+
+    function setStatus(kind, text) {
+      statusEl.className = 'contact-status contact-status-' + kind;
+      statusEl.textContent = text;
+    }
+
+    function setLoading(isLoading) {
+      btn.disabled = isLoading;
+      btn.classList.toggle('is-loading', isLoading);
+      label.textContent = isLoading ? 'Sending…' : 'Send Message';
+    }
 
     btn.addEventListener('click', function () {
       var name = document.getElementById('contactName').value.trim();
@@ -279,23 +300,37 @@
       var company = document.getElementById('contactCompany').value.trim();
       var topic = document.getElementById('contactTopic').value;
       var message = document.getElementById('contactMessage').value.trim();
+      var website = document.getElementById('contactWebsite').value; // honeypot
 
       if (!name || !email || !message) {
         form.reportValidity();
         return;
       }
 
-      var subject = encodeURIComponent('Recast contact: ' + topic);
-      var bodyLines = [
-        'Name: ' + name,
-        company ? 'Company: ' + company : null,
-        'Email: ' + email,
-        '',
-        message,
-      ].filter(function (l) { return l !== null; });
-      var body = encodeURIComponent(bodyLines.join('\n'));
+      setStatus('', '');
+      setLoading(true);
 
-      window.location.href = 'mailto:contact@tryrecast.app?subject=' + subject + '&body=' + body;
+      fetch('/api/contact', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ name: name, email: email, company: company, topic: topic, message: message, website: website }),
+      })
+        .then(function (res) {
+          return res.json().then(function (data) { return { ok: res.ok, data: data }; });
+        })
+        .then(function (result) {
+          setLoading(false);
+          if (result.ok) {
+            setStatus('success', 'Message sent — thanks, we\u2019ll get back to you soon.');
+            form.reset();
+          } else {
+            setStatus('error', (result.data && result.data.error) || 'Something went wrong — try again, or email contact@tryrecast.app directly.');
+          }
+        })
+        .catch(function () {
+          setLoading(false);
+          setStatus('error', 'Could not reach the server — try again, or email contact@tryrecast.app directly.');
+        });
     });
   })();
 </script>
