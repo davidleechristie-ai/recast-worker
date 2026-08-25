@@ -1,28 +1,28 @@
 /*!
-* Recast entitlements Worker.
-*
-* Routes:
-*  GET  /api/verify-session?session_id=...  — called once after Stripe
-*        Checkout redirects back. Confirms payment with Stripe directly
-*        (server-side, using the secret key) and issues an access token.
-*  GET  /api/verify-token?token=...        — called on page load / on an
-*        interval to re-check current entitlement. This is what actually
-*        catches a cancellation — nothing is trusted forever.
-*  POST /api/webhook                        — Stripe calls this on
-*        subscription changes. Signature-verified.
-*  POST /api/portal  { token }            — generates a real-time Stripe
-*        Billing Portal link for the token's customer.
-*
-*  POST /v1/convert  { mode, input, options } — the same access token
-*        issued at checkout doubles as the API key. Requires the API plan
-*        specifically (not just any Pro entitlement). Rate-limited to
-*        10,000 calls/month per the pricing page's promise, tracked in KV.
-*  POST /v1/diff      { mode, inputA, inputB, options }
-*  POST /v1/schema    { input, options }
-*  All three: Authorization: Bearer <token>
-*
-* Everything else falls through to the static site (env.ASSETS).
-*/
+ * Recast entitlements Worker.
+ *
+ * Routes:
+ *   GET  /api/verify-session?session_id=...  — called once after Stripe
+ *        Checkout redirects back. Confirms payment with Stripe directly
+ *        (server-side, using the secret key) and issues an access token.
+ *   GET  /api/verify-token?token=...         — called on page load / on an
+ *        interval to re-check current entitlement. This is what actually
+ *        catches a cancellation — nothing is trusted forever.
+ *   POST /api/webhook                        — Stripe calls this on
+ *        subscription changes. Signature-verified.
+ *   POST /api/portal   { token }             — generates a real-time Stripe
+ *        Billing Portal link for the token's customer.
+ *
+ *   POST /v1/convert   { mode, input, options } — the same access token
+ *        issued at checkout doubles as the API key. Requires the API plan
+ *        specifically (not just any Pro entitlement). Rate-limited to
+ *        10,000 calls/month per the pricing page's promise, tracked in KV.
+ *   POST /v1/diff      { mode, inputA, inputB, options }
+ *   POST /v1/schema    { input, options }
+ *   All three: Authorization: Bearer <token>
+ *
+ * Everything else falls through to the static site (env.ASSETS).
+ */
 import { verifyStripeSignature } from './stripe-verify.js';
 import { issueToken, lookupToken, setCustomerStatus, isEntitled } from './entitlements.js';
 import * as Engine from './engine.js';
@@ -39,11 +39,11 @@ function json(data, status) {
 }
 
 /**
-* Resolves a secret regardless of how it's bound. Cloudflare's dashboard
-* currently pushes new bindings toward "Secrets Store" (an object with an
-* async .get() method) rather than a plain string env var, so this handles
-* both shapes without needing to know in advance which one was used.
-*/
+ * Resolves a secret regardless of how it's bound. Cloudflare's dashboard
+ * currently pushes new bindings toward "Secrets Store" (an object with an
+ * async .get() method) rather than a plain string env var, so this handles
+ * both shapes without needing to know in advance which one was used.
+ */
 async function resolveSecret(binding) {
   if (binding == null) return binding;
   if (typeof binding === 'string') return binding;
@@ -53,7 +53,7 @@ async function resolveSecret(binding) {
 
 function planFromPriceId(priceId, env) {
   // env.PRICE_MAP is a JSON string set as a Worker variable, e.g.:
-  //  {"price_1ABC...":"pro_monthly","price_1DEF...":"pro_yearly", ...}
+  //   {"price_1ABC...":"pro_monthly","price_1DEF...":"pro_yearly", ...}
   // Fill this in with your real Stripe Price IDs after creating products.
   try {
     const map = JSON.parse(env.PRICE_MAP || '{}');
@@ -195,7 +195,7 @@ function isValidEmail(email) {
 
 function escapeHtml(str) {
   return String(str).replace(/[&<>"']/g, function (c) {
-    return { '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": ''' }[c];
+    return { '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;' }[c];
   });
 }
 
