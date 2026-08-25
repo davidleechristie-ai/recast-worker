@@ -1,28 +1,28 @@
 /*!
- * Recast entitlements Worker.
- *
- * Routes:
- *   GET  /api/verify-session?session_id=...  — called once after Stripe
- *        Checkout redirects back. Confirms payment with Stripe directly
- *        (server-side, using the secret key) and issues an access token.
- *   GET  /api/verify-token?token=...         — called on page load / on an
- *        interval to re-check current entitlement. This is what actually
- *        catches a cancellation — nothing is trusted forever.
- *   POST /api/webhook                        — Stripe calls this on
- *        subscription changes. Signature-verified.
- *   POST /api/portal   { token }             — generates a real-time Stripe
- *        Billing Portal link for the token's customer.
- *
- *   POST /v1/convert   { mode, input, options } — the same access token
- *        issued at checkout doubles as the API key. Requires the API plan
- *        specifically (not just any Pro entitlement). Rate-limited to
- *        10,000 calls/month per the pricing page's promise, tracked in KV.
- *   POST /v1/diff      { mode, inputA, inputB, options }
- *   POST /v1/schema    { input, options }
- *   All three: Authorization: Bearer <token>
- *
- * Everything else falls through to the static site (env.ASSETS).
- */
+* Recast entitlements Worker.
+*
+* Routes:
+*  GET  /api/verify-session?session_id=...  — called once after Stripe
+*        Checkout redirects back. Confirms payment with Stripe directly
+*        (server-side, using the secret key) and issues an access token.
+*  GET  /api/verify-token?token=...        — called on page load / on an
+*        interval to re-check current entitlement. This is what actually
+*        catches a cancellation — nothing is trusted forever.
+*  POST /api/webhook                        — Stripe calls this on
+*        subscription changes. Signature-verified.
+*  POST /api/portal  { token }            — generates a real-time Stripe
+*        Billing Portal link for the token's customer.
+*
+*  POST /v1/convert  { mode, input, options } — the same access token
+*        issued at checkout doubles as the API key. Requires the API plan
+*        specifically (not just any Pro entitlement). Rate-limited to
+*        10,000 calls/month per the pricing page's promise, tracked in KV.
+*  POST /v1/diff      { mode, inputA, inputB, options }
+*  POST /v1/schema    { input, options }
+*  All three: Authorization: Bearer <token>
+*
+* Everything else falls through to the static site (env.ASSETS).
+*/
 import { verifyStripeSignature } from './stripe-verify.js';
 import { issueToken, lookupToken, setCustomerStatus, isEntitled } from './entitlements.js';
 import * as Engine from './engine.js';
@@ -39,11 +39,11 @@ function json(data, status) {
 }
 
 /**
- * Resolves a secret regardless of how it's bound. Cloudflare's dashboard
- * currently pushes new bindings toward "Secrets Store" (an object with an
- * async .get() method) rather than a plain string env var, so this handles
- * both shapes without needing to know in advance which one was used.
- */
+* Resolves a secret regardless of how it's bound. Cloudflare's dashboard
+* currently pushes new bindings toward "Secrets Store" (an object with an
+* async .get() method) rather than a plain string env var, so this handles
+* both shapes without needing to know in advance which one was used.
+*/
 async function resolveSecret(binding) {
   if (binding == null) return binding;
   if (typeof binding === 'string') return binding;
@@ -53,7 +53,7 @@ async function resolveSecret(binding) {
 
 function planFromPriceId(priceId, env) {
   // env.PRICE_MAP is a JSON string set as a Worker variable, e.g.:
-  //   {"price_1ABC...":"pro_monthly","price_1DEF...":"pro_yearly", ...}
+  //  {"price_1ABC...":"pro_monthly","price_1DEF...":"pro_yearly", ...}
   // Fill this in with your real Stripe Price IDs after creating products.
   try {
     const map = JSON.parse(env.PRICE_MAP || '{}');
@@ -175,6 +175,102 @@ async function handleWebhook(request, env, deps) {
   // trail, but isn't needed for the enforcement logic itself.
 
   return json({ received: true });
+}
+
+// ---------------- Contact form (/api/contact) ----------------
+// Sends via the Resend API (https://resend.com) — chosen because MailChannels'
+// free, no-signup email API for Cloudflare Workers was shut down in August
+// 2024 (it required zero setup; nothing free and setup-free has replaced it
+// since). Resend's free tier covers this site's contact-form volume many
+// times over. Requires RESEND_API_KEY as a secret — see wrangler.jsonc.
+const CONTACT_TO_EMAIL = 'contact@tryrecast.app';
+const CONTACT_RATE_LIMIT_PER_DAY = 5; // per IP — generous for a real visitor, tight for a script
+
+function isValidEmail(email) {
+  // Deliberately simple — this only needs to reject obvious junk before an
+  // API call, not fully validate RFC 5322. Resend's own send will be the
+  // real check.
+  return typeof email === 'string' && /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email);
+}
+
+function escapeHtml(str) {
+  return String(str).replace(/[&<>"']/g, function (c) {
+    return { '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": ''' }[c];
+  });
+}
+
+async function handleContactForm(request, env, deps) {
+  let body;
+  try { body = await request.json(); } catch (e) { return json({ error: 'invalid JSON body' }, 400); }
+
+  // Honeypot — a field real visitors never see or fill in (hidden via CSS
+  // in the form), so anything that arrives with it populated is a bot.
+  // Reply with a fake success rather than a 4xx, so the bot doesn't learn
+  // to route around it.
+  if (body && body.website) return json({ ok: true });
+
+  const name = (body && body.name || '').trim();
+  const email = (body && body.email || '').trim();
+  const company = (body && body.company || '').trim();
+  const topic = (body && body.topic || 'General question').trim();
+  const message = (body && body.message || '').trim();
+
+  if (!name || !email || !message) return json({ error: 'name, email, and message are required' }, 400);
+  if (name.length > 200 || email.length > 200 || company.length > 200 || message.length > 5000) {
+    return json({ error: 'one of the fields is too long' }, 400);
+  }
+  if (!isValidEmail(email)) return json({ error: 'that email address doesn\'t look right' }, 400);
+
+  const ip = request.headers.get('CF-Connecting-IP') || 'unknown';
+  const day = new Date().toISOString().slice(0, 10);
+  const rateKey = 'contact-rate:' + ip + ':' + day;
+  const rateRaw = await env.ENTITLEMENTS.get(rateKey);
+  const rateCount = rateRaw ? parseInt(rateRaw, 10) : 0;
+  if (rateCount >= CONTACT_RATE_LIMIT_PER_DAY) {
+    return json({ error: 'too many messages sent today — try again tomorrow, or email ' + CONTACT_TO_EMAIL + ' directly' }, 429);
+  }
+
+  const apiKey = await resolveSecret(env.RESEND_API_KEY);
+  if (!apiKey) return json({ error: 'contact form is not configured yet — email ' + CONTACT_TO_EMAIL + ' directly' }, 503);
+
+  const textBody = 'Name: ' + name + '\n'
+    + (company ? 'Company: ' + company + '\n' : '')
+    + 'Email: ' + email + '\n'
+    + 'Topic: ' + topic + '\n\n'
+    + message;
+  const htmlBody = '<p><strong>Name:</strong> ' + escapeHtml(name) + '</p>'
+    + (company ? '<p><strong>Company:</strong> ' + escapeHtml(company) + '</p>' : '')
+    + '<p><strong>Email:</strong> ' + escapeHtml(email) + '</p>'
+    + '<p><strong>Topic:</strong> ' + escapeHtml(topic) + '</p>'
+    + '<p>' + escapeHtml(message).replace(/\n/g, '<br>') + '</p>';
+
+  try {
+    const doFetch = deps.fetchImpl || fetch;
+    const res = await doFetch('https://api.resend.com/emails', {
+      method: 'POST',
+      headers: {
+        Authorization: 'Bearer ' + apiKey,
+        'Content-Type': 'application/json',
+      },
+      body: JSON.stringify({
+        from: 'Recast Contact Form <contact@tryrecast.app>',
+        to: [CONTACT_TO_EMAIL],
+        reply_to: email,
+        subject: 'Recast contact: ' + topic + ' — from ' + name,
+        text: textBody,
+        html: htmlBody,
+      }),
+    });
+    if (!res.ok) {
+      const errData = await res.json().catch(function () { return {}; });
+      return json({ error: 'message could not be sent: ' + (errData.message || res.status) }, 502);
+    }
+  } catch (e) {
+    return json({ error: 'message could not be sent: ' + e.message }, 502);
+  }
+
+  await env.ENTITLEMENTS.put(rateKey, String(rateCount + 1), { expirationTtl: 60 * 60 * 24 * 2 });
+  return json({ ok: true });
 }
 
 async function handlePortal(request, env, deps) {
@@ -317,6 +413,7 @@ async function route(request, env, deps) {
   if (url.pathname === '/api/verify-token' && request.method === 'GET') return handleVerifyToken(request, env, deps);
   if (url.pathname === '/api/webhook' && request.method === 'POST') return handleWebhook(request, env, deps);
   if (url.pathname === '/api/portal' && request.method === 'POST') return handlePortal(request, env, deps);
+  if (url.pathname === '/api/contact' && request.method === 'POST') return handleContactForm(request, env, deps);
   if (url.pathname === '/v1/convert' && request.method === 'POST') return handleApiConvert(request, env, deps);
   if (url.pathname === '/v1/diff' && request.method === 'POST') return handleApiDiff(request, env, deps);
   if (url.pathname === '/v1/schema' && request.method === 'POST') return handleApiSchema(request, env, deps);
@@ -360,4 +457,4 @@ export default {
   },
 };
 
-export { route, handleVerifySession, handleVerifyToken, handleWebhook, handlePortal, handleApiConvert, handleApiDiff, handleApiSchema, authenticateApiToken, checkAndIncrementUsage, planFromPriceId, defaultDeps, DIRECTORY_INDEX_PATHS };
+export { route, handleVerifySession, handleVerifyToken, handleWebhook, handlePortal, handleContactForm, handleApiConvert, handleApiDiff, handleApiSchema, authenticateApiToken, checkAndIncrementUsage, planFromPriceId, defaultDeps, DIRECTORY_INDEX_PATHS };
