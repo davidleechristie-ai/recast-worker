@@ -282,6 +282,117 @@ const env = {
     assert('no client-visible redirect — response is 200, not a 3xx', rootResponse.status === 200, rootResponse.status);
   }
 
+  // ---------------- /api/contact ----------------
+  {
+    const env2 = Object.assign({}, env, { RESEND_API_KEY: 're_test_fake' });
+
+    // Valid submission -> Resend called with the right recipient and content
+    {
+      const kv = makeMockKV();
+      const testEnv = Object.assign({}, env2, { ENTITLEMENTS: kv });
+      let capturedUrl = null, capturedBody = null, capturedAuth = null;
+      const fakeFetch = async (url, opts) => {
+        capturedUrl = url; capturedAuth = opts.headers.Authorization;
+        capturedBody = JSON.parse(opts.body);
+        return { ok: true, json: async () => ({ id: 'email_123' }) };
+      };
+      const deps = Object.assign({}, W.defaultDeps, { fetchImpl: fakeFetch });
+      const req = mockRequest('https://x/api/contact', {
+        method: 'POST',
+        body: JSON.stringify({ name: 'Ada Lovelace', email: 'ada@example.com', company: 'Analytical Engines', topic: 'API / Pro plan', message: 'Does batch diffing work?' }),
+      });
+      const res = await W.handleContactForm(req, testEnv, deps);
+      const body = await res.json();
+      assert('valid submission returns 200', res.status === 200, res.status);
+      assert('valid submission returns ok:true', body.ok === true, body);
+      assert('calls the real Resend endpoint', capturedUrl === 'https://api.resend.com/emails', capturedUrl);
+      assert('uses the configured API key as Bearer token', capturedAuth === 'Bearer re_test_fake', capturedAuth);
+      assert('sends to the correct recipient', capturedBody.to[0] === 'contact@tryrecast.app', capturedBody.to);
+      assert('reply_to is the submitter\'s own email', capturedBody.reply_to === 'ada@example.com', capturedBody.reply_to);
+      assert('subject includes the topic and name', capturedBody.subject.includes('API / Pro plan') && capturedBody.subject.includes('Ada Lovelace'), capturedBody.subject);
+      assert('text body includes the message', capturedBody.text.includes('Does batch diffing work?'), capturedBody.text);
+    }
+
+    // Missing required fields -> 400, Resend never called
+    {
+      const kv = makeMockKV();
+      const testEnv = Object.assign({}, env2, { ENTITLEMENTS: kv });
+      let fetchCalled = false;
+      const deps = Object.assign({}, W.defaultDeps, { fetchImpl: async () => { fetchCalled = true; return { ok: true, json: async () => ({}) }; } });
+      const req = mockRequest('https://x/api/contact', { method: 'POST', body: JSON.stringify({ name: '', email: 'a@b.com', message: '' }) });
+      const res = await W.handleContactForm(req, testEnv, deps);
+      assert('missing name/message returns 400', res.status === 400, res.status);
+      assert('does not call Resend when validation fails', fetchCalled === false, fetchCalled);
+    }
+
+    // Invalid email format -> 400
+    {
+      const kv = makeMockKV();
+      const testEnv = Object.assign({}, env2, { ENTITLEMENTS: kv });
+      const deps = Object.assign({}, W.defaultDeps, { fetchImpl: async () => ({ ok: true, json: async () => ({}) }) });
+      const req = mockRequest('https://x/api/contact', { method: 'POST', body: JSON.stringify({ name: 'Bot', email: 'not-an-email', message: 'hi' }) });
+      const res = await W.handleContactForm(req, testEnv, deps);
+      assert('malformed email returns 400', res.status === 400, res.status);
+    }
+
+    // Honeypot filled in -> silent fake success, Resend never called
+    {
+      const kv = makeMockKV();
+      const testEnv = Object.assign({}, env2, { ENTITLEMENTS: kv });
+      let fetchCalled = false;
+      const deps = Object.assign({}, W.defaultDeps, { fetchImpl: async () => { fetchCalled = true; return { ok: true, json: async () => ({}) }; } });
+      const req = mockRequest('https://x/api/contact', {
+        method: 'POST',
+        body: JSON.stringify({ name: 'Bot', email: 'bot@example.com', message: 'spam', website: 'http://spam.example' }),
+      });
+      const res = await W.handleContactForm(req, testEnv, deps);
+      const body = await res.json();
+      assert('honeypot-filled request still returns 200 (fake success)', res.status === 200, res.status);
+      assert('honeypot-filled request reports ok:true', body.ok === true, body);
+      assert('honeypot-filled request never actually calls Resend', fetchCalled === false, fetchCalled);
+    }
+
+    // Rate limit — 6th submission from the same IP in one day is rejected
+    {
+      const kv = makeMockKV();
+      const testEnv = Object.assign({}, env2, { ENTITLEMENTS: kv });
+      const deps = Object.assign({}, W.defaultDeps, { fetchImpl: async () => ({ ok: true, json: async () => ({}) }) });
+      let lastStatus = null;
+      for (let i = 0; i < 6; i++) {
+        const req = mockRequest('https://x/api/contact', {
+          method: 'POST',
+          headers: { 'CF-Connecting-IP': '203.0.113.7' },
+          body: JSON.stringify({ name: 'Ada', email: 'ada@example.com', message: 'msg ' + i }),
+        });
+        const res = await W.handleContactForm(req, testEnv, deps);
+        lastStatus = res.status;
+      }
+      assert('6th submission from the same IP in one day is rate-limited (429)', lastStatus === 429, lastStatus);
+    }
+
+    // No API key configured -> 503, not a silent failure or a crash
+    {
+      const kv = makeMockKV();
+      const testEnv = Object.assign({}, env, { ENTITLEMENTS: kv }); // env WITHOUT RESEND_API_KEY
+      const deps = Object.assign({}, W.defaultDeps, { fetchImpl: async () => ({ ok: true, json: async () => ({}) }) });
+      const req = mockRequest('https://x/api/contact', { method: 'POST', body: JSON.stringify({ name: 'Ada', email: 'ada@example.com', message: 'hi' }) });
+      const res = await W.handleContactForm(req, testEnv, deps);
+      assert('missing RESEND_API_KEY returns 503, not a crash', res.status === 503, res.status);
+    }
+
+    // Resend itself errors -> 502, surfaced to the caller
+    {
+      const kv = makeMockKV();
+      const testEnv = Object.assign({}, env2, { ENTITLEMENTS: kv });
+      const deps = Object.assign({}, W.defaultDeps, { fetchImpl: async () => ({ ok: false, status: 422, json: async () => ({ message: 'invalid from address' }) }) });
+      const req = mockRequest('https://x/api/contact', { method: 'POST', body: JSON.stringify({ name: 'Ada', email: 'ada@example.com', message: 'hi' }) });
+      const res = await W.handleContactForm(req, testEnv, deps);
+      const body = await res.json();
+      assert('a failed Resend call surfaces as 502', res.status === 502, res.status);
+      assert('the error message is passed through', body.error.includes('invalid from address'), body.error);
+    }
+  }
+
   // ---------------- wrangler.jsonc / worker.js drift check ----------------
   // The directory-index rewrite above only ever runs if Cloudflare's asset
   // server actually falls through to the Worker for these paths in the first

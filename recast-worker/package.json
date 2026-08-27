@@ -7,7 +7,7 @@
   "scripts": {
     "dev": "wrangler dev",
     "deploy": "wrangler deploy",
-    "test": "node src/stripe-verify.test.mjs && node src/entitlements.test.mjs && node src/worker.test.mjs && node src/pipeline-field-discovery.test.mjs && node src/structural-analysis-classification.test.mjs"
+    "test": "node src/stripe-verify.test.mjs && node src/entitlements.test.mjs && node src/worker.test.mjs && node src/pipeline-field-discovery.test.mjs && node src/structural-analysis-classification.test.mjs && node src/typegen-array-root.test.mjs"
   },
   "devDependencies": {
     "wrangler": "^4.0.0"

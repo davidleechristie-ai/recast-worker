@@ -5,7 +5,9 @@
     <changefreq>weekly</changefreq>
     <priority>1.0</priority>
   </url>
+  <url><loc>https://tryrecast.app/tools/index.html</loc><changefreq>monthly</changefreq><priority>0.9</priority></url>
   <url><loc>https://tryrecast.app/tools/json-to-csv.html</loc><changefreq>monthly</changefreq><priority>0.9</priority></url>
+  <url><loc>https://tryrecast.app/tools/json-to-csv-without-python.html</loc><changefreq>monthly</changefreq><priority>0.7</priority></url>
   <url><loc>https://tryrecast.app/tools/csv-to-json.html</loc><changefreq>monthly</changefreq><priority>0.9</priority></url>
   <url><loc>https://tryrecast.app/tools/json-to-xml.html</loc><changefreq>monthly</changefreq><priority>0.8</priority></url>
   <url><loc>https://tryrecast.app/tools/xml-to-json.html</loc><changefreq>monthly</changefreq><priority>0.8</priority></url>
@@ -27,13 +29,31 @@
   <url><loc>https://tryrecast.app/tools/json-to-python.html</loc><changefreq>monthly</changefreq><priority>0.8</priority></url>
   <url><loc>https://tryrecast.app/tools/json-to-pydantic.html</loc><changefreq>monthly</changefreq><priority>0.8</priority></url>
   <url><loc>https://tryrecast.app/tools/json-to-go.html</loc><changefreq>monthly</changefreq><priority>0.8</priority></url>
+  <url><loc>https://tryrecast.app/tools/json-to-kotlin.html</loc><changefreq>monthly</changefreq><priority>0.8</priority></url>
+  <url><loc>https://tryrecast.app/tools/json-to-rust.html</loc><changefreq>monthly</changefreq><priority>0.8</priority></url>
   <url><loc>https://tryrecast.app/tools/validate-json-schema.html</loc><changefreq>monthly</changefreq><priority>0.8</priority></url>
   <url><loc>https://tryrecast.app/blog/index.html</loc><changefreq>weekly</changefreq><priority>0.7</priority></url>
   <url><loc>https://tryrecast.app/demo/index.html</loc><changefreq>monthly</changefreq><priority>0.8</priority></url>
   <url><loc>https://tryrecast.app/how-to/index.html</loc><changefreq>monthly</changefreq><priority>0.8</priority></url>
+  <url><loc>https://tryrecast.app/how-to/convert.html</loc><changefreq>monthly</changefreq><priority>0.8</priority></url>
+  <url><loc>https://tryrecast.app/how-to/transform.html</loc><changefreq>monthly</changefreq><priority>0.7</priority></url>
+  <url><loc>https://tryrecast.app/how-to/find-inspect.html</loc><changefreq>monthly</changefreq><priority>0.7</priority></url>
+  <url><loc>https://tryrecast.app/how-to/compare.html</loc><changefreq>monthly</changefreq><priority>0.7</priority></url>
+  <url><loc>https://tryrecast.app/how-to/validate.html</loc><changefreq>monthly</changefreq><priority>0.7</priority></url>
+  <url><loc>https://tryrecast.app/how-to/api-workbench.html</loc><changefreq>monthly</changefreq><priority>0.7</priority></url>
+  <url><loc>https://tryrecast.app/how-to/automate.html</loc><changefreq>monthly</changefreq><priority>0.7</priority></url>
+  <url><loc>https://tryrecast.app/how-to/examples.html</loc><changefreq>monthly</changefreq><priority>0.6</priority></url>
+  <url><loc>https://tryrecast.app/how-to/choose-a-tool.html</loc><changefreq>monthly</changefreq><priority>0.6</priority></url>
+  <url><loc>https://tryrecast.app/how-to/capability-map.html</loc><changefreq>monthly</changefreq><priority>0.6</priority></url>
+  <url><loc>https://tryrecast.app/contact.html</loc><changefreq>yearly</changefreq><priority>0.5</priority></url>
   <url><loc>https://tryrecast.app/blog/json-to-csv-guide.html</loc><changefreq>yearly</changefreq><priority>0.6</priority></url>
   <url><loc>https://tryrecast.app/blog/whats-new-in-recast.html</loc><changefreq>yearly</changefreq><priority>0.6</priority></url>
   <url><loc>https://tryrecast.app/blog/try-recast-with-real-data.html</loc><changefreq>yearly</changefreq><priority>0.6</priority></url>
+  <url><loc>https://tryrecast.app/blog/recast-vs-jsonlint.html</loc><changefreq>yearly</changefreq><priority>0.6</priority></url>
+  <url><loc>https://tryrecast.app/blog/my-json-wont-parse.html</loc><changefreq>yearly</changefreq><priority>0.6</priority></url>
+  <url><loc>https://tryrecast.app/blog/what-is-json-schema.html</loc><changefreq>yearly</changefreq><priority>0.6</priority></url>
+  <url><loc>https://tryrecast.app/blog/test-api-without-postman.html</loc><changefreq>yearly</changefreq><priority>0.6</priority></url>
+  <url><loc>https://tryrecast.app/blog/what-is-jsonpath.html</loc><changefreq>yearly</changefreq><priority>0.6</priority></url>
   <url><loc>https://tryrecast.app/blog/csv-diff-explained.html</loc><changefreq>yearly</changefreq><priority>0.6</priority></url>
   <url><loc>https://tryrecast.app/blog/json-schema-validation-guide.html</loc><changefreq>yearly</changefreq><priority>0.6</priority></url>
 </urlset>

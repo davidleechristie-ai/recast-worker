@@ -4,19 +4,19 @@
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <script>(function(){try{if(localStorage.getItem('recast_theme')!=='dark')document.documentElement.setAttribute('data-theme','light');}catch(e){}})();</script>
-<title>Why Most CSV Diff Tools Lie to You | Recast</title>
-<meta name="description" content="Most CSV diff tools compare by line position, not row identity — so a single reordered or deleted row cascades into dozens of false-positive changes. Here's why key-aware diffing fixes it.">
+<title>My JSON Won't Parse — Here's How to Actually Find the Error | Recast</title>
+<meta name="description" content="Five real, common JSON syntax mistakes and the exact error message each one produces, so you can actually find the problem instead of scanning the whole file by eye.">
 <meta property="og:type" content="article">
-<meta property="og:title" content="Why Most CSV Diff Tools Lie to You | Recast">
-<meta property="og:description" content="Most CSV diff tools compare by line position, not row identity — so a single reordered or deleted row cascades into dozens of false-positive changes. Here's why key-aware diffing fixes it.">
-<meta property="og:url" content="https://tryrecast.app/blog/csv-diff-explained.html">
+<meta property="og:title" content="My JSON Won't Parse — Here's How to Actually Find the Error | Recast">
+<meta property="og:description" content="Five real, common JSON syntax mistakes and the exact error message each one produces, so you can actually find the problem instead of scanning the whole file by eye.">
+<meta property="og:url" content="https://tryrecast.app/blog/my-json-wont-parse.html">
 <meta property="og:image" content="https://tryrecast.app/og-image.png">
 <meta property="og:site_name" content="Recast">
 <meta name="twitter:card" content="summary_large_image">
-<meta name="twitter:title" content="Why Most CSV Diff Tools Lie to You | Recast">
-<meta name="twitter:description" content="Most CSV diff tools compare by line position, not row identity — so a single reordered or deleted row cascades into dozens of false-positive changes. Here's why key-aware diffing fixes it.">
+<meta name="twitter:title" content="My JSON Won't Parse — Here's How to Actually Find the Error | Recast">
+<meta name="twitter:description" content="Five real, common JSON syntax mistakes and the exact error message each one produces, so you can actually find the problem instead of scanning the whole file by eye.">
 <meta name="twitter:image" content="https://tryrecast.app/og-image.png">
-<link rel="canonical" href="https://tryrecast.app/blog/csv-diff-explained.html">
+<link rel="canonical" href="https://tryrecast.app/blog/my-json-wont-parse.html">
 <link rel="stylesheet" href="../styles.css">
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@400;500;600;700&family=IBM+Plex+Sans:wght@400;500;600&family=IBM+Plex+Mono:wght@400;500&display=swap" rel="stylesheet">
@@ -24,11 +24,11 @@
 {
   "@context": "https://schema.org",
   "@type": "Article",
-  "headline": "Why Most CSV Diff Tools Lie to You | Recast",
-  "description": "Most CSV diff tools compare by line position, not row identity — so a single reordered or deleted row cascades into dozens of false-positive changes. Here's why key-aware diffing fixes it.",
-  "url": "https://tryrecast.app/blog/csv-diff-explained.html",
+  "headline": "My JSON Won't Parse — Here's How to Actually Find the Error | Recast",
+  "description": "Five real, common JSON syntax mistakes and the exact error message each one produces, so you can actually find the problem instead of scanning the whole file by eye.",
+  "url": "https://tryrecast.app/blog/my-json-wont-parse.html",
   "publisher": { "@type": "Organization", "name": "Recast", "url": "https://tryrecast.app/" },
-  "datePublished": "2026-08-14"
+  "datePublished": "2026-08-27"
 }
 </script>
 <!-- Google tag (gtag.js) -->
@@ -93,8 +93,8 @@
     {
       "@type": "ListItem",
       "position": 3,
-      "name": "Why Most CSV Diff Tools Lie to You",
-      "item": "https://tryrecast.app/blog/csv-diff-explained.html"
+      "name": "My JSON Won't Parse",
+      "item": "https://tryrecast.app/blog/my-json-wont-parse.html"
     }
   ]
 }
@@ -270,53 +270,56 @@
     </div>
   </div>
 </header>
-
-<main style="max-width:1180px;margin:0 auto;padding:48px 24px 80px;">
-
+<main style="max-width:900px;margin:0 auto;padding:48px 24px 80px;">
 <article class="post tour-post">
-  <div class="post-meta">Guide · 14 August 2026</div>
-  <h1>Why Most CSV Diff Tools Lie to You</h1>
 
-  <p>Here's a scenario that happens constantly in real data work: you export a table from your database on Monday, export it again on Friday, and run a diff to see what changed. The diff tool reports forty changed rows. You open it expecting forty real edits. Instead, you find that thirty-eight of those "changes" are the exact same data — just sitting in a different row position, because someone re-sorted the table or a new row got inserted in the middle.</p>
+  <div class="post-meta">Guide &middot; JSON</div>
+  <h1>My JSON Won't Parse — Here's How to Actually Find the Error</h1>
+  <p>Scanning a broken JSON file by eye, line by line, looking for the one missing comma is a genuinely bad way to spend ten minutes. A parser already knows exactly where it stopped — the trick is getting it to tell you, rather than just saying "invalid JSON" and leaving you to search. Here are five real, common mistakes, and the exact message <a href="../tools/json-validator.html">Recast's validator</a> gives for each — genuine output, not paraphrased.</p>
 
-  <p>This isn't a bug in your diff tool. It's how almost every CSV and line-based diff tool works by design, and it's worth understanding exactly why, because it explains a specific class of false positive that wastes real time in code review, data QA, and migration verification.</p>
+  <h2>1. A trailing comma</h2>
+  <pre class="tour-code">{
+  <span class="tok-key">"name":</span> <span class="tok-str">"Ada"</span>,
+  <span class="tok-key">"role":</span> <span class="tok-str">"Engineer"</span>,
+}</pre>
+  <p style="color:var(--text-muted);font-size:14px;">Error: <code>Expected double-quoted property name in JSON at position 35 (line 1 column 36)</code></p>
+  <p>That trailing comma after <code>"Engineer"</code> is the single most common JSON mistake there is — it's valid in JavaScript object literals, but not in JSON itself.</p>
 
-  <h2>Position-based diffing: the default, and its failure mode</h2>
-  <p>The simplest possible way to diff two files is line-by-line: compare line 1 to line 1, line 2 to line 2, and so on. This is what <code>diff</code>, and most CSV diff tools built on top of it, actually do under the hood.</p>
+  <h2>2. A missing comma between fields</h2>
+  <pre class="tour-code">{
+  <span class="tok-key">"name":</span> <span class="tok-str">"Ada"</span>
+  <span class="tok-key">"role":</span> <span class="tok-str">"Engineer"</span>
+}</pre>
+  <p style="color:var(--text-muted);font-size:14px;">Error: <code>Expected ',' or '}' after property value in JSON at position 15 (line 1 column 16)</code></p>
+  <p>The position tells you exactly where the parser gave up — right after <code>"Ada"</code>, where it expected either a comma (more fields coming) or a closing brace (that was the last one).</p>
 
-  <p>The problem: as soon as one row is inserted, deleted, or moved, <strong>every row after it shifts position</strong> — and a position-based diff has no way to tell "this row moved" apart from "this row was deleted and a completely different row was added in its place." It reports a cascade of changes that don't reflect anything that actually happened to your data.</p>
+  <h2>3. An unquoted key</h2>
+  <pre class="tour-code">{
+  name: <span class="tok-str">"Ada"</span>
+}</pre>
+  <p style="color:var(--text-muted);font-size:14px;">Error: <code>Expected property name or '}' in JSON at position 1 (line 1 column 2)</code></p>
+  <p>Also valid JavaScript, not valid JSON. Every key needs double quotes — not single quotes, not no quotes at all.</p>
 
-  <pre># File A
-id,name,city
-1,Ada,London
-2,Bob,Paris
-3,Cy,Rome
+  <h2>4. Single quotes instead of double quotes</h2>
+  <pre class="tour-code">{
+  <span class="tok-str">'name'</span>: <span class="tok-str">"Ada"</span>
+}</pre>
+  <p style="color:var(--text-muted);font-size:14px;">Error: <code>Expected property name or '}' in JSON at position 1 (line 1 column 2)</code></p>
+  <p>Same underlying problem as the unquoted key above — JSON's grammar only recognizes double quotes as marking a valid property name.</p>
 
-# File B (row 2 deleted, nothing else changed)
-id,name,city
-1,Ada,London
-3,Cy,Rome</pre>
+  <h2>5. A missing closing brace</h2>
+  <pre class="tour-code">{
+  <span class="tok-key">"name":</span> <span class="tok-str">"Ada"</span></pre>
+  <p style="color:var(--text-muted);font-size:14px;">Error: <code>Expected ',' or '}' after property value in JSON at position 14 (line 1 column 15)</code></p>
+  <p>The file just stops. This one's easy to introduce by accident when copy-pasting a fragment of a larger response.</p>
 
-  <p>A position-based diff sees this as: row 2 changed from <code>Bob,Paris</code> to <code>Cy,Rome</code>, and row 3 was removed. That's not what happened. What actually happened is simpler: one row was deleted, and nothing else changed at all. The position-based view actively obscures the real story.</p>
+  <h2>What these messages actually are, honestly</h2>
+  <p>These are the real error messages from the JavaScript engine's own JSON parser, surfaced directly — not a custom, rewritten-for-humans translation layer. What Recast adds is showing you this clearly, with the exact line and column, right next to your input, instead of you having to open a separate console or guess. For the five mistakes above, that's usually enough to fix it in seconds rather than minutes.</p>
 
-  <h2>Key-aware diffing: matching by identity, not position</h2>
-  <p>The fix is to match rows by a stable identifier — typically an <code>id</code> column — instead of by row number. Once you're matching by key, moving a row, inserting a row in the middle, or re-sorting the whole file has zero effect on the diff result, because identity, not position, is what's being compared.</p>
+  <div class="post-cta"><p><strong>Try it:</strong> <a href="../tools/json-validator.html">Paste your own broken JSON</a> and see exactly where it stops.</p></div>
 
-  <p>The same example, diffed by key instead of position, correctly reports: row <code>id=2</code> removed, nothing else changed. That's the actual delta — one true change, not three false ones.</p>
-
-  <h2>Where this actually matters</h2>
-  <ul>
-    <li><strong>Data migration QA.</strong> Comparing a "before" export against an "after" export to confirm a migration didn't silently corrupt anything. Position drift from re-sorting will bury the one real corrupted row under dozens of false positives.</li>
-    <li><strong>Config and reference-data review.</strong> A pull request that reorders a CSV of feature flags or lookup values shouldn't show as forty changed lines when nothing about the actual data changed.</li>
-    <li><strong>Recurring exports.</strong> Any workflow that diffs a daily or weekly export against the previous one — new rows get appended, old ones get archived, and row position is never stable between runs.</li>
-  </ul>
-
-  <h2>What to actually look for in a CSV diff tool</h2>
-  <p>Ask one question: does it match rows by a key column, or by line position? If a tool can't tell you which column it used to match rows, it's almost certainly doing position-based diffing under the hood, and every diff you run against reordered or filtered data will be noisier than the real change.</p>
-
-  <div class="post-cta">
-    <p>Recast's <a href="../tools/csv-diff.html">CSV Diff tool</a> matches rows by key, not position, and shows the result as a real side-by-side aligned table — added rows in green, removed in red, changed cells with the old value struck through next to the new one. Filter to just what changed, jump between differences with Next/Prev, and download the full comparison as a report. Free for files up to 50 rows; a one-time day pass or Pro removes that limit.</p>
-  </div>
+</article>
+</main>
 </article>
 
 </main>

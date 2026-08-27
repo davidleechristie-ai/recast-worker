@@ -136,7 +136,45 @@ function startCheckout(planKey) {
     return;
   }
   track('checkout_start', { plan: planKey, from_mode: currentMode });
-  window.location.href = url;
+  window.location.href = appendAttributionParams(url);
+}
+
+// Attribution — closes the loop from a specific page/campaign to a specific
+// Stripe payment. Two layers, both read from sessionStorage (set once, on
+// this session's first page load, by the snippet in every page's <head>):
+//   - client_reference_id: which of OUR OWN pages first brought this visitor
+//     in (e.g. a specific blog guide vs. a bare tool page vs. an alternative
+//     page) — this is what answers "which content category actually
+//     converts," not just "which gets traffic."
+//   - utm_* passthrough: if the visitor arrived via an external, tagged
+//     link (a backlink, a launch post), forward those same UTM values to
+//     Stripe so external campaign attribution isn't lost at checkout either.
+// Stripe Payment Links read these as URL query parameters directly; both
+// show up on the resulting Checkout Session and in the checkout.session.completed
+// webhook — see https://docs.stripe.com/payment-links/url-parameters.
+function sanitizeForStripe(value, maxLen) {
+  return String(value || '')
+    .replace(/[^A-Za-z0-9_-]+/g, '-')
+    .replace(/-+/g, '-')
+    .replace(/^-|-$/g, '')
+    .slice(0, maxLen);
+}
+function appendAttributionParams(baseUrl) {
+  let landingPath, utmParams;
+  try {
+    landingPath = sessionStorage.getItem('recast_landing_path') || '';
+    utmParams = JSON.parse(sessionStorage.getItem('recast_landing_utm') || '{}');
+  } catch (e) {
+    landingPath = ''; utmParams = {};
+  }
+  const params = new URLSearchParams();
+  if (landingPath) params.set('client_reference_id', sanitizeForStripe('landing_' + landingPath, 200));
+  ['utm_source', 'utm_medium', 'utm_campaign', 'utm_term', 'utm_content'].forEach(function (key) {
+    if (utmParams[key]) params.set(key, sanitizeForStripe(utmParams[key], 150));
+  });
+  const qs = params.toString();
+  if (!qs) return baseUrl;
+  return baseUrl + (baseUrl.indexOf('?') === -1 ? '?' : '&') + qs;
 }
 ['btnProMonthly','btnProYearly','btnApiMonthly','btnApiYearly'].forEach(id => {
   const el = document.getElementById(id);

@@ -438,6 +438,8 @@ const DIRECTORY_INDEX_PATHS = {
   '/how-to/': '/how-to/index.html',
   '/demo': '/demo/index.html',
   '/demo/': '/demo/index.html',
+  '/tools': '/tools/index.html',
+  '/tools/': '/tools/index.html',
 };
 
 export default {

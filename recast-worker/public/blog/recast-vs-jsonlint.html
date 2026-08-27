@@ -4,19 +4,19 @@
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <script>(function(){try{if(localStorage.getItem('recast_theme')!=='dark')document.documentElement.setAttribute('data-theme','light');}catch(e){}})();</script>
-<title>Why Most CSV Diff Tools Lie to You | Recast</title>
-<meta name="description" content="Most CSV diff tools compare by line position, not row identity — so a single reordered or deleted row cascades into dozens of false-positive changes. Here's why key-aware diffing fixes it.">
+<title>Recast vs JSONLint — Which Should You Use? | Recast</title>
+<meta name="description" content="An honest, specific comparison of Recast and JSONLint — what each one actually does well, researched directly rather than assumed.">
 <meta property="og:type" content="article">
-<meta property="og:title" content="Why Most CSV Diff Tools Lie to You | Recast">
-<meta property="og:description" content="Most CSV diff tools compare by line position, not row identity — so a single reordered or deleted row cascades into dozens of false-positive changes. Here's why key-aware diffing fixes it.">
-<meta property="og:url" content="https://tryrecast.app/blog/csv-diff-explained.html">
+<meta property="og:title" content="Recast vs JSONLint — Which Should You Use? | Recast">
+<meta property="og:description" content="An honest, specific comparison of Recast and JSONLint — what each one actually does well, researched directly rather than assumed.">
+<meta property="og:url" content="https://tryrecast.app/blog/recast-vs-jsonlint.html">
 <meta property="og:image" content="https://tryrecast.app/og-image.png">
 <meta property="og:site_name" content="Recast">
 <meta name="twitter:card" content="summary_large_image">
-<meta name="twitter:title" content="Why Most CSV Diff Tools Lie to You | Recast">
-<meta name="twitter:description" content="Most CSV diff tools compare by line position, not row identity — so a single reordered or deleted row cascades into dozens of false-positive changes. Here's why key-aware diffing fixes it.">
+<meta name="twitter:title" content="Recast vs JSONLint — Which Should You Use? | Recast">
+<meta name="twitter:description" content="An honest, specific comparison of Recast and JSONLint — what each one actually does well, researched directly rather than assumed.">
 <meta name="twitter:image" content="https://tryrecast.app/og-image.png">
-<link rel="canonical" href="https://tryrecast.app/blog/csv-diff-explained.html">
+<link rel="canonical" href="https://tryrecast.app/blog/recast-vs-jsonlint.html">
 <link rel="stylesheet" href="../styles.css">
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@400;500;600;700&family=IBM+Plex+Sans:wght@400;500;600&family=IBM+Plex+Mono:wght@400;500&display=swap" rel="stylesheet">
@@ -24,11 +24,11 @@
 {
   "@context": "https://schema.org",
   "@type": "Article",
-  "headline": "Why Most CSV Diff Tools Lie to You | Recast",
-  "description": "Most CSV diff tools compare by line position, not row identity — so a single reordered or deleted row cascades into dozens of false-positive changes. Here's why key-aware diffing fixes it.",
-  "url": "https://tryrecast.app/blog/csv-diff-explained.html",
+  "headline": "Recast vs JSONLint — Which Should You Use? | Recast",
+  "description": "An honest, specific comparison of Recast and JSONLint — what each one actually does well, researched directly rather than assumed.",
+  "url": "https://tryrecast.app/blog/recast-vs-jsonlint.html",
   "publisher": { "@type": "Organization", "name": "Recast", "url": "https://tryrecast.app/" },
-  "datePublished": "2026-08-14"
+  "datePublished": "2026-08-27"
 }
 </script>
 <!-- Google tag (gtag.js) -->
@@ -93,8 +93,8 @@
     {
       "@type": "ListItem",
       "position": 3,
-      "name": "Why Most CSV Diff Tools Lie to You",
-      "item": "https://tryrecast.app/blog/csv-diff-explained.html"
+      "name": "Recast vs JSONLint",
+      "item": "https://tryrecast.app/blog/recast-vs-jsonlint.html"
     }
   ]
 }
@@ -270,53 +270,35 @@
     </div>
   </div>
 </header>
-
-<main style="max-width:1180px;margin:0 auto;padding:48px 24px 80px;">
-
+<main style="max-width:900px;margin:0 auto;padding:48px 24px 80px;">
 <article class="post tour-post">
-  <div class="post-meta">Guide · 14 August 2026</div>
-  <h1>Why Most CSV Diff Tools Lie to You</h1>
 
-  <p>Here's a scenario that happens constantly in real data work: you export a table from your database on Monday, export it again on Friday, and run a diff to see what changed. The diff tool reports forty changed rows. You open it expecting forty real edits. Instead, you find that thirty-eight of those "changes" are the exact same data — just sitting in a different row position, because someone re-sorted the table or a new row got inserted in the middle.</p>
+  <div class="post-meta">Comparison &middot; JSON</div>
+  <h1>Recast vs JSONLint — Which Should You Use?</h1>
+  <p>JSONLint is one of the most established names in this space, and it's a genuinely capable, actively-maintained tool — this isn't a takedown. Here's an honest, specific comparison, researched directly rather than assumed, including where JSONLint is actually ahead.</p>
 
-  <p>This isn't a bug in your diff tool. It's how almost every CSV and line-based diff tool works by design, and it's worth understanding exactly why, because it explains a specific class of false positive that wastes real time in code review, data QA, and migration verification.</p>
+  <h2>Where they're genuinely similar</h2>
+  <p>Both are free to use, both process your data client-side in the browser rather than uploading it to a server, and both go well beyond basic validation — conversion between formats, JSON Schema support, and generating types in multiple programming languages are things both tools do.</p>
 
-  <h2>Position-based diffing: the default, and its failure mode</h2>
-  <p>The simplest possible way to diff two files is line-by-line: compare line 1 to line 1, line 2 to line 2, and so on. This is what <code>diff</code>, and most CSV diff tools built on top of it, actually do under the hood.</p>
+  <h2>Where JSONLint is ahead</h2>
+  <p><strong>Validation error quality.</strong> JSONLint's validator is a purpose-built, custom diagnostic parser with 34 documented, explained error codes and specific guidance for common mistakes (trailing commas, unquoted keys, and similar). Recast's validator surfaces the JavaScript engine's own native parser error directly — genuinely useful, with exact line and column, but not a custom-written explanation layer the way JSONLint's is.</p>
+  <p><strong>Sample datasets and guides.</strong> JSONLint publishes a substantial library of free, open-source sample datasets (geographic data, mock user and product records, reference data like currencies and file types) alongside written guides. Recast doesn't currently have an equivalent dataset library.</p>
 
-  <p>The problem: as soon as one row is inserted, deleted, or moved, <strong>every row after it shifts position</strong> — and a position-based diff has no way to tell "this row moved" apart from "this row was deleted and a completely different row was added in its place." It reports a cascade of changes that don't reflect anything that actually happened to your data.</p>
+  <h2>Where Recast is ahead</h2>
+  <p><strong>A real, public API and CLI, built into the same product.</strong> Recast's <a href="../how-to/api-workbench.html">REST API</a> and <a href="https://www.npmjs.com/package/recast-cli">recast-cli</a> run the identical engine behind the browser tool, for scripting and CI use. We found no equivalent official API or CLI currently tied to JSONLint's web tool.</p>
+  <p><strong>Cross-platform by default.</strong> Recast's Pro tier is the same browser-based tool with higher limits — it works anywhere a browser does. JSONLint's own "Pro" product is a separate, native macOS-only desktop app, distributed through the Mac App Store — a different product, not a web upgrade, and unavailable if you're not on a Mac.</p>
+  <p><strong>One tool for the full workflow.</strong> Diffing, structural comparison, transforms, and automation-friendly recipes live in the same interface as conversion and validation — not spread across separate pages for each capability.</p>
 
-  <pre># File A
-id,name,city
-1,Ada,London
-2,Bob,Paris
-3,Cy,Rome
+  <h2>A note on "JSONLint Pro"</h2>
+  <p>Worth flagging directly, since it's easy to conflate: several similarly-named sites (like jsonlintpro.com) are unrelated third-party clones, not JSONLint's own product. JSONLint's actual Pro offering lives at jsonlint.com itself, and — as above — it's a macOS app, not a web-based tier.</p>
 
-# File B (row 2 deleted, nothing else changed)
-id,name,city
-1,Ada,London
-3,Cy,Rome</pre>
+  <h2>The honest takeaway</h2>
+  <p>If what you need most is best-in-class validation error explanations or ready-made sample datasets, JSONLint's free web tool is genuinely strong at that specifically. If you need the same tool to also diff, transform, and automate — in the browser, from a script, or in CI, on any platform — that's where Recast is built differently.</p>
 
-  <p>A position-based diff sees this as: row 2 changed from <code>Bob,Paris</code> to <code>Cy,Rome</code>, and row 3 was removed. That's not what happened. What actually happened is simpler: one row was deleted, and nothing else changed at all. The position-based view actively obscures the real story.</p>
+  <div class="post-cta"><p><strong>Try it:</strong> <a href="../tools/json-validator.html">Validate JSON</a>, or <a href="../tools/index.html">see all 23 tools</a>.</p></div>
 
-  <h2>Key-aware diffing: matching by identity, not position</h2>
-  <p>The fix is to match rows by a stable identifier — typically an <code>id</code> column — instead of by row number. Once you're matching by key, moving a row, inserting a row in the middle, or re-sorting the whole file has zero effect on the diff result, because identity, not position, is what's being compared.</p>
-
-  <p>The same example, diffed by key instead of position, correctly reports: row <code>id=2</code> removed, nothing else changed. That's the actual delta — one true change, not three false ones.</p>
-
-  <h2>Where this actually matters</h2>
-  <ul>
-    <li><strong>Data migration QA.</strong> Comparing a "before" export against an "after" export to confirm a migration didn't silently corrupt anything. Position drift from re-sorting will bury the one real corrupted row under dozens of false positives.</li>
-    <li><strong>Config and reference-data review.</strong> A pull request that reorders a CSV of feature flags or lookup values shouldn't show as forty changed lines when nothing about the actual data changed.</li>
-    <li><strong>Recurring exports.</strong> Any workflow that diffs a daily or weekly export against the previous one — new rows get appended, old ones get archived, and row position is never stable between runs.</li>
-  </ul>
-
-  <h2>What to actually look for in a CSV diff tool</h2>
-  <p>Ask one question: does it match rows by a key column, or by line position? If a tool can't tell you which column it used to match rows, it's almost certainly doing position-based diffing under the hood, and every diff you run against reordered or filtered data will be noisier than the real change.</p>
-
-  <div class="post-cta">
-    <p>Recast's <a href="../tools/csv-diff.html">CSV Diff tool</a> matches rows by key, not position, and shows the result as a real side-by-side aligned table — added rows in green, removed in red, changed cells with the old value struck through next to the new one. Filter to just what changed, jump between differences with Next/Prev, and download the full comparison as a report. Free for files up to 50 rows; a one-time day pass or Pro removes that limit.</p>
-  </div>
+</article>
+</main>
 </article>
 
 </main>

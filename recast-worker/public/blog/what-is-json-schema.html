@@ -4,19 +4,19 @@
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <script>(function(){try{if(localStorage.getItem('recast_theme')!=='dark')document.documentElement.setAttribute('data-theme','light');}catch(e){}})();</script>
-<title>Why Most CSV Diff Tools Lie to You | Recast</title>
-<meta name="description" content="Most CSV diff tools compare by line position, not row identity — so a single reordered or deleted row cascades into dozens of false-positive changes. Here's why key-aware diffing fixes it.">
+<title>What Is JSON Schema? | Recast</title>
+<meta name="description" content="JSON Schema describes what your data should look like — which fields are required, what type each one is, and what values are valid. A practical introduction using Recast's own draft-07 subset.">
 <meta property="og:type" content="article">
-<meta property="og:title" content="Why Most CSV Diff Tools Lie to You | Recast">
-<meta property="og:description" content="Most CSV diff tools compare by line position, not row identity — so a single reordered or deleted row cascades into dozens of false-positive changes. Here's why key-aware diffing fixes it.">
-<meta property="og:url" content="https://tryrecast.app/blog/csv-diff-explained.html">
+<meta property="og:title" content="What Is JSON Schema? | Recast">
+<meta property="og:description" content="JSON Schema describes what your data should look like — which fields are required, what type each one is, and what values are valid. A practical introduction using Recast's own draft-07 subset.">
+<meta property="og:url" content="https://tryrecast.app/blog/what-is-json-schema.html">
 <meta property="og:image" content="https://tryrecast.app/og-image.png">
 <meta property="og:site_name" content="Recast">
 <meta name="twitter:card" content="summary_large_image">
-<meta name="twitter:title" content="Why Most CSV Diff Tools Lie to You | Recast">
-<meta name="twitter:description" content="Most CSV diff tools compare by line position, not row identity — so a single reordered or deleted row cascades into dozens of false-positive changes. Here's why key-aware diffing fixes it.">
+<meta name="twitter:title" content="What Is JSON Schema? | Recast">
+<meta name="twitter:description" content="JSON Schema describes what your data should look like — which fields are required, what type each one is, and what values are valid. A practical introduction using Recast's own draft-07 subset.">
 <meta name="twitter:image" content="https://tryrecast.app/og-image.png">
-<link rel="canonical" href="https://tryrecast.app/blog/csv-diff-explained.html">
+<link rel="canonical" href="https://tryrecast.app/blog/what-is-json-schema.html">
 <link rel="stylesheet" href="../styles.css">
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@400;500;600;700&family=IBM+Plex+Sans:wght@400;500;600&family=IBM+Plex+Mono:wght@400;500&display=swap" rel="stylesheet">
@@ -24,11 +24,11 @@
 {
   "@context": "https://schema.org",
   "@type": "Article",
-  "headline": "Why Most CSV Diff Tools Lie to You | Recast",
-  "description": "Most CSV diff tools compare by line position, not row identity — so a single reordered or deleted row cascades into dozens of false-positive changes. Here's why key-aware diffing fixes it.",
-  "url": "https://tryrecast.app/blog/csv-diff-explained.html",
+  "headline": "What Is JSON Schema? | Recast",
+  "description": "JSON Schema describes what your data should look like — which fields are required, what type each one is, and what values are valid. A practical introduction using Recast's own draft-07 subset.",
+  "url": "https://tryrecast.app/blog/what-is-json-schema.html",
   "publisher": { "@type": "Organization", "name": "Recast", "url": "https://tryrecast.app/" },
-  "datePublished": "2026-08-14"
+  "datePublished": "2026-08-27"
 }
 </script>
 <!-- Google tag (gtag.js) -->
@@ -93,8 +93,8 @@
     {
       "@type": "ListItem",
       "position": 3,
-      "name": "Why Most CSV Diff Tools Lie to You",
-      "item": "https://tryrecast.app/blog/csv-diff-explained.html"
+      "name": "What Is JSON Schema?",
+      "item": "https://tryrecast.app/blog/what-is-json-schema.html"
     }
   ]
 }
@@ -270,53 +270,71 @@
     </div>
   </div>
 </header>
-
-<main style="max-width:1180px;margin:0 auto;padding:48px 24px 80px;">
-
+<main style="max-width:900px;margin:0 auto;padding:48px 24px 80px;">
 <article class="post tour-post">
-  <div class="post-meta">Guide · 14 August 2026</div>
-  <h1>Why Most CSV Diff Tools Lie to You</h1>
 
-  <p>Here's a scenario that happens constantly in real data work: you export a table from your database on Monday, export it again on Friday, and run a diff to see what changed. The diff tool reports forty changed rows. You open it expecting forty real edits. Instead, you find that thirty-eight of those "changes" are the exact same data — just sitting in a different row position, because someone re-sorted the table or a new row got inserted in the middle.</p>
+  <div class="post-meta">Guide &middot; JSON</div>
+  <h1>What Is JSON Schema?</h1>
+  <p>JSON Schema is a way to describe the shape your data is supposed to have — which fields must be present, what type each one is, and what values actually count as valid. It's the difference between "this is JSON" (just syntactically well-formed) and "this is JSON that looks like a real customer record" (matches a specific, checkable shape).</p>
 
-  <p>This isn't a bug in your diff tool. It's how almost every CSV and line-based diff tool works by design, and it's worth understanding exactly why, because it explains a specific class of false positive that wastes real time in code review, data QA, and migration verification.</p>
+  <h2>A real, generated example</h2>
+  <p>Given this sample data:</p>
+  <pre class="tour-code">[
+  {
+    <span class="tok-key">"name":</span> <span class="tok-str">"Ada Lovelace"</span>,
+    <span class="tok-key">"role":</span> <span class="tok-str">"Engineer"</span>,
+    <span class="tok-key">"age":</span> <span class="tok-num">36</span>
+  },
+  {
+    <span class="tok-key">"name":</span> <span class="tok-str">"Grace Hopper"</span>,
+    <span class="tok-key">"role":</span> <span class="tok-str">"Admiral"</span>,
+    <span class="tok-key">"age":</span> <span class="tok-num">85</span>
+  }
+]</pre>
+  <p>Recast's <a href="../tools/json-schema-generator.html">Schema Generator</a> produces this — a genuine, working output, not a simplified example:</p>
+  <pre class="tour-code">{
+  <span class="tok-key">"$schema":</span>
+    <span class="tok-str">"http://json-schema.org/draft-07/schema#"</span>,
+  <span class="tok-key">"title":</span> <span class="tok-str">"Person"</span>,
+  <span class="tok-key">"type":</span> <span class="tok-str">"array"</span>,
+  <span class="tok-key">"items":</span> {
+    <span class="tok-key">"type":</span> <span class="tok-str">"object"</span>,
+    <span class="tok-key">"properties":</span> {
+      <span class="tok-key">"name":</span> { <span class="tok-key">"type":</span> <span class="tok-str">"string"</span> },
+      <span class="tok-key">"role":</span> { <span class="tok-key">"type":</span> <span class="tok-str">"string"</span> },
+      <span class="tok-key">"age":</span> { <span class="tok-key">"type":</span> <span class="tok-str">"integer"</span> }
+    },
+    <span class="tok-key">"required":</span> [
+      <span class="tok-str">"name"</span>, <span class="tok-str">"role"</span>, <span class="tok-str">"age"</span>
+    ]
+  }
+}</pre>
 
-  <h2>Position-based diffing: the default, and its failure mode</h2>
-  <p>The simplest possible way to diff two files is line-by-line: compare line 1 to line 1, line 2 to line 2, and so on. This is what <code>diff</code>, and most CSV diff tools built on top of it, actually do under the hood.</p>
+  <h2>What that schema actually lets you check</h2>
+  <p>Once you have a schema, you can validate any future data against it. Say a bad record comes through — an <code>age</code> field that's negative:</p>
+  <pre class="tour-code">{
+  <span class="tok-key">"name":</span> <span class="tok-str">"Ada Lovelace"</span>,
+  <span class="tok-key">"age":</span> <span class="tok-num">-5</span>
+}</pre>
+  <p>Against a schema with <code>"minimum": 0</code> on the <code>age</code> field, <a href="../tools/validate-json-schema.html">Recast's validator</a> reports exactly what's wrong and where — genuine output, not paraphrased:</p>
+  <pre class="tour-code">{
+  <span class="tok-key">"valid":</span> <span class="tok-bool">false</span>,
+  <span class="tok-key">"errors":</span> [
+    {
+      <span class="tok-key">"path":</span> <span class="tok-str">"age"</span>,
+      <span class="tok-key">"message":</span> <span class="tok-str">"must be >= 0"</span>
+    }
+  ]
+}</pre>
+  <p>That's the actual value of a schema: not just "is this valid JSON," but "does this data mean what it's supposed to mean."</p>
 
-  <p>The problem: as soon as one row is inserted, deleted, or moved, <strong>every row after it shifts position</strong> — and a position-based diff has no way to tell "this row moved" apart from "this row was deleted and a completely different row was added in its place." It reports a cascade of changes that don't reflect anything that actually happened to your data.</p>
+  <h2>What's covered, honestly</h2>
+  <p>Recast's schema tools implement a genuinely useful subset of JSON Schema draft-07 — <code>type</code>, <code>enum</code>, <code>const</code>, <code>properties</code>, <code>required</code>, <code>additionalProperties</code>, <code>items</code>, <code>minItems</code>, <code>maxItems</code>, numeric bounds (<code>minimum</code>, <code>maximum</code>, and their exclusive variants), string length and <code>pattern</code>, and <code>anyOf</code>, <code>oneOf</code>, <code>allOf</code>. That covers real API-contract checking for the large majority of everyday cases. It isn't a full implementation of every draft-07 keyword (or later drafts like 2019-09 or 2020-12) — if you need the complete specification, a dedicated library like Ajv is the right tool; Recast's version is built for fast, in-browser checking without that dependency.</p>
 
-  <pre># File A
-id,name,city
-1,Ada,London
-2,Bob,Paris
-3,Cy,Rome
+  <div class="post-cta"><p><strong>Try it:</strong> <a href="../tools/json-schema-generator.html">Generate a schema</a> from your own data, or <a href="../tools/validate-json-schema.html">validate existing data</a> against a schema you already have.</p></div>
 
-# File B (row 2 deleted, nothing else changed)
-id,name,city
-1,Ada,London
-3,Cy,Rome</pre>
-
-  <p>A position-based diff sees this as: row 2 changed from <code>Bob,Paris</code> to <code>Cy,Rome</code>, and row 3 was removed. That's not what happened. What actually happened is simpler: one row was deleted, and nothing else changed at all. The position-based view actively obscures the real story.</p>
-
-  <h2>Key-aware diffing: matching by identity, not position</h2>
-  <p>The fix is to match rows by a stable identifier — typically an <code>id</code> column — instead of by row number. Once you're matching by key, moving a row, inserting a row in the middle, or re-sorting the whole file has zero effect on the diff result, because identity, not position, is what's being compared.</p>
-
-  <p>The same example, diffed by key instead of position, correctly reports: row <code>id=2</code> removed, nothing else changed. That's the actual delta — one true change, not three false ones.</p>
-
-  <h2>Where this actually matters</h2>
-  <ul>
-    <li><strong>Data migration QA.</strong> Comparing a "before" export against an "after" export to confirm a migration didn't silently corrupt anything. Position drift from re-sorting will bury the one real corrupted row under dozens of false positives.</li>
-    <li><strong>Config and reference-data review.</strong> A pull request that reorders a CSV of feature flags or lookup values shouldn't show as forty changed lines when nothing about the actual data changed.</li>
-    <li><strong>Recurring exports.</strong> Any workflow that diffs a daily or weekly export against the previous one — new rows get appended, old ones get archived, and row position is never stable between runs.</li>
-  </ul>
-
-  <h2>What to actually look for in a CSV diff tool</h2>
-  <p>Ask one question: does it match rows by a key column, or by line position? If a tool can't tell you which column it used to match rows, it's almost certainly doing position-based diffing under the hood, and every diff you run against reordered or filtered data will be noisier than the real change.</p>
-
-  <div class="post-cta">
-    <p>Recast's <a href="../tools/csv-diff.html">CSV Diff tool</a> matches rows by key, not position, and shows the result as a real side-by-side aligned table — added rows in green, removed in red, changed cells with the old value struck through next to the new one. Filter to just what changed, jump between differences with Next/Prev, and download the full comparison as a report. Free for files up to 50 rows; a one-time day pass or Pro removes that limit.</p>
-  </div>
+</article>
+</main>
 </article>
 
 </main>

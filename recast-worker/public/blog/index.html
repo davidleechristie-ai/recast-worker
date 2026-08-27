@@ -6,6 +6,16 @@
 <script>(function(){try{if(localStorage.getItem('recast_theme')!=='dark')document.documentElement.setAttribute('data-theme','light');}catch(e){}})();</script>
 <title>Blog | Recast</title>
 <meta name="description" content="Practical guides on JSON, CSV, XML, and JSON Schema — from the team building Recast's data format tools.">
+<meta property="og:type" content="website">
+<meta property="og:title" content="Blog | Recast">
+<meta property="og:description" content="Practical guides on JSON, CSV, XML, and JSON Schema — from the team building Recast's data format tools.">
+<meta property="og:url" content="https://tryrecast.app/blog/index.html">
+<meta property="og:image" content="https://tryrecast.app/og-image.png">
+<meta property="og:site_name" content="Recast">
+<meta name="twitter:card" content="summary_large_image">
+<meta name="twitter:title" content="Blog | Recast">
+<meta name="twitter:description" content="Practical guides on JSON, CSV, XML, and JSON Schema — from the team building Recast's data format tools.">
+<meta name="twitter:image" content="https://tryrecast.app/og-image.png">
 <link rel="canonical" href="https://tryrecast.app/blog/index.html">
 <link rel="stylesheet" href="../styles.css">
 <link rel="preconnect" href="https://fonts.googleapis.com">
@@ -29,6 +39,59 @@
   gtag('js', new Date());
 
   gtag('config', 'G-MW47YKCSLX');
+</script>
+<!-- Upgrade-to-Pro click tracking — event delegation so it works
+     regardless of where this script sits relative to the button in the
+     page, and never depends on app.js (which only loads on index.html
+     and /tools/, not on blog/how-to/contact/demo pages that also have
+     this same button). -->
+<script>
+  document.addEventListener('click', function (e) {
+    var btn = e.target.closest && e.target.closest('#accountBtn');
+    if (!btn) return;
+    try { if (typeof gtag === 'function') gtag('event', 'upgrade_click', { page_path: location.pathname }); } catch (err) {}
+  });
+</script>
+<!-- Attribution capture — records this session's FIRST landing page and any
+     UTM params, once, in sessionStorage. Read later by app.js's
+     appendAttributionParams() when checkout starts, so a completed Stripe
+     payment can be traced back to the specific page or campaign that
+     actually brought the visitor in, not just "some visit happened." -->
+<script>
+  (function () {
+    try {
+      if (!sessionStorage.getItem('recast_landing_path')) {
+        var path = location.pathname.replace(/^\//, '').replace(/\.html$/, '') || 'home';
+        sessionStorage.setItem('recast_landing_path', path);
+        var params = new URLSearchParams(location.search);
+        var utm = {};
+        ['utm_source', 'utm_medium', 'utm_campaign', 'utm_term', 'utm_content'].forEach(function (key) {
+          if (params.get(key)) utm[key] = params.get(key);
+        });
+        sessionStorage.setItem('recast_landing_utm', JSON.stringify(utm));
+      }
+    } catch (e) {}
+  })();
+</script>
+<script type="application/ld+json">
+{
+  "@context": "https://schema.org",
+  "@type": "BreadcrumbList",
+  "itemListElement": [
+    {
+      "@type": "ListItem",
+      "position": 1,
+      "name": "Home",
+      "item": "https://tryrecast.app/"
+    },
+    {
+      "@type": "ListItem",
+      "position": 2,
+      "name": "Blog",
+      "item": "https://tryrecast.app/blog/index.html"
+    }
+  ]
+}
 </script>
 </head>
 <body style="background:var(--bg);color:var(--text);margin:0;min-height:100vh;">
@@ -183,6 +246,7 @@
         </div>
       </div>
       <a href="../demo/index.html" class="nav-plain-link">Demo</a>
+      <a href="../tools/index.html" class="nav-plain-link">Tools</a>
       <a href="index.html" class="nav-plain-link">Blog</a>
       <a href="../index.html#pricing" class="nav-plain-link">Pricing</a>
       <a href="../how-to/index.html" class="nav-plain-link">How-to</a>
@@ -205,13 +269,38 @@
 
 <div class="section-head">
   <p class="eyebrow">Blog</p>
-  <h2>Notes on data formats, from building the tools.</h2>
+  <h1>Notes on data formats, from building the tools.</h1>
 </div>
 <div class="blog-index-list">
       <a class="blog-index-item" href="whats-new-in-recast.html">
         <div class="blog-index-date">20 August 2026</div>
         <div class="blog-index-title">What's New in Recast: Graphs, Recipes, Offline Mode, and a Real Demo</div>
         <p class="blog-index-excerpt">A catalog of what's shipped recently: 11-language code-gen, graph export, a light theme, saved conversion recipes, live schema validation, batch diffing, offline support, and a demo page with real datasets.</p>
+      </a>
+      <a class="blog-index-item" href="recast-vs-jsonlint.html">
+        <div class="blog-index-date">27 August 2026</div>
+        <div class="blog-index-title">Recast vs JSONLint — Which Should You Use?</div>
+        <p class="blog-index-excerpt">An honest, specific comparison — what each one actually does well, researched directly rather than assumed.</p>
+      </a>
+      <a class="blog-index-item" href="my-json-wont-parse.html">
+        <div class="blog-index-date">27 August 2026</div>
+        <div class="blog-index-title">My JSON Won't Parse — Here's How to Actually Find the Error</div>
+        <p class="blog-index-excerpt">Five real, common JSON syntax mistakes and the exact error message each one produces, so you can actually find the problem instead of scanning the whole file by eye.</p>
+      </a>
+      <a class="blog-index-item" href="what-is-json-schema.html">
+        <div class="blog-index-date">27 August 2026</div>
+        <div class="blog-index-title">What Is JSON Schema?</div>
+        <p class="blog-index-excerpt">JSON Schema describes what your data should look like — which fields are required, what type each one is, and what values are valid. A practical introduction using Recast's own draft-07 subset.</p>
+      </a>
+      <a class="blog-index-item" href="test-api-without-postman.html">
+        <div class="blog-index-date">26 August 2026</div>
+        <div class="blog-index-title">How to Test an API Without Postman</div>
+        <p class="blog-index-excerpt">Already have an API response and just need to inspect, transform, or validate it? Here's how to do that without setting up a Postman workspace first.</p>
+      </a>
+      <a class="blog-index-item" href="what-is-jsonpath.html">
+        <div class="blog-index-date">26 August 2026</div>
+        <div class="blog-index-title">What Is JSONPath?</div>
+        <p class="blog-index-excerpt">JSONPath is a way to pull a specific value out of JSON without writing a loop. Three real, working examples, using the exact syntax Recast's own JSONPath tool supports.</p>
       </a>
       <a class="blog-index-item" href="try-recast-with-real-data.html">
         <div class="blog-index-date">20 August 2026</div>

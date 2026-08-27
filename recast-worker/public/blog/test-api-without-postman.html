@@ -4,19 +4,19 @@
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <script>(function(){try{if(localStorage.getItem('recast_theme')!=='dark')document.documentElement.setAttribute('data-theme','light');}catch(e){}})();</script>
-<title>Why Most CSV Diff Tools Lie to You | Recast</title>
-<meta name="description" content="Most CSV diff tools compare by line position, not row identity — so a single reordered or deleted row cascades into dozens of false-positive changes. Here's why key-aware diffing fixes it.">
+<title>How to Test an API Without Postman | Recast</title>
+<meta name="description" content="Already have an API response and just need to inspect, transform, or validate it? Here's how to do that without setting up a Postman workspace first.">
 <meta property="og:type" content="article">
-<meta property="og:title" content="Why Most CSV Diff Tools Lie to You | Recast">
-<meta property="og:description" content="Most CSV diff tools compare by line position, not row identity — so a single reordered or deleted row cascades into dozens of false-positive changes. Here's why key-aware diffing fixes it.">
-<meta property="og:url" content="https://tryrecast.app/blog/csv-diff-explained.html">
+<meta property="og:title" content="How to Test an API Without Postman | Recast">
+<meta property="og:description" content="Already have an API response and just need to inspect, transform, or validate it? Here's how to do that without setting up a Postman workspace first.">
+<meta property="og:url" content="https://tryrecast.app/blog/test-api-without-postman.html">
 <meta property="og:image" content="https://tryrecast.app/og-image.png">
 <meta property="og:site_name" content="Recast">
 <meta name="twitter:card" content="summary_large_image">
-<meta name="twitter:title" content="Why Most CSV Diff Tools Lie to You | Recast">
-<meta name="twitter:description" content="Most CSV diff tools compare by line position, not row identity — so a single reordered or deleted row cascades into dozens of false-positive changes. Here's why key-aware diffing fixes it.">
+<meta name="twitter:title" content="How to Test an API Without Postman | Recast">
+<meta name="twitter:description" content="Already have an API response and just need to inspect, transform, or validate it? Here's how to do that without setting up a Postman workspace first.">
 <meta name="twitter:image" content="https://tryrecast.app/og-image.png">
-<link rel="canonical" href="https://tryrecast.app/blog/csv-diff-explained.html">
+<link rel="canonical" href="https://tryrecast.app/blog/test-api-without-postman.html">
 <link rel="stylesheet" href="../styles.css">
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@400;500;600;700&family=IBM+Plex+Sans:wght@400;500;600&family=IBM+Plex+Mono:wght@400;500&display=swap" rel="stylesheet">
@@ -24,11 +24,11 @@
 {
   "@context": "https://schema.org",
   "@type": "Article",
-  "headline": "Why Most CSV Diff Tools Lie to You | Recast",
-  "description": "Most CSV diff tools compare by line position, not row identity — so a single reordered or deleted row cascades into dozens of false-positive changes. Here's why key-aware diffing fixes it.",
-  "url": "https://tryrecast.app/blog/csv-diff-explained.html",
+  "headline": "How to Test an API Without Postman | Recast",
+  "description": "Already have an API response and just need to inspect, transform, or validate it? Here's how to do that without setting up a Postman workspace first.",
+  "url": "https://tryrecast.app/blog/test-api-without-postman.html",
   "publisher": { "@type": "Organization", "name": "Recast", "url": "https://tryrecast.app/" },
-  "datePublished": "2026-08-14"
+  "datePublished": "2026-08-26"
 }
 </script>
 <!-- Google tag (gtag.js) -->
@@ -93,8 +93,8 @@
     {
       "@type": "ListItem",
       "position": 3,
-      "name": "Why Most CSV Diff Tools Lie to You",
-      "item": "https://tryrecast.app/blog/csv-diff-explained.html"
+      "name": "How to Test an API Without Postman",
+      "item": "https://tryrecast.app/blog/test-api-without-postman.html"
     }
   ]
 }
@@ -270,53 +270,43 @@
     </div>
   </div>
 </header>
-
-<main style="max-width:1180px;margin:0 auto;padding:48px 24px 80px;">
-
+<main style="max-width:900px;margin:0 auto;padding:48px 24px 80px;">
 <article class="post tour-post">
-  <div class="post-meta">Guide · 14 August 2026</div>
-  <h1>Why Most CSV Diff Tools Lie to You</h1>
 
-  <p>Here's a scenario that happens constantly in real data work: you export a table from your database on Monday, export it again on Friday, and run a diff to see what changed. The diff tool reports forty changed rows. You open it expecting forty real edits. Instead, you find that thirty-eight of those "changes" are the exact same data — just sitting in a different row position, because someone re-sorted the table or a new row got inserted in the middle.</p>
+  <div class="post-meta">Guide &middot; API</div>
+  <h1>How to Test an API Without Postman</h1>
+  <p>To be upfront about what this actually covers: this isn't about sending the initial HTTP request — for that, curl, your own code, a browser, or yes, Postman itself, all work fine. This is about what happens next: you've got a response back, and now you need to actually look at it, reshape it, check it's valid, or see what changed since yesterday. That part often doesn't need a full Postman workspace set up just for a one-off look.</p>
 
-  <p>This isn't a bug in your diff tool. It's how almost every CSV and line-based diff tool works by design, and it's worth understanding exactly why, because it explains a specific class of false positive that wastes real time in code review, data QA, and migration verification.</p>
+  <h2>The situation this is for</h2>
+  <p>You already have an API response — copied from your terminal, a browser's network tab, your own backend logs, or a request you ran somewhere else. You don't need to build a collection, set up an environment, or open a desktop app. You just need to paste it somewhere and actually work with it.</p>
 
-  <h2>Position-based diffing: the default, and its failure mode</h2>
-  <p>The simplest possible way to diff two files is line-by-line: compare line 1 to line 1, line 2 to line 2, and so on. This is what <code>diff</code>, and most CSV diff tools built on top of it, actually do under the hood.</p>
-
-  <p>The problem: as soon as one row is inserted, deleted, or moved, <strong>every row after it shifts position</strong> — and a position-based diff has no way to tell "this row moved" apart from "this row was deleted and a completely different row was added in its place." It reports a cascade of changes that don't reflect anything that actually happened to your data.</p>
-
-  <pre># File A
-id,name,city
-1,Ada,London
-2,Bob,Paris
-3,Cy,Rome
-
-# File B (row 2 deleted, nothing else changed)
-id,name,city
-1,Ada,London
-3,Cy,Rome</pre>
-
-  <p>A position-based diff sees this as: row 2 changed from <code>Bob,Paris</code> to <code>Cy,Rome</code>, and row 3 was removed. That's not what happened. What actually happened is simpler: one row was deleted, and nothing else changed at all. The position-based view actively obscures the real story.</p>
-
-  <h2>Key-aware diffing: matching by identity, not position</h2>
-  <p>The fix is to match rows by a stable identifier — typically an <code>id</code> column — instead of by row number. Once you're matching by key, moving a row, inserting a row in the middle, or re-sorting the whole file has zero effect on the diff result, because identity, not position, is what's being compared.</p>
-
-  <p>The same example, diffed by key instead of position, correctly reports: row <code>id=2</code> removed, nothing else changed. That's the actual delta — one true change, not three false ones.</p>
-
-  <h2>Where this actually matters</h2>
+  <h2>What you can do with a response once you have it</h2>
+  <p>Paste the response into <a href="../how-to/api-workbench.html">Recast's API Workbench</a>, and six things become one click away instead of six separate tools:</p>
   <ul>
-    <li><strong>Data migration QA.</strong> Comparing a "before" export against an "after" export to confirm a migration didn't silently corrupt anything. Position drift from re-sorting will bury the one real corrupted row under dozens of false positives.</li>
-    <li><strong>Config and reference-data review.</strong> A pull request that reorders a CSV of feature flags or lookup values shouldn't show as forty changed lines when nothing about the actual data changed.</li>
-    <li><strong>Recurring exports.</strong> Any workflow that diffs a daily or weekly export against the previous one — new rows get appended, old ones get archived, and row position is never stable between runs.</li>
+    <li><strong>Inspect it</strong> — how many records, which fields, is anything missing</li>
+    <li><strong>Transform it</strong> — keep only the fields you need, renamed and cleaned up</li>
+    <li><strong>Query it</strong> — pull out just one value with <a href="what-is-jsonpath.html">JSONPath</a></li>
+    <li><strong>Validate it</strong> — check it actually matches the shape you expected</li>
+    <li><strong>Compare it</strong> — see exactly what's different from yesterday's response</li>
+    <li><strong>Save it as a recipe</strong> — so the same flow runs again automatically next time</li>
   </ul>
+  <p style="color:var(--text-muted);font-size:14px;">If the response is CSV or XML rather than JSON, the tools that specifically need JSON convert it into a working copy automatically — your original response is never silently overwritten.</p>
 
-  <h2>What to actually look for in a CSV diff tool</h2>
-  <p>Ask one question: does it match rows by a key column, or by line position? If a tool can't tell you which column it used to match rows, it's almost certainly doing position-based diffing under the hood, and every diff you run against reordered or filtered data will be noisier than the real change.</p>
+  <h2>Why this is faster for a one-off check</h2>
+  <p>None of this is a claim that Recast replaces a full API client for building and organizing requests — Postman's collections, environments, and team-sharing features are a genuinely different job. This is specifically for the moment right after you already have a response: no new workspace, no account setup, no switching between a request tool and a separate JSON formatter and a separate diff tool. Paste once, do all six things from the same screen.</p>
 
-  <div class="post-cta">
-    <p>Recast's <a href="../tools/csv-diff.html">CSV Diff tool</a> matches rows by key, not position, and shows the result as a real side-by-side aligned table — added rows in green, removed in red, changed cells with the old value struck through next to the new one. Filter to just what changed, jump between differences with Next/Prev, and download the full comparison as a report. Free for files up to 50 rows; a one-time day pass or Pro removes that limit.</p>
-  </div>
+  <h2>If you need this from a script instead of a browser tab</h2>
+  <p>The same operations are available over HTTP, using the same engine behind the browser tool:</p>
+  <pre class="tour-code">curl https://tryrecast.app/v1/convert \
+  -H "Authorization: Bearer rk_live_..." \
+  -H "Content-Type: application/json" \
+  -d '{"mode":"json2csv", "input":"[...]"}'</pre>
+  <p style="color:var(--text-muted);font-size:14px;">Covers conversion, diffing, and schema inference — see the full reference on the <a href="../how-to/api-workbench.html">API Workbench</a> page.</p>
+
+  <div class="post-cta"><p><strong>Try it:</strong> <a href="../how-to/api-workbench.html">Open the API Workbench walkthrough</a>, or paste a real response straight into the tool.</p></div>
+
+</article>
+</main>
 </article>
 
 </main>

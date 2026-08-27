@@ -6,6 +6,16 @@
 <script>(function(){try{if(localStorage.getItem('recast_theme')!=='dark')document.documentElement.setAttribute('data-theme','light');}catch(e){}})();</script>
 <title>How To — Find & Inspect | Recast</title>
 <meta name="description" content="Find information buried inside JSON with JSONPath, and see exactly what's in your data before you change it.">
+<meta property="og:type" content="website">
+<meta property="og:title" content="How To — Find & Inspect | Recast">
+<meta property="og:description" content="Find information buried inside JSON with JSONPath, and see exactly what's in your data before you change it.">
+<meta property="og:url" content="https://tryrecast.app/how-to/find-inspect.html">
+<meta property="og:image" content="https://tryrecast.app/og-image.png">
+<meta property="og:site_name" content="Recast">
+<meta name="twitter:card" content="summary_large_image">
+<meta name="twitter:title" content="How To — Find & Inspect | Recast">
+<meta name="twitter:description" content="Find information buried inside JSON with JSONPath, and see exactly what's in your data before you change it.">
+<meta name="twitter:image" content="https://tryrecast.app/og-image.png">
 <link rel="canonical" href="https://tryrecast.app/how-to/find-inspect.html">
 <link rel="stylesheet" href="../styles.css">
 <link rel="preconnect" href="https://fonts.googleapis.com">
@@ -31,6 +41,97 @@
   function gtag(){dataLayer.push(arguments);}
   gtag('js', new Date());
   gtag('config', 'G-MW47YKCSLX');
+</script>
+<!-- Upgrade-to-Pro click tracking — event delegation so it works
+     regardless of where this script sits relative to the button in the
+     page, and never depends on app.js (which only loads on index.html
+     and /tools/, not on blog/how-to/contact/demo pages that also have
+     this same button). -->
+<script>
+  document.addEventListener('click', function (e) {
+    var btn = e.target.closest && e.target.closest('#accountBtn');
+    if (!btn) return;
+    try { if (typeof gtag === 'function') gtag('event', 'upgrade_click', { page_path: location.pathname }); } catch (err) {}
+  });
+</script>
+<!-- Attribution capture — records this session's FIRST landing page and any
+     UTM params, once, in sessionStorage. Read later by app.js's
+     appendAttributionParams() when checkout starts, so a completed Stripe
+     payment can be traced back to the specific page or campaign that
+     actually brought the visitor in, not just "some visit happened." -->
+<script>
+  (function () {
+    try {
+      if (!sessionStorage.getItem('recast_landing_path')) {
+        var path = location.pathname.replace(/^\//, '').replace(/\.html$/, '') || 'home';
+        sessionStorage.setItem('recast_landing_path', path);
+        var params = new URLSearchParams(location.search);
+        var utm = {};
+        ['utm_source', 'utm_medium', 'utm_campaign', 'utm_term', 'utm_content'].forEach(function (key) {
+          if (params.get(key)) utm[key] = params.get(key);
+        });
+        sessionStorage.setItem('recast_landing_utm', JSON.stringify(utm));
+      }
+    } catch (e) {}
+  })();
+</script>
+<script type="application/ld+json">
+{
+  "@context": "https://schema.org",
+  "@type": "BreadcrumbList",
+  "itemListElement": [
+    {
+      "@type": "ListItem",
+      "position": 1,
+      "name": "Home",
+      "item": "https://tryrecast.app/"
+    },
+    {
+      "@type": "ListItem",
+      "position": 2,
+      "name": "How-to",
+      "item": "https://tryrecast.app/how-to/index.html"
+    },
+    {
+      "@type": "ListItem",
+      "position": 3,
+      "name": "Find and understand information inside your data",
+      "item": "https://tryrecast.app/how-to/find-inspect.html"
+    }
+  ]
+}
+</script>
+<script type="application/ld+json">
+{
+  "@context": "https://schema.org",
+  "@type": "FAQPage",
+  "mainEntity": [
+    {
+      "@type": "Question",
+      "name": "What is JSONPath?",
+      "acceptedAnswer": {
+        "@type": "Answer",
+        "text": "A way to tell Recast exactly what piece of information to pull out of a larger JSON document — for example, $.customers[*].email."
+      }
+    },
+    {
+      "@type": "Question",
+      "name": "Can I see what a JSONPath expression matches before applying it?",
+      "acceptedAnswer": {
+        "@type": "Answer",
+        "text": "Yes — the tool shows a live preview against a real sample document, highlighting exactly what matches."
+      }
+    },
+    {
+      "@type": "Question",
+      "name": "Does this page only cover JSONPath?",
+      "acceptedAnswer": {
+        "@type": "Answer",
+        "text": "No — it also covers Recast's Data Inspector, for exploring and understanding the shape of your data beyond extracting specific values."
+      }
+    }
+  ]
+}
 </script>
 </head>
 <body style="background:var(--bg);color:var(--text);margin:0;min-height:100vh;">
@@ -191,6 +292,7 @@
         </div>
       </div>
       <a href="../demo/index.html" class="nav-plain-link">Demo</a>
+      <a href="../tools/index.html" class="nav-plain-link">Tools</a>
       <a href="../blog/index.html" class="nav-plain-link">Blog</a>
       <a href="../index.html#pricing" class="nav-plain-link">Pricing</a>
       <a href="index.html" class="nav-plain-link">How-to</a>
@@ -226,6 +328,7 @@
   <a href="choose-a-tool.html" class="howto-subnav-link">Choose a Tool</a>
   <a href="capability-map.html" class="howto-subnav-link">Full Capability Map</a>
 </nav>
+  <h1>Find and understand information inside your data</h1>
   <h2 id="jsonpath">Find information buried inside JSON</h2>
   <p>Imagine a huge box full of information. JSONPath lets you tell Recast exactly what you want to take out.</p>
 
@@ -289,6 +392,22 @@
   <p>Two related tools live nearby: <strong>Graph</strong> turns nested JSON into a clickable, collapsible diagram instead of a wall of text (with a download button to save it as an image), and <strong>Schema</strong> looks at a sample and works out the rules it follows.</p>
 
   <div class="post-cta"><p><strong>Inspect your data →</strong> <a href="../index.html?open=inspect#tool">Open Data Inspector</a>, or <a href="../demo/index.html?card=orders_inspect">load the real orders demo</a> to see it profile a genuine dataset automatically.</p></div>
+
+  <h2 id="faq">Common questions</h2>
+  <div class="faq-list">
+    <details class="faq-item">
+      <summary>What is JSONPath?</summary>
+      <p>A way to tell Recast exactly what piece of information to pull out of a larger JSON document — for example, $.customers[*].email.</p>
+    </details>
+    <details class="faq-item">
+      <summary>Can I see what a JSONPath expression matches before applying it?</summary>
+      <p>Yes — the tool shows a live preview against a real sample document, highlighting exactly what matches.</p>
+    </details>
+    <details class="faq-item">
+      <summary>Does this page only cover JSONPath?</summary>
+      <p>No — it also covers Recast's Data Inspector, for exploring and understanding the shape of your data beyond extracting specific values.</p>
+    </details>
+  </div>
 
 <div class="howto-crosslinks">
   <div class="howto-crosslinks-title">Where next</div>

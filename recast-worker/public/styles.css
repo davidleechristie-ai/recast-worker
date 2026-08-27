@@ -1692,3 +1692,22 @@ body.wb-lock{ overflow:hidden; }
   .contact-grid{ grid-template-columns:1fr; }
   .contact-field-row{ grid-template-columns:1fr; }
 }
+
+/* ================= Tools category index page ================= */
+.tools-index-grid{ display:grid; grid-template-columns:repeat(auto-fit, minmax(240px, 1fr)); gap:14px; }
+.tools-index-card{
+  display:flex; flex-direction:column; gap:6px; padding:16px 18px; border-radius:8px;
+  border:1px solid rgba(var(--border-rgb),0.24); background:var(--panel); text-decoration:none;
+  transition:border-color .15s, transform .15s;
+}
+.tools-index-card:hover{ border-color:#A855F7; transform:translateY(-1px); }
+.tools-index-card strong{ font-size:14.5px; color:var(--text); }
+.tools-index-card span{ font-size:12.5px; color:var(--text-muted); line-height:1.4; }
+
+@media (max-width:480px){
+  .tools-index-grid{ grid-template-columns:1fr; }
+}
+
+.related-group-all{ padding-bottom:6px; border-bottom:1px solid rgba(var(--border-rgb),0.16); }
+.related-group-all a{ font-weight:600; color:#A855F7; text-decoration:none; }
+.related-group-all a:hover{ text-decoration:underline; }
