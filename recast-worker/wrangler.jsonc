@@ -1,0 +1,65 @@
+{
+"secrets_store_secrets": [
+  {
+    "binding": "STRIPE_SECRET_KEY",
+    "store_id": "8fea47bd0f6e47b1b19663d50cf64181",
+    "secret_name": "STRIPE_SECRET_KEY"
+  },
+  {
+    "binding": "STRIPE_WEBHOOK_SECRET",
+    "store_id": "8fea47bd0f6e47b1b19663d50cf64181",
+    "secret_name": "STRIPE_WEBHOOK_SECRET"
+  },
+  {
+    "binding": "RESEND_API_KEY",
+    "store_id": "8fea47bd0f6e47b1b19663d50cf64181",
+    "secret_name": "RESEND_API_KEY"
+  }
+],
+  "$schema": "./node_modules/wrangler/config-schema.json",
+  "name": "falling-cloud-0deb",
+  "main": "src/worker.js",
+  "compatibility_date": "2026-08-13",
+
+  "assets": {
+    "directory": "./public",
+    "binding": "ASSETS",
+    "run_worker_first": ["/api/*", "/", "/blog", "/blog/", "/how-to", "/how-to/", "/demo", "/demo/", "/tools", "/tools/", "/api", "/api/"],
+    "html_handling": "none"
+  },
+
+  "kv_namespaces": [
+    {
+      "binding": "ENTITLEMENTS",
+      "id": "e4c46dd48933470982a82158aedab4ad"
+    }
+  ],
+
+  "vars": {
+    "SITE_URL": "https://tryrecast.app/",
+    "PRICE_MAP": "{\"price_1U41Bw07vRRG7JsXH0iAKy7g\":\"pro_monthly\",\"price_1U41Bx07vRRG7JsXlwnms0uo\":\"pro_yearly\",\"price_1U41Bs07vRRG7JsXnYpcoHh1\":\"api_monthly\",\"price_1U41Br07vRRG7JsXV1vskFmE\":\"api_yearly\",\"price_1U4Kub07vRRG7JsXtMatleol\":\"day_pass\"}"
+  },
+
+
+    "observability": {
+      "enabled": true,
+      "head_sampling_rate": 1,
+      "logs": {
+        "enabled": true,
+        "head_sampling_rate": 1,
+        "persist": true,
+        "invocation_logs": true
+      },
+      "traces": {
+        "enabled": true,
+        "persist": true,
+        "head_sampling_rate": 1
+      }
+    }
+
+    // STRIPE_SECRET_KEY and STRIPE_WEBHOOK_SECRET are bound above via
+    // secrets_store_secrets...
+
+
+
+}
