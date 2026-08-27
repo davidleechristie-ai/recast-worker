@@ -130,5 +130,12 @@ test('Java: colliding array root uses a plain, non-declaration comment (not a co
   assert.ok(!out.includes('// Person = List<Person>'), 'must not use the old, declaration-looking comment wording');
 });
 
+test('C#: colliding array root uses a plain, non-declaration comment (same fix as Java)', () => {
+  const out = E.jsonSchemaToCSharp(collidingArraySchema, 'Person');
+  assert.ok(declaresClass(out, 'public class Person'), 'expected a real "public class Person" declaration');
+  assert.ok(out.includes('// Top-level type: List<Person>'), 'expected the clarified, non-declaration-looking comment wording');
+  assert.ok(!out.includes('// Person = List<Person>'), 'must not use the old, declaration-looking comment wording');
+});
+
 console.log(`\n${passed} passed, ${failed} failed\n`);
 if (failed > 0) process.exit(1);

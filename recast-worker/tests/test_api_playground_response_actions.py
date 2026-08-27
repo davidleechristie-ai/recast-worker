@@ -137,7 +137,7 @@ def test_other_actions_unaffected(page, console_errors):
 
 def test_normal_workbench_inspect_unchanged(page, console_errors):
     print('\nNormal workbench "Inspect" nav item (must stay unchanged)')
-    page.click('.nav-group[data-nav-group="work"] .nav-group-btn')
+    page.click('.nav-group[data-nav-group="tools"] .nav-group-btn')
     page.wait_for_timeout(150)
     page.click('.nav-dropdown-item[data-group="schema"]')
     page.wait_for_timeout(300)
