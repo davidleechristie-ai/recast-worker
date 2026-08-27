@@ -6,6 +6,16 @@
 <script>(function(){try{if(localStorage.getItem('recast_theme')==='light')document.documentElement.setAttribute('data-theme','light');}catch(e){}})();</script>
 <title>JSON to YAML Converter — free online | Recast</title>
 <meta name="description" content="Convert JSON to YAML instantly in your browser. Handles nested objects, arrays, and lists of objects with correct block-style indentation. Nothing is uploaded.">
+<meta property="og:type" content="website">
+<meta property="og:title" content="JSON to YAML Converter — free online | Recast">
+<meta property="og:description" content="Convert JSON to YAML instantly in your browser. Handles nested objects, arrays, and lists of objects with correct block-style indentation. Nothing is uploaded.">
+<meta property="og:url" content="https://tryrecast.app/tools/json-to-yaml.html">
+<meta property="og:image" content="https://tryrecast.app/og-image.png">
+<meta property="og:site_name" content="Recast">
+<meta name="twitter:card" content="summary_large_image">
+<meta name="twitter:title" content="JSON to YAML Converter — free online | Recast">
+<meta name="twitter:description" content="Convert JSON to YAML instantly in your browser. Handles nested objects, arrays, and lists of objects with correct block-style indentation. Nothing is uploaded.">
+<meta name="twitter:image" content="https://tryrecast.app/og-image.png">
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@400;500;600;700&family=IBM+Plex+Sans:wght@400;500;600&family=IBM+Plex+Mono:wght@400;500&display=swap" rel="stylesheet">
 <link rel="stylesheet" href="../styles.css">
@@ -38,6 +48,59 @@
   gtag('js', new Date());
 
   gtag('config', 'G-MW47YKCSLX');
+</script>
+<!-- Upgrade-to-Pro click tracking — event delegation so it works
+     regardless of where this script sits relative to the button in the
+     page, and never depends on app.js (which only loads on index.html
+     and /tools/, not on blog/how-to/contact/demo pages that also have
+     this same button). -->
+<script>
+  document.addEventListener('click', function (e) {
+    var btn = e.target.closest && e.target.closest('#accountBtn');
+    if (!btn) return;
+    try { if (typeof gtag === 'function') gtag('event', 'upgrade_click', { page_path: location.pathname }); } catch (err) {}
+  });
+</script>
+<!-- Attribution capture — records this session's FIRST landing page and any
+     UTM params, once, in sessionStorage. Read later by app.js's
+     appendAttributionParams() when checkout starts, so a completed Stripe
+     payment can be traced back to the specific page or campaign that
+     actually brought the visitor in, not just "some visit happened." -->
+<script>
+  (function () {
+    try {
+      if (!sessionStorage.getItem('recast_landing_path')) {
+        var path = location.pathname.replace(/^\//, '').replace(/\.html$/, '') || 'home';
+        sessionStorage.setItem('recast_landing_path', path);
+        var params = new URLSearchParams(location.search);
+        var utm = {};
+        ['utm_source', 'utm_medium', 'utm_campaign', 'utm_term', 'utm_content'].forEach(function (key) {
+          if (params.get(key)) utm[key] = params.get(key);
+        });
+        sessionStorage.setItem('recast_landing_utm', JSON.stringify(utm));
+      }
+    } catch (e) {}
+  })();
+</script>
+<script type="application/ld+json">
+{
+  "@context": "https://schema.org",
+  "@type": "BreadcrumbList",
+  "itemListElement": [
+    {
+      "@type": "ListItem",
+      "position": 1,
+      "name": "Home",
+      "item": "https://tryrecast.app/"
+    },
+    {
+      "@type": "ListItem",
+      "position": 2,
+      "name": "JSON to YAML",
+      "item": "https://tryrecast.app/tools/json-to-yaml.html"
+    }
+  ]
+}
 </script>
 </head>
 
@@ -193,6 +256,7 @@
         </div>
       </div>
       <a href="../demo/index.html" class="nav-plain-link">Demo</a>
+      <a href="index.html" class="nav-plain-link">Tools</a>
       <a href="../blog/index.html" class="nav-plain-link">Blog</a>
       <a href="#pricing" class="nav-plain-link">Pricing</a>
       <a href="../how-to/index.html" class="nav-plain-link">How-to</a>
@@ -504,6 +568,7 @@ city: London
     </div>
 
     <div class="related-groups">
+      <div class="related-group-all"><a href="index.html">See all 23 tools &rarr;</a></div>
       <div class="related-group">
         <span class="rg-label">Convert</span>
         <a href="json-to-csv.html" onclick="setMode('json2csv');return false;"><svg class="ico"><use href="#ico-json"/></svg>JSON→CSV</a>
@@ -547,10 +612,10 @@ city: London
         <a href="json-to-python.html" onclick="setMode('json2python');return false;"><svg class="ico"><use href="#ico-code"/></svg>JSON → Python</a>
         <a href="json-to-pydantic.html" onclick="setMode('json2pydantic');return false;"><svg class="ico"><use href="#ico-code"/></svg>JSON → Pydantic</a>
         <a href="json-to-go.html" onclick="setMode('json2go');return false;"><svg class="ico"><use href="#ico-code"/></svg>JSON → Go</a>
-        <a href="#" onclick="setMode('json2kotlin');return false;"><svg class="ico"><use href="#ico-code"/></svg>JSON → Kotlin</a>
-        <a href="#" onclick="setMode('json2rust');return false;"><svg class="ico"><use href="#ico-code"/></svg>JSON → Rust</a>
-        <a href="#" onclick="setMode('json2java');return false;"><svg class="ico"><use href="#ico-code"/></svg>JSON → Java</a>
-        <a href="#" onclick="setMode('json2swift');return false;"><svg class="ico"><use href="#ico-code"/></svg>JSON → Swift</a>
+        <a href="json-to-kotlin.html" onclick="setMode('json2kotlin');return false;"><svg class="ico"><use href="#ico-code"/></svg>JSON → Kotlin</a>
+        <a href="json-to-rust.html" onclick="setMode('json2rust');return false;"><svg class="ico"><use href="#ico-code"/></svg>JSON → Rust</a>
+        <a href="json-to-java.html" onclick="setMode('json2java');return false;"><svg class="ico"><use href="#ico-code"/></svg>JSON → Java</a>
+        <a href="json-to-swift.html" onclick="setMode('json2swift');return false;"><svg class="ico"><use href="#ico-code"/></svg>JSON → Swift</a>
         <a href="#" onclick="setMode('json2csharp');return false;"><svg class="ico"><use href="#ico-code"/></svg>JSON → C#</a>
         <a href="#" onclick="setMode('json2sql');return false;"><svg class="ico"><use href="#ico-schema"/></svg>JSON → SQL</a>
         <a href="#" onclick="setMode('jsonMock');return false;"><svg class="ico"><use href="#ico-json"/></svg>JSON → Mock data</a>
@@ -780,11 +845,6 @@ city: London
 <script src="../lib/presets.js"></script>
 <script src="../lib/csv-compare.js"></script>
 <script src="../app.js"></script>
-<!--
-  Cloudflare Web Analytics — free, no cookies, no consent banner needed.
-  Get your token: Cloudflare Dashboard -> Analytics & Logs -> Web Analytics
-  -> Add a site -> tryrecast.app -> "Manual setup" -> copy the token below.
--->
-<script defer src="https://static.cloudflareinsights.com/beacon.min.js" data-cf-beacon='{"token": "REPLACE_WITH_YOUR_CF_ANALYTICS_TOKEN"}'></script>
+<!-- Cloudflare Web Analytics --><script type='module' src='https://static.cloudflareinsights.com/beacon.min.js' data-cf-beacon='{"token": "13426e11249049dba542ef0b69a55823"}'></script><!-- End Cloudflare Web Analytics -->
 </body>
 </html>

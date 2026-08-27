@@ -4,8 +4,18 @@
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <script>(function(){try{if(localStorage.getItem('recast_theme')==='light')document.documentElement.setAttribute('data-theme','light');}catch(e){}})();</script>
-<title>JSON Validator — with plain-English error messages | Recast</title>
-<meta name="description" content="Validate JSON online with error messages that actually explain what's wrong — trailing commas, single quotes, unquoted keys — instead of a raw parser error and a character position.">
+<title>JSON Validator — exact line and column, instantly | Recast</title>
+<meta name="description" content="Validate JSON online and see exactly where it breaks — the real parser error, with the exact line and column, right next to your input. No separate console, no guessing.">
+<meta property="og:type" content="website">
+<meta property="og:title" content="JSON Validator — exact line and column, instantly | Recast">
+<meta property="og:description" content="Validate JSON online and see exactly where it breaks — the real parser error, with the exact line and column, right next to your input. No separate console, no guessing.">
+<meta property="og:url" content="https://tryrecast.app/tools/json-validator.html">
+<meta property="og:image" content="https://tryrecast.app/og-image.png">
+<meta property="og:site_name" content="Recast">
+<meta name="twitter:card" content="summary_large_image">
+<meta name="twitter:title" content="JSON Validator — exact line and column, instantly | Recast">
+<meta name="twitter:description" content="Validate JSON online and see exactly where it breaks — the real parser error, with the exact line and column, right next to your input. No separate console, no guessing.">
+<meta name="twitter:image" content="https://tryrecast.app/og-image.png">
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@400;500;600;700&family=IBM+Plex+Sans:wght@400;500;600&family=IBM+Plex+Mono:wght@400;500&display=swap" rel="stylesheet">
 <link rel="stylesheet" href="../styles.css">
@@ -21,7 +31,7 @@
   "url": "https://tryrecast.app/tools/json-validator.html",
   "applicationCategory": "DeveloperApplication",
   "operatingSystem": "Any (runs in browser)",
-  "description": "Validate JSON online with error messages that actually explain what's wrong — trailing commas, single quotes, unquoted keys — instead of a raw parser error and a character position.",
+  "description": "Validate JSON online and see exactly where it breaks — the real parser error, with the exact line and column, right next to your input. No separate console, no guessing.",
   "offers": [
     { "@type": "Offer", "name": "Free", "price": "0", "priceCurrency": "GBP" },
     { "@type": "Offer", "name": "Pro", "price": "9", "priceCurrency": "GBP" },
@@ -38,6 +48,99 @@
   gtag('js', new Date());
 
   gtag('config', 'G-MW47YKCSLX');
+</script>
+<!-- Upgrade-to-Pro click tracking — event delegation so it works
+     regardless of where this script sits relative to the button in the
+     page, and never depends on app.js (which only loads on index.html
+     and /tools/, not on blog/how-to/contact/demo pages that also have
+     this same button). -->
+<script>
+  document.addEventListener('click', function (e) {
+    var btn = e.target.closest && e.target.closest('#accountBtn');
+    if (!btn) return;
+    try { if (typeof gtag === 'function') gtag('event', 'upgrade_click', { page_path: location.pathname }); } catch (err) {}
+  });
+</script>
+<!-- Attribution capture — records this session's FIRST landing page and any
+     UTM params, once, in sessionStorage. Read later by app.js's
+     appendAttributionParams() when checkout starts, so a completed Stripe
+     payment can be traced back to the specific page or campaign that
+     actually brought the visitor in, not just "some visit happened." -->
+<script>
+  (function () {
+    try {
+      if (!sessionStorage.getItem('recast_landing_path')) {
+        var path = location.pathname.replace(/^\//, '').replace(/\.html$/, '') || 'home';
+        sessionStorage.setItem('recast_landing_path', path);
+        var params = new URLSearchParams(location.search);
+        var utm = {};
+        ['utm_source', 'utm_medium', 'utm_campaign', 'utm_term', 'utm_content'].forEach(function (key) {
+          if (params.get(key)) utm[key] = params.get(key);
+        });
+        sessionStorage.setItem('recast_landing_utm', JSON.stringify(utm));
+      }
+    } catch (e) {}
+  })();
+</script>
+<script type="application/ld+json">
+{
+  "@context": "https://schema.org",
+  "@type": "FAQPage",
+  "mainEntity": [
+    {
+      "@type": "Question",
+      "name": "Do I need to create an account?",
+      "acceptedAnswer": {
+        "@type": "Answer",
+        "text": "No — Recast doesn't use logins, emails, or passwords. When you pay, your browser is automatically given secure access. This means access is tied to the specific browser you paid in, not to an identity we track. If you switch devices, use a different browser, or clear your browser's storage, click Manage subscription from the original browser to pick it back up, or get in touch and we'll sort it out."
+      }
+    },
+    {
+      "@type": "Question",
+      "name": "Is my data ever uploaded anywhere?",
+      "acceptedAnswer": {
+        "@type": "Answer",
+        "text": "No. Every conversion, diff, and validation runs entirely inside your browser tab. Nothing you paste into the tool is ever sent to a server — the only exception is the checkout process itself, which is handled directly by Stripe."
+      }
+    },
+    {
+      "@type": "Question",
+      "name": "What happens if I cancel?",
+      "acceptedAnswer": {
+        "@type": "Answer",
+        "text": "Cancel any time from Manage subscription. Your access reverts to the Free tier automatically — usually within moments, always by your next page load — no need to email anyone."
+      }
+    },
+    {
+      "@type": "Question",
+      "name": "Can I use Recast in a script or CI pipeline?",
+      "acceptedAnswer": {
+        "@type": "Answer",
+        "text": "Yes — the same engine that powers the browser tool is available as recast-cli, an npm package with no network dependency, plus a REST API on the API plan."
+      }
+    }
+  ]
+}
+</script>
+<script type="application/ld+json">
+{
+  "@context": "https://schema.org",
+  "@type": "BreadcrumbList",
+  "itemListElement": [
+    {
+      "@type": "ListItem",
+      "position": 1,
+      "name": "Home",
+      "item": "https://tryrecast.app/"
+    },
+    {
+      "@type": "ListItem",
+      "position": 2,
+      "name": "JSON Validator",
+      "item": "https://tryrecast.app/tools/json-validator.html"
+    }
+  ]
+}
 </script>
 </head>
 
@@ -193,6 +296,7 @@
         </div>
       </div>
       <a href="../demo/index.html" class="nav-plain-link">Demo</a>
+      <a href="index.html" class="nav-plain-link">Tools</a>
       <a href="../blog/index.html" class="nav-plain-link">Blog</a>
       <a href="#pricing" class="nav-plain-link">Pricing</a>
       <a href="../how-to/index.html" class="nav-plain-link">How-to</a>
@@ -228,7 +332,7 @@
   <section class="hero" id="tool">
     <p class="eyebrow">Your private data workbench</p>
     <h1>JSON Validator</h1>
-    <p class="sub">Checks whether your JSON is valid, and when it isn't, explains why in plain English — a trailing comma, single quotes instead of double, an unquoted property name — with the exact line and column, instead of just “Unexpected token at position 45”.</p>
+    <p class="sub">Checks whether your JSON is valid, and when it isn't, shows you exactly where it broke — the real parser error, with the exact line and column, right here next to your input instead of buried in a separate console.</p>
     <p style="font-size:13px;"><a href="../index.html" style="color:#B9CBDA;">← Full toolkit (all 23 tools)</a></p>
 
 <div class="hero-preview">
@@ -249,7 +353,7 @@
       <div class="quick-start-grid">
         <button class="qs-card" data-mode="json2csv"><svg class="ico"><use href="#ico-json"/></svg><span class="qs-title">JSON → CSV</span><span class="qs-desc">Turn API responses into spreadsheet rows</span></button>
         <button class="qs-card" data-mode="csv2json"><svg class="ico"><use href="#ico-table"/></svg><span class="qs-title">CSV → JSON</span><span class="qs-desc">Typed, nested JSON from a spreadsheet export</span></button>
-        <button class="qs-card" data-mode="validateJson"><svg class="ico"><use href="#ico-check"/></svg><span class="qs-title">Validate JSON</span><span class="qs-desc">Find exactly what's wrong, in plain English</span></button>
+        <button class="qs-card" data-mode="validateJson"><svg class="ico"><use href="#ico-check"/></svg><span class="qs-title">Validate JSON</span><span class="qs-desc">Find exactly where it breaks, line and column</span></button>
         <button class="qs-card" data-mode="diffJson"><svg class="ico"><use href="#ico-diff"/></svg><span class="qs-title">Diff JSON</span><span class="qs-desc">Key-aware comparison, not line noise</span></button>
         <button class="qs-card" data-mode="jsonSchema"><svg class="ico"><use href="#ico-schema"/></svg><span class="qs-title">JSON → Schema</span><span class="qs-desc">Infer a schema, then generate real types</span></button>
         <button class="qs-card" data-mode="formatJson"><svg class="ico"><use href="#ico-json"/></svg><span class="qs-title">Format JSON</span><span class="qs-desc">Pretty-print or minify in one click</span></button>
@@ -499,6 +603,7 @@
     </div>
 
     <div class="related-groups">
+      <div class="related-group-all"><a href="index.html">See all 23 tools &rarr;</a> &middot; <a href="../blog/my-json-wont-parse.html">Why won't my JSON parse? &rarr;</a> &middot; <a href="../blog/recast-vs-jsonlint.html">Recast vs JSONLint &rarr;</a></div>
       <div class="related-group">
         <span class="rg-label">Convert</span>
         <a href="json-to-csv.html" onclick="setMode('json2csv');return false;"><svg class="ico"><use href="#ico-json"/></svg>JSON→CSV</a>
@@ -542,10 +647,10 @@
         <a href="json-to-python.html" onclick="setMode('json2python');return false;"><svg class="ico"><use href="#ico-code"/></svg>JSON → Python</a>
         <a href="json-to-pydantic.html" onclick="setMode('json2pydantic');return false;"><svg class="ico"><use href="#ico-code"/></svg>JSON → Pydantic</a>
         <a href="json-to-go.html" onclick="setMode('json2go');return false;"><svg class="ico"><use href="#ico-code"/></svg>JSON → Go</a>
-        <a href="#" onclick="setMode('json2kotlin');return false;"><svg class="ico"><use href="#ico-code"/></svg>JSON → Kotlin</a>
-        <a href="#" onclick="setMode('json2rust');return false;"><svg class="ico"><use href="#ico-code"/></svg>JSON → Rust</a>
-        <a href="#" onclick="setMode('json2java');return false;"><svg class="ico"><use href="#ico-code"/></svg>JSON → Java</a>
-        <a href="#" onclick="setMode('json2swift');return false;"><svg class="ico"><use href="#ico-code"/></svg>JSON → Swift</a>
+        <a href="json-to-kotlin.html" onclick="setMode('json2kotlin');return false;"><svg class="ico"><use href="#ico-code"/></svg>JSON → Kotlin</a>
+        <a href="json-to-rust.html" onclick="setMode('json2rust');return false;"><svg class="ico"><use href="#ico-code"/></svg>JSON → Rust</a>
+        <a href="json-to-java.html" onclick="setMode('json2java');return false;"><svg class="ico"><use href="#ico-code"/></svg>JSON → Java</a>
+        <a href="json-to-swift.html" onclick="setMode('json2swift');return false;"><svg class="ico"><use href="#ico-code"/></svg>JSON → Swift</a>
         <a href="#" onclick="setMode('json2csharp');return false;"><svg class="ico"><use href="#ico-code"/></svg>JSON → C#</a>
         <a href="#" onclick="setMode('json2sql');return false;"><svg class="ico"><use href="#ico-schema"/></svg>JSON → SQL</a>
         <a href="#" onclick="setMode('jsonMock');return false;"><svg class="ico"><use href="#ico-json"/></svg>JSON → Mock data</a>
@@ -775,11 +880,6 @@
 <script src="../lib/presets.js"></script>
 <script src="../lib/csv-compare.js"></script>
 <script src="../app.js"></script>
-<!--
-  Cloudflare Web Analytics — free, no cookies, no consent banner needed.
-  Get your token: Cloudflare Dashboard -> Analytics & Logs -> Web Analytics
-  -> Add a site -> tryrecast.app -> "Manual setup" -> copy the token below.
--->
-<script defer src="https://static.cloudflareinsights.com/beacon.min.js" data-cf-beacon='{"token": "REPLACE_WITH_YOUR_CF_ANALYTICS_TOKEN"}'></script>
+<!-- Cloudflare Web Analytics --><script type='module' src='https://static.cloudflareinsights.com/beacon.min.js' data-cf-beacon='{"token": "13426e11249049dba542ef0b69a55823"}'></script><!-- End Cloudflare Web Analytics -->
 </body>
 </html>

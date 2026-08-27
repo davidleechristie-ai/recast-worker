@@ -152,6 +152,53 @@ function startCheckout(planKey) {
 // Stripe Payment Links read these as URL query parameters directly; both
 // show up on the resulting Checkout Session and in the checkout.session.completed
 // webhook — see https://docs.stripe.com/payment-links/url-parameters.
+// Notify-me form (pricing section) — same fetch/status pattern as the
+// contact form, but posts to /api/notify-me and includes the landing page
+// via the same attribution data used for Stripe/GA4, so a captured lead
+// carries the same "where did this visitor actually come from" context.
+(function () {
+  var form = document.getElementById('notifyMeForm');
+  var statusEl = document.getElementById('notifyMeStatus');
+  var submitBtn = document.getElementById('notifyMeSubmit');
+  if (!form || !statusEl || !submitBtn) return;
+
+  function setStatus(kind, text) {
+    statusEl.className = 'notify-me-status' + (kind ? ' ' + kind : '');
+    statusEl.textContent = text;
+  }
+
+  form.addEventListener('submit', function (e) {
+    e.preventDefault();
+    var email = document.getElementById('notifyMeEmail').value.trim();
+    var website = document.getElementById('notifyMeWebsite').value; // honeypot
+    if (!email) { form.reportValidity(); return; }
+
+    submitBtn.disabled = true;
+    setStatus('', '');
+    var attribution = getAttributionData();
+
+    fetch('/api/notify-me', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ email: email, website: website, landing_path: attribution.landingPath }),
+    })
+      .then(function (res) { return res.json().then(function (data) { return { ok: res.ok, data: data }; }); })
+      .then(function (result) {
+        submitBtn.disabled = false;
+        if (result.ok) {
+          setStatus('success', 'Done — we\u2019ll be in touch.');
+          try { track('notify_me_signup', {}); } catch (e) {}
+          form.reset();
+        } else {
+          setStatus('error', (result.data && result.data.error) || 'Something went wrong — try again.');
+        }
+      })
+      .catch(function () {
+        submitBtn.disabled = false;
+        setStatus('error', 'Could not reach the server — try again.');
+      });
+  });
+})();
 function sanitizeForStripe(value, maxLen) {
   return String(value || '')
     .replace(/[^A-Za-z0-9_-]+/g, '-')
@@ -159,18 +206,22 @@ function sanitizeForStripe(value, maxLen) {
     .replace(/^-|-$/g, '')
     .slice(0, maxLen);
 }
-function appendAttributionParams(baseUrl) {
-  let landingPath, utmParams;
+function getAttributionData() {
   try {
-    landingPath = sessionStorage.getItem('recast_landing_path') || '';
-    utmParams = JSON.parse(sessionStorage.getItem('recast_landing_utm') || '{}');
+    return {
+      landingPath: sessionStorage.getItem('recast_landing_path') || '',
+      utm: JSON.parse(sessionStorage.getItem('recast_landing_utm') || '{}'),
+    };
   } catch (e) {
-    landingPath = ''; utmParams = {};
+    return { landingPath: '', utm: {} };
   }
+}
+function appendAttributionParams(baseUrl) {
+  const attribution = getAttributionData();
   const params = new URLSearchParams();
-  if (landingPath) params.set('client_reference_id', sanitizeForStripe('landing_' + landingPath, 200));
+  if (attribution.landingPath) params.set('client_reference_id', sanitizeForStripe('landing_' + attribution.landingPath, 200));
   ['utm_source', 'utm_medium', 'utm_campaign', 'utm_term', 'utm_content'].forEach(function (key) {
-    if (utmParams[key]) params.set(key, sanitizeForStripe(utmParams[key], 150));
+    if (attribution.utm[key]) params.set(key, sanitizeForStripe(attribution.utm[key], 150));
   });
   const qs = params.toString();
   if (!qs) return baseUrl;
@@ -189,7 +240,15 @@ if (returnParams.get('upgraded') === '1') {
   const sessionId = returnParams.get('session_id') || '';
   const fallbackPlan = returnParams.get('plan') || 'pro';
   history.replaceState({}, '', location.pathname);
-  track('checkout_complete', { plan: fallbackPlan, verified: !!sessionId });
+  const completionAttribution = getAttributionData();
+  track('checkout_complete', {
+    plan: fallbackPlan,
+    verified: !!sessionId,
+    landing_path: completionAttribution.landingPath || '(not set)',
+    utm_source: completionAttribution.utm.utm_source || '(none)',
+    utm_medium: completionAttribution.utm.utm_medium || '(none)',
+    utm_campaign: completionAttribution.utm.utm_campaign || '(none)',
+  });
 
   const applyFallback = () => {
     // No backend reachable — trust the redirect, same as before the Worker

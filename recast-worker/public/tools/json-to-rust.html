@@ -4,22 +4,22 @@
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <script>(function(){try{if(localStorage.getItem('recast_theme')==='light')document.documentElement.setAttribute('data-theme','light');}catch(e){}})();</script>
-<title>CSV Diff — compare two CSV files online, side by side | Recast</title>
-<meta name="description" content="Compare two CSV files online with a Beyond-Compare-style side-by-side view. Jump between differences, filter by added/removed/changed, ignore whitespace, search live, and download a colored HTML or CSV diff report. Free for files up to 50 rows.">
+<title>JSON to Rust Struct Generator — free online | Recast</title>
+<meta name="description" content="Convert a JSON sample directly into a Rust struct with serde derive macros. Infers nested types and Vec arrays, and wraps fields in Option when they're not present in every sample. Runs in your browser.">
 <meta property="og:type" content="website">
-<meta property="og:title" content="CSV Diff — compare two CSV files online, side by side | Recast">
-<meta property="og:description" content="Compare two CSV files online with a Beyond-Compare-style side-by-side view. Jump between differences, filter by added/removed/changed, ignore whitespace, search live, and download a colored HTML or CSV diff report. Free for files up to 50 rows.">
-<meta property="og:url" content="https://tryrecast.app/tools/csv-diff.html">
+<meta property="og:title" content="JSON to Rust Struct Generator — free online | Recast">
+<meta property="og:description" content="Convert a JSON sample directly into a Rust struct with serde derive macros. Infers nested types and Vec arrays, and wraps fields in Option when they're not present in every sample. Runs in your browser.">
+<meta property="og:url" content="https://tryrecast.app/tools/json-to-rust.html">
 <meta property="og:image" content="https://tryrecast.app/og-image.png">
 <meta property="og:site_name" content="Recast">
 <meta name="twitter:card" content="summary_large_image">
-<meta name="twitter:title" content="CSV Diff — compare two CSV files online, side by side | Recast">
-<meta name="twitter:description" content="Compare two CSV files online with a Beyond-Compare-style side-by-side view. Jump between differences, filter by added/removed/changed, ignore whitespace, search live, and download a colored HTML or CSV diff report. Free for files up to 50 rows.">
+<meta name="twitter:title" content="JSON to Rust Struct Generator — free online | Recast">
+<meta name="twitter:description" content="Convert a JSON sample directly into a Rust struct with serde derive macros. Infers nested types and Vec arrays, and wraps fields in Option when they're not present in every sample. Runs in your browser.">
 <meta name="twitter:image" content="https://tryrecast.app/og-image.png">
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@400;500;600;700&family=IBM+Plex+Sans:wght@400;500;600&family=IBM+Plex+Mono:wght@400;500&display=swap" rel="stylesheet">
 <link rel="stylesheet" href="../styles.css">
-<link rel="canonical" href="https://tryrecast.app/tools/csv-diff.html">
+<link rel="canonical" href="https://tryrecast.app/tools/json-to-rust.html">
 <link rel="manifest" href="/manifest.json">
 <meta name="theme-color" content="#0A0E1F">
 <link rel="apple-touch-icon" href="/icons/icon-192.png">
@@ -28,10 +28,10 @@
   "@context": "https://schema.org",
   "@type": "SoftwareApplication",
   "name": "Recast",
-  "url": "https://tryrecast.app/tools/csv-diff.html",
+  "url": "https://tryrecast.app/tools/json-to-rust.html",
   "applicationCategory": "DeveloperApplication",
   "operatingSystem": "Any (runs in browser)",
-  "description": "Compare two CSV files online with a Beyond-Compare-style side-by-side view. Jump between differences, filter by added/removed/changed, ignore whitespace, search live, and download a colored HTML or CSV diff report. Free for files up to 50 rows.",
+  "description": "Convert a JSON sample directly into a Rust struct with serde derive macros. Infers nested types and Vec arrays, and wraps fields in Option when they're not present in every sample. Runs in your browser.",
   "offers": [
     { "@type": "Offer", "name": "Free", "price": "0", "priceCurrency": "GBP" },
     { "@type": "Offer", "name": "Pro", "price": "9", "priceCurrency": "GBP" },
@@ -85,6 +85,46 @@
 <script type="application/ld+json">
 {
   "@context": "https://schema.org",
+  "@type": "FAQPage",
+  "mainEntity": [
+    {
+      "@type": "Question",
+      "name": "Do I need to create an account?",
+      "acceptedAnswer": {
+        "@type": "Answer",
+        "text": "No — Recast doesn't use logins, emails, or passwords. When you pay, your browser is automatically given secure access. This means access is tied to the specific browser you paid in, not to an identity we track. If you switch devices, use a different browser, or clear your browser's storage, click Manage subscription from the original browser to pick it back up, or get in touch and we'll sort it out."
+      }
+    },
+    {
+      "@type": "Question",
+      "name": "Is my data ever uploaded anywhere?",
+      "acceptedAnswer": {
+        "@type": "Answer",
+        "text": "No. Every conversion, diff, and validation runs entirely inside your browser tab. Nothing you paste into the tool is ever sent to a server — the only exception is the checkout process itself, which is handled directly by Stripe."
+      }
+    },
+    {
+      "@type": "Question",
+      "name": "What happens if I cancel?",
+      "acceptedAnswer": {
+        "@type": "Answer",
+        "text": "Cancel any time from Manage subscription. Your access reverts to the Free tier automatically — usually within moments, always by your next page load — no need to email anyone."
+      }
+    },
+    {
+      "@type": "Question",
+      "name": "Can I use Recast in a script or CI pipeline?",
+      "acceptedAnswer": {
+        "@type": "Answer",
+        "text": "Yes — the same engine that powers the browser tool is available as recast-cli, an npm package with no network dependency, plus a REST API on the API plan."
+      }
+    }
+  ]
+}
+</script>
+<script type="application/ld+json">
+{
+  "@context": "https://schema.org",
   "@type": "BreadcrumbList",
   "itemListElement": [
     {
@@ -96,8 +136,8 @@
     {
       "@type": "ListItem",
       "position": 2,
-      "name": "CSV Diff — Compare Two CSV Files",
-      "item": "https://tryrecast.app/tools/csv-diff.html"
+      "name": "JSON to Rust",
+      "item": "https://tryrecast.app/tools/json-to-rust.html"
     }
   ]
 }
@@ -291,18 +331,30 @@
 <main>
   <section class="hero" id="tool">
     <p class="eyebrow">Your private data workbench</p>
-    <h1>CSV Diff — Compare Two CSV Files</h1>
-    <p class="sub">Compares two CSV files by matching rows on a key column, and shows every row side by side in one aligned table — added rows in green, removed in red, changed cells highlighted with the old value struck through and the new value shown beside it. Jump straight between differences with Next/Prev (or the N/P keys), filter to just what changed, ignore whitespace-only noise, search across every cell live, and download the full comparison as a CSV or a shareable standalone HTML report. Free for files up to 50 rows per side — <a href="../index.html#pricing">Pro</a> removes that limit entirely, or grab a <a href="../index.html#pricing">24-hour pass for £2.99</a> if you just need it once. <a href="../blog/csv-diff-explained.html">Why row-position diffing lies to you →</a></p>
+    <h1>JSON to Rust</h1>
+    <p class="sub">Paste a real JSON sample — an API response, a config file — and get back a proper Rust <code>struct</code> with <code>serde</code> derive macros, with nested types and <code>Vec</code> arrays inferred automatically. Paste an array of samples instead of a single object and fields that aren't present in every item are correctly wrapped in <code>Option&lt;T&gt;</code>, not forced. Uses the same inference engine as the <a href="json-schema-generator.html">JSON Schema Generator</a>, so the two always agree on structure. Need a different language instead? Try <a href="json-to-typescript.html">JSON to TypeScript</a> or <a href="json-to-kotlin.html">JSON to Kotlin</a>.</p>
     <p style="font-size:13px;"><a href="../index.html" style="color:#B9CBDA;">← Full toolkit (all 23 tools)</a></p>
 
 <div class="hero-preview">
-  <div class="hp-head"><svg class="ico"><use href="#ico-diff"/></svg> live example <span class="hp-badge">real output</span></div>
+  <div class="hp-head"><svg class="ico"><use href="#ico-json"/></svg> live example <span class="hp-badge">real output</span></div>
   <div class="hp-panes">
-    <div class="hp-pane"><div class="hp-pane-label">ORIGINAL</div><pre class="hp-code"><span class="tok-key">id<span class="tok-punct">,</span>role</span>
-1<span class="tok-punct">,</span>Engineer</pre></div>
-    <div class="hp-mid"><svg class="ico"><use href="#ico-diff"/></svg></div>
-    <div class="hp-pane"><div class="hp-pane-label">MODIFIED</div><pre class="hp-code"><span class="tok-key">id<span class="tok-punct">,</span>role<span class="tok-punct">,</span>team</span>
-1<span class="tok-punct">,</span>Senior Engineer<span class="tok-punct">,</span>Platform</pre></div>
+    <div class="hp-pane"><div class="hp-pane-label">JSON</div><pre class="hp-code">{
+  <span class="tok-key">"id":</span> <span class="tok-num">1</span>,
+  <span class="tok-key">"name":</span> <span class="tok-str">"Ada Lovelace"</span>,
+  <span class="tok-key">"active":</span> <span class="tok-bool">true</span>,
+  <span class="tok-key">"tags":</span> [
+    <span class="tok-str">"math"</span>,
+    <span class="tok-str">"computing"</span>
+  ]
+}</pre></div>
+    <div class="hp-mid"><svg class="ico"><use href="#ico-arrow"/></svg></div>
+    <div class="hp-pane"><div class="hp-pane-label">RUST</div><pre class="hp-code">#[derive(Debug, Serialize, Deserialize)]
+pub struct Person {
+    pub id: i64,
+    pub name: String,
+    pub active: bool,
+    pub tags: Vec&lt;String&gt;,
+}</pre></div>
   </div>
 </div>
 
@@ -817,7 +869,7 @@
 <div class="share-toast" id="shareToast"></div>
 
 <!-- Shared, tested engine + feature modules (also power the recast-cli npm package and worker) -->
-<script>window.RECAST_DEFAULT_MODE = "diffCsv";</script>
+<script>window.RECAST_DEFAULT_MODE = "json2rust";</script>
 <script src="../lib/engine.js"></script>
 <script src="../lib/highlight.js"></script>
 <script src="../lib/history.js"></script>

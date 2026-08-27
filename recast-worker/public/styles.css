@@ -504,6 +504,23 @@ tr.diff-row-flash{ animation:diffRowFlash 1s ease-out; }
 .day-pass-note{ max-width:760px; margin:20px auto 0; text-align:center; font-size:13.5px; color:var(--text-muted); padding:14px 18px; border:1px solid rgba(var(--border-rgb),0.2); border-radius:4px; background:rgba(var(--text-rgb),0.02); }
 .day-pass-note a{ color:#A855F7; text-decoration:underline; text-underline-offset:3px; }
 .day-pass-note a:hover{ color:#BE6FF8; }
+.notify-me-box{ max-width:520px; margin:32px auto 0; text-align:center; padding:20px 24px; border:1px solid rgba(var(--border-rgb),0.16); border-radius:6px; background:rgba(var(--text-rgb),0.015); }
+.notify-me-text{ font-size:13.5px; color:var(--text-muted); margin-bottom:14px; line-height:1.5; }
+.notify-me-text strong{ color:var(--text); }
+.notify-me-form{ display:flex; gap:8px; }
+.notify-me-form input[type="email"]{
+  flex:1; padding:9px 12px; font-size:13.5px; border-radius:4px;
+  border:1px solid rgba(var(--border-rgb),0.3); background:var(--bg);
+  color:var(--text); font-family:inherit;
+}
+.notify-me-form input[type="email"]:focus{ outline:none; border-color:#A855F7; }
+.notify-me-form .btn{ padding:9px 16px; font-size:13.5px; white-space:nowrap; background:transparent; }
+.notify-me-status{ margin-top:10px; font-size:13px; min-height:16px; }
+.notify-me-status.success{ color:#22C55E; }
+.notify-me-status.error{ color:#F87171; }
+@media (max-width:520px){
+  .notify-me-form{ flex-direction:column; }
+}
 
 /* ================= API key display ================= */
 .api-key-box{ display:flex; align-items:center; gap:10px; flex-wrap:wrap; background:var(--bg); border:1px solid rgba(58,162,252,0.35); border-radius:4px; padding:12px 14px; margin:16px 0; }
@@ -1200,7 +1217,7 @@ body.wb-lock{ overflow:hidden; }
 
 @media (max-width:480px){
   .tour-conversion-grid{ grid-template-columns:1fr; }
-  .tour-conversion-card{ padding:14px; }
+  .tour-conversion-card{ padding:14px; min-width:0; }
   .tour-code{ font-size:11px; }
 }
 

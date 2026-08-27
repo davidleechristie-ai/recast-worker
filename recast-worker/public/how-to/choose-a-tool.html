@@ -6,6 +6,16 @@
 <script>(function(){try{if(localStorage.getItem('recast_theme')!=='dark')document.documentElement.setAttribute('data-theme','light');}catch(e){}})();</script>
 <title>How To — Choose a Tool | Recast</title>
 <meta name="description" content="Not sure where to start? Answer one question and Recast points you straight to the right tool, with a real example and a direct link to try it.">
+<meta property="og:type" content="website">
+<meta property="og:title" content="How To — Choose a Tool | Recast">
+<meta property="og:description" content="Not sure where to start? Answer one question and Recast points you straight to the right tool, with a real example and a direct link to try it.">
+<meta property="og:url" content="https://tryrecast.app/how-to/choose-a-tool.html">
+<meta property="og:image" content="https://tryrecast.app/og-image.png">
+<meta property="og:site_name" content="Recast">
+<meta name="twitter:card" content="summary_large_image">
+<meta name="twitter:title" content="How To — Choose a Tool | Recast">
+<meta name="twitter:description" content="Not sure where to start? Answer one question and Recast points you straight to the right tool, with a real example and a direct link to try it.">
+<meta name="twitter:image" content="https://tryrecast.app/og-image.png">
 <link rel="canonical" href="https://tryrecast.app/how-to/choose-a-tool.html">
 <link rel="stylesheet" href="../styles.css">
 <link rel="preconnect" href="https://fonts.googleapis.com">
@@ -31,6 +41,97 @@
   function gtag(){dataLayer.push(arguments);}
   gtag('js', new Date());
   gtag('config', 'G-MW47YKCSLX');
+</script>
+<!-- Upgrade-to-Pro click tracking — event delegation so it works
+     regardless of where this script sits relative to the button in the
+     page, and never depends on app.js (which only loads on index.html
+     and /tools/, not on blog/how-to/contact/demo pages that also have
+     this same button). -->
+<script>
+  document.addEventListener('click', function (e) {
+    var btn = e.target.closest && e.target.closest('#accountBtn');
+    if (!btn) return;
+    try { if (typeof gtag === 'function') gtag('event', 'upgrade_click', { page_path: location.pathname }); } catch (err) {}
+  });
+</script>
+<!-- Attribution capture — records this session's FIRST landing page and any
+     UTM params, once, in sessionStorage. Read later by app.js's
+     appendAttributionParams() when checkout starts, so a completed Stripe
+     payment can be traced back to the specific page or campaign that
+     actually brought the visitor in, not just "some visit happened." -->
+<script>
+  (function () {
+    try {
+      if (!sessionStorage.getItem('recast_landing_path')) {
+        var path = location.pathname.replace(/^\//, '').replace(/\.html$/, '') || 'home';
+        sessionStorage.setItem('recast_landing_path', path);
+        var params = new URLSearchParams(location.search);
+        var utm = {};
+        ['utm_source', 'utm_medium', 'utm_campaign', 'utm_term', 'utm_content'].forEach(function (key) {
+          if (params.get(key)) utm[key] = params.get(key);
+        });
+        sessionStorage.setItem('recast_landing_utm', JSON.stringify(utm));
+      }
+    } catch (e) {}
+  })();
+</script>
+<script type="application/ld+json">
+{
+  "@context": "https://schema.org",
+  "@type": "BreadcrumbList",
+  "itemListElement": [
+    {
+      "@type": "ListItem",
+      "position": 1,
+      "name": "Home",
+      "item": "https://tryrecast.app/"
+    },
+    {
+      "@type": "ListItem",
+      "position": 2,
+      "name": "How-to",
+      "item": "https://tryrecast.app/how-to/index.html"
+    },
+    {
+      "@type": "ListItem",
+      "position": 3,
+      "name": "Not sure where to start?",
+      "item": "https://tryrecast.app/how-to/choose-a-tool.html"
+    }
+  ]
+}
+</script>
+<script type="application/ld+json">
+{
+  "@context": "https://schema.org",
+  "@type": "FAQPage",
+  "mainEntity": [
+    {
+      "@type": "Question",
+      "name": "How does this page help me pick a tool?",
+      "acceptedAnswer": {
+        "@type": "Answer",
+        "text": "Answer a simple question about what you're trying to do — change a format, clean data, find information, and so on — and it recommends the right tool with an example use case."
+      }
+    },
+    {
+      "@type": "Question",
+      "name": "What if I'd rather see worked examples instead?",
+      "acceptedAnswer": {
+        "@type": "Answer",
+        "text": "The Examples page has six real, worked-through workflows to browse instead."
+      }
+    },
+    {
+      "@type": "Question",
+      "name": "Does this cover every Recast tool?",
+      "acceptedAnswer": {
+        "@type": "Answer",
+        "text": "Yes — it spans the full range, from format conversion to validation, comparison, and automation."
+      }
+    }
+  ]
+}
 </script>
 </head>
 <body style="background:var(--bg);color:var(--text);margin:0;min-height:100vh;">
@@ -191,6 +292,7 @@
         </div>
       </div>
       <a href="../demo/index.html" class="nav-plain-link">Demo</a>
+      <a href="../tools/index.html" class="nav-plain-link">Tools</a>
       <a href="../blog/index.html" class="nav-plain-link">Blog</a>
       <a href="../index.html#pricing" class="nav-plain-link">Pricing</a>
       <a href="index.html" class="nav-plain-link">How-to</a>
@@ -248,7 +350,23 @@
     <div class="tour-hero-actions"><a class="btn btn-gold" id="toolFinderTryBtn" href="#">Try it &rarr;</a></div>
   </div>
 
-  <div class="howto-crosslinks" style="margin-top:36px;">
+    <h2 id="faq">Common questions</h2>
+  <div class="faq-list">
+    <details class="faq-item">
+      <summary>How does this page help me pick a tool?</summary>
+      <p>Answer a simple question about what you're trying to do — change a format, clean data, find information, and so on — and it recommends the right tool with an example use case.</p>
+    </details>
+    <details class="faq-item">
+      <summary>What if I'd rather see worked examples instead?</summary>
+      <p>The Examples page has six real, worked-through workflows to browse instead.</p>
+    </details>
+    <details class="faq-item">
+      <summary>Does this cover every Recast tool?</summary>
+      <p>Yes — it spans the full range, from format conversion to validation, comparison, and automation.</p>
+    </details>
+  </div>
+
+<div class="howto-crosslinks" style="margin-top:36px;">
     <div class="howto-crosslinks-title">Prefer to browse instead?</div>
     <div class="howto-crosslinks-list">
       <div><a href="examples.html">See real, worked-through workflows &rarr; Examples</a></div>

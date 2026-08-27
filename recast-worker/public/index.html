@@ -828,6 +828,21 @@
       <a href="#" onclick="startCheckout('day_pass');return false;">Get a 24-hour Pro pass for £2.99</a>
       <span> — no subscription, unlocks everything in Pro for a day.</span>
     </div>
+
+    <div class="notify-me-box">
+      <div class="notify-me-text">
+        <strong>Not ready yet?</strong> Leave your email and we'll let you know when there's something worth coming back for — new features, nothing else. No spam, unsubscribe any time.
+      </div>
+      <form id="notifyMeForm" class="notify-me-form" novalidate>
+        <div style="position:absolute;left:-9999px;" aria-hidden="true">
+          <label for="notifyMeWebsite">Website</label>
+          <input type="text" id="notifyMeWebsite" name="website" tabindex="-1" autocomplete="off">
+        </div>
+        <input type="email" id="notifyMeEmail" name="email" placeholder="you@example.com" required autocomplete="email">
+        <button type="submit" class="btn btn-ghost" id="notifyMeSubmit">Notify me</button>
+      </form>
+      <div class="notify-me-status" id="notifyMeStatus" role="status" aria-live="polite"></div>
+    </div>
   </section>
 
   <section id="faq">
@@ -884,6 +899,7 @@
         <code style="color:#3AA2FC;">POST /v1/diff</code> — <code>mode</code>: diffJson, diffXml, diffCsv (send <code>inputA</code>/<code>inputB</code> instead of <code>input</code>)<br>
         <code style="color:#3AA2FC;">POST /v1/schema</code> — infers a JSON Schema (draft-07) from a sample <code>input</code>
       </p>
+      <p style="font-size:13.5px;"><a href="api/index.html" style="color:#A855F7;">Full API reference &rarr;</a></p>
 
       <div id="apiKeyBox" class="api-key-box" style="display:none;">
         <span class="api-key-label">Your API key</span>

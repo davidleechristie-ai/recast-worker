@@ -3,32 +3,40 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<script>(function(){try{if(localStorage.getItem('recast_theme')!=='dark')document.documentElement.setAttribute('data-theme','light');}catch(e){}})();</script>
-<title>How to Test an API Without Postman | Recast</title>
-<meta name="description" content="Already have an API response and just need to inspect, transform, or validate it? Here's how to do that without setting up a Postman workspace first.">
-<meta property="og:type" content="article">
-<meta property="og:title" content="How to Test an API Without Postman | Recast">
-<meta property="og:description" content="Already have an API response and just need to inspect, transform, or validate it? Here's how to do that without setting up a Postman workspace first.">
-<meta property="og:url" content="https://tryrecast.app/blog/test-api-without-postman.html">
+<script>(function(){try{if(localStorage.getItem('recast_theme')==='light')document.documentElement.setAttribute('data-theme','light');}catch(e){}})();</script>
+<title>Recast API — JSON, CSV, XML, YAML Conversion API | Recast</title>
+<meta name="description" content="A REST API for the same conversion, diff, and schema engine behind the browser tool. Bearer token auth, 10,000 calls/month, no separate key management.">
+<meta property="og:type" content="website">
+<meta property="og:title" content="Recast API — JSON, CSV, XML, YAML Conversion API | Recast">
+<meta property="og:description" content="A REST API for the same conversion, diff, and schema engine behind the browser tool. Bearer token auth, 10,000 calls/month, no separate key management.">
+<meta property="og:url" content="https://tryrecast.app/api/index.html">
 <meta property="og:image" content="https://tryrecast.app/og-image.png">
 <meta property="og:site_name" content="Recast">
 <meta name="twitter:card" content="summary_large_image">
-<meta name="twitter:title" content="How to Test an API Without Postman | Recast">
-<meta name="twitter:description" content="Already have an API response and just need to inspect, transform, or validate it? Here's how to do that without setting up a Postman workspace first.">
+<meta name="twitter:title" content="Recast API — JSON, CSV, XML, YAML Conversion API | Recast">
+<meta name="twitter:description" content="A REST API for the same conversion, diff, and schema engine behind the browser tool. Bearer token auth, 10,000 calls/month, no separate key management.">
 <meta name="twitter:image" content="https://tryrecast.app/og-image.png">
-<link rel="canonical" href="https://tryrecast.app/blog/test-api-without-postman.html">
-<link rel="stylesheet" href="../styles.css">
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@400;500;600;700&family=IBM+Plex+Sans:wght@400;500;600&family=IBM+Plex+Mono:wght@400;500&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="../styles.css">
+<link rel="canonical" href="https://tryrecast.app/api/index.html">
+<link rel="manifest" href="/manifest.json">
+<meta name="theme-color" content="#0A0E1F">
+<link rel="apple-touch-icon" href="/icons/icon-192.png">
 <script type="application/ld+json">
 {
   "@context": "https://schema.org",
-  "@type": "Article",
-  "headline": "How to Test an API Without Postman | Recast",
-  "description": "Already have an API response and just need to inspect, transform, or validate it? Here's how to do that without setting up a Postman workspace first.",
-  "url": "https://tryrecast.app/blog/test-api-without-postman.html",
-  "publisher": { "@type": "Organization", "name": "Recast", "url": "https://tryrecast.app/" },
-  "datePublished": "2026-08-26"
+  "@type": "SoftwareApplication",
+  "name": "Recast",
+  "url": "https://tryrecast.app/api/index.html",
+  "applicationCategory": "DeveloperApplication",
+  "operatingSystem": "Any (runs in browser)",
+  "description": "A REST API for the same conversion, diff, and schema engine behind the browser tool. Bearer token auth, 10,000 calls/month, no separate key management.",
+  "offers": [
+    { "@type": "Offer", "name": "Free", "price": "0", "priceCurrency": "GBP" },
+    { "@type": "Offer", "name": "Pro", "price": "9", "priceCurrency": "GBP" },
+    { "@type": "Offer", "name": "API", "price": "29", "priceCurrency": "GBP" }
+  ]
 }
 </script>
 <!-- Google tag (gtag.js) -->
@@ -87,21 +95,47 @@
     {
       "@type": "ListItem",
       "position": 2,
-      "name": "Blog",
-      "item": "https://tryrecast.app/blog/index.html"
+      "name": "API",
+      "item": "https://tryrecast.app/api/index.html"
+    }
+  ]
+}
+</script>
+<script type="application/ld+json">
+{
+  "@context": "https://schema.org",
+  "@type": "FAQPage",
+  "mainEntity": [
+    {
+      "@type": "Question",
+      "name": "Do I need a separate API key from my account?",
+      "acceptedAnswer": {
+        "@type": "Answer",
+        "text": "No — the same token you get when subscribing to the API plan is your API key. There's no separate dashboard or key-generation step."
+      }
     },
     {
-      "@type": "ListItem",
-      "position": 3,
-      "name": "How to Test an API Without Postman",
-      "item": "https://tryrecast.app/blog/test-api-without-postman.html"
+      "@type": "Question",
+      "name": "Is there a CLI too, for scripts that don't want to call the HTTP API directly?",
+      "acceptedAnswer": {
+        "@type": "Answer",
+        "text": "Yes — recast-cli runs the identical engine locally, with no network calls at all, which also makes it safe to use in CI on files containing secrets."
+      }
+    },
+    {
+      "@type": "Question",
+      "name": "What happens if I go over my monthly limit?",
+      "acceptedAnswer": {
+        "@type": "Answer",
+        "text": "Further calls return a 429 with the exact limit and a note that it resets next calendar month — nothing is charged automatically for overage."
+      }
     }
   ]
 }
 </script>
 </head>
-<body style="background:var(--bg);color:var(--text);margin:0;min-height:100vh;">
 
+<body style="background:var(--bg);color:var(--text);margin:0;min-height:100vh;">
 <svg style="display:none" aria-hidden="true">
   <symbol id="ico-json" viewBox="0 0 18 18" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round">
     <path d="M6.5 2.5c-1.4 0-1.9.5-1.9 1.9v1.7c0 1-.5 1.5-1.4 1.5.9 0 1.4.5 1.4 1.5v1.7c0 1.4.5 1.9 1.9 1.9"/>
@@ -219,6 +253,7 @@
   </symbol>
 </svg>
 
+
 <header class="titleblock">
   <div class="ruler" id="ruler"></div>
   <div class="tb-row">
@@ -252,9 +287,8 @@
         </div>
       </div>
       <a href="../demo/index.html" class="nav-plain-link">Demo</a>
-      <a href="../tools/index.html" class="nav-plain-link">Tools</a>
-      <a href="index.html" class="nav-plain-link">Blog</a>
-      <a href="../index.html#pricing" class="nav-plain-link">Pricing</a>
+      <a href="../blog/index.html" class="nav-plain-link">Blog</a>
+      <a href="#pricing" class="nav-plain-link">Pricing</a>
       <a href="../how-to/index.html" class="nav-plain-link">How-to</a>
       <a href="../contact.html" class="nav-plain-link">Contact</a>
     </nav>
@@ -262,60 +296,117 @@
       <span></span><span></span><span></span>
     </button>
     <div class="header-actions">
-      <a href="../index.html#tool" class="icon-btn" title="View your conversion history — opens the tool"><svg class="ico"><use href="#ico-history"/></svg><span class="btn-label">History</span></a>
-      <a href="../index.html#tool" class="icon-btn" title="View your saved presets — opens the tool"><svg class="ico"><use href="#ico-settings"/></svg><span class="btn-label">Presets</span></a>
-      <a href="../index.html#tool" class="icon-btn" title="Share a conversion — opens the tool"><svg class="ico"><use href="#ico-link"/></svg><span class="btn-label">Share link</span></a>
+      <span class="worker-status" id="workerStatus"><span class="dot"></span>Processing…</span>
+      <button class="icon-btn" id="historyBtn" title="Recent conversions (stored only on this device)"><svg class="ico"><use href="#ico-history"/></svg><span class="btn-label">History</span></button>
+      <div class="history-panel" id="historyPanel">
+        <div class="history-head"><span>Recent (this device only)</span><button id="historyClearBtn">Clear</button></div>
+        <div id="historyList"></div>
+      </div>
+      <button class="icon-btn" id="presetsBtn" title="Saved option presets (Pro)"><svg class="ico"><use href="#ico-settings"/></svg><span class="btn-label">Presets</span></button>
+      <div class="history-panel" id="presetsPanel">
+        <div class="history-head"><span>Saved presets</span><button id="presetsCloseBtn">Close</button></div>
+        <div id="presetsList"></div>
+        <div style="padding:10px 14px; border-top:1px solid rgba(140,182,214,0.16); display:flex; gap:6px;">
+          <input type="text" id="presetNameInput" placeholder="Preset name" style="flex:1; min-width:0; background:var(--bg); border:1px solid rgba(var(--border-rgb),0.32); color:var(--text); padding:6px 8px; border-radius:2px; font-size:12px;">
+          <button class="icon-btn" id="presetSaveBtn">Save current</button>
+        </div>
+      </div>
+      <button class="icon-btn" id="shareBtn" title="Copy a link that restores this input — data is compressed into the URL itself, nothing is uploaded"><svg class="ico"><use href="#ico-link"/></svg><span class="btn-label">Share link</span></button>
       <button class="icon-btn" id="themeToggleBtn" title="Switch between dark and light theme"><svg class="ico"><use href="#ico-sun" id="themeIconUse"/></svg></button>
-      <a href="../index.html#pricing" class="btn btn-gold" id="accountBtn">Upgrade to Pro</a>
+      <a href="#pricing" class="btn btn-gold" id="accountBtn">Upgrade to Pro</a>
     </div>
   </div>
 </header>
-<main style="max-width:900px;margin:0 auto;padding:48px 24px 80px;">
-<article class="post tour-post">
+<main>
+<article class="post" style="max-width:900px;">
 
-  <div class="post-meta">Guide &middot; API</div>
-  <h1>How to Test an API Without Postman</h1>
-  <p>To be upfront about what this actually covers: this isn't about sending the initial HTTP request — for that, curl, your own code, a browser, or yes, Postman itself, all work fine. This is about what happens next: you've got a response back, and now you need to actually look at it, reshape it, check it's valid, or see what changed since yesterday. That part often doesn't need a full Postman workspace set up just for a one-off look.</p>
+  <div class="post-meta">Recast &rarr; API</div>
+  <h1>Recast API</h1>
+  <p>The same conversion, diff, and schema engine behind the browser tool, over HTTP. No separate SDK, no separate key-management system — the access token issued when you subscribe to the API plan doubles as your API key.</p>
 
-  <h2>The situation this is for</h2>
-  <p>You already have an API response — copied from your terminal, a browser's network tab, your own backend logs, or a request you ran somewhere else. You don't need to build a collection, set up an environment, or open a desktop app. You just need to paste it somewhere and actually work with it.</p>
-
-  <h2>What you can do with a response once you have it</h2>
-  <p>Paste the response into <a href="../how-to/api-workbench.html">Recast's API Workbench</a>, and six things become one click away instead of six separate tools:</p>
-  <ul>
-    <li><strong>Inspect it</strong> — how many records, which fields, is anything missing</li>
-    <li><strong>Transform it</strong> — keep only the fields you need, renamed and cleaned up</li>
-    <li><strong>Query it</strong> — pull out just one value with <a href="what-is-jsonpath.html">JSONPath</a></li>
-    <li><strong>Validate it</strong> — check it actually matches the shape you expected</li>
-    <li><strong>Compare it</strong> — see exactly what's different from yesterday's response</li>
-    <li><strong>Save it as a recipe</strong> — so the same flow runs again automatically next time</li>
-  </ul>
-  <p style="color:var(--text-muted);font-size:14px;">If the response is CSV or XML rather than JSON, the tools that specifically need JSON convert it into a working copy automatically — your original response is never silently overwritten.</p>
-
-  <h2>Why this is faster for a one-off check</h2>
-  <p>None of this is a claim that Recast replaces a full API client for building and organizing requests — Postman's collections, environments, and team-sharing features are a genuinely different job. This is specifically for the moment right after you already have a response: no new workspace, no account setup, no switching between a request tool and a separate JSON formatter and a separate diff tool. Paste once, do all six things from the same screen.</p>
-
-  <h2>If you need this from a script instead of a browser tab</h2>
-  <p>The same operations are available over HTTP, using the same engine behind the browser tool:</p>
-  <pre class="tour-code">curl https://tryrecast.app/v1/convert \
-  -H "Authorization: Bearer rk_live_..." \
+  <h2>Authentication</h2>
+  <p>Every request needs an <code>Authorization: Bearer &lt;token&gt;</code> header. Requests without one get a clear, real error back:</p>
+  <pre class="tour-code">$ curl -X POST https://tryrecast.app/v1/convert \
   -H "Content-Type: application/json" \
-  -d '{"mode":"json2csv", "input":"[...]"}'</pre>
-  <p style="color:var(--text-muted);font-size:14px;">Covers conversion, diffing, and schema inference — see the full reference on the <a href="../how-to/api-workbench.html">API Workbench</a> page.</p>
+  -d '{"mode":"json2csv","input":"[...]"}'
 
-  <div class="post-cta"><p><strong>Try it:</strong> <a href="../how-to/api-workbench.html">Open the API Workbench walkthrough</a>, or paste a real response straight into the tool. Just need a Postman response as CSV? <a href="../tools/convert-postman-response-to-csv.html">There's a shorter path for that</a>.</p></div>
+<span class="tok-key">HTTP/1.1 401 Unauthorized</span>
+{
+  <span class="tok-key">"error":</span> <span class="tok-str">"missing Authorization: Bearer &lt;token&gt; header"</span>
+}</pre>
+  <p style="color:var(--text-muted);font-size:13.5px;">Note: this requires a token from the <strong>API</strong> plan specifically — a Pro or day-pass token is valid for the browser tool but returns 403 here.</p>
+
+  <h2>A real example</h2>
+  <p>Converting a JSON array to CSV:</p>
+  <pre class="tour-code">$ curl -X POST https://tryrecast.app/v1/convert \
+  -H "Authorization: Bearer &lt;your-token&gt;" \
+  -H "Content-Type: application/json" \
+  -d '{
+    "mode": "json2csv",
+    "input": "[{\"id\":101,\"status\":\"shipped\",\"customer\":{\"name\":\"Ada Lovelace\",\"country\":\"UK\"}}]"
+  }'</pre>
+  <p>Returns:</p>
+  <pre class="tour-code">{
+  <span class="tok-key">"output":</span> <span class="tok-str">"id,status,customer.name,customer.country\n101,shipped,Ada Lovelace,UK"</span>,
+  <span class="tok-key">"usage":</span> {
+    <span class="tok-key">"calls_this_month":</span> <span class="tok-num">1</span>,
+    <span class="tok-key">"limit":</span> <span class="tok-num">10000</span>
+  }
+}</pre>
+  <p style="color:var(--text-muted);font-size:13.5px;">Every response includes your current usage against the monthly limit — no separate endpoint needed to check it.</p>
+
+  <h2>Endpoints</h2>
+  <div class="faq-list">
+    <details class="faq-item" open>
+      <summary><code>POST /v1/convert</code></summary>
+      <p>Body: <code>{ mode, input, options }</code>. Modes: <code>json2csv</code>, <code>csv2json</code>, <code>json2xml</code>, <code>xml2json</code>, <code>flatten</code>, <code>unflatten</code>, <code>json2yaml</code>, <code>yaml2json</code>, <code>json2markdown</code>, <code>markdown2json</code>.</p>
+    </details>
+    <details class="faq-item">
+      <summary><code>POST /v1/diff</code></summary>
+      <p>Body: <code>{ mode, inputA, inputB, options }</code>. Modes: <code>diffCsv</code>, <code>diffJson</code>, <code>diffXml</code>.</p>
+    </details>
+    <details class="faq-item">
+      <summary><code>POST /v1/schema</code></summary>
+      <p>Body: <code>{ input, options }</code>. Infers a JSON Schema from a real JSON sample — the same engine behind the <a href="../tools/json-schema-generator.html">Schema Generator</a> tool.</p>
+    </details>
+  </div>
+
+  <h2>Limits</h2>
+  <p>10,000 calls per calendar month, resetting automatically at the start of each month — no manual reset needed. Rate-limited requests get a plain <code>429</code> with a clear error message, not a silent failure.</p>
+
+  <h2>Common questions</h2>
+  <div class="faq-list">
+    <details class="faq-item">
+      <summary>Do I need a separate API key from my account?</summary>
+      <p>No — the same token you get when subscribing to the API plan is your API key. There's no separate dashboard or key-generation step.</p>
+    </details>
+    <details class="faq-item">
+      <summary>Is there a CLI too, for scripts that don't want to call the HTTP API directly?</summary>
+      <p>Yes — <a href="https://www.npmjs.com/package/recast-cli">recast-cli</a> runs the identical engine locally, with no network calls at all, which also makes it safe to use in CI on files containing secrets.</p>
+    </details>
+    <details class="faq-item">
+      <summary>What happens if I go over my monthly limit?</summary>
+      <p>Further calls return a 429 with the exact limit and a note that it resets next calendar month — nothing is charged automatically for overage.</p>
+    </details>
+  </div>
+
+  <div class="howto-crosslinks">
+    <div class="howto-crosslinks-title">Related</div>
+    <div class="howto-crosslinks-list">
+      <div><a href="../how-to/api-workbench.html">Try it in the browser first &rarr;</a></div>
+      <div><a href="../index.html#pricing">See API plan pricing &rarr;</a></div>
+      <div><a href="../tools/index.html">See all 23 tools &rarr;</a></div>
+    </div>
+  </div>
 
 </article>
-</main>
-</article>
-
 </main>
 
 <footer style="max-width:1180px;margin:0 auto;padding:24px;text-align:center;color:var(--text-muted);font-size:12.5px;border-top:1px solid rgba(var(--border-rgb),0.16);">
   <a href="../index.html" style="color:var(--text-muted);">Recast</a> — your private data workbench. Your data doesn't leave your browser. Your workflow can.
 </footer>
 
-<script src="../lib/ruler.js"></script>
+<script src="../lib/highlight.js"></script>
 <script src="../lib/theme.js"></script>
 <script src="../lib/nav.js"></script>
 </body>

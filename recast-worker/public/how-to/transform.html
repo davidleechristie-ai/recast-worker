@@ -6,6 +6,16 @@
 <script>(function(){try{if(localStorage.getItem('recast_theme')!=='dark')document.documentElement.setAttribute('data-theme','light');}catch(e){}})();</script>
 <title>How To — Transform | Recast</title>
 <meta name="description" content="Turn messy data into useful data — select, filter, rename, flatten, and sort, explained in plain English.">
+<meta property="og:type" content="website">
+<meta property="og:title" content="How To — Transform | Recast">
+<meta property="og:description" content="Turn messy data into useful data — select, filter, rename, flatten, and sort, explained in plain English.">
+<meta property="og:url" content="https://tryrecast.app/how-to/transform.html">
+<meta property="og:image" content="https://tryrecast.app/og-image.png">
+<meta property="og:site_name" content="Recast">
+<meta name="twitter:card" content="summary_large_image">
+<meta name="twitter:title" content="How To — Transform | Recast">
+<meta name="twitter:description" content="Turn messy data into useful data — select, filter, rename, flatten, and sort, explained in plain English.">
+<meta name="twitter:image" content="https://tryrecast.app/og-image.png">
 <link rel="canonical" href="https://tryrecast.app/how-to/transform.html">
 <link rel="stylesheet" href="../styles.css">
 <link rel="preconnect" href="https://fonts.googleapis.com">
@@ -31,6 +41,97 @@
   function gtag(){dataLayer.push(arguments);}
   gtag('js', new Date());
   gtag('config', 'G-MW47YKCSLX');
+</script>
+<!-- Upgrade-to-Pro click tracking — event delegation so it works
+     regardless of where this script sits relative to the button in the
+     page, and never depends on app.js (which only loads on index.html
+     and /tools/, not on blog/how-to/contact/demo pages that also have
+     this same button). -->
+<script>
+  document.addEventListener('click', function (e) {
+    var btn = e.target.closest && e.target.closest('#accountBtn');
+    if (!btn) return;
+    try { if (typeof gtag === 'function') gtag('event', 'upgrade_click', { page_path: location.pathname }); } catch (err) {}
+  });
+</script>
+<!-- Attribution capture — records this session's FIRST landing page and any
+     UTM params, once, in sessionStorage. Read later by app.js's
+     appendAttributionParams() when checkout starts, so a completed Stripe
+     payment can be traced back to the specific page or campaign that
+     actually brought the visitor in, not just "some visit happened." -->
+<script>
+  (function () {
+    try {
+      if (!sessionStorage.getItem('recast_landing_path')) {
+        var path = location.pathname.replace(/^\//, '').replace(/\.html$/, '') || 'home';
+        sessionStorage.setItem('recast_landing_path', path);
+        var params = new URLSearchParams(location.search);
+        var utm = {};
+        ['utm_source', 'utm_medium', 'utm_campaign', 'utm_term', 'utm_content'].forEach(function (key) {
+          if (params.get(key)) utm[key] = params.get(key);
+        });
+        sessionStorage.setItem('recast_landing_utm', JSON.stringify(utm));
+      }
+    } catch (e) {}
+  })();
+</script>
+<script type="application/ld+json">
+{
+  "@context": "https://schema.org",
+  "@type": "BreadcrumbList",
+  "itemListElement": [
+    {
+      "@type": "ListItem",
+      "position": 1,
+      "name": "Home",
+      "item": "https://tryrecast.app/"
+    },
+    {
+      "@type": "ListItem",
+      "position": 2,
+      "name": "How-to",
+      "item": "https://tryrecast.app/how-to/index.html"
+    },
+    {
+      "@type": "ListItem",
+      "position": 3,
+      "name": "Transform messy data",
+      "item": "https://tryrecast.app/how-to/transform.html"
+    }
+  ]
+}
+</script>
+<script type="application/ld+json">
+{
+  "@context": "https://schema.org",
+  "@type": "FAQPage",
+  "mainEntity": [
+    {
+      "@type": "Question",
+      "name": "What's the difference between converting and transforming data?",
+      "acceptedAnswer": {
+        "@type": "Answer",
+        "text": "Converting changes the format (for example, JSON to CSV) without changing the content. Transforming changes the content itself — removing fields, renaming them, or building new fields from existing ones."
+      }
+    },
+    {
+      "@type": "Question",
+      "name": "What kinds of steps can I chain together in Transform Builder?",
+      "acceptedAnswer": {
+        "@type": "Answer",
+        "text": "Select, remove, rename, filter, combine, and convert type — each with a live preview."
+      }
+    },
+    {
+      "@type": "Question",
+      "name": "Where do I find the Transform Builder?",
+      "acceptedAnswer": {
+        "@type": "Answer",
+        "text": "Click \"Transform Builder\" above the input box on the Convert or Transform tool."
+      }
+    }
+  ]
+}
 </script>
 </head>
 <body style="background:var(--bg);color:var(--text);margin:0;min-height:100vh;">
@@ -191,6 +292,7 @@
         </div>
       </div>
       <a href="../demo/index.html" class="nav-plain-link">Demo</a>
+      <a href="../tools/index.html" class="nav-plain-link">Tools</a>
       <a href="../blog/index.html" class="nav-plain-link">Blog</a>
       <a href="../index.html#pricing" class="nav-plain-link">Pricing</a>
       <a href="index.html" class="nav-plain-link">How-to</a>
@@ -226,7 +328,7 @@
   <a href="choose-a-tool.html" class="howto-subnav-link">Choose a Tool</a>
   <a href="capability-map.html" class="howto-subnav-link">Full Capability Map</a>
 </nav>
-  <h2 id="transform">Transform messy data</h2>
+  <h1 id="transform">Transform messy data</h1>
   <p>Converting a format is one thing — but sometimes you don't just want different formatting, you want a <em>different, cleaner version</em> of what you already have: fewer fields, renamed fields, or a new field built out of two others. That's <strong>Transform Builder</strong> — click "Transform Builder" above the input box to open it.</p>
   <p>It works by chaining simple steps — select, remove, rename, filter, combine, convert type — each with a live preview, and each step correctly sees the output of the step before it (not the original data), so a field you renamed in step 1 is what step 2 actually works with.</p>
 
@@ -352,6 +454,22 @@
 ]</pre>
     <p class="tour-caption">Result: <code>{ "customer_name": "Sarah", "city": "London" }</code></p>
   </details>
+
+  <h2 id="faq">Common questions</h2>
+  <div class="faq-list">
+    <details class="faq-item">
+      <summary>What's the difference between converting and transforming data?</summary>
+      <p>Converting changes the format (for example, JSON to CSV) without changing the content. Transforming changes the content itself — removing fields, renaming them, or building new fields from existing ones.</p>
+    </details>
+    <details class="faq-item">
+      <summary>What kinds of steps can I chain together in Transform Builder?</summary>
+      <p>Select, remove, rename, filter, combine, and convert type — each with a live preview.</p>
+    </details>
+    <details class="faq-item">
+      <summary>Where do I find the Transform Builder?</summary>
+      <p>Click "Transform Builder" above the input box on the Convert or Transform tool.</p>
+    </details>
+  </div>
 
 <div class="howto-crosslinks">
   <div class="howto-crosslinks-title">Where next</div>
