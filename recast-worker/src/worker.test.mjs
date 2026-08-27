@@ -550,9 +550,23 @@ const env = {
       const runWorkerFirst = (config.assets && config.assets.run_worker_first) || [];
       const directoryIndexKeys = Object.keys(W.DIRECTORY_INDEX_PATHS || {});
       assert('DIRECTORY_INDEX_PATHS is exported for this cross-check', directoryIndexKeys.length > 0, directoryIndexKeys);
-      const missing = directoryIndexKeys.filter((k) => !runWorkerFirst.includes(k));
+      // A key is covered either by an exact entry, or by a wildcard entry
+      // that prefixes it (e.g. "/api/*" covers both "/api" and "/api/" —
+      // confirmed directly against wrangler's own deploy-time validation,
+      // which rejects an exact "/api/" entry as redundant once "/api/*" is
+      // already present, so an exact-string-only check here would demand a
+      // config wrangler itself refuses to accept).
+      function isCovered(key) {
+        if (runWorkerFirst.includes(key)) return true;
+        return runWorkerFirst.some((entry) => {
+          if (!entry.endsWith('/*')) return false;
+          const prefix = entry.slice(0, -1); // "/api/*" -> "/api/"
+          return key === prefix || key === prefix.slice(0, -1) || key.startsWith(prefix);
+        });
+      }
+      const missing = directoryIndexKeys.filter((k) => !isCovered(k));
       assert(
-        'every DIRECTORY_INDEX_PATHS key is also in assets.run_worker_first, so the Worker is guaranteed to run for it',
+        'every DIRECTORY_INDEX_PATHS key is covered by assets.run_worker_first (exactly or via a wildcard), so the Worker is guaranteed to run for it',
         missing.length === 0,
         missing
       );
