@@ -1086,7 +1086,11 @@
     if (schema && schema.type === 'object') {
       return 'from dataclasses import dataclass\nfrom typing import Any, List, Optional, Union\n\n\n' + classes.join('\n\n\n') + '\n';
     }
-    return 'from typing import Any, List, Optional, Union\n\n' + rootName + ' = ' + topType + '\n';
+    const rootClassName = toPascalCase(rootName);
+    const collides = topType.indexOf(rootClassName) !== -1 && classes.some(function (c) { return c.indexOf('class ' + rootClassName) !== -1; });
+    if (!classes.length) return 'from typing import Any, List, Optional, Union\n\n' + rootName + ' = ' + topType + '\n';
+    if (collides) return 'from dataclasses import dataclass\nfrom typing import Any, List, Optional, Union\n\n\n' + classes.join('\n\n\n') + '\n';
+    return 'from dataclasses import dataclass\nfrom typing import Any, List, Optional, Union\n\n\n' + classes.join('\n\n\n') + '\n\n\n' + rootName + ' = ' + topType + '\n';
   }
 
   function jsonSchemaToPydantic(schema, rootName) {
@@ -1096,7 +1100,11 @@
     if (schema && schema.type === 'object') {
       return 'from pydantic import BaseModel\nfrom typing import Any, List, Optional, Union\n\n\n' + classes.join('\n\n\n') + '\n';
     }
-    return 'from typing import Any, List, Optional, Union\n\n' + rootName + ' = ' + topType + '\n';
+    const rootClassName = toPascalCase(rootName);
+    const collides = topType.indexOf(rootClassName) !== -1 && classes.some(function (c) { return c.indexOf('class ' + rootClassName) !== -1; });
+    if (!classes.length) return 'from typing import Any, List, Optional, Union\n\n' + rootName + ' = ' + topType + '\n';
+    if (collides) return 'from pydantic import BaseModel\nfrom typing import Any, List, Optional, Union\n\n\n' + classes.join('\n\n\n') + '\n';
+    return 'from pydantic import BaseModel\nfrom typing import Any, List, Optional, Union\n\n\n' + classes.join('\n\n\n') + '\n\n\n' + rootName + ' = ' + topType + '\n';
   }
 
   function goFieldName(key) { return toPascalCase(key); }
@@ -1136,7 +1144,11 @@
     const structs = [];
     const topType = schemaToGoType(schema, rootName, structs);
     if (schema && schema.type === 'object') return structs.join('\n\n') + '\n';
-    return 'type ' + rootName + ' = ' + topType + '\n';
+    const rootStructName = toPascalCase(rootName);
+    const collides = topType.indexOf(rootStructName) !== -1 && structs.some(function (s) { return s.indexOf('type ' + rootStructName + ' struct') === 0; });
+    if (!structs.length) return 'type ' + rootName + ' = ' + topType + '\n';
+    if (collides) return structs.join('\n\n') + '\n';
+    return structs.join('\n\n') + '\n\n' + 'type ' + rootName + ' = ' + topType + '\n';
   }
 
   // ---------------- Kotlin data classes ----------------
@@ -1179,7 +1191,16 @@
     const classes = [];
     const topType = schemaToKotlinType(schema, rootName, classes);
     if (schema && schema.type === 'object') return classes.join('\n\n') + '\n';
-    return 'typealias ' + rootName + ' = ' + topType + '\n';
+    // If resolving the top-level type emitted nested classes (e.g. an array of
+    // objects), include them. And if the array's item class ended up sharing
+    // the root name (e.g. "Person" -> List<Person>), a "typealias Person =
+    // List<Person>" would redeclare the same identifier — a real compile
+    // error — so skip the alias in that case; the class itself is the type.
+    const rootClassName = toPascalCase(rootName);
+    const collides = topType.indexOf(rootClassName) !== -1 && classes.some(function (c) { return c.indexOf('data class ' + rootClassName) === 0; });
+    if (!classes.length) return 'typealias ' + rootName + ' = ' + topType + '\n';
+    if (collides) return classes.join('\n\n') + '\n';
+    return classes.join('\n\n') + '\n\n' + 'typealias ' + rootName + ' = ' + topType + '\n';
   }
 
   // ---------------- Rust structs (serde) ----------------
@@ -1229,7 +1250,11 @@
     const topType = schemaToRustType(schema, rootName, structs);
     const header = 'use serde::{Deserialize, Serialize};\n\n';
     if (schema && schema.type === 'object') return header + structs.join('\n\n') + '\n';
-    return header + 'pub type ' + rootName + ' = ' + topType + ';\n';
+    const rootStructName = toPascalCase(rootName);
+    const collides = topType.indexOf(rootStructName) !== -1 && structs.some(function (s) { return s.indexOf('pub struct ' + rootStructName + ' ') !== -1; });
+    if (!structs.length) return header + 'pub type ' + rootName + ' = ' + topType + ';\n';
+    if (collides) return header + structs.join('\n\n') + '\n';
+    return header + structs.join('\n\n') + '\n\n' + 'pub type ' + rootName + ' = ' + topType + ';\n';
   }
 
   // ---------------- Java records ----------------
@@ -1264,7 +1289,10 @@
       return header + records.join('\n\n') + '\n';
     }
     const topType = schemaToJavaType(schema, rootName, records);
-    return header + '// ' + rootName + ' = ' + topType + '\n' + records.join('\n\n') + '\n';
+    // A plain comment, not a declaration — worded to read as a description
+    // of the top-level shape, not as an attempted (and possibly colliding)
+    // type alias.
+    return header + '// Top-level type: ' + topType + '\n' + records.join('\n\n') + '\n';
   }
 
   // ---------------- Swift (Codable structs) ----------------
@@ -1304,6 +1332,14 @@
       return structs.join('\n\n') + '\n';
     }
     const topType = schemaToSwiftType(schema, rootName, structs);
+    // If the array's item type resolved to a struct sharing the root name
+    // (e.g. "Person" -> [Person]), "typealias Person = [Person]" would
+    // redeclare the same identifier as the struct below it — a genuine
+    // Swift compile error ("invalid redeclaration"), not just confusing —
+    // so skip the alias in that case; the struct itself is the type.
+    const rootStructName = toPascalCase(rootName);
+    const collides = topType.indexOf(rootStructName) !== -1 && structs.some(function (s) { return s.indexOf('struct ' + rootStructName + ':') === 0; });
+    if (structs.length && collides) return structs.join('\n\n') + '\n';
     return 'typealias ' + rootName + ' = ' + topType + '\n' + structs.join('\n\n') + '\n';
   }
 
