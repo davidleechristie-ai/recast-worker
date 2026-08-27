@@ -393,6 +393,115 @@ const env = {
     }
   }
 
+  // ---------------- /api/notify-me ----------------
+  {
+    const env2 = Object.assign({}, env, { RESEND_API_KEY: 're_test_fake' });
+
+    // Valid submission -> lead stored in KV, Resend notified
+    {
+      const kv = makeMockKV();
+      const testEnv = Object.assign({}, env2, { ENTITLEMENTS: kv });
+      let capturedUrl = null, capturedBody = null;
+      const fakeFetch = async (url, opts) => {
+        capturedUrl = url;
+        capturedBody = JSON.parse(opts.body);
+        return { ok: true, json: async () => ({ id: 'email_123' }) };
+      };
+      const deps = Object.assign({}, W.defaultDeps, { fetchImpl: fakeFetch });
+      const req = mockRequest('https://x/api/notify-me', {
+        method: 'POST',
+        body: JSON.stringify({ email: 'ada@example.com', landing_path: 'blog/what-is-json-schema' }),
+      });
+      const res = await W.handleNotifyMe(req, testEnv, deps);
+      const body = await res.json();
+      assert('valid submission returns 200', res.status === 200, res.status);
+      assert('valid submission returns ok:true', body.ok === true, body);
+      assert('calls the real Resend endpoint', capturedUrl === 'https://api.resend.com/emails', capturedUrl);
+      assert('notification email mentions the captured address', capturedBody.text.includes('ada@example.com'), capturedBody.text);
+      assert('notification email includes the landing page', capturedBody.text.includes('blog/what-is-json-schema'), capturedBody.text);
+      const stored = await kv.get('lead:ada@example.com');
+      const storedData = JSON.parse(stored);
+      assert('the lead is durably stored in KV, keyed by email', storedData.email === 'ada@example.com', storedData);
+      assert('the stored lead records the landing page', storedData.landing_path === 'blog/what-is-json-schema', storedData);
+    }
+
+    // Missing email -> 400, nothing stored, Resend never called
+    {
+      const kv = makeMockKV();
+      const testEnv = Object.assign({}, env2, { ENTITLEMENTS: kv });
+      let fetchCalled = false;
+      const deps = Object.assign({}, W.defaultDeps, { fetchImpl: async () => { fetchCalled = true; return { ok: true, json: async () => ({}) }; } });
+      const req = mockRequest('https://x/api/notify-me', { method: 'POST', body: JSON.stringify({ email: '' }) });
+      const res = await W.handleNotifyMe(req, testEnv, deps);
+      assert('missing email returns 400', res.status === 400, res.status);
+      assert('does not call Resend when validation fails', fetchCalled === false, fetchCalled);
+    }
+
+    // Invalid email format -> 400
+    {
+      const kv = makeMockKV();
+      const testEnv = Object.assign({}, env2, { ENTITLEMENTS: kv });
+      const deps = Object.assign({}, W.defaultDeps, { fetchImpl: async () => ({ ok: true, json: async () => ({}) }) });
+      const req = mockRequest('https://x/api/notify-me', { method: 'POST', body: JSON.stringify({ email: 'not-an-email' }) });
+      const res = await W.handleNotifyMe(req, testEnv, deps);
+      assert('malformed email returns 400', res.status === 400, res.status);
+    }
+
+    // Honeypot filled in -> silent fake success, nothing stored, Resend never called
+    {
+      const kv = makeMockKV();
+      const testEnv = Object.assign({}, env2, { ENTITLEMENTS: kv });
+      let fetchCalled = false;
+      const deps = Object.assign({}, W.defaultDeps, { fetchImpl: async () => { fetchCalled = true; return { ok: true, json: async () => ({}) }; } });
+      const req = mockRequest('https://x/api/notify-me', {
+        method: 'POST',
+        body: JSON.stringify({ email: 'bot@example.com', website: 'http://spam.example' }),
+      });
+      const res = await W.handleNotifyMe(req, testEnv, deps);
+      const body = await res.json();
+      assert('honeypot-filled request still returns 200 (fake success)', res.status === 200, res.status);
+      assert('honeypot-filled request reports ok:true', body.ok === true, body);
+      assert('honeypot-filled request never actually calls Resend', fetchCalled === false, fetchCalled);
+      const stored = await kv.get('lead:bot@example.com');
+      assert('honeypot-filled request never stores a lead', stored === null, stored);
+    }
+
+    // Rate limit — 6th submission from the same IP in one day is rejected
+    {
+      const kv = makeMockKV();
+      const testEnv = Object.assign({}, env2, { ENTITLEMENTS: kv });
+      const deps = Object.assign({}, W.defaultDeps, { fetchImpl: async () => ({ ok: true, json: async () => ({}) }) });
+      let lastStatus = null;
+      for (let i = 0; i < 6; i++) {
+        const req = mockRequest('https://x/api/notify-me', {
+          method: 'POST',
+          headers: { 'CF-Connecting-IP': '203.0.113.9' },
+          body: JSON.stringify({ email: 'ada+' + i + '@example.com' }),
+        });
+        const res = await W.handleNotifyMe(req, testEnv, deps);
+        lastStatus = res.status;
+      }
+      assert('6th submission from the same IP in one day is rate-limited (429)', lastStatus === 429, lastStatus);
+    }
+
+    // No Resend API key configured -> still succeeds; the lead itself must
+    // not be lost just because the (best-effort) notification email can't
+    // be sent. This is a deliberate behavioral difference from the contact
+    // form, which has no persistence layer of its own to fall back on.
+    {
+      const kv = makeMockKV();
+      const testEnv = Object.assign({}, env, { ENTITLEMENTS: kv }); // env WITHOUT RESEND_API_KEY
+      const deps = Object.assign({}, W.defaultDeps, { fetchImpl: async () => ({ ok: true, json: async () => ({}) }) });
+      const req = mockRequest('https://x/api/notify-me', { method: 'POST', body: JSON.stringify({ email: 'ada@example.com' }) });
+      const res = await W.handleNotifyMe(req, testEnv, deps);
+      const body = await res.json();
+      assert('missing RESEND_API_KEY still returns 200 — the lead is not lost', res.status === 200, res.status);
+      assert('missing RESEND_API_KEY still reports ok:true', body.ok === true, body);
+      const stored = await kv.get('lead:ada@example.com');
+      assert('the lead is still stored in KV even without an email notification', stored !== null, stored);
+    }
+  }
+
   // ---------------- wrangler.jsonc / worker.js drift check ----------------
   // The directory-index rewrite above only ever runs if Cloudflare's asset
   // server actually falls through to the Worker for these paths in the first

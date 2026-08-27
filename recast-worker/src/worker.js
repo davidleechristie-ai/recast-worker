@@ -273,6 +273,75 @@ async function handleContactForm(request, env, deps) {
   return json({ ok: true });
 }
 
+// ---------------- Notify-me capture (/api/notify-me) ----------------
+// A narrow, opt-in lead capture — NOT a site-wide popup, which would
+// contradict the "no accounts, no tracking" positioning this product is
+// actually built on. This exists specifically for the pricing section: a
+// visitor who isn't ready to pay today currently has no way back once they
+// leave. Stores the email + how they landed here, so it isn't lost — but
+// deliberately doesn't create an account, entitlement, or any tracking
+// beyond this one record. Reuses the contact form's exact rate-limit and
+// validation pattern rather than a new one.
+const NOTIFY_TO_EMAIL = 'contact@tryrecast.app';
+const NOTIFY_RATE_LIMIT_PER_DAY = 5; // per IP — same generous-but-bounded limit as the contact form
+
+async function handleNotifyMe(request, env, deps) {
+  let body;
+  try { body = await request.json(); } catch (e) { return json({ error: 'invalid JSON body' }, 400); }
+
+  // Honeypot — same pattern as the contact form.
+  if (body && body.website) return json({ ok: true });
+
+  const email = (body && body.email || '').trim();
+  const landingPath = (body && body.landing_path || '').trim().slice(0, 200);
+
+  if (!email) return json({ error: 'email is required' }, 400);
+  if (email.length > 200) return json({ error: 'that email address is too long' }, 400);
+  if (!isValidEmail(email)) return json({ error: 'that email address doesn\'t look right' }, 400);
+
+  const ip = request.headers.get('CF-Connecting-IP') || 'unknown';
+  const day = new Date().toISOString().slice(0, 10);
+  const rateKey = 'notify-rate:' + ip + ':' + day;
+  const rateRaw = await env.ENTITLEMENTS.get(rateKey);
+  const rateCount = rateRaw ? parseInt(rateRaw, 10) : 0;
+  if (rateCount >= NOTIFY_RATE_LIMIT_PER_DAY) {
+    return json({ error: 'too many requests today — try again tomorrow' }, 429);
+  }
+
+  // Store the lead itself, keyed by email so a repeat signup updates the
+  // record rather than creating duplicates. No expiry — this is a lead
+  // list, not a cache.
+  const leadKey = 'lead:' + email.toLowerCase();
+  await env.ENTITLEMENTS.put(leadKey, JSON.stringify({
+    email: email,
+    landing_path: landingPath || null,
+    capturedAt: new Date().toISOString(),
+  }));
+
+  // Best-effort notification email — the lead is already durably saved in
+  // KV above, so if Resend isn't configured or the send fails, that's not
+  // a reason to fail the whole request back to the visitor.
+  const apiKey = await resolveSecret(env.RESEND_API_KEY);
+  if (apiKey) {
+    try {
+      const doFetch = deps.fetchImpl || fetch;
+      await doFetch('https://api.resend.com/emails', {
+        method: 'POST',
+        headers: { Authorization: 'Bearer ' + apiKey, 'Content-Type': 'application/json' },
+        body: JSON.stringify({
+          from: 'Recast Leads <contact@tryrecast.app>',
+          to: [NOTIFY_TO_EMAIL],
+          subject: 'New notify-me signup: ' + email,
+          text: 'Email: ' + email + '\nLanding page: ' + (landingPath || '(not set)'),
+        }),
+      });
+    } catch (e) { /* lead is already saved in KV; a failed notification email isn't fatal */ }
+  }
+
+  await env.ENTITLEMENTS.put(rateKey, String(rateCount + 1), { expirationTtl: 60 * 60 * 24 * 2 });
+  return json({ ok: true });
+}
+
 async function handlePortal(request, env, deps) {
   let body;
   try { body = await request.json(); } catch (e) { return json({ error: 'invalid JSON body' }, 400); }
@@ -414,6 +483,7 @@ async function route(request, env, deps) {
   if (url.pathname === '/api/webhook' && request.method === 'POST') return handleWebhook(request, env, deps);
   if (url.pathname === '/api/portal' && request.method === 'POST') return handlePortal(request, env, deps);
   if (url.pathname === '/api/contact' && request.method === 'POST') return handleContactForm(request, env, deps);
+  if (url.pathname === '/api/notify-me' && request.method === 'POST') return handleNotifyMe(request, env, deps);
   if (url.pathname === '/v1/convert' && request.method === 'POST') return handleApiConvert(request, env, deps);
   if (url.pathname === '/v1/diff' && request.method === 'POST') return handleApiDiff(request, env, deps);
   if (url.pathname === '/v1/schema' && request.method === 'POST') return handleApiSchema(request, env, deps);
@@ -440,6 +510,8 @@ const DIRECTORY_INDEX_PATHS = {
   '/demo/': '/demo/index.html',
   '/tools': '/tools/index.html',
   '/tools/': '/tools/index.html',
+  '/api': '/api/index.html',
+  '/api/': '/api/index.html',
 };
 
 export default {
@@ -459,4 +531,4 @@ export default {
   },
 };
 
-export { route, handleVerifySession, handleVerifyToken, handleWebhook, handlePortal, handleContactForm, handleApiConvert, handleApiDiff, handleApiSchema, authenticateApiToken, checkAndIncrementUsage, planFromPriceId, defaultDeps, DIRECTORY_INDEX_PATHS };
+export { route, handleVerifySession, handleVerifyToken, handleWebhook, handlePortal, handleContactForm, handleNotifyMe, handleApiConvert, handleApiDiff, handleApiSchema, authenticateApiToken, checkAndIncrementUsage, planFromPriceId, defaultDeps, DIRECTORY_INDEX_PATHS };
