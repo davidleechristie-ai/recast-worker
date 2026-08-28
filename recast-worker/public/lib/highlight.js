@@ -93,6 +93,23 @@
     return { render: render, syncScroll: syncScroll };
   }
 
+  // Wraps specific lines of already-highlighted HTML in a diff-highlight
+  // span, without touching the tokenizer at all. Safe because JSON tokens
+  // never span multiple lines (no literal newlines inside a JSON string),
+  // so splitting the finished HTML on '\n' always lands on a real line
+  // boundary, never mid-span.
+  //
+  // lineClasses: { [lineIndex]: 'diff-added' | 'diff-removed' | 'diff-changed' }
+  function applyDiffLineHighlights(html, lineClasses) {
+    if (!lineClasses || !Object.keys(lineClasses).length) return html;
+    const lines = html.split('\n');
+    return lines.map(function (line, idx) {
+      const cls = lineClasses[idx];
+      if (!cls) return line;
+      return '<span class="diff-line ' + cls + '" data-diff-line="' + idx + '">' + line + '</span>';
+    }).join('\n');
+  }
+
   const api = {
     escapeHtml: escapeHtml,
     highlightJson: highlightJson,
@@ -100,7 +117,8 @@
     highlightCsv: highlightCsv,
     highlightPlain: highlightPlain,
     highlightFor: highlightFor,
-    attachHighlight: attachHighlight
+    attachHighlight: attachHighlight,
+    applyDiffLineHighlights: applyDiffLineHighlights
   };
   if (typeof module !== 'undefined' && module.exports) module.exports = api; // testable in Node
   root.RecastHighlight = api; // browser global

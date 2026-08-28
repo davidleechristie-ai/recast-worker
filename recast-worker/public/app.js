@@ -506,6 +506,82 @@ function jsonPathQuery(obj, path) {
 
 // ---------------- Diff rendering ----------------
 function escHtml(s) { return RecastHighlight.escapeHtml(s === undefined ? '(missing)' : String(s)); }
+// escapeHtml alone is safe for text content but not for a double-quoted
+// HTML attribute value — it doesn't escape '"', so a path like
+// [name="Ada"] would break out of data-path="...". Used only for that.
+function escAttr(s) { return escHtml(s).replace(/"/g, '&quot;'); }
+
+// Populated by applyInlineDiffHighlights each time a compare runs; read by
+// the summary-row click handler further down to know which line(s) to
+// jump to for a given change path, without recomputing positions on
+// every click.
+let lastDiffLineRanges = { a: {}, b: {} };
+
+// Highlights each change directly in the two source panels, on top of the
+// existing syntax highlighting — not a replacement for it. Only meaningful
+// for JSON (mapJsonPositions is JSON-specific); silently does nothing for
+// other diff kinds, same as the existing tree-diff summary already only
+// applies to JSON. If either side fails to parse, bails out entirely
+// rather than show a partial or misleading highlight.
+function applyInlineDiffHighlights(changes) {
+  const inputAEl = $('inputA'), inputBEl = $('inputB');
+  const hlAEl = $('hlInputA'), hlBEl = $('hlInputB');
+  if (!inputAEl || !inputBEl || !hlAEl || !hlBEl) return;
+
+  // renderTreeDiff (which calls this) is shared by both diffJson and
+  // diffXml — they need genuinely different position mappers (mapJsonPositions
+  // vs mapXmlPositions), since deepDiff's paths are built against the raw
+  // parsed value for JSON, but against xmlToJson()'s converted shape for
+  // XML. currentMode is the reliable discriminator between the two pages.
+  const isXml = currentMode === 'diffXml';
+  let rangesA, rangesB;
+
+  if (isXml) {
+    let parsedA, parsedB;
+    try {
+      parsedA = RecastEngine.xmlToJson(inputAEl.value);
+      parsedB = RecastEngine.xmlToJson(inputBEl.value);
+    } catch (e) {
+      lastDiffLineRanges = { a: {}, b: {} };
+      return;
+    }
+    rangesA = RecastEngine.mapXmlPositions(inputAEl.value, parsedB);
+    rangesB = RecastEngine.mapXmlPositions(inputBEl.value, parsedA);
+  } else {
+    let parsedA, parsedB;
+    try {
+      parsedA = JSON.parse(inputAEl.value);
+      parsedB = JSON.parse(inputBEl.value);
+    } catch (e) {
+      lastDiffLineRanges = { a: {}, b: {} }; // clear stale click-to-jump targets too
+      return; // not valid JSON on one side — leave highlighting as plain syntax-only
+    }
+    rangesA = RecastEngine.mapJsonPositions(inputAEl.value, parsedB);
+    rangesB = RecastEngine.mapJsonPositions(inputBEl.value, parsedA);
+  }
+
+  if (!rangesA || !rangesB) { lastDiffLineRanges = { a: {}, b: {} }; return; }
+  lastDiffLineRanges = { a: rangesA, b: rangesB };
+
+  const lineClassesA = {}, lineClassesB = {};
+  changes.forEach((c) => {
+    const cls = c.type === 'added' ? 'diff-added' : c.type === 'removed' ? 'diff-removed' : 'diff-changed';
+    // 'added' only exists in B; 'removed' only exists in A; 'changed' exists in both.
+    if (c.type !== 'added' && rangesA[c.path]) {
+      const r = rangesA[c.path];
+      for (let ln = r.startLine; ln <= r.endLine; ln++) lineClassesA[ln] = cls;
+    }
+    if (c.type !== 'removed' && rangesB[c.path]) {
+      const r = rangesB[c.path];
+      for (let ln = r.startLine; ln <= r.endLine; ln++) lineClassesB[ln] = cls;
+    }
+  });
+
+  const opts = { delimiter: getDelim() };
+  const hlKind = isXml ? 'xml' : 'json';
+  hlAEl.innerHTML = RecastHighlight.applyDiffLineHighlights(RecastHighlight.highlightFor(hlKind, inputAEl.value, opts), lineClassesA) + (inputAEl.value.slice(-1) === '\n' ? ' ' : '');
+  hlBEl.innerHTML = RecastHighlight.applyDiffLineHighlights(RecastHighlight.highlightFor(hlKind, inputBEl.value, opts), lineClassesB) + (inputBEl.value.slice(-1) === '\n' ? ' ' : '');
+}
 
 function renderTreeDiff(changes) {
   const added = changes.filter(c => c.type === 'added').length;
@@ -517,12 +593,99 @@ function renderTreeDiff(changes) {
     : `<span class="added">${added} <b>added</b></span><span class="removed">${removed} <b>removed</b></span><span class="changed">${changed} <b>changed</b></span>`;
 
   const rowsEl = document.getElementById('diffRows');
+  applyInlineDiffHighlights(changes);
   if (changes.length === 0) { rowsEl.innerHTML = '<div class="diff-empty">No differences found.</div>'; return; }
   rowsEl.innerHTML = changes.map(c => {
-    if (c.type === 'added') return `<div class="diff-row added"><span class="badge">add</span><span class="path">${escHtml(c.path)}</span><span class="vals"><span class="new">${escHtml(JSON.stringify(c.newVal))}</span></span></div>`;
-    if (c.type === 'removed') return `<div class="diff-row removed"><span class="badge">del</span><span class="path">${escHtml(c.path)}</span><span class="vals"><span class="old">${escHtml(JSON.stringify(c.oldVal))}</span></span></div>`;
-    return `<div class="diff-row changed"><span class="badge">chg</span><span class="path">${escHtml(c.path)}</span><span class="vals"><span class="old">${escHtml(JSON.stringify(c.oldVal))}</span> \u2192 <span class="new">${escHtml(JSON.stringify(c.newVal))}</span></span></div>`;
+    if (c.type === 'added') return `<div class="diff-row added" data-path="${escAttr(c.path)}" data-type="added"><span class="badge">add</span><span class="path">${escHtml(c.path)}</span><span class="vals"><span class="new">${escHtml(JSON.stringify(c.newVal))}</span></span></div>`;
+    if (c.type === 'removed') return `<div class="diff-row removed" data-path="${escAttr(c.path)}" data-type="removed"><span class="badge">del</span><span class="path">${escHtml(c.path)}</span><span class="vals"><span class="old">${escHtml(JSON.stringify(c.oldVal))}</span></span></div>`;
+    return `<div class="diff-row changed" data-path="${escAttr(c.path)}" data-type="changed"><span class="badge">chg</span><span class="path">${escHtml(c.path)}</span><span class="vals"><span class="old">${escHtml(JSON.stringify(c.oldVal))}</span> \u2192 <span class="new">${escHtml(JSON.stringify(c.newVal))}</span></span></div>`;
   }).join('');
+}
+
+// Click-to-jump: a summary row's data-path/data-type tell us which
+// change it represents; lastDiffLineRanges (populated by
+// applyInlineDiffHighlights above) tells us which line(s) that path
+// lives on in each panel. Scrolls the real textarea (not the overlay
+// directly — the overlay's own scroll position is kept in sync from the
+// textarea by the existing wireHighlightSync listener) and flashes the
+// matching highlighted line.
+function jumpToDiffLine(path, type) {
+  const targets = [];
+  if (type !== 'added' && lastDiffLineRanges.a[path]) targets.push({ side: 'a', range: lastDiffLineRanges.a[path] });
+  if (type !== 'removed' && lastDiffLineRanges.b[path]) targets.push({ side: 'b', range: lastDiffLineRanges.b[path] });
+
+  targets.forEach(({ side, range }) => {
+    const taEl = $(side === 'a' ? 'inputA' : 'inputB');
+    const hlEl = $(side === 'a' ? 'hlInputA' : 'hlInputB');
+    if (!taEl || !hlEl) return;
+    const lineEl = hlEl.querySelector('[data-diff-line="' + range.startLine + '"]');
+    if (!lineEl) return;
+    // Center the target line in the textarea's own scrollable area,
+    // using the overlay element's real, measured position rather than a
+    // guessed line-height — both panels render identical text with
+    // identical CSS, so the overlay's layout is a reliable proxy for the
+    // (transparent) textarea's own line positions.
+    const targetTop = lineEl.offsetTop - (taEl.clientHeight / 2) + (lineEl.offsetHeight / 2);
+    taEl.scrollTop = Math.max(0, targetTop);
+    hlEl.scrollTop = taEl.scrollTop;
+
+    lineEl.classList.remove('diff-flash');
+    void lineEl.offsetWidth; // restart the CSS animation if it's already flashing
+    lineEl.classList.add('diff-flash');
+  });
+}
+
+function wireDiffRowClicks() {
+  const rowsEl = $('diffRows');
+  if (!rowsEl) return;
+  rowsEl.addEventListener('click', (e) => {
+    const row = e.target.closest('.diff-row');
+    if (!row || !rowsEl.contains(row)) return;
+    jumpToDiffLine(row.dataset.path, row.dataset.type);
+  });
+}
+
+function wireCompareTableClicks() {
+  const wrapEl = $('compareTableWrap');
+  if (!wrapEl) return;
+  // Delegated on the stable wrapper, not individual rows — buildTableHtml
+  // replaces the table's innerHTML on every filter/search change, so a
+  // listener on an individual row would be destroyed and lost the next
+  // time the table re-renders.
+  wrapEl.addEventListener('click', (e) => {
+    const row = e.target.closest('tr[data-status]');
+    if (!row || !wrapEl.contains(row)) return;
+    jumpToDiffLine(row.dataset.key, row.dataset.status);
+  });
+}
+
+// Same idea as applyInlineDiffHighlights (JSON), but for CSV: much
+// simpler since mapCsvPositions returns one line per row key, not a
+// range, so there's no start/end span to compute — just a single line
+// index per changed/added/removed row.
+function applyInlineCsvDiffHighlights(cd) {
+  const inputAEl = $('inputA'), inputBEl = $('inputB');
+  const hlAEl = $('hlInputA'), hlBEl = $('hlInputB');
+  if (!inputAEl || !inputBEl || !hlAEl || !hlBEl) return;
+
+  const rangesA = RecastEngine.mapCsvPositions(inputAEl.value, cd.keyColumn, getDelim());
+  const rangesB = RecastEngine.mapCsvPositions(inputBEl.value, cd.keyColumn, getDelim());
+  lastDiffLineRanges = {
+    a: Object.fromEntries(Object.entries(rangesA).map(([k, v]) => [k, { startLine: v, endLine: v }])),
+    b: Object.fromEntries(Object.entries(rangesB).map(([k, v]) => [k, { startLine: v, endLine: v }])),
+  };
+
+  const lineClassesA = {}, lineClassesB = {};
+  cd.rows.forEach((r) => {
+    if (r.status === 'unchanged') return;
+    const cls = r.status === 'added' ? 'diff-added' : r.status === 'removed' ? 'diff-removed' : 'diff-changed';
+    if (r.status !== 'added' && rangesA[r.key] !== undefined) lineClassesA[rangesA[r.key]] = cls;
+    if (r.status !== 'removed' && rangesB[r.key] !== undefined) lineClassesB[rangesB[r.key]] = cls;
+  });
+
+  const opts = { delimiter: getDelim() };
+  hlAEl.innerHTML = RecastHighlight.applyDiffLineHighlights(RecastHighlight.highlightFor('csv', inputAEl.value, opts), lineClassesA) + (inputAEl.value.slice(-1) === '\n' ? ' ' : '');
+  hlBEl.innerHTML = RecastHighlight.applyDiffLineHighlights(RecastHighlight.highlightFor('csv', inputBEl.value, opts), lineClassesB) + (inputBEl.value.slice(-1) === '\n' ? ' ' : '');
 }
 
 function renderCompareTable() {
@@ -542,6 +705,7 @@ function renderCompareTable() {
 
   const searchText = document.getElementById('compareSearch').value;
   document.getElementById('compareTableWrap').innerHTML = RecastCompare.buildTableHtml(cd, { statusFilter: compareFilterStatus, searchText });
+  applyInlineCsvDiffHighlights(cd);
   currentDiffNavIndex = -1;
   updateDiffNavPosition();
 }
@@ -798,6 +962,8 @@ function wireHighlightSync(taEl, layerEl) {
 wireHighlightSync(inputEl, $('hlInput'));
 wireHighlightSync($('inputA'), $('hlInputA'));
 wireHighlightSync($('inputB'), $('hlInputB'));
+wireDiffRowClicks();
+wireCompareTableClicks();
 wireHighlightSync(outputEl, $('hlOutput'));
 
 function setMode(mode) {
@@ -1085,7 +1251,13 @@ document.addEventListener('keydown', (e) => {
 });
 $('inputExpandBtn')?.addEventListener('click', (e) => toggleFullscreen($('inputPanel'), e.currentTarget));
 $('outputExpandBtn')?.addEventListener('click', (e) => toggleFullscreen($('outputPanel') || e.currentTarget.closest('.panel'), e.currentTarget));
-$('workbenchExpandBtn')?.addEventListener('click', (e) => toggleFullscreen(document.querySelector('.workbench'), e.currentTarget));
+// On the diff tools, expand the wrapper that also contains the diff
+// summary/compare panel below the input area — not just the input/output
+// textareas — so a user can click a summary row and jump to a highlighted
+// line without ever leaving full-screen mode. Every other tool page has
+// no such wrapper, so this falls back to the existing, unchanged
+// behavior (expanding just .workbench) exactly as before.
+$('workbenchExpandBtn')?.addEventListener('click', (e) => toggleFullscreen($('diffFullscreenWrap') || document.querySelector('.workbench'), e.currentTarget));
 $('playgroundExpandBtn')?.addEventListener('click', (e) => toggleFullscreen($('apiPlayground'), e.currentTarget));
 
 function openPopoutMirror(sourceEl, label, opts) {

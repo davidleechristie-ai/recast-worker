@@ -652,6 +652,298 @@
     return { added: added, removed: removed, changed: changed, keyColumn: key, headers: headers, rows: rows };
   }
 
+  // ---------------- Diff position mapping (CSV) ----------------
+  // Much simpler than JSON's version: csvToRows() splits purely on '\n'
+  // with no quoted-newline handling at all, so every data row is exactly
+  // one line — no multi-line rows to track. But it does filter out blank
+  // lines before indexing (lines.filter(l => l.length > 0)) BEFORE
+  // treating the first remaining line as the header and the rest as data
+  // rows in order — so a row's position in that filtered sequence does
+  // NOT necessarily match its raw line number whenever blank lines are
+  // present. This walks the raw lines the same way, skipping blanks
+  // identically, so the row-key -> line-number mapping stays correct even
+  // with blank lines in the source text.
+  function mapCsvPositions(text, keyColumn, delim) {
+    delim = delim || ',';
+    const rawLines = text.replace(/\r\n/g, '\n').replace(/\r/g, '\n').split('\n');
+    const ranges = {}; // { rowKey: rawLineIndex }
+    let headers = null;
+    for (let i = 0; i < rawLines.length; i++) {
+      if (rawLines[i].length === 0) continue; // matches csvToRows' own filter exactly
+      if (headers === null) {
+        headers = parseCsvLine(rawLines[i], delim);
+        continue;
+      }
+      const cells = parseCsvLine(rawLines[i], delim);
+      const keyIdx = headers.indexOf(keyColumn);
+      if (keyIdx === -1) continue;
+      const key = cells[keyIdx];
+      if (key !== undefined) ranges[key] = i;
+    }
+    return ranges;
+  }
+
+  // ---------------- Diff position mapping (XML) ----------------
+  // diffXml converts both sides to JSON via xmlToJson() and runs the same
+  // deepDiff() used for plain JSON — so the change paths are built against
+  // that converted JSON shape, not the raw XML directly. This walks the
+  // raw XML text in lockstep with its own xmlToJson() output (reusing the
+  // real, proven converter rather than re-deriving its leaf/attribute/
+  // array rules by hand), producing the exact same path strings deepDiff
+  // does, so a diff result can be looked up directly against real lines.
+  //
+  // otherRootValue: the OTHER file's already-converted xmlToJson() value
+  // (or undefined) — needed for exactly the reason JSON's mapJsonPositions
+  // needs it: deepDiff picks an array's matching key (e.g. a repeated
+  // sibling tag) by comparing BOTH files' arrays together via
+  // pickArrayKey, not one file's array in isolation.
+  function mapXmlPositions(text, otherRootValue) {
+    let rootValue;
+    try { rootValue = xmlToJson(text); } catch (e) { return null; }
+    const rootTagName = Object.keys(rootValue)[0];
+
+    let i = 0;
+    const len = text.length;
+    const ranges = {};
+
+    function lineAt(pos) {
+      let line = 0;
+      for (let k = 0; k < pos; k++) if (text[k] === '\n') line++;
+      return line;
+    }
+
+    function skipProlog() {
+      text = text.replace(/^\uFEFF/, '');
+      const m = /^\s*<\?xml[^>]*\?>/i.exec(text);
+      if (m) i = m[0].length;
+      while (true) {
+        const rest = text.slice(i);
+        const ws = /^\s+/.exec(rest);
+        if (ws) { i += ws[0].length; continue; }
+        const cm = /^<!--[\s\S]*?-->/.exec(rest);
+        if (cm) { i += cm[0].length; continue; }
+        const dt = /^<!DOCTYPE[^>]*>/i.exec(rest);
+        if (dt) { i += dt[0].length; continue; }
+        break;
+      }
+    }
+
+    function skipWsAndComments() {
+      while (true) {
+        const rest = text.slice(i);
+        const ws = /^\s+/.exec(rest);
+        if (ws) { i += ws[0].length; continue; }
+        const cm = /^<!--[\s\S]*?-->/.exec(rest);
+        if (cm) { i += cm[0].length; continue; }
+        break;
+      }
+    }
+
+    function lookupOtherAtPath(path) {
+      if (otherRootValue === undefined) return undefined;
+      if (!path) return otherRootValue;
+      let cur = otherRootValue;
+      const re = /([^.[\]]+)|\[([^\]]+)\]/g;
+      let m;
+      while ((m = re.exec(path))) {
+        if (cur === undefined || cur === null) return undefined;
+        if (m[1] !== undefined) {
+          cur = cur[m[1]];
+        } else {
+          const seg = m[2];
+          const eq = seg.indexOf('=');
+          if (eq === -1) {
+            cur = cur[Number(seg)];
+          } else {
+            const k = seg.slice(0, eq);
+            const v = JSON.parse(seg.slice(eq + 1));
+            cur = Array.isArray(cur) ? cur.find(function (it) { return it && it[k] === v; }) : undefined;
+          }
+        }
+      }
+      return cur;
+    }
+
+    function isLeafValue(v) {
+      if (typeof v !== 'object' || v === null) return true;
+      return Object.keys(v).every(function (k) { return k === '#text' || k.charAt(0) === '@'; });
+    }
+
+    // Parses one element at text[i] === '<'. expectedValue is the already-
+    // known JSON shape for this exact element (from xmlToJson), so this
+    // never has to re-derive leaf-vs-parent or array-vs-object itself —
+    // only find raw-text boundaries for a shape it's already been told.
+    function walkElement(expectedValue, path) {
+      const startPos = i;
+      const openMatch = /^<([a-zA-Z_:][\w:.-]*)((?:\s+[^<>]*?)?)(\/)?>/.exec(text.slice(i));
+      if (!openMatch) return; // malformed — bail on this branch rather than throw
+      i += openMatch[0].length;
+
+      if (openMatch[3]) { // self-closing
+        ranges[path] = { startLine: lineAt(startPos), endLine: lineAt(i - 1) };
+        return;
+      }
+
+      if (isLeafValue(expectedValue)) {
+        const tagName = openMatch[1];
+        const closeRe = new RegExp('</' + tagName + '\\s*>');
+        const m = closeRe.exec(text.slice(i));
+        i += m ? m.index + m[0].length : 0;
+        ranges[path] = { startLine: lineAt(startPos), endLine: lineAt(Math.max(startPos, i - 1)) };
+        return;
+      }
+
+      const arraySeenCount = {};
+      while (true) {
+        skipWsAndComments();
+        if (text.slice(i, i + 2) === '</') break; // this element's own closing tag
+        const peek = /^<([a-zA-Z_:][\w:.-]*)/.exec(text.slice(i));
+        if (!peek) break;
+        const childTag = peek[1];
+        const childExpected = expectedValue[childTag];
+
+        if (Array.isArray(childExpected)) {
+          const idx = arraySeenCount[childTag] || 0;
+          arraySeenCount[childTag] = idx + 1;
+          const otherArr = lookupOtherAtPath(path ? path + '.' + childTag : childTag);
+          const key = Array.isArray(otherArr) && otherArr.length ? pickArrayKey(childExpected, otherArr) : null;
+          const item = childExpected[idx];
+          const childPath = key
+            ? (path ? path + '.' : '') + childTag + '[' + key + '=' + JSON.stringify(item[key]) + ']'
+            : (path ? path + '.' : '') + childTag + '[' + idx + ']';
+          walkElement(item, childPath);
+        } else {
+          const childPath = (path ? path + '.' : '') + childTag;
+          walkElement(childExpected, childPath);
+        }
+      }
+
+      const closeMatch = /^<\/([a-zA-Z_:][\w:.-]*)\s*>/.exec(text.slice(i));
+      if (closeMatch) i += closeMatch[0].length;
+      ranges[path] = { startLine: lineAt(startPos), endLine: lineAt(Math.max(startPos, i - 1)) };
+    }
+
+    skipProlog();
+    walkElement(rootValue[rootTagName], rootTagName);
+    return ranges;
+  }
+
+  // ---------------- Diff position mapping (JSON) ----------------
+  // Walks raw JSON text in lockstep with its own already-parsed value (via
+  // native JSON.parse, so lexical edge cases — unicode escapes, exponents,
+  // etc. — are handled by the real parser, not hand-rolled). The position
+  // walker only needs to find boundaries for a structure it already knows
+  // the shape of. Produces the exact same path strings deepDiff() does, so
+  // a diff result can be looked up directly against real line numbers.
+  //
+  // otherValue is the OTHER file's already-parsed value (or undefined) —
+  // needed because deepDiff picks an array's matching key by comparing
+  // BOTH files' arrays together, not one file in isolation. Re-deriving
+  // the key from this file's array alone could pick a different key than
+  // deepDiff actually used whenever the two files disagree (e.g. file A's
+  // ids are unique, file B's aren't after an edit) — silently producing
+  // wrong paths and highlights landing on the wrong line. Passing
+  // otherValue lets this mirror deepDiff's own decision exactly.
+  function mapJsonPositions(text, otherValue) {
+    let parsed;
+    try { parsed = JSON.parse(text); } catch (e) { return null; }
+
+    let i = 0;
+    const len = text.length;
+    const ranges = {};
+
+    function lineAt(pos) {
+      let line = 0;
+      for (let k = 0; k < pos; k++) if (text[k] === '\n') line++;
+      return line;
+    }
+
+    function skipWs() { while (i < len && /\s/.test(text[i])) i++; }
+
+    function skipStringLiteral() {
+      i++; // opening quote
+      while (i < len && text[i] !== '"') { if (text[i] === '\\') i++; i++; }
+      i++; // closing quote
+    }
+
+    function lookupOther(path) {
+      if (otherValue === undefined) return undefined;
+      if (!path) return otherValue;
+      let cur = otherValue;
+      const re = /([^.[\]]+)|\[([^\]]+)\]/g;
+      let m;
+      while ((m = re.exec(path))) {
+        if (cur === undefined || cur === null) return undefined;
+        if (m[1] !== undefined) {
+          cur = cur[m[1]];
+        } else {
+          const seg = m[2];
+          const eq = seg.indexOf('=');
+          if (eq === -1) {
+            cur = cur[Number(seg)];
+          } else {
+            const k = seg.slice(0, eq);
+            const v = JSON.parse(seg.slice(eq + 1));
+            cur = Array.isArray(cur) ? cur.find(function (it) { return it && it[k] === v; }) : undefined;
+          }
+        }
+      }
+      return cur;
+    }
+
+    function walk(value, path) {
+      skipWs();
+      const startPos = i;
+
+      if (value === null) {
+        i += 4; // "null"
+      } else if (typeof value === 'boolean') {
+        i += value ? 4 : 5;
+      } else if (typeof value === 'number') {
+        while (i < len && /[-+.eE\d]/.test(text[i])) i++;
+      } else if (typeof value === 'string') {
+        skipStringLiteral();
+      } else if (Array.isArray(value)) {
+        i++; // [
+        const otherArr = lookupOther(path);
+        const key = value.length && Array.isArray(otherArr) && otherArr.length
+          ? pickArrayKey(value, otherArr)
+          : null;
+        value.forEach(function (item, idx) {
+          skipWs();
+          if (text[i] === ',') i++;
+          const childPath = key
+            ? path + '[' + key + '=' + JSON.stringify(item[key]) + ']'
+            : path + '[' + idx + ']';
+          walk(item, childPath);
+        });
+        skipWs();
+        i++; // ]
+      } else if (typeof value === 'object') {
+        i++; // {
+        const keys = Object.keys(value);
+        keys.forEach(function (k) {
+          skipWs();
+          if (text[i] === ',') i++;
+          skipWs();
+          skipStringLiteral(); // the key itself
+          skipWs();
+          i++; // :
+          const childPath = path ? path + '.' + k : k;
+          walk(value[k], childPath);
+        });
+        skipWs();
+        i++; // }
+      }
+
+      const endPos = i;
+      ranges[path || '(root)'] = { startLine: lineAt(startPos), endLine: lineAt(Math.max(startPos, endPos - 1)) };
+    }
+
+    walk(parsed, '');
+    return ranges;
+  }
+
   // ---------------- JSON Schema inference (draft-07-ish) ----------------
   function typeOf(v) {
     if (v === null) return 'null';
@@ -1387,7 +1679,10 @@
       return header + classes.join('\n\n') + '\n';
     }
     const topType = schemaToCSharpType(schema, rootName, classes);
-    return header + '// ' + rootName + ' = ' + topType + '\n' + classes.join('\n\n') + '\n';
+    // A plain comment, not a declaration — worded to describe the top-level
+    // shape rather than read as an attempted (and possibly confusing)
+    // type alias.
+    return header + '// Top-level type: ' + topType + '\n' + classes.join('\n\n') + '\n';
   }
 
   // ---------------- SQL CREATE TABLE (a starting point, not a full ORM) ----------------
@@ -1568,8 +1863,11 @@
     jsonToMarkdownTable: jsonToMarkdownTable,
     markdownTableToJson: markdownTableToJson,
     deepDiff: deepDiff,
+    mapJsonPositions: mapJsonPositions,
     pickArrayKey: pickArrayKey,
     csvDiff: csvDiff,
+    mapCsvPositions: mapCsvPositions,
+    mapXmlPositions: mapXmlPositions,
     csvRowCount: csvRowCount,
     jsonSchemaFromSample: jsonSchemaFromSample,
     jsonStructureSummary: jsonStructureSummary,

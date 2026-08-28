@@ -4,22 +4,22 @@
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <script>(function(){try{if(localStorage.getItem('recast_theme')==='light')document.documentElement.setAttribute('data-theme','light');}catch(e){}})();</script>
-<title>JSON to Pydantic Model Generator — free online | Recast</title>
-<meta name="description" content="Convert a JSON sample into Pydantic BaseModel classes for runtime-validated Python data models. Nested objects become their own model classes. Runs in your browser.">
+<title>JSON to C# Class Generator — free online | Recast</title>
+<meta name="description" content="Convert a JSON sample directly into a C# class with System.Text.Json attributes. Infers nested types and List<T> arrays. Runs in your browser.">
 <meta property="og:type" content="website">
-<meta property="og:title" content="JSON to Pydantic Model Generator — free online | Recast">
-<meta property="og:description" content="Convert a JSON sample into Pydantic BaseModel classes for runtime-validated Python data models. Nested objects become their own model classes. Runs in your browser.">
-<meta property="og:url" content="https://tryrecast.app/tools/json-to-pydantic.html">
+<meta property="og:title" content="JSON to C# Class Generator — free online | Recast">
+<meta property="og:description" content="Convert a JSON sample directly into a C# class with System.Text.Json attributes. Infers nested types and List<T> arrays. Runs in your browser.">
+<meta property="og:url" content="https://tryrecast.app/tools/json-to-csharp.html">
 <meta property="og:image" content="https://tryrecast.app/og-image.png">
 <meta property="og:site_name" content="Recast">
 <meta name="twitter:card" content="summary_large_image">
-<meta name="twitter:title" content="JSON to Pydantic Model Generator — free online | Recast">
-<meta name="twitter:description" content="Convert a JSON sample into Pydantic BaseModel classes for runtime-validated Python data models. Nested objects become their own model classes. Runs in your browser.">
+<meta name="twitter:title" content="JSON to C# Class Generator — free online | Recast">
+<meta name="twitter:description" content="Convert a JSON sample directly into a C# class with System.Text.Json attributes. Infers nested types and List<T> arrays. Runs in your browser.">
 <meta name="twitter:image" content="https://tryrecast.app/og-image.png">
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@400;500;600;700&family=IBM+Plex+Sans:wght@400;500;600&family=IBM+Plex+Mono:wght@400;500&display=swap" rel="stylesheet">
 <link rel="stylesheet" href="../styles.css">
-<link rel="canonical" href="https://tryrecast.app/tools/json-to-pydantic.html">
+<link rel="canonical" href="https://tryrecast.app/tools/json-to-csharp.html">
 <link rel="manifest" href="/manifest.json">
 <meta name="theme-color" content="#0A0E1F">
 <link rel="apple-touch-icon" href="/icons/icon-192.png">
@@ -28,10 +28,10 @@
   "@context": "https://schema.org",
   "@type": "SoftwareApplication",
   "name": "Recast",
-  "url": "https://tryrecast.app/tools/json-to-pydantic.html",
+  "url": "https://tryrecast.app/tools/json-to-csharp.html",
   "applicationCategory": "DeveloperApplication",
   "operatingSystem": "Any (runs in browser)",
-  "description": "Convert a JSON sample into Pydantic BaseModel classes for runtime-validated Python data models. Nested objects become their own model classes. Runs in your browser.",
+  "description": "Convert a JSON sample directly into a C# class with System.Text.Json attributes. Infers nested types and List<T> arrays. Runs in your browser.",
   "offers": [
     { "@type": "Offer", "name": "Free", "price": "0", "priceCurrency": "GBP" },
     { "@type": "Offer", "name": "Pro", "price": "9", "priceCurrency": "GBP" },
@@ -85,6 +85,46 @@
 <script type="application/ld+json">
 {
   "@context": "https://schema.org",
+  "@type": "FAQPage",
+  "mainEntity": [
+    {
+      "@type": "Question",
+      "name": "Do I need to create an account?",
+      "acceptedAnswer": {
+        "@type": "Answer",
+        "text": "No — Recast doesn't use logins, emails, or passwords. When you pay, your browser is automatically given secure access. This means access is tied to the specific browser you paid in, not to an identity we track. If you switch devices, use a different browser, or clear your browser's storage, click Manage subscription from the original browser to pick it back up, or get in touch and we'll sort it out."
+      }
+    },
+    {
+      "@type": "Question",
+      "name": "Is my data ever uploaded anywhere?",
+      "acceptedAnswer": {
+        "@type": "Answer",
+        "text": "No. Every conversion, diff, and validation runs entirely inside your browser tab. Nothing you paste into the tool is ever sent to a server — the only exception is the checkout process itself, which is handled directly by Stripe."
+      }
+    },
+    {
+      "@type": "Question",
+      "name": "What happens if I cancel?",
+      "acceptedAnswer": {
+        "@type": "Answer",
+        "text": "Cancel any time from Manage subscription. Your access reverts to the Free tier automatically — usually within moments, always by your next page load — no need to email anyone."
+      }
+    },
+    {
+      "@type": "Question",
+      "name": "Can I use Recast in a script or CI pipeline?",
+      "acceptedAnswer": {
+        "@type": "Answer",
+        "text": "Yes — the same engine that powers the browser tool is available as recast-cli, an npm package with no network dependency, plus a REST API on the API plan."
+      }
+    }
+  ]
+}
+</script>
+<script type="application/ld+json">
+{
+  "@context": "https://schema.org",
   "@type": "BreadcrumbList",
   "itemListElement": [
     {
@@ -96,8 +136,8 @@
     {
       "@type": "ListItem",
       "position": 2,
-      "name": "JSON to Pydantic",
-      "item": "https://tryrecast.app/tools/json-to-pydantic.html"
+      "name": "JSON to C#",
+      "item": "https://tryrecast.app/tools/json-to-csharp.html"
     }
   ]
 }
@@ -288,8 +328,8 @@
 <main>
   <section class="hero" id="tool">
     <p class="eyebrow">Your private data workbench</p>
-    <h1>JSON to Pydantic</h1>
-    <p class="sub">Paste a real JSON sample and get back Pydantic <code>BaseModel</code> classes, ready for runtime validation — nested objects become their own named model classes, arrays become <code>List[...]</code>, and optional fields default to <code>None</code>. Just need static types with no runtime checks? Try <a href="json-to-python.html">JSON to Python dataclasses</a>.</p>
+    <h1>JSON to C#</h1>
+    <p class="sub">Paste a real JSON sample — an API response, a config file — and get back a proper C# class with <code>System.Text.Json</code> attributes, with nested types and <code>List&lt;T&gt;</code> arrays inferred automatically. Uses the same inference engine as the <a href="json-schema-generator.html">JSON Schema Generator</a>, so the two always agree on structure. Need a different language instead? Try <a href="json-to-java.html">JSON to Java</a> or <a href="json-to-swift.html">JSON to Swift</a>.</p>
     <p style="font-size:13px;"><a href="../index.html" style="color:#B9CBDA;">← Full toolkit (all 23 tools)</a></p>
 
 <div class="hero-preview">
@@ -305,16 +345,17 @@
   ]
 }</pre></div>
     <div class="hp-mid"><svg class="ico"><use href="#ico-arrow"/></svg></div>
-    <div class="hp-pane"><div class="hp-pane-label">PYDANTIC</div><pre class="hp-code">from pydantic import BaseModel
-from typing import Any, List, Optional, Union
-
-
-class Person(BaseModel):
-    id: int
-    name: str
-    active: bool
-    tags: List[str]
-</pre></div>
+    <div class="hp-pane"><div class="hp-pane-label">C#</div><pre class="hp-code">public class Person
+{
+    [JsonPropertyName("id")]
+    public int Id { get; set; }
+    [JsonPropertyName("name")]
+    public string Name { get; set; }
+    [JsonPropertyName("active")]
+    public bool Active { get; set; }
+    [JsonPropertyName("tags")]
+    public List&lt;string&gt; Tags { get; set; }
+}</pre></div>
   </div>
 </div>
 
@@ -829,7 +870,7 @@ class Person(BaseModel):
 <div class="share-toast" id="shareToast"></div>
 
 <!-- Shared, tested engine + feature modules (also power the recast-cli npm package and worker) -->
-<script>window.RECAST_DEFAULT_MODE = "json2pydantic";</script>
+<script>window.RECAST_DEFAULT_MODE = "json2csharp";</script>
 <script src="../lib/engine.js"></script>
 <script src="../lib/highlight.js"></script>
 <script src="../lib/history.js"></script>
