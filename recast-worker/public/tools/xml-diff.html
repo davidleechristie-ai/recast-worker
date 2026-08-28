@@ -470,6 +470,11 @@
       </div>
     </div>
 
+    <div class="diff-view-toggle" id="diffViewToggle">
+      <button type="button" class="diff-view-btn active" data-view="tree">Tree view</button>
+      <button type="button" class="diff-view-btn" data-view="structural">Structural analysis</button>
+    </div>
+
     <div class="diff-panel" id="diffPanel">
       <div class="diff-summary" id="diffSummary"></div>
       <div class="diff-key-note" id="diffKeyNote" style="display:none;"></div>
@@ -484,10 +489,8 @@
           <button class="compare-filter-btn" data-filter="added">Added <span class="n" id="cntAdded"></span></button>
           <button class="compare-filter-btn" data-filter="removed">Removed <span class="n" id="cntRemoved"></span></button>
           <button class="compare-filter-btn" data-filter="changed">Changed <span class="n" id="cntChanged"></span></button>
-          <button class="compare-filter-btn" data-filter="unchanged">Unchanged <span class="n" id="cntUnchanged"></span></button>
         </div>
-        <input type="text" class="compare-search" id="compareSearch" placeholder="Search key or any cell value…">
-        <label class="compare-ws-toggle"><input type="checkbox" id="compareIgnoreWs"> Ignore whitespace</label>
+        <input type="text" class="compare-search" id="compareSearch" placeholder="Search path or any value…">
         <div class="compare-nav">
           <button class="icon-btn" id="compareDiffPrev" title="Previous difference (P)">↑ Prev diff</button>
           <button class="icon-btn" id="compareDiffNext" title="Next difference (N)">↓ Next diff</button>
@@ -839,6 +842,7 @@
 </script>
 <script src="../lib/presets.js"></script>
 <script src="../lib/csv-compare.js"></script>
+<script src="../lib/tree-compare.js"></script>
 <script src="../app.js"></script>
 <!-- Cloudflare Web Analytics --><script type='module' src='https://static.cloudflareinsights.com/beacon.min.js' data-cf-beacon='{"token": "13426e11249049dba542ef0b69a55823"}'></script><!-- End Cloudflare Web Analytics -->
 </body>

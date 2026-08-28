@@ -143,6 +143,51 @@ def test_fullscreen_click_to_jump_stays_in_fullscreen(page, console_errors):
     check('no console errors in fullscreen click flow', len(console_errors) == 0)
 
 
+def test_xml_structural_view_toggle(page, console_errors):
+    """Structural analysis view: toggling, filtering, click-to-jump, and
+    that re-comparing doesn't silently snap the user back to tree view."""
+    page.goto(url_for('xml-diff.html'))
+    page.wait_for_timeout(300)
+    xml_a = '<root><customer id="1"><name>Ada</name></customer><customer id="2"><name>Grace</name><role>Admiral</role></customer></root>'
+    xml_b = '<root><customer id="1"><name>Ada</name><role>Engineer</role></customer><customer id="2"><name>Grace</name></customer></root>'
+    page.fill('#inputA', xml_a)
+    page.fill('#inputB', xml_b)
+    page.wait_for_timeout(200)
+    page.click('#convertBtn')
+    page.wait_for_timeout(400)
+
+    page.click('.diff-view-btn[data-view="structural"]')
+    page.wait_for_timeout(300)
+    struct_visible = page.eval_on_selector('#comparePanel', 'el => el.classList.contains("show")')
+    check('structural view becomes visible after toggling', struct_visible is True)
+
+    row_count = page.locator('#compareTableWrap tr[data-status]').count()
+    check('structural table renders the expected number of changes', row_count == 2)
+
+    page.click('.compare-filter-btn[data-filter="added"]')
+    page.wait_for_timeout(200)
+    filtered_count = page.locator('#compareTableWrap tr[data-status]').count()
+    check('Added filter narrows the structural table correctly', filtered_count == 1)
+    page.click('.compare-filter-btn[data-filter="all"]')
+    page.wait_for_timeout(200)
+
+    page.click('#compareTableWrap tr[data-status="added"]')
+    page.wait_for_timeout(300)
+    flashed = page.evaluate(
+        '() => { const el = document.querySelector("#hlInputB [data-diff-line].diff-flash"); '
+        'return el ? el.getAttribute("data-diff-line") : null; }'
+    )
+    check('clicking a structural-table row flashes a real line', flashed is not None)
+
+    # Re-compare while already in structural view must not silently
+    # switch back to tree view.
+    page.click('#convertBtn')
+    page.wait_for_timeout(400)
+    still_structural = page.eval_on_selector('#comparePanel', 'el => el.classList.contains("show")')
+    check('re-comparing while in structural view stays in structural view', still_structural is True)
+    check('no console errors in structural view flow', len(console_errors) == 0)
+
+
 def main():
     with sync_playwright() as p:
         browser = p.chromium.launch()
@@ -151,6 +196,7 @@ def main():
             ('json_diff_string_key_click', test_json_diff_string_key_click),
             ('csv_diff_click_to_jump', test_csv_diff_click_to_jump),
             ('xml_diff_click_to_jump', test_xml_diff_click_to_jump),
+            ('xml_structural_view_toggle', test_xml_structural_view_toggle),
             ('fullscreen_click_to_jump', test_fullscreen_click_to_jump_stays_in_fullscreen),
         ]:
             console_errors = []

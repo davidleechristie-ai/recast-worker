@@ -602,6 +602,40 @@ function renderTreeDiff(changes) {
   }).join('');
 }
 
+// Structural-analysis table for XML diff: same underlying deepDiff()
+// changes as the tree view above, filterable/searchable like the CSV
+// compare table, for scanning a large config/data file for what actually
+// changed between two versions (e.g. a system upgrade) rather than
+// reading a long flat list top to bottom. Doesn't re-run
+// applyInlineDiffHighlights — renderTreeDiff (called first, into the
+// hidden tree-view panel, whenever a compare runs) already keeps the
+// inline highlighting current, and both views share the same input
+// panels/highlighting, so a second call here would just repeat that work.
+function renderXmlStructuralTable() {
+  const changes = lastXmlDiffChanges;
+  if (!changes) return;
+  const added = changes.filter(c => c.type === 'added').length;
+  const removed = changes.filter(c => c.type === 'removed').length;
+  const changedCount = changes.filter(c => c.type === 'changed').length;
+
+  const summaryEl = document.getElementById('compareSummary');
+  summaryEl.innerHTML = changes.length === 0
+    ? '<span>No differences \u2014 documents are equal \u2713</span>'
+    : `<span class="added">${added} <b>added</b></span><span class="removed">${removed} <b>removed</b></span><span class="changed">${changedCount} <b>changed</b></span>`;
+
+  document.getElementById('cntAll').textContent = changes.length;
+  document.getElementById('cntAdded').textContent = added;
+  document.getElementById('cntRemoved').textContent = removed;
+  document.getElementById('cntChanged').textContent = changedCount;
+
+  document.querySelectorAll('#comparePanel .compare-filter-btn').forEach(btn => btn.classList.toggle('active', btn.dataset.filter === compareFilterStatus));
+
+  const searchText = document.getElementById('compareSearch').value;
+  document.getElementById('compareTableWrap').innerHTML = RecastTreeCompare.buildTableHtml(changes, { statusFilter: compareFilterStatus, searchText });
+  currentDiffNavIndex = -1;
+  updateDiffNavPosition();
+}
+
 // Click-to-jump: a summary row's data-path/data-type tell us which
 // change it represents; lastDiffLineRanges (populated by
 // applyInlineDiffHighlights above) tells us which line(s) that path
@@ -645,6 +679,29 @@ function wireDiffRowClicks() {
   });
 }
 
+// Tree/Structural view toggle (XML diff only — the markup only exists on
+// xml-diff.html). Switching views re-renders the target panel from the
+// same lastXmlDiffChanges data rather than re-running the compare, so
+// toggling is instant and doesn't touch the input panels' scroll position.
+function wireDiffViewToggle() {
+  const toggleEl = $('diffViewToggle');
+  if (!toggleEl) return;
+  toggleEl.addEventListener('click', (e) => {
+    const btn = e.target.closest('.diff-view-btn');
+    if (!btn || !toggleEl.contains(btn)) return;
+    activeDiffView = btn.dataset.view;
+    toggleEl.querySelectorAll('.diff-view-btn').forEach((b) => b.classList.toggle('active', b === btn));
+    if (activeDiffView === 'structural') {
+      $('diffPanel').classList.remove('show');
+      $('comparePanel').classList.add('show');
+      renderXmlStructuralTable();
+    } else {
+      $('comparePanel').classList.remove('show');
+      $('diffPanel').classList.add('show');
+    }
+  });
+}
+
 function wireCompareTableClicks() {
   const wrapEl = $('compareTableWrap');
   if (!wrapEl) return;
@@ -655,7 +712,10 @@ function wireCompareTableClicks() {
   wrapEl.addEventListener('click', (e) => {
     const row = e.target.closest('tr[data-status]');
     if (!row || !wrapEl.contains(row)) return;
-    jumpToDiffLine(row.dataset.key, row.dataset.status);
+    // CSV compare rows use data-key (matched by the key column); the XML
+    // structural table's rows use data-path (deepDiff's own path format,
+    // same as the tree view) — jumpToDiffLine takes whichever applies.
+    jumpToDiffLine(row.dataset.path !== undefined ? row.dataset.path : row.dataset.key, row.dataset.status);
   });
 }
 
@@ -710,13 +770,21 @@ function renderCompareTable() {
   updateDiffNavPosition();
 }
 
+// Both the CSV compare table and the XML structural-analysis table share
+// these DOM ids (#compareSearch, .compare-filter-btn, etc.) and toolbar,
+// so one set of listeners serves both — dispatching on currentMode to
+// call the right renderer rather than duplicating this wiring per tool.
+function renderActiveCompareView() {
+  if (currentMode === 'diffXml') renderXmlStructuralTable();
+  else renderCompareTable();
+}
 document.querySelectorAll('.compare-filter-btn').forEach(btn => {
   btn.addEventListener('click', () => {
     compareFilterStatus = btn.dataset.filter;
-    renderCompareTable();
+    renderActiveCompareView();
   });
 });
-document.getElementById('compareSearch')?.addEventListener('input', () => renderCompareTable());
+document.getElementById('compareSearch')?.addEventListener('input', () => renderActiveCompareView());
 document.getElementById('compareIgnoreWs')?.addEventListener('change', () => { if (currentMode === 'diffCsv') runCurrentMode(); });
 
 // ---------------- Next/previous difference navigation ----------------
@@ -770,10 +838,20 @@ function triggerDownload(text, filename, mime) {
   URL.revokeObjectURL(a.href);
 }
 document.getElementById('compareDownloadCsv')?.addEventListener('click', () => {
+  if (currentMode === 'diffXml') {
+    if (!lastXmlDiffChanges) return;
+    triggerDownload(RecastTreeCompare.toReportCsv(lastXmlDiffChanges), 'recast-compare-report.csv', 'text/csv');
+    return;
+  }
   if (!lastCsvDiffResult) return;
   triggerDownload(RecastCompare.toReportCsv(lastCsvDiffResult), 'recast-compare-report.csv', 'text/csv');
 });
 document.getElementById('compareDownloadHtml')?.addEventListener('click', () => {
+  if (currentMode === 'diffXml') {
+    if (!lastXmlDiffChanges) return;
+    triggerDownload(RecastTreeCompare.toReportHtml(lastXmlDiffChanges, { title: 'Recast XML Structural Comparison Report' }), 'recast-compare-report.html', 'text/html');
+    return;
+  }
   if (!lastCsvDiffResult) return;
   triggerDownload(RecastCompare.toReportHtml(lastCsvDiffResult, { title: 'Recast CSV Comparison Report' }), 'recast-compare-report.html', 'text/html');
 });
@@ -939,6 +1017,8 @@ const diffSamples = {
 
 let currentMode = 'json2csv';
 let lastCsvDiffResult = null; // full engine.csvDiff() result, re-filtered locally on each toolbar interaction
+let lastXmlDiffChanges = null; // full engine.deepDiff() result for the structural-analysis view on XML diff, re-filtered locally the same way
+let activeDiffView = 'tree'; // 'tree' | 'structural' — which panel the diffXml view toggle currently shows
 let compareFilterStatus = 'all';
 const $ = id => document.getElementById(id);
 const inputEl = $('input'), outputEl = $('output'), statusEl = $('status');
@@ -964,6 +1044,7 @@ wireHighlightSync($('inputA'), $('hlInputA'));
 wireHighlightSync($('inputB'), $('hlInputB'));
 wireDiffRowClicks();
 wireCompareTableClicks();
+wireDiffViewToggle();
 wireHighlightSync(outputEl, $('hlOutput'));
 
 function setMode(mode) {
@@ -1175,10 +1256,21 @@ async function runCurrentMode() {
           $('diffPanel').classList.remove('show');
           $('comparePanel').classList.add('show');
         } else {
+          lastXmlDiffChanges = result.result; // harmless to set for diffJson too — the structural view toggle only exists on xml-diff.html's markup, so it's simply unused there
           renderTreeDiff(result.result);
           outputEl.value = flatTextFromChanges(result.result);
-          $('comparePanel').classList.remove('show');
-          $('diffPanel').classList.add('show');
+          // Re-comparing shouldn't silently switch the user back to tree
+          // view if they'd already chosen structural analysis.
+          if (activeDiffView === 'structural') {
+            compareFilterStatus = 'all';
+            $('compareSearch').value = '';
+            renderXmlStructuralTable();
+            $('diffPanel').classList.remove('show');
+            $('comparePanel').classList.add('show');
+          } else {
+            $('comparePanel').classList.remove('show');
+            $('diffPanel').classList.add('show');
+          }
         }
         statusEl.innerHTML = '<span class="status-ok">\u2713 Compared</span>';
       } else if (cfg.isSchemaCheck) {

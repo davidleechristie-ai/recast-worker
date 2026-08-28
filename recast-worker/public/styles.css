@@ -472,6 +472,14 @@
 .compare-search::placeholder{ color:rgba(var(--text-muted-rgb),0.5); }
 .compare-downloads{ display:flex; gap:6px; margin-left:auto; }
 
+/* Tree/Structural view toggle on the diff tools that offer both — same
+   segmented-control visual language as the filter buttons above, so it
+   reads as part of the same family rather than a new pattern. */
+.diff-view-toggle{ display:flex; gap:4px; padding:10px 16px 0; }
+.diff-view-btn{ font-family:'IBM Plex Mono', monospace; font-size:11.5px; padding:6px 12px; border:1px solid rgba(var(--border-rgb),0.32); background:transparent; color:var(--text-muted); border-radius:2px; cursor:pointer; }
+.diff-view-btn:hover{ border-color:var(--text); color:var(--text); }
+.diff-view-btn.active{ border-color:#A855F7; color:#A855F7; background:rgba(168,85,247,0.08); }
+
 .diff-table-wrap{ overflow:auto; max-height:480px; }
 .diff-table{ border-collapse:collapse; width:100%; font-family:'IBM Plex Mono', monospace; font-size:12px; }
 .diff-table th, .diff-table td{ padding:7px 10px; border-bottom:1px solid rgba(var(--border-rgb),0.16); text-align:left; white-space:nowrap; }
