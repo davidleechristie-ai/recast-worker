@@ -275,6 +275,23 @@
   .dual-input{display:none;}
   .dual-input.show{display:block;}
   .single-input.hide{display:none;}
+
+  /* Diff tools: File A / File B side by side, and no separate "Diff"
+     output panel — its content is superseded by the richer, interactive
+     summary/structural panel below (which also has click-to-jump into
+     these very panels). Scoped to #diffFullscreenWrap, which only exists
+     on the 3 diff tool pages, so this never touches any other tool's
+     shared .dual-input/.wb-grid markup. */
+  #diffFullscreenWrap .dual-input.show{ display:flex; gap:12px; }
+  #diffFullscreenWrap .dual-input .ta-wrap{ flex:1; min-width:0; border-right:1px solid rgba(140,182,214,0.16); }
+  #diffFullscreenWrap .dual-input .ta-wrap:last-child{ border-right:none; }
+  #diffFullscreenWrap .wb-grid{ grid-template-columns:1fr auto; }
+  #diffFullscreenWrap #outputPanel{ display:none; }
+  @media (max-width:820px){
+    #diffFullscreenWrap .dual-input.show{ display:block; }
+    #diffFullscreenWrap .dual-input .ta-wrap{ border-right:none; border-bottom:1px solid rgba(140,182,214,0.16); }
+    #diffFullscreenWrap .dual-input .ta-wrap:last-child{ border-bottom:none; }
+  }
   .diff-add{color:#3AA2FC;}
   .diff-rem{color:#F2846B;}
   .diff-same{color:var(--text-muted);}

@@ -1352,6 +1352,171 @@ $('outputExpandBtn')?.addEventListener('click', (e) => toggleFullscreen($('outpu
 $('workbenchExpandBtn')?.addEventListener('click', (e) => toggleFullscreen($('diffFullscreenWrap') || document.querySelector('.workbench'), e.currentTarget));
 $('playgroundExpandBtn')?.addEventListener('click', (e) => toggleFullscreen($('apiPlayground'), e.currentTarget));
 
+// Diff-specific pop-out: mirrors BOTH inputA and inputB (side by side,
+// live-synced, same two-way mechanism as the single-field mirror below)
+// plus the actual summary/structural panel currently showing on the main
+// tab — since that panel is exactly what this feature is for including.
+// The summary mirror is read-only (copied innerHTML, not independently
+// rendered) — it always reflects whichever result the main tab last
+// computed. Genuine click-to-jump inside the popup itself is out of
+// scope here (it would mean fully re-implementing the highlight-overlay
+// and position-mapping machinery in a second, separate document), but a
+// "Compare" button lets the user edit here and get a fresh result
+// without switching back to the main tab.
+function openDiffPopout() {
+  const inputAEl = $('inputA'), inputBEl = $('inputB');
+  if (!inputAEl || !inputBEl) return;
+  const w = window.open('', 'recast_diff_popout', 'width=1100,height=750');
+  if (!w) { showToast('Pop-out blocked \u2014 allow pop-ups for this site'); return; }
+  const doc = w.document;
+  doc.title = 'Recast \u2014 Diff';
+
+  const style = doc.createElement('style');
+  style.textContent =
+    "html,body{margin:0;height:100%;background:#0A0E1F;color:#EDF3F8;font-family:'IBM Plex Mono',ui-monospace,monospace;}" +
+    "body{display:flex;flex-direction:column;}" +
+    ".head{box-sizing:border-box;display:flex;align-items:center;justify-content:space-between;gap:10px;padding:10px 14px;border-bottom:1px solid rgba(120,110,180,0.32);font-size:12px;letter-spacing:.06em;text-transform:uppercase;color:#B9CBDA;flex-shrink:0;}" +
+    ".head button{font-family:inherit;font-size:11px;background:transparent;border:1px solid rgba(120,110,180,0.32);color:#EDF3F8;border-radius:2px;padding:5px 10px;cursor:pointer;}" +
+    ".head button:hover{border-color:#A855F7;color:#A855F7;}" +
+    ".head .compare-btn{background:#A855F7;border-color:#A855F7;color:#1a0f2e;font-weight:600;}" +
+    ".panes{display:flex;flex:0 0 45%;min-height:0;}" +
+    ".pane{flex:1;min-width:0;display:flex;flex-direction:column;border-right:1px solid rgba(120,110,180,0.2);}" +
+    ".pane:last-child{border-right:none;}" +
+    ".pane-label{font-size:10.5px;text-transform:uppercase;letter-spacing:.05em;color:#8A8FA3;padding:8px 12px 4px;flex-shrink:0;}" +
+    "textarea{box-sizing:border-box;width:100%;flex:1;min-height:0;border:none;outline:none;background:transparent;color:#EDF3F8;font-family:inherit;font-size:13px;line-height:1.6;padding:0 12px 12px;resize:none;}" +
+    ".summary-wrap{flex:1;min-height:0;overflow:auto;border-top:1px solid rgba(120,110,180,0.32);}" +
+    ".diff-summary{ display:flex; gap:18px; padding:12px 16px; border-bottom:1px solid rgba(120,110,180,0.2); font-size:12.5px; flex-wrap:wrap; }" +
+    ".diff-summary b{ font-weight:600; }" +
+    ".diff-summary .added b{ color:#3AA2FC; } .diff-summary .removed b{ color:#F2846B; } .diff-summary .changed b{ color:#A855F7; }" +
+    ".diff-row{ display:flex; gap:10px; padding:8px 16px; border-left:3px solid transparent; font-size:12.5px; border-bottom:1px solid rgba(120,110,180,0.16); align-items:baseline; flex-wrap:wrap; }" +
+    ".diff-row.added{ border-left-color:#3AA2FC; background:rgba(58,162,252,0.06); } .diff-row.removed{ border-left-color:#F2846B; background:rgba(242,132,107,0.06); } .diff-row.changed{ border-left-color:#A855F7; background:rgba(168,85,247,0.06); }" +
+    ".diff-row .badge{ font-size:10px; text-transform:uppercase; letter-spacing:.06em; padding:1px 6px; border-radius:2px; flex-shrink:0; }" +
+    ".diff-row.added .badge{ background:#3AA2FC; color:#0A0E1F; } .diff-row.removed .badge{ background:#F2846B; color:#0A0E1F; } .diff-row.changed .badge{ background:#A855F7; color:#0A0E1F; }" +
+    ".diff-row .path{ color:#EDF3F8; flex-shrink:0; } .diff-row .vals{ color:#8A8FA3; }" +
+    ".diff-row .vals .old{ color:#F2846B; text-decoration:line-through; opacity:.8; } .diff-row .vals .new{ color:#3AA2FC; }" +
+    ".diff-table{ border-collapse:collapse; width:100%; font-size:12px; }" +
+    ".diff-table th,.diff-table td{ padding:7px 10px; border-bottom:1px solid rgba(120,110,180,0.16); text-align:left; }" +
+    ".diff-table th{ background:#0A0E1F; position:sticky; top:0; color:#8A8FA3; font-weight:500; text-transform:uppercase; font-size:10.5px; }" +
+    ".row-badge{ font-size:9.5px; text-transform:uppercase; padding:2px 7px; border-radius:2px; display:inline-block; }" +
+    "tr.row-added{ background:rgba(58,162,252,0.06); } tr.row-added .row-badge{ background:#3AA2FC; color:#0A0E1F; }" +
+    "tr.row-removed{ background:rgba(242,132,107,0.06); } tr.row-removed .row-badge{ background:#F2846B; color:#0A0E1F; }" +
+    "tr.row-changed{ background:rgba(168,85,247,0.05); } tr.row-changed .row-badge{ background:#A855F7; color:#0A0E1F; }" +
+    "tr.row-unchanged{ opacity:.72; } tr.row-unchanged .row-badge{ background:rgba(120,110,180,0.28); color:#EDF3F8; }" +
+    ".cell-old{ color:#F2846B; text-decoration:line-through; opacity:.8; } .cell-new{ color:#3AA2FC; }";
+  doc.head.appendChild(style);
+
+  const head = doc.createElement('div');
+  head.className = 'head';
+  const title = doc.createElement('span');
+  title.textContent = 'Diff \u2014 synced with the main tab';
+  const btnGroup = doc.createElement('div');
+  btnGroup.style.display = 'flex';
+  btnGroup.style.gap = '6px';
+  const compareBtn = doc.createElement('button');
+  compareBtn.className = 'compare-btn';
+  compareBtn.textContent = 'Compare';
+  const fsBtn = doc.createElement('button');
+  fsBtn.textContent = 'Full screen';
+  btnGroup.appendChild(compareBtn);
+  btnGroup.appendChild(fsBtn);
+  head.appendChild(title);
+  head.appendChild(btnGroup);
+  doc.body.appendChild(head);
+
+  const panes = doc.createElement('div');
+  panes.className = 'panes';
+  function buildPane(labelText) {
+    const pane = doc.createElement('div');
+    pane.className = 'pane';
+    const lbl = doc.createElement('div');
+    lbl.className = 'pane-label';
+    lbl.textContent = labelText;
+    const ta = doc.createElement('textarea');
+    ta.spellcheck = false;
+    pane.appendChild(lbl);
+    pane.appendChild(ta);
+    return { pane, ta };
+  }
+  const paneA = buildPane('File A');
+  const paneB = buildPane('File B');
+  panes.appendChild(paneA.pane);
+  panes.appendChild(paneB.pane);
+  doc.body.appendChild(panes);
+
+  const summaryWrap = doc.createElement('div');
+  summaryWrap.className = 'summary-wrap';
+  doc.body.appendChild(summaryWrap);
+
+  paneA.ta.value = inputAEl.value;
+  paneB.ta.value = inputBEl.value;
+
+  function activeSummaryEl() {
+    const diffPanel = $('diffPanel'), comparePanel = $('comparePanel');
+    if (comparePanel && comparePanel.classList.contains('show')) return comparePanel;
+    if (diffPanel && diffPanel.classList.contains('show')) return diffPanel;
+    return null;
+  }
+  function pushSummary() {
+    const el = activeSummaryEl();
+    summaryWrap.innerHTML = el ? el.innerHTML : '<div style="padding:16px;color:#8A8FA3;">Run Compare to see the summary here.</div>';
+  }
+  pushSummary();
+
+  compareBtn.addEventListener('click', () => {
+    inputAEl.value = paneA.ta.value;
+    inputBEl.value = paneB.ta.value;
+    inputAEl.dispatchEvent(new Event('input', { bubbles: true }));
+    inputBEl.dispatchEvent(new Event('input', { bubbles: true }));
+    $('convertBtn')?.click();
+  });
+
+  const docEl = doc.documentElement;
+  function updateFsBtn() {
+    fsBtn.textContent = doc.fullscreenElement ? 'Exit full screen' : 'Full screen';
+  }
+  fsBtn.addEventListener('click', () => {
+    if (doc.fullscreenElement) {
+      doc.exitFullscreen?.();
+    } else if (docEl.requestFullscreen) {
+      docEl.requestFullscreen().catch(() => showToast('Full screen isn\u2019t available for this window'));
+    } else {
+      showToast('Full screen isn\u2019t supported in this browser');
+    }
+  });
+  doc.addEventListener('fullscreenchange', updateFsBtn);
+
+  let syncing = false;
+  function wireTwoWay(ta, sourceEl) {
+    ta.addEventListener('input', () => {
+      if (syncing) return;
+      syncing = true;
+      sourceEl.value = ta.value;
+      sourceEl.dispatchEvent(new Event('input', { bubbles: true }));
+      syncing = false;
+    });
+  }
+  wireTwoWay(paneA.ta, inputAEl);
+  wireTwoWay(paneB.ta, inputBEl);
+
+  function pushFromMain() {
+    if (w.closed) { cleanup(); return; }
+    if (syncing) return;
+    syncing = true;
+    if (paneA.ta.value !== inputAEl.value) paneA.ta.value = inputAEl.value;
+    if (paneB.ta.value !== inputBEl.value) paneB.ta.value = inputBEl.value;
+    syncing = false;
+    pushSummary();
+  }
+  // Polling, not an 'input'-event listener — the summary panel updates
+  // programmatically (renderTreeDiff/renderCompareTable/etc.), which
+  // fires no DOM event to hook into, same reasoning as the existing
+  // single-field popout's own poll for programmatic output updates.
+  const poll = setInterval(pushFromMain, 400);
+  function cleanup() { clearInterval(poll); }
+  w.addEventListener('beforeunload', cleanup);
+  track('popout_open', { field: 'diff' });
+}
+
 function openPopoutMirror(sourceEl, label, opts) {
   opts = opts || {};
   const isPre = sourceEl.tagName === 'PRE';
@@ -1567,7 +1732,11 @@ $('inputGraphBtn')?.addEventListener('click', () => toggleGraphView('input'));
 $('outputGraphBtn')?.addEventListener('click', () => toggleGraphView('output'));
 inputEl.addEventListener('input', () => { if (inputGraphActive) RecastGraph.render($('inputGraphWrap'), inputEl.value); });
 
-$('inputPopoutBtn')?.addEventListener('click', () => openPopoutMirror(inputEl, modeConfig[currentMode]?.inFmt ? modeConfig[currentMode].inFmt + ' input' : 'Input', { id: 'input' }));
+$('inputPopoutBtn')?.addEventListener('click', () => {
+  const cfg = modeConfig[currentMode];
+  if (cfg?.isDiff) { openDiffPopout(); return; }
+  openPopoutMirror(inputEl, cfg?.inFmt ? cfg.inFmt + ' input' : 'Input', { id: 'input' });
+});
 $('outputPopoutBtn')?.addEventListener('click', () => openPopoutMirror(outputEl, modeConfig[currentMode]?.outFmt ? modeConfig[currentMode].outFmt + ' output' : 'Output', { id: 'output', readOnly: true }));
 $('playgroundPopoutBtn')?.addEventListener('click', () => openPopoutMirror($('playgroundInput'), 'API playground request', { id: 'playground_request' }));
 $('playgroundOutputPopoutBtn')?.addEventListener('click', () => openPopoutMirror($('playgroundOutput'), 'API playground response', { id: 'playground_response', readOnly: true }));

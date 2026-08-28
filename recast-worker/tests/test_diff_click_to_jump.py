@@ -188,6 +188,50 @@ def test_xml_structural_view_toggle(page, console_errors):
     check('no console errors in structural view flow', len(console_errors) == 0)
 
 
+def test_diff_popout_shows_real_content_and_summary(page, console_errors):
+    """Regression test for a real, pre-existing bug: the input pop-out
+    button used to mirror a different, hidden textarea (the single-input
+    mode's #input, not #inputA/#inputB), so it showed stale/unrelated
+    content on every diff tool. Also covers the enhancement requested
+    alongside that fix: the pop-out should include the actual summary
+    panel, not just the two source files."""
+    page.goto(url_for('json-diff.html'))
+    page.wait_for_timeout(300)
+    page.fill('#inputA', '[{"id": 1, "role": "Engineer"}]')
+    page.fill('#inputB', '[{"id": 1, "role": "Senior Engineer"}]')
+    page.wait_for_timeout(200)
+    page.click('#convertBtn')
+    page.wait_for_timeout(400)
+
+    with page.expect_popup() as popup_info:
+        page.click('#inputPopoutBtn')
+    popup = popup_info.value
+    popup.wait_for_timeout(400)
+
+    pane_a_val = popup.eval_on_selector('.pane:nth-child(1) textarea', 'el => el.value')
+    pane_b_val = popup.eval_on_selector('.pane:nth-child(2) textarea', 'el => el.value')
+    check('popout File A shows the real inputA content, not stale/unrelated data',
+          '"Engineer"' in pane_a_val and 'Senior' not in pane_a_val)
+    check('popout File B shows the real inputB content', 'Senior Engineer' in pane_b_val)
+
+    summary_html = popup.eval_on_selector('.summary-wrap', 'el => el.innerHTML')
+    check('popout summary mirror includes the actual change', 'Senior Engineer' in summary_html)
+
+    # Edit in the popup, click Compare there, and confirm both the sync
+    # back to the main tab and the summary refresh actually work.
+    popup.fill('.pane:nth-child(2) textarea', '[{"id": 1, "role": "Director"}]')
+    popup.wait_for_timeout(300)
+    main_tab_b = page.eval_on_selector('#inputB', 'el => el.value')
+    check('editing in the popup syncs back to the main tab', 'Director' in main_tab_b)
+
+    popup.click('.compare-btn')
+    popup.wait_for_timeout(500)
+    updated_summary = popup.eval_on_selector('.summary-wrap', 'el => el.innerHTML')
+    check('Compare button inside the popup refreshes the summary mirror', 'Director' in updated_summary)
+    popup.close()
+    check('no console errors in the diff popout flow', len(console_errors) == 0)
+
+
 def main():
     with sync_playwright() as p:
         browser = p.chromium.launch()
@@ -197,6 +241,7 @@ def main():
             ('csv_diff_click_to_jump', test_csv_diff_click_to_jump),
             ('xml_diff_click_to_jump', test_xml_diff_click_to_jump),
             ('xml_structural_view_toggle', test_xml_structural_view_toggle),
+            ('diff_popout_content_and_summary', test_diff_popout_shows_real_content_and_summary),
             ('fullscreen_click_to_jump', test_fullscreen_click_to_jump_stays_in_fullscreen),
         ]:
             console_errors = []
