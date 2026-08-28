@@ -232,6 +232,57 @@ def test_diff_popout_shows_real_content_and_summary(page, console_errors):
     check('no console errors in the diff popout flow', len(console_errors) == 0)
 
 
+def test_homepage_embedded_workbench_diff_layout(page, console_errors):
+    """Regression test for a real gap: the side-by-side layout, hidden
+    Diff panel, and fixed pop-out were all built scoped to the 3
+    dedicated diff tool pages (via #diffFullscreenWrap) — but
+    index.html's own embedded "Live Example" workbench is a fully
+    separate instance of the same UI with no such wrapper, so it kept
+    the old, broken layout after the first fix. Caught from a live
+    screenshot after deploy, not caught by the original tests, because
+    none of them exercised the homepage's own workbench."""
+    page.goto('file://' + os.path.join(REPO_ROOT, 'public', 'index.html'))
+    page.wait_for_timeout(300)
+    page.evaluate('setMode("diffCsv")')
+    page.wait_for_timeout(200)
+    page.fill('#inputA', 'id,name,city\n1,Ada,London\n2,Bob,Paris\n3,Cy,Rome\n')
+    page.fill('#inputB', 'id,name,city\n1,Ada Lovelace,London\n2,Bob,Berlin\n4,Zoe,Oslo\n')
+    page.wait_for_timeout(200)
+    page.click('#convertBtn')
+    page.wait_for_timeout(400)
+
+    output_hidden = page.eval_on_selector('#outputPanel', 'el => window.getComputedStyle(el).display === "none"')
+    check('homepage workbench: redundant Diff output panel is hidden', output_hidden is True)
+
+    dual_display = page.eval_on_selector('.dual-input.show', 'el => window.getComputedStyle(el).display')
+    check('homepage workbench: File A/File B render side by side (flex), not stacked', dual_display == 'flex')
+
+    page.click('#workbenchExpandBtn')
+    page.wait_for_timeout(300)
+    is_fullscreen = page.eval_on_selector('#diffFullscreenWrap', 'el => el.classList.contains("wb-fullscreen")')
+    check('homepage workbench: full screen activates', is_fullscreen is True)
+
+    page.click('tr[data-status="changed"]')
+    page.wait_for_timeout(300)
+    flashed = page.evaluate(
+        '() => { const el = document.querySelector("#hlInputB [data-diff-line].diff-flash"); '
+        'return el ? el.getAttribute("data-diff-line") : null; }'
+    )
+    check('homepage workbench: click-to-jump works while full screen', flashed is not None)
+    page.click('#workbenchExpandBtn')
+    page.wait_for_timeout(200)
+
+    with page.expect_popup() as popup_info:
+        page.click('#inputPopoutBtn')
+    popup = popup_info.value
+    popup.wait_for_timeout(400)
+    pane_a = popup.eval_on_selector('.pane:nth-child(1) textarea', 'el => el.value') if popup.query_selector('.pane') else ''
+    check('homepage workbench: pop-out shows real inputA content, not the broken single-input mirror',
+          'Ada,London' in pane_a)
+    popup.close()
+    check('no console errors on the homepage workbench diff flow', len(console_errors) == 0)
+
+
 def main():
     with sync_playwright() as p:
         browser = p.chromium.launch()
@@ -242,6 +293,7 @@ def main():
             ('xml_diff_click_to_jump', test_xml_diff_click_to_jump),
             ('xml_structural_view_toggle', test_xml_structural_view_toggle),
             ('diff_popout_content_and_summary', test_diff_popout_shows_real_content_and_summary),
+            ('homepage_embedded_workbench_diff_layout', test_homepage_embedded_workbench_diff_layout),
             ('fullscreen_click_to_jump', test_fullscreen_click_to_jump_stays_in_fullscreen),
         ]:
             console_errors = []
