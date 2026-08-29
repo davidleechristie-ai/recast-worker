@@ -88,6 +88,44 @@
 .ai-request-feature .workflow-copilot{margin:0}.landing-home .hero-v19{padding-bottom:22px}.landing-home .hero-v19-actions{margin-top:24px}
 @media(max-width:760px){.ai-request-feature{margin:18px 12px 28px;padding:20px 15px;border-radius:16px}}
 </style>
+<style id="v25-ui-cleanup">
+.instant-demo .demo-intro{text-align:left!important;margin-left:0!important;margin-right:auto!important}
+.ai-request-feature .workflow-copilot{background:transparent!important;border:0!important;box-shadow:none!important;padding:0!important}
+.ai-request-feature .wc-head{display:none!important}
+.ai-request-feature .wc-input-row{margin-top:0!important}
+</style>
+<style id="v26-minimal-home">
+body{background:#080b1a}
+.minimal-home{min-height:calc(100vh - 72px);display:flex;align-items:center;padding:64px 24px 80px!important}
+.minimal-hero-inner{width:min(1120px,100%);margin:0 auto}
+.minimal-hero-copy{max-width:850px}
+.minimal-hero-copy h1{font-size:clamp(3.25rem,7vw,6.4rem);line-height:.94;letter-spacing:-.055em;margin:0 0 28px}
+.minimal-hero-copy h1 em{font-style:italic}
+.minimal-hero-copy .sub{max-width:780px;font-size:clamp(1.08rem,1.7vw,1.35rem);line-height:1.55;margin:0 0 38px;color:var(--muted)}
+.minimal-home .ai-request-feature{margin:0!important;padding:0!important;border:0!important;background:transparent!important}
+.minimal-home .workflow-copilot{padding:0!important;background:transparent!important;border:0!important;box-shadow:none!important}
+.minimal-home .wc-input-row{display:grid;grid-template-columns:minmax(0,1fr) auto;gap:10px;padding:7px;border:1px solid rgba(153,92,255,.65);border-radius:16px;background:rgba(13,18,42,.72);box-shadow:0 0 42px rgba(118,62,255,.09)}
+.minimal-home .wc-prompt{border:0!important;background:transparent!important;box-shadow:none!important;resize:none;min-height:68px;padding:18px 20px!important;font-size:1.05rem}
+.minimal-home .wc-build{min-width:180px;border-radius:11px}
+.minimal-home .wc-examples{margin-top:14px;gap:9px}
+.minimal-home .wc-examples button{background:transparent}
+.minimal-proof{display:grid;grid-template-columns:repeat(4,1fr);margin-top:46px;padding-top:30px;border-top:1px solid rgba(255,255,255,.09)}
+.minimal-proof span{display:flex;flex-direction:column;gap:5px;padding:0 24px;border-right:1px solid rgba(255,255,255,.09)}
+.minimal-proof span:first-child{padding-left:0}.minimal-proof span:last-child{border-right:0}
+.minimal-proof strong{font-size:.98rem}.minimal-proof small{color:var(--muted);font-size:.84rem;line-height:1.4}
+#instantDemo,#exploreRecast,#workflowTemplates,#workflowBuilder,#workflowLibrary,#workflowAutomation,#pricing,#faq,#api{display:none!important}
+@media(max-width:760px){
+ .minimal-home{padding:42px 18px 60px!important;align-items:flex-start}
+ .minimal-hero-copy h1{font-size:clamp(3rem,14vw,4.5rem)}
+ .minimal-home .wc-input-row{grid-template-columns:1fr}
+ .minimal-home .wc-build{min-height:52px}
+ .minimal-proof{grid-template-columns:1fr 1fr;gap:22px}
+ .minimal-proof span{padding:0;border:0}
+}
+</style>
+<style id="v26-1-prompt-heading">
+.minimal-request-heading{margin:0 0 16px;font-size:clamp(1.35rem,2.2vw,1.8rem);line-height:1.2;letter-spacing:-.025em;text-align:left}
+</style>
 </head>
 
 <body class="landing-home" style="background:var(--bg);color:var(--text);margin:0;min-height:100vh;">
@@ -272,84 +310,53 @@
 </header>
 
 <main>
-  <section class="hero hero-v19" id="tool">
-    <div class="hero-v19-grid">
-      <div class="hero-v19-copy">
-        <p class="eyebrow">Private data tools. Repeatable workflows.</p>
-        <h1>Fix the data.<br><em>Then stop fixing it.</em></h1>
-        <p class="sub">Use Recast instantly for JSON, CSV, XML, YAML and API data. When the job repeats, turn the same steps into a reusable workflow, endpoint or schedule.</p>
-        <div class="hero-v19-actions">
-          <a class="btn btn-gold" href="#workflowCopilot">Tell Recast what you need <span>↓</span></a>
-          <a class="btn btn-ghost" href="#instantDemo">See an example</a>
+  <section class="hero hero-v19 minimal-home" id="tool">
+  <div class="minimal-hero-inner">
+    <div class="minimal-hero-copy">
+      <h1>Fix the data.<br><em>Then stop fixing it.</em></h1>
+      <p class="sub">Describe the job in plain English. Recast turns it into a workflow to transform, compare or validate your data — then lets you reuse, deploy or automate it.</p>
+    </div>
+
+    <div class="ai-request-feature" aria-labelledby="requestPromptHeading">
+      <h2 id="requestPromptHeading" class="minimal-request-heading">Tell Recast what you want to do.</h2>
+      <div class="workflow-copilot" id="workflowCopilot">
+        <div class="wc-input-row">
+          <textarea id="wcPrompt" class="wc-prompt" rows="2" placeholder="e.g. compare two CSV files and output differences only"></textarea>
+          <button class="btn btn-gold wc-build" id="wcBuildBtn">Build workflow <span>→</span></button>
         </div>
-        <div class="hero-v19-proof">
-          <span>✓ No signup for browser tools</span>
-          <span>✓ Data stays local until you deploy</span>
+        <div class="wc-examples" aria-label="Example requests">
+          <button type="button" data-wc-example="Compare two CSV files and output differences only">Compare CSV files</button>
+          <button type="button" data-wc-example="Flatten this nested JSON, then convert it to CSV">Flatten JSON</button>
+          <button type="button" data-wc-example="Convert this JSON to CSV">JSON → CSV</button>
+          <button type="button" data-wc-example="Extract $.users[*].email with JSONPath">Extract with JSONPath</button>
         </div>
-      </div>
-      <div class="rc-stage">
-        <div class="rc-window">
-          <div class="rc-windowbar"><span></span><span></span><span></span><b>customer-sync.workflow</b><em>Ready</em></div>
-          <div class="rc-pipeline">
-            <div class="rc-node"><small>INPUT</small><strong>Customer API</strong><span>Bearer auth</span></div>
-            <div class="rc-arrow">→</div>
-            <div class="rc-node active"><small>TRANSFORM</small><strong>Clean + map</strong><span>4 operations</span></div>
-            <div class="rc-arrow">→</div>
-            <div class="rc-node"><small>OUTPUT</small><strong>Webhook</strong><span>POST JSON</span></div>
+        <div class="wc-result" id="wcResult" hidden>
+          <div class="wc-result-head">
+            <div><strong id="wcResultTitle">Workflow ready</strong><span id="wcResultMeta"></span></div>
+            <button class="icon-btn" id="wcEditPromptBtn" type="button">Edit request</button>
           </div>
-          <div class="rc-console"><div><span class="rc-ok">✓</span><b>Workflow completed</b><time>428 ms</time></div><code>248 records transformed · 0 validation errors</code></div>
-          <div class="rc-schedule"><span><i></i> Automated</span><b>Daily · 08:00 Europe/London</b><button type="button" onclick="window.RecastHomeDepth?.activate('automation',true)">View activity →</button></div>
+          <div class="wc-pipeline" id="wcPipeline"></div>
+          <div class="wc-actions">
+            <button class="btn btn-gold" id="wcOpenBtn" type="button">Open in Workflow Builder →</button>
+            <button class="btn btn-ghost" id="wcRunBtn" type="button">Build &amp; run</button>
+            <button class="btn btn-ghost" id="wcSaveBtn" type="button">Save workflow</button>
+            <a class="btn btn-ghost" id="wcApiBtn" href="#pricing">Deploy with API →</a>
+          </div>
+          <p class="wc-note" id="wcNote"></p>
         </div>
       </div>
     </div>
 
-    <section class="ai-request-feature" aria-labelledby="aiRequestTitle">
-  <div class="ai-request-intro">
-    <p class="eyebrow">Start here</p>
-    <h2 id="aiRequestTitle">Describe what you need in plain English.</h2>
-    <p>Don't hunt through tools or build a pipeline from scratch. Tell Recast the outcome — for example, “flatten this JSON, remove internal_id and convert it to CSV” — and Recast will build the workflow for you to inspect before anything runs.</p>
+    <div class="minimal-proof" aria-label="Why Recast">
+      <span><strong>Private by default</strong><small>Browser tools run locally</small></span>
+      <span><strong>No signup</strong><small>Start using Recast immediately</small></span>
+      <span><strong>Free to start</strong><small>Upgrade when the workflow repeats</small></span>
+      <span><strong>Deploy &amp; automate</strong><small>Turn workflows into APIs or schedules</small></span>
+    </div>
   </div>
-
-
-
-    <div class="workflow-copilot" id="workflowCopilot">
-      <div class="wc-head">
-        <div>
-          <p class="eyebrow">Workflow Builder</p>
-          <h2>Tell Recast what you want to do.</h2>
-          <p class="wc-sub">Describe the job in plain English. Recast turns it into a repeatable pipeline you can inspect, run and save.</p>
-        </div>
-        <span class="wc-badge">BUILD → RUN → SAVE</span>
-      </div>
-      <div class="wc-input-row">
-        <textarea id="wcPrompt" class="wc-prompt" rows="2" placeholder="e.g. Convert this API response to CSV, flatten nested fields, then validate the result."></textarea>
-        <button class="btn btn-gold wc-build" id="wcBuildBtn">Build workflow <span>→</span></button>
-      </div>
-      <div class="wc-examples" aria-label="Example requests">
-        <button type="button" data-wc-example="Convert this JSON to CSV">JSON → CSV</button>
-        <button type="button" data-wc-example="Flatten this nested JSON, then convert it to CSV">Flatten → CSV</button>
-        <button type="button" data-wc-example="Validate this JSON, then format it">Validate → format</button>
-        <button type="button" data-wc-example="Remove the field internal_id, then convert to CSV">Clean → CSV</button>
-      </div>
-      <div class="wc-result" id="wcResult" hidden>
-        <div class="wc-result-head">
-          <div><strong id="wcResultTitle">Workflow ready</strong><span id="wcResultMeta"></span></div>
-          <button class="icon-btn" id="wcEditPromptBtn" type="button">Edit request</button>
-        </div>
-        <div class="wc-pipeline" id="wcPipeline"></div>
-        <div class="wc-actions">
-          <button class="btn btn-gold" id="wcOpenBtn" type="button">Open in Workflow Builder →</button>
-          <button class="btn btn-ghost" id="wcRunBtn" type="button">Build &amp; run</button>
-          <button class="btn btn-ghost" id="wcSaveBtn" type="button">Save workflow</button>
-          <a class="btn btn-ghost" id="wcApiBtn" href="#pricing">Deploy with API →</a>
-        </div>
-        <p class="wc-note" id="wcNote"></p>
-      </div>
-    </div>
 </section>
 <section class="instant-demo" id="instantDemo">
       <div class="demo-intro">
-        <p class="eyebrow">Interactive demo</p>
         <h3>See a workflow finish before you build one.</h3>
         <p>Choose a common data job. Recast shows the input, the workflow and the real transformed result — then opens the same workflow as a template.</p>
       </div>
@@ -374,7 +381,7 @@
 
     <section class="home-depth" id="exploreRecast">
       <div class="home-depth-head">
-        <div><p class="eyebrow">Go deeper when you're ready</p><h2>Choose what you want to do next.</h2></div>
+        <div><h2>Choose what you want to do next.</h2></div>
         <div class="depth-tabs" role="tablist" aria-label="Explore Recast">
           <button type="button" class="active" data-depth-tab="templates">Templates</button>
           <button type="button" data-depth-tab="builder" data-copilot-jump>Build</button>
@@ -385,7 +392,7 @@
       <div class="depth-panels">
 <section data-depth-panel="templates" class="workflow-templates" id="workflowTemplates">
   <div class="wf-head">
-    <div><p class="eyebrow">Workflow templates</p><h3>Start with a workflow that already makes sense.</h3>
+    <div><h3>Start with a workflow that already makes sense.</h3>
       <p>Choose a common data job, preview the pipeline, then customise it in Recipe Builder. Templates stay local until you explicitly deploy or automate them.</p></div>
     <span class="wf-count">6 launch templates</span>
   </div>
@@ -396,7 +403,7 @@
 
     <section data-depth-panel="library" class="workflow-library" id="workflowLibrary">
       <div class="wf-head">
-        <div><p class="eyebrow">Workflow Library</p><h3>Build it once. Reuse it.</h3><p>Saved workflows turn one-off data jobs into repeatable assets. They stay local by default; API deployment and hosted automation are available on paid plans.</p></div>
+        <div><h3>Build it once. Reuse it.</h3><p>Saved workflows turn one-off data jobs into repeatable assets. They stay local by default; API deployment and hosted automation are available on paid plans.</p></div>
         <span class="wf-count" id="workflowLibraryCount">Nothing saved yet</span>
       </div>
       <div id="workflowLibraryList"></div>
@@ -406,7 +413,7 @@
 
     <section data-depth-panel="automation" class="automation-hub" id="automationHub">
       <div class="auto-head">
-        <div><p class="eyebrow">Hosted Automation</p><h3>Make the workflow run without you.</h3><p>Deploy a saved workflow as an authenticated endpoint, run it on demand, or schedule it hourly, daily or weekly. Browser tools remain local; hosted automation only stores data you explicitly choose to deploy.</p></div>
+        <div><h3>Make the workflow run without you.</h3><p>Deploy a saved workflow as an authenticated endpoint, run it on demand, or schedule it hourly, daily or weekly. Browser tools remain local; hosted automation only stores data you explicitly choose to deploy.</p></div>
         <a class="btn btn-gold" href="#pricing">View Automation plan →</a>
       </div>
       <div class="plan-state" id="planStatePanel">
@@ -936,7 +943,6 @@
 
   <section id="pricing">
     <div class="section-head">
-      <p class="eyebrow">Pricing</p>
       <h2>Start free. Upgrade when Recast becomes part of your workflow.</h2>
       <p>Use the browser tools free. Pro removes limits. Automation runs workflows for you. API is for programmatic execution.</p>
     </div>
@@ -1027,7 +1033,6 @@
 
   <section id="faq">
     <div class="section-head">
-      <p class="eyebrow">FAQ</p>
       <h2>A few things worth knowing.</h2>
     </div>
     <div class="faq-list">
@@ -1052,7 +1057,6 @@
 
   <section id="api">
     <div class="section-head">
-      <p class="eyebrow">API</p>
       <h2>Convert from your scripts and pipelines.</h2>
       <p>Same conversions as the browser tool, available over a simple REST API. Ideal for backends, CLIs, and internal tools. Prefer zero network dependency? The <a href="https://www.npmjs.com/package/recast-cli" style="color:#A855F7;">recast-cli</a> npm package runs the identical engine locally.</p>
     </div>
@@ -1214,7 +1218,6 @@
 <div class="modal-overlay" id="hostedDeployModal" hidden>
   <div class="modal hosted-deploy-modal" role="dialog" aria-modal="true" aria-labelledby="hostedDeployTitle">
     <button class="modal-close" id="hostedDeployClose" type="button" aria-label="Close">×</button>
-    <p class="eyebrow">Local → Hosted</p>
     <h2 id="hostedDeployTitle">Deploy this workflow?</h2>
     <p class="hosted-deploy-lead">Your browser tools stay private. Deploying creates a hosted copy of the <strong>workflow definition</strong> so it can run through an authenticated endpoint.</p>
 
@@ -1247,7 +1250,6 @@
 <div class="modal-overlay" id="automationSetupModal" hidden>
   <div class="modal automation-setup-modal" role="dialog" aria-modal="true" aria-labelledby="automationSetupTitle">
     <button class="modal-close" id="automationSetupClose" type="button" aria-label="Close">×</button>
-    <p class="eyebrow">Recast Automation</p>
     <h2 id="automationSetupTitle">Automate this workflow</h2>
     <p class="muted">Run a deployed workflow while your browser is closed. Hosted scheduling is an Automation-plan feature.</p>
     <div class="automation-form-grid">
@@ -1274,8 +1276,7 @@
 
 <div class="modal-overlay" id="credentialVaultModal" hidden>
  <div class="modal automation-setup-modal" role="dialog" aria-modal="true" aria-labelledby="credentialVaultTitle">
-  <button class="modal-close" id="credentialVaultClose" type="button" aria-label="Close">×</button>
-  <p class="eyebrow">Encrypted credential vault</p><h2 id="credentialVaultTitle">API credentials</h2>
+  <button class="modal-close" id="credentialVaultClose" type="button" aria-label="Close">×</button><h2 id="credentialVaultTitle">API credentials</h2>
   <p class="muted">Store a Bearer token or API key for authenticated workflow inputs and webhooks. Secret values are encrypted before they are written to hosted storage and cannot be viewed again.</p>
   <div class="automation-form-grid"><label>Name<input id="credName" placeholder="Production CRM"></label><label>Type<select id="credType"><option value="bearer">Bearer token</option><option value="api_key">API key header</option></select></label></div>
   <label id="credHeaderWrap">Header name<input id="credHeader" value="X-API-Key"></label>

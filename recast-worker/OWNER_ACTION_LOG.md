@@ -1,3 +1,40 @@
+## V26 minimal acquisition homepage
+
+- [x] Made “Fix the data. Then stop fixing it.” the main homepage strapline.
+- [x] Made the plain-English request the primary interaction.
+- [x] Reduced visible homepage to four proof points.
+- [x] Removed demo and detailed product feature sections from the acquisition journey.
+- [x] Preserved underlying product functionality and Copilot intent hardening.
+- [ ] After deployment, compare homepage prompt starts and downstream workflow engagement against V25.
+
+## V25 homepage UI cleanup
+
+- [x] Removed small blue homepage eyebrow headers.
+- [x] Left-aligned the interactive-demo heading.
+- [x] Removed nested Workflow Builder heading block.
+- [x] Removed inner Copilot panel styling while preserving functionality.
+- [x] No backend, pricing, entitlement or external configuration changes.
+- [ ] After deployment, verify spacing and request-field width on desktop and iPhone.
+
+## V24 Copilot intent hardening
+
+- [x] Expanded plain-English coverage across the supported workflow feature set.
+- [x] Added direct-tool routing for non-workflow capabilities.
+- [x] Added a no-empty-response fallback for unsupported/ambiguous prompts.
+- [x] Added 196-request automated Copilot regression suite.
+- [x] Preserved local-only prompt interpretation; no hosted AI service or new secret introduced.
+- [ ] After deployment, test 10 spontaneous prompts on desktop and iPhone using wording not present in the automated suite.
+- [ ] Review real prompt analytics only if/when privacy-safe prompt telemetry is deliberately introduced; do not capture prompt content silently.
+
+## V23.1 Workflow Copilot comparison fix
+
+- [x] Natural-language CSV comparison requests now generate a valid comparison workflow.
+- [x] JSON, XML and API-response comparison language supported.
+- [x] “differences only” is understood as the compare result rather than an unsupported filter.
+- [x] Incomplete compare workflows cannot be run/saved until a reference is configured.
+- [x] Added automated regression tests.
+- [ ] After deployment, test the exact homepage request: `compare two csv then output differences only`.
+
 ## V23 clean opportunistic homepage
 
 - [x] Made the plain-English request the primary homepage action.
