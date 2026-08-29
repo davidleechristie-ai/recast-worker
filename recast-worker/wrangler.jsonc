@@ -41,6 +41,8 @@
   },
 
 
+  "triggers": { "crons": ["0 * * * *"] },
+
     "observability": {
       "enabled": true,
       "head_sampling_rate": 1,
@@ -57,6 +59,9 @@
       }
     }
 
+    // V7 authenticated connectors also require CREDENTIAL_ENCRYPTION_KEY.
+    // Add it as a Cloudflare Worker secret/secrets-store binding before enabling the vault.
+    // Use a long random value (32+ characters) and do not put the value in this file.
     // STRIPE_SECRET_KEY and STRIPE_WEBHOOK_SECRET are bound above via
     // secrets_store_secrets...
 

@@ -63,4 +63,12 @@
   <url><loc>https://tryrecast.app/blog/what-is-jsonpath.html</loc><changefreq>yearly</changefreq><priority>0.6</priority></url>
   <url><loc>https://tryrecast.app/blog/csv-diff-explained.html</loc><changefreq>yearly</changefreq><priority>0.6</priority></url>
   <url><loc>https://tryrecast.app/blog/json-schema-validation-guide.html</loc><changefreq>yearly</changefreq><priority>0.6</priority></url>
+  <url><loc>https://tryrecast.app/automation/</loc><changefreq>monthly</changefreq><priority>0.8</priority></url>
+  <url><loc>https://tryrecast.app/automation/json-to-csv-automation.html</loc><changefreq>monthly</changefreq><priority>0.8</priority></url>
+  <url><loc>https://tryrecast.app/automation/api-response-to-csv.html</loc><changefreq>monthly</changefreq><priority>0.8</priority></url>
+  <url><loc>https://tryrecast.app/automation/schedule-json-transformations.html</loc><changefreq>monthly</changefreq><priority>0.8</priority></url>
+  <url><loc>https://tryrecast.app/automation/api-data-to-webhook.html</loc><changefreq>monthly</changefreq><priority>0.8</priority></url>
+  <url><loc>https://tryrecast.app/automation/automate-jsonpath-extraction.html</loc><changefreq>monthly</changefreq><priority>0.8</priority></url>
+  <url><loc>https://tryrecast.app/automation/clean-api-responses.html</loc><changefreq>monthly</changefreq><priority>0.8</priority></url>
+  <url><loc>https://tryrecast.app/automation/api-to-api-transformation.html</loc><changefreq>monthly</changefreq><priority>0.8</priority></url>
 </urlset>

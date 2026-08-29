@@ -454,6 +454,13 @@
     renderFlow();
     selectStep(id);
   });
+  $('rb2AutomateBtn')?.addEventListener('click', () => {
+    const name=($('rb2NameInput')?.value||'Workflow').trim()||'Workflow';
+    const current={schemaVersion:3,name,steps:currentRecipeSteps()};
+    if(!current.steps.length){showToastSafe('Add at least one step before automating');return;}
+    if(window.RecastWorkflowLibrary){window.RecastWorkflowLibrary.save(current);window.RecastFunnel?.track('builder_automate_clicked',{workflow_name:name,step_count:current.steps.length});showToastSafe('Workflow saved — choose Automate to schedule it');document.getElementById('automationHub')?.scrollIntoView({behavior:'smooth',block:'start'});setTimeout(()=>window.RecastWorkflowAutomation?.render(),100);}
+  });
+
   $('rb2SaveBtn')?.addEventListener('click', () => {
     const name = $('rb2NameInput').value.trim();
     if (!name) { showToastSafe('Give the recipe a name first'); return; }
@@ -489,5 +496,25 @@
     renderSavedRecipes();
     runFullPreview();
   }
-  window.RecastRecipeBuilder2 = { openWithApiRequestStep: openWithApiRequestStep };
+  function openWithDefinition(definition) {
+    const incoming = definition && Array.isArray(definition.steps) ? definition.steps : [];
+    steps = incoming.slice(0, window.RecastRecipes.MAX_STEPS).map((s) => ({
+      id: newStepId(),
+      type: s.type || typeForMode(s.mode),
+      mode: s.mode,
+      params: s.params || {}
+    })).filter((s) => window.RecastRecipes.isStepSupported(s.mode));
+    selectedId = null;
+    window.RecastPipelineFields.invalidate();
+    if ($('rb2NameInput')) $('rb2NameInput').value = definition.name || 'AI workflow';
+    $('recipeBuilder2Panel').classList.add('show');
+    renderFlow();
+    renderSidePanel();
+    renderSavedRecipes();
+    runFullPreview();
+  }
+  window.RecastRecipeBuilder2 = {
+    openWithApiRequestStep: openWithApiRequestStep,
+    openWithDefinition: openWithDefinition
+  };
 })();

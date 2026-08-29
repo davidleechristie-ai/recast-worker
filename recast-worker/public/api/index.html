@@ -398,6 +398,19 @@
   </div>
 
 </article>
+
+<section class="section" id="workflows"><h2>Hosted Workflows</h2><p>Deploy a saved Recast recipe once, then execute the same pipeline through a stable authenticated endpoint.</p><pre><code>POST /v1/workflows
+Authorization: Bearer &lt;api-token&gt;
+
+{
+  "workflow": {
+    "name": "Customer export",
+    "steps": [
+      {"mode":"transformRemove","params":{"paths":["internal_id"]}},
+      {"mode":"json2csv","params":{}}
+    ]
+  }
+}</code></pre><p>Run the deployed workflow with <code>POST /v1/workflows/{id}/run</code> and a string <code>input</code>. Configure scheduled execution with <code>POST /v1/workflows/{id}/automation</code> using <code>hourly</code>, <code>daily</code> or <code>weekly</code>. Retrieve recent executions from <code>GET /v1/workflows/{id}/history</code>.</p><p>Hosted workflows are an API-plan beta. Browser tools remain client-side; only workflows and inputs explicitly deployed for hosted execution are stored server-side.</p></section>
 </main>
 
 <footer style="max-width:1180px;margin:0 auto;padding:24px;text-align:center;color:var(--text-muted);font-size:12.5px;border-top:1px solid rgba(var(--border-rgb),0.16);">

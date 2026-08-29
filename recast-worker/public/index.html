@@ -271,6 +271,142 @@
     <h1>Inspect. Transform. Validate.<br><em>Compare. Automate.</em></h1>
     <p class="sub">Your data doesn't leave your browser. Your workflow can. Recast runs entirely locally — parse, reshape, and check JSON, CSV, XML, YAML and Markdown with nothing uploaded — then save what you built as a recipe you can automate, or call the same engine through the API when a script needs it.</p>
 
+    <div class="recast-command" aria-label="Recast workflow overview">
+      <div class="rc-copy">
+        <span class="rc-kicker"><i></i> Local tools + hosted workflows</span>
+        <h2>One place to fix the data.<br><span>One workflow to keep it fixed.</span></h2>
+        <p>Start with a file, an API response or a plain-English instruction. Build the transformation visually, test it locally, then reuse it as an endpoint or scheduled automation.</p>
+        <div class="rc-actions">
+          <a class="btn btn-gold" href="#workflowTemplates">Explore workflows</a>
+          <a class="btn btn-ghost" href="automation/index.html">See automation use cases</a>
+        </div>
+        <div class="rc-trust"><span>● Browser-first</span><span>● Encrypted credentials</span><span>● API + schedules</span></div>
+      </div>
+      <div class="rc-stage">
+        <div class="rc-window">
+          <div class="rc-windowbar"><span></span><span></span><span></span><b>customer-sync.workflow</b><em>Ready</em></div>
+          <div class="rc-pipeline">
+            <div class="rc-node"><small>INPUT</small><strong>Customer API</strong><span>Bearer auth</span></div>
+            <div class="rc-arrow">→</div>
+            <div class="rc-node active"><small>TRANSFORM</small><strong>Clean + map</strong><span>4 operations</span></div>
+            <div class="rc-arrow">→</div>
+            <div class="rc-node"><small>OUTPUT</small><strong>Webhook</strong><span>POST JSON</span></div>
+          </div>
+          <div class="rc-console"><div><span class="rc-ok">✓</span><b>Workflow completed</b><time>428 ms</time></div><code>248 records transformed · 0 validation errors</code></div>
+          <div class="rc-schedule"><span><i></i> Automated</span><b>Daily · 08:00 Europe/London</b><button type="button" onclick="document.getElementById('automationHub')?.scrollIntoView({behavior:'smooth'})">View activity →</button></div>
+        </div>
+      </div>
+    </div>
+
+    <section class="instant-demo" id="instantDemo">
+      <div class="demo-intro">
+        <p class="eyebrow">Interactive demo</p>
+        <h3>See a workflow finish before you build one.</h3>
+        <p>Choose a common data job. Recast shows the input, the workflow and the real transformed result — then opens the same workflow as a template.</p>
+      </div>
+      <div class="demo-shell">
+        <div class="demo-tabs" role="tablist">
+          <button class="active" data-demo="api-csv" type="button">API → CSV</button>
+          <button data-demo="clean-webhook" type="button">Clean → webhook</button>
+          <button data-demo="jsonpath" type="button">JSONPath → CSV</button>
+        </div>
+        <div class="demo-workspace">
+          <div class="demo-pane"><div class="demo-pane-head"><span>INPUT</span><b id="demoInputLabel">API response</b></div><pre id="demoInput"></pre></div>
+          <div class="demo-middle">
+            <div class="demo-flow-mini" id="demoFlow"></div>
+            <button class="demo-run" id="demoRun" type="button"><span>▶</span> Run demo</button>
+            <small id="demoStatus">Ready to run locally</small>
+          </div>
+          <div class="demo-pane"><div class="demo-pane-head"><span>RESULT</span><b id="demoOutputLabel">CSV</b></div><pre id="demoOutput"><span class="demo-placeholder">Run the workflow to see output</span></pre></div>
+        </div>
+        <div class="demo-footer"><div><strong id="demoResultTitle">No setup. No account.</strong><span id="demoResultMeta">This demo runs in your browser.</span></div><a class="btn btn-gold" id="demoTemplateCta" href="?template=api-json-csv#workflowTemplates">Use this workflow →</a></div>
+      </div>
+    </section>
+
+    <div class="workflow-copilot" id="workflowCopilot">
+      <div class="wc-head">
+        <div>
+          <p class="eyebrow">Workflow Builder</p>
+          <h2>Tell Recast what you want to do.</h2>
+          <p class="wc-sub">Describe the job in plain English. Recast turns it into a repeatable pipeline you can inspect, run and save.</p>
+        </div>
+        <span class="wc-badge">BUILD → RUN → SAVE</span>
+      </div>
+      <div class="wc-input-row">
+        <textarea id="wcPrompt" class="wc-prompt" rows="2" placeholder="e.g. Convert this API response to CSV, flatten nested fields, then validate the result."></textarea>
+        <button class="btn btn-gold wc-build" id="wcBuildBtn">Build workflow <span>→</span></button>
+      </div>
+      <div class="wc-examples" aria-label="Example requests">
+        <button type="button" data-wc-example="Convert this JSON to CSV">JSON → CSV</button>
+        <button type="button" data-wc-example="Flatten this nested JSON, then convert it to CSV">Flatten → CSV</button>
+        <button type="button" data-wc-example="Validate this JSON, then format it">Validate → format</button>
+        <button type="button" data-wc-example="Remove the field internal_id, then convert to CSV">Clean → CSV</button>
+      </div>
+      <div class="wc-result" id="wcResult" hidden>
+        <div class="wc-result-head">
+          <div><strong id="wcResultTitle">Workflow ready</strong><span id="wcResultMeta"></span></div>
+          <button class="icon-btn" id="wcEditPromptBtn" type="button">Edit request</button>
+        </div>
+        <div class="wc-pipeline" id="wcPipeline"></div>
+        <div class="wc-actions">
+          <button class="btn btn-gold" id="wcOpenBtn" type="button">Open in Workflow Builder →</button>
+          <button class="btn btn-ghost" id="wcRunBtn" type="button">Build &amp; run</button>
+          <button class="btn btn-ghost" id="wcSaveBtn" type="button">Save workflow</button>
+          <a class="btn btn-ghost" id="wcApiBtn" href="#pricing">Deploy with API →</a>
+        </div>
+        <p class="wc-note" id="wcNote"></p>
+      </div>
+    </div>
+
+    
+<section class="workflow-templates" id="workflowTemplates">
+  <div class="wf-head">
+    <div><p class="eyebrow">Workflow templates</p><h3>Start with a workflow that already makes sense.</h3>
+      <p>Choose a common data job, preview the pipeline, then customise it in Recipe Builder. Templates stay local until you explicitly deploy or automate them.</p></div>
+    <span class="wf-count">6 launch templates</span>
+  </div>
+  <div class="template-grid" id="workflowTemplateGrid"></div>
+</section>
+
+    <section class="workflow-library" id="workflowLibrary">
+      <div class="wf-head">
+        <div><p class="eyebrow">Workflow Library</p><h3>Build it once. Reuse it.</h3><p>Saved workflows turn one-off data jobs into repeatable assets. They stay local by default; API deployment and hosted automation are available on paid plans.</p></div>
+        <span class="wf-count" id="workflowLibraryCount">Nothing saved yet</span>
+      </div>
+      <div id="workflowLibraryList"></div>
+      <div class="wf-next"><strong>Next step: automation.</strong><span>Scheduled runs, hosted workflow execution and workflow-specific API endpoints are the natural paid layer.</span><a href="#pricing" class="btn btn-gold">Explore API access →</a></div>
+    </section>
+
+    <section class="automation-hub" id="automationHub">
+      <div class="auto-head">
+        <div><p class="eyebrow">Hosted Automation</p><h3>Make the workflow run without you.</h3><p>Deploy a saved workflow as an authenticated endpoint, run it on demand, or schedule it hourly, daily or weekly. Browser tools remain local; hosted automation only stores data you explicitly choose to deploy.</p></div>
+        <a class="btn btn-gold" href="#pricing">View Automation plan →</a>
+      </div>
+      <div class="plan-state" id="planStatePanel">
+        <div class="plan-state-main">
+          <span class="plan-state-dot"></span>
+          <div><small>YOUR RECAST ACCESS</small><strong id="planStateName">Free</strong><span id="planStateDetail">Local browser tools · no hosted execution</span></div>
+        </div>
+        <div class="plan-state-capabilities" id="planStateCapabilities">
+          <span data-cap="local">✓ Local tools</span><span data-cap="pro">○ Pro limits</span><span data-cap="api">○ API deploy</span><span data-cap="automation">○ Scheduling</span>
+        </div>
+        <a href="#pricing" class="btn btn-ghost plan-state-action" id="planStateAction">Compare plans</a>
+      </div>
+      <div class="launch-health" id="launchHealth" hidden>
+        <div class="launch-health-head"><div><small>SYSTEM READINESS</small><strong>Automation diagnostics</strong></div><button class="icon-btn" id="healthRefresh" type="button">Run checks</button></div>
+        <div class="launch-health-grid" id="launchHealthGrid"></div>
+        <p id="launchHealthNote">Checks your entitlement and server-side Automation configuration without exposing secrets.</p>
+      </div>
+      <div class="automation-metrics" id="automationMetrics">
+        <div><strong id="metricActive">—</strong><span>Active</span></div>
+        <div><strong id="metricRuns">—</strong><span>Runs this month</span></div>
+        <div><strong id="metricApi">—</strong><span>API calls</span></div>
+        <div><strong id="metricFailures">—</strong><span>Recent failures</span></div>
+      </div>
+      <div id="automationWorkflowList"></div>
+      <div class="automation-history" id="automationHistory"><div class="auto-empty">Run history will appear here when you select History on a deployed workflow.</div></div>
+    </section>
+
     <div class="privacy-banner">
       <strong>Your data stays on your machine. Your workflow doesn't have to.</strong> No uploads. No tracking scripts. No server-side processing for browser tools — but every recipe you build here is ready to run again, automated, or called from the API.
       <span class="privacy-exception">Need server-side processing for a script or pipeline? <a href="#api">That's what the API is for.</a></span>
@@ -610,6 +746,7 @@
         <span class="title">Recipe Builder 2.0 — a full Input → Output workflow, visually</span>
         <input type="text" id="rb2NameInput" placeholder="Recipe name" style="width:160px;">
         <button class="icon-btn" id="rb2RunBtn" title="Run the whole recipe">Run recipe</button>
+        <button class="icon-btn rb2-commercial-cta" id="rb2AutomateBtn" title="Save this workflow and continue to hosted Automation">Automate →</button>
         <button class="icon-btn" id="rb2SaveBtn" title="Save this recipe">Save</button>
         <button class="icon-btn" id="rb2DuplicateBtn" title="Duplicate this recipe under a new name">Duplicate</button>
         <button class="icon-btn" id="rb2ResetBtn" title="Clear all steps">Reset</button>
@@ -769,10 +906,10 @@
   <section id="pricing">
     <div class="section-head">
       <p class="eyebrow">Pricing</p>
-      <h2>Free for one-off conversions. Pro for daily use.</h2>
-      <p>Occasional use is free, forever. If you're converting files at work every day, Pro pays for itself in the first ten minutes you save.</p>
+      <h2>Start free. Upgrade when Recast becomes part of your workflow.</h2>
+      <p>Use the browser tools free. Pro removes limits. Automation runs workflows for you. API is for programmatic execution.</p>
     </div>
-    <div class="plans">
+    <div class="plans plans-commercial">
       <div class="plan">
         <div class="plan-icon"><svg class="ico"><use href="#ico-bolt"/></svg></div>
         <h3>Free</h3>
@@ -804,6 +941,19 @@
         </ul>
         <a href="#" class="btn btn-gold" id="btnProMonthly" data-plan="pro_monthly">Start Pro – £9/mo</a>
         <a href="#" class="btn btn-ghost" id="btnProYearly" data-plan="pro_yearly" style="margin-top:8px;text-align:center;">Pro yearly – £90</a>
+      </div>
+      <div class="plan automation-plan">
+        <div class="plan-icon"><svg class="ico"><use href="#ico-bolt"/></svg></div>
+        <h3>Automation</h3>
+        <div class="price"><sup>£</sup>29<span class="period">/month</span></div>
+        <p class="desc">For recurring data jobs that should run without you.</p>
+        <ul>
+          <li>Hosted workflow scheduling</li><li>1,000 automated runs / month</li><li>Up to 10 active automations</li>
+          <li>Live HTTPS inputs + webhooks</li><li>Encrypted API credentials</li><li>Run history, retries + failure alerts</li>
+        </ul>
+        <a href="#" class="btn btn-gold" id="btnAutomationMonthly" onclick="startCheckout('automation_monthly');return false;">Start Automation – £29/mo</a>
+        <a href="#" class="btn btn-ghost" id="btnAutomationYearly" onclick="startCheckout('automation_yearly');return false;" style="margin-top:8px;text-align:center;">Automation yearly – £290</a>
+        <small class="checkout-pending-note">Checkout activates when the Automation Stripe links are configured.</small>
       </div>
       <div class="plan">
         <div class="plan-icon"><svg class="ico"><use href="#ico-code"/></svg></div>
@@ -1020,7 +1170,54 @@
 </script>
 <script src="lib/presets.js"></script>
 <script src="lib/csv-compare.js"></script>
+<script src="lib/workflow-copilot.js"></script>
+<script src="lib/instant-demo.js"></script>
+  <script src="lib/workflow-templates.js"></script>
+  <script src="lib/workflow-library.js"></script>
+<script src="lib/workflow-automation.js"></script>
 <script src="app.js"></script>
 <!-- Cloudflare Web Analytics --><script type='module' src='https://static.cloudflareinsights.com/beacon.min.js' data-cf-beacon='{"token": "13426e11249049dba542ef0b69a55823"}'></script><!-- End Cloudflare Web Analytics -->
+
+<div class="modal-overlay" id="automationSetupModal" hidden>
+  <div class="modal automation-setup-modal" role="dialog" aria-modal="true" aria-labelledby="automationSetupTitle">
+    <button class="modal-close" id="automationSetupClose" type="button" aria-label="Close">×</button>
+    <p class="eyebrow">Recast Automation</p>
+    <h2 id="automationSetupTitle">Automate this workflow</h2>
+    <p class="muted">Run a deployed workflow while your browser is closed. Hosted scheduling is an Automation-plan feature.</p>
+    <div class="automation-form-grid">
+      <label>Frequency<select id="autoCadence"><option value="hourly">Hourly</option><option value="daily" selected>Daily</option><option value="weekly">Weekly</option></select></label>
+      <label>Local hour<input id="autoHour" type="number" min="0" max="23" value="8"></label>
+      <label>Timezone<input id="autoTimezone" type="text" value="UTC"></label>
+      <label>Weekly day<select id="autoWeekday"><option>Mon</option><option>Tue</option><option>Wed</option><option>Thu</option><option>Fri</option><option>Sat</option><option>Sun</option></select></label>
+    </div>
+    <fieldset><legend>Input</legend>
+      <label><input type="radio" name="autoInputMode" value="fixed" checked> Store the current Recast input</label>
+      <label><input type="radio" name="autoInputMode" value="http"> Fetch a public HTTPS URL each run</label>
+      <input id="autoInputUrl" type="url" placeholder="https://api.example.com/data.json">
+      <label>Input credential <span class="muted">(optional)</span><select id="autoInputCredential"><option value="">No authentication</option></select></label>
+    </fieldset>
+    <label>Output webhook <span class="muted">(optional)</span><input id="autoWebhook" type="url" placeholder="https://example.com/recast-hook"></label>
+    <label>Webhook credential <span class="muted">(optional)</span><select id="autoOutputCredential"><option value="">No authentication</option></select></label>
+    <label>Failure alert email <span class="muted">(optional)</span><input id="autoAlertEmail" type="email" placeholder="you@company.com"></label>
+    <button class="btn secondary" id="manageCredentialsBtn" type="button">Manage API credentials</button>
+    <div class="automation-security-note">Credentials are encrypted with AES-GCM before storage and are never returned by the API after creation.</div>
+    <div class="modal-actions"><button class="btn secondary" id="automationSetupCancel" type="button">Cancel</button><button class="btn primary" id="automationSetupSave" type="button">Enable automation</button></div>
+  </div>
+</div>
+
+
+<div class="modal-overlay" id="credentialVaultModal" hidden>
+ <div class="modal automation-setup-modal" role="dialog" aria-modal="true" aria-labelledby="credentialVaultTitle">
+  <button class="modal-close" id="credentialVaultClose" type="button" aria-label="Close">×</button>
+  <p class="eyebrow">Encrypted credential vault</p><h2 id="credentialVaultTitle">API credentials</h2>
+  <p class="muted">Store a Bearer token or API key for authenticated workflow inputs and webhooks. Secret values are encrypted before they are written to hosted storage and cannot be viewed again.</p>
+  <div class="automation-form-grid"><label>Name<input id="credName" placeholder="Production CRM"></label><label>Type<select id="credType"><option value="bearer">Bearer token</option><option value="api_key">API key header</option></select></label></div>
+  <label id="credHeaderWrap">Header name<input id="credHeader" value="X-API-Key"></label>
+  <label>Secret value<input id="credValue" type="password" autocomplete="new-password" placeholder="Paste secret"></label>
+  <div class="modal-actions"><button class="btn primary" id="credSave" type="button">Encrypt & save</button></div>
+  <div id="credentialVaultList" class="automation-vault-list"></div>
+ </div>
+</div>
+
 </body>
 </html>

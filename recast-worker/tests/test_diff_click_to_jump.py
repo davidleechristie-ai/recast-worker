@@ -283,6 +283,47 @@ def test_homepage_embedded_workbench_diff_layout(page, console_errors):
     check('no console errors on the homepage workbench diff flow', len(console_errors) == 0)
 
 
+def test_validate_schema_unaffected_by_diff_layout_changes(page, console_errors):
+    """Regression test for a real bug introduced by the diff layout work
+    itself: validateSchema also uses dual:true (schema + data to check
+    against it), sharing the same page/wrapper as the diff tools via the
+    nav, but is NOT a diff mode (isSchemaCheck, not isDiff) — its report
+    goes to the regular output panel, which the diff-specific CSS was
+    unconditionally hiding regardless of which mode was actually active.
+    Also covers the original bug that prompted fixing this mode's
+    pop-out at all: its input pop-out button mirrored a different,
+    stale, hidden textarea, same class of bug already fixed for the
+    diff tools' own pop-out."""
+    page.goto(url_for('json-formatter.html'))
+    page.wait_for_timeout(300)
+    page.evaluate('setMode("validateSchema")')
+    page.wait_for_timeout(200)
+
+    output_visible = page.eval_on_selector('#outputPanel', 'el => window.getComputedStyle(el).display !== "none"')
+    check('validateSchema: output panel stays visible (its report needs it, unlike diff modes)', output_visible is True)
+
+    grid_cols = page.eval_on_selector('.wb-grid', 'el => window.getComputedStyle(el).gridTemplateColumns.split(" ").length')
+    check('validateSchema: workbench grid keeps its original 3 columns', grid_cols == 3)
+
+    dual_display = page.eval_on_selector('.dual-input.show', 'el => window.getComputedStyle(el).display')
+    check('validateSchema: inputs stay stacked, not forced side by side like the diff tools', dual_display == 'block')
+
+    page.fill('#inputA', '{"type":"object","required":["id"]}')
+    page.fill('#inputB', '{"name":"test"}')
+    page.wait_for_timeout(200)
+    with page.expect_popup() as popup_info:
+        page.click('#inputPopoutBtn')
+    popup = popup_info.value
+    popup.wait_for_timeout(400)
+    pane_a = popup.eval_on_selector('.pane:nth-child(1) textarea', 'el => el.value') if popup.query_selector('.pane') else ''
+    pane_b = popup.eval_on_selector('.pane:nth-child(2) textarea', 'el => el.value') if popup.query_selector('.pane') else ''
+    check('validateSchema pop-out shows the real schema (inputA), not stale/unrelated data',
+          'required' in pane_a)
+    check('validateSchema pop-out shows the real data (inputB)', 'test' in pane_b)
+    popup.close()
+    check('no console errors on the validateSchema flow', len(console_errors) == 0)
+
+
 def main():
     with sync_playwright() as p:
         browser = p.chromium.launch()
@@ -294,6 +335,7 @@ def main():
             ('xml_structural_view_toggle', test_xml_structural_view_toggle),
             ('diff_popout_content_and_summary', test_diff_popout_shows_real_content_and_summary),
             ('homepage_embedded_workbench_diff_layout', test_homepage_embedded_workbench_diff_layout),
+            ('validate_schema_unaffected_by_diff_layout', test_validate_schema_unaffected_by_diff_layout_changes),
             ('fullscreen_click_to_jump', test_fullscreen_click_to_jump_stays_in_fullscreen),
         ]:
             console_errors = []

@@ -51,12 +51,25 @@ function track(eventName, params) {
   } catch (e) { /* analytics must never break the actual tool */ }
 }
 
+function trackFunnel(eventName, params) {
+  const payload = Object.assign({ funnel:'workflow_automation', page:location.pathname }, params || {});
+  track(eventName, payload);
+  try {
+    const key='recast_funnel_v1', rows=JSON.parse(localStorage.getItem(key)||'[]');
+    rows.push(Object.assign({event:eventName,at:Date.now()},payload));
+    localStorage.setItem(key,JSON.stringify(rows.slice(-100)));
+  } catch (_) {}
+}
+window.RecastFunnel={track:trackFunnel};
+
 const STRIPE = {
   links: {
     pro_monthly: 'https://buy.stripe.com/6oU28jez7ayf8sRg5y4c800',
     pro_yearly:  'https://buy.stripe.com/14AcMX2Qp7m310paLe4c801',
     api_monthly: 'https://buy.stripe.com/14A00bfDb6hZdNbg5y4c803',
     api_yearly:  'https://buy.stripe.com/aFa00bcqZcGn7oNbPi4c804',
+    automation_monthly: 'REPLACE_AUTOMATION_MONTHLY_PAYMENT_LINK',
+    automation_yearly: 'REPLACE_AUTOMATION_YEARLY_PAYMENT_LINK',
     day_pass:    'https://buy.stripe.com/eVq3cn2QpeOv7oN2eI4c802', // one-time, non-recurring — 24 hours of full Pro access, £2.99
   },
   // Fallback only — used if the Worker's dynamic /api/portal call fails or
@@ -323,8 +336,22 @@ document.getElementById('apiKeyCopyBtn')?.addEventListener('click', () => {
   setTimeout(() => { btn.textContent = original; }, 1500);
 });
 
+function updatePlanStatePanel(){
+  const panel=document.getElementById('planStatePanel');if(!panel)return;
+  const name=document.getElementById('planStateName'),detail=document.getElementById('planStateDetail'),action=document.getElementById('planStateAction');
+  const plan=accountState.entitled?(accountState.plan||'pro_monthly'):'free';
+  const labels={free:'Free',day_pass:'24-hour Pro',pro_monthly:'Pro',pro_yearly:'Pro',api_monthly:'API',api_yearly:'API',automation_monthly:'Automation',automation_yearly:'Automation'};
+  const isApi=/^(api|automation)_/.test(plan), isAuto=/^automation_/.test(plan), pro=accountState.entitled;
+  name.textContent=labels[plan]||'Recast';
+  detail.textContent=isAuto?'Hosted workflows + scheduling + encrypted credentials':isApi?'Hosted workflow/API execution enabled':pro?'Higher limits, batch tools and saved presets':'Local browser tools · no hosted execution';
+  panel.dataset.plan=isAuto?'automation':isApi?'api':pro?'pro':'free';
+  panel.querySelectorAll('[data-cap]').forEach(el=>{const cap=el.dataset.cap,on=cap==='local'||(cap==='pro'&&pro)||(cap==='api'&&isApi)||(cap==='automation'&&isAuto);el.classList.toggle('enabled',on);el.textContent=(on?'✓ ':'○ ')+({local:'Local tools',pro:'Pro limits',api:'API deploy',automation:'Scheduling'}[cap]);});
+  if(action){action.textContent=isAuto?'Manage plan':isApi?'Add Automation':'Compare plans';action.href=isApi&&!isAuto?'#pricing':isAuto?'#':'#pricing';action.onclick=isAuto?openManageSubscription:null;}
+}
+
 function updateAccountUI() {
   updateApiKeyDisplay();
+  updatePlanStatePanel();
   const upgradeBtn = document.getElementById('accountBtn');
   if (!upgradeBtn) return;
   if (isPro() && accountState.plan === 'day_pass' && accountState.expiresAt) {
@@ -1066,6 +1093,14 @@ function setMode(mode) {
   $('diffKeyNote').style.display = 'none';
   $('comparePanel')?.classList.remove('show');
 
+  // The side-by-side layout, hidden output panel, and 2-column grid on
+  // the diff tool pages are all scoped to this class (toggled here, not
+  // just to #diffFullscreenWrap's mere presence) — because non-diff
+  // dual-input modes on the very same page (e.g. validateSchema, whose
+  // report writes to this exact output panel) still need the original,
+  // 3-column layout with the output panel visible.
+  $('diffFullscreenWrap')?.classList.toggle('diff-mode-active', !!cfg.isDiff);
+
   const dual = $('dualInput');
   const singleWrap = $('singleInputWrap');
   if (cfg.dual) { dual?.classList.add('show'); singleWrap?.classList.add('hide'); }
@@ -1363,6 +1398,91 @@ $('playgroundExpandBtn')?.addEventListener('click', (e) => toggleFullscreen($('a
 // and position-mapping machinery in a second, separate document), but a
 // "Compare" button lets the user edit here and get a fresh result
 // without switching back to the main tab.
+// Generic dual-input pop-out for non-diff dual:true modes (currently
+// just validateSchema — the only other mode that uses two labeled
+// inputs). Simpler than openDiffPopout: there's no summary panel to
+// mirror here, since the result of this kind of mode goes to the
+// regular output panel, which already has its own, correctly-working
+// pop-out (openPopoutMirror(outputEl, ...) below) — this only needed to
+// exist because the INPUT side was wrongly mirroring a different,
+// hidden single-input textarea for every dual-input mode, diff or not.
+function openDualInputPopout() {
+  const inputAEl = $('inputA'), inputBEl = $('inputB');
+  if (!inputAEl || !inputBEl) return;
+  const cfg = modeConfig[currentMode];
+  const labelA = (cfg?.dualLabels && cfg.dualLabels[0]?.replace(/[\u2026:]+$/, '').trim()) || 'Input A';
+  const labelB = (cfg?.dualLabels && cfg.dualLabels[1]?.replace(/[\u2026:]+$/, '').trim()) || 'Input B';
+  const w = window.open('', 'recast_dual_popout', 'width=1000,height=650');
+  if (!w) { showToast('Pop-out blocked \u2014 allow pop-ups for this site'); return; }
+  const doc = w.document;
+  doc.title = 'Recast \u2014 ' + (cfg?.inFmt || 'Input');
+
+  const style = doc.createElement('style');
+  style.textContent =
+    "html,body{margin:0;height:100%;background:#0A0E1F;color:#EDF3F8;font-family:'IBM Plex Mono',ui-monospace,monospace;}" +
+    "body{display:flex;flex-direction:column;}" +
+    ".head{box-sizing:border-box;padding:10px 14px;border-bottom:1px solid rgba(120,110,180,0.32);font-size:12px;letter-spacing:.06em;text-transform:uppercase;color:#B9CBDA;flex-shrink:0;}" +
+    ".panes{display:flex;flex:1;min-height:0;}" +
+    ".pane{flex:1;min-width:0;display:flex;flex-direction:column;border-right:1px solid rgba(120,110,180,0.2);}" +
+    ".pane:last-child{border-right:none;}" +
+    ".pane-label{font-size:10.5px;text-transform:uppercase;letter-spacing:.05em;color:#8A8FA3;padding:8px 12px 4px;flex-shrink:0;}" +
+    "textarea{box-sizing:border-box;width:100%;flex:1;min-height:0;border:none;outline:none;background:transparent;color:#EDF3F8;font-family:inherit;font-size:13px;line-height:1.6;padding:0 12px 12px;resize:none;}";
+  doc.head.appendChild(style);
+
+  const head = doc.createElement('div');
+  head.className = 'head';
+  head.textContent = (cfg?.inFmt || 'Input') + ' \u2014 synced with the main tab';
+  doc.body.appendChild(head);
+
+  const panes = doc.createElement('div');
+  panes.className = 'panes';
+  function buildPane(labelText) {
+    const pane = doc.createElement('div');
+    pane.className = 'pane';
+    const lbl = doc.createElement('div');
+    lbl.className = 'pane-label';
+    lbl.textContent = labelText;
+    const ta = doc.createElement('textarea');
+    ta.spellcheck = false;
+    pane.appendChild(lbl);
+    pane.appendChild(ta);
+    return { pane, ta };
+  }
+  const paneA = buildPane(labelA);
+  const paneB = buildPane(labelB);
+  panes.appendChild(paneA.pane);
+  panes.appendChild(paneB.pane);
+  doc.body.appendChild(panes);
+
+  paneA.ta.value = inputAEl.value;
+  paneB.ta.value = inputBEl.value;
+
+  let syncing = false;
+  function wireTwoWay(ta, sourceEl) {
+    ta.addEventListener('input', () => {
+      if (syncing) return;
+      syncing = true;
+      sourceEl.value = ta.value;
+      sourceEl.dispatchEvent(new Event('input', { bubbles: true }));
+      syncing = false;
+    });
+  }
+  wireTwoWay(paneA.ta, inputAEl);
+  wireTwoWay(paneB.ta, inputBEl);
+
+  function pushFromMain() {
+    if (w.closed) { clearInterval(poll); return; }
+    if (syncing) return;
+    syncing = true;
+    if (paneA.ta.value !== inputAEl.value) paneA.ta.value = inputAEl.value;
+    if (paneB.ta.value !== inputBEl.value) paneB.ta.value = inputBEl.value;
+    syncing = false;
+  }
+  const poll = setInterval(pushFromMain, 400);
+  w.addEventListener('beforeunload', () => clearInterval(poll));
+  track('popout_open', { field: 'dual-input' });
+}
+
 function openDiffPopout() {
   const inputAEl = $('inputA'), inputBEl = $('inputB');
   if (!inputAEl || !inputBEl) return;
@@ -1735,6 +1855,7 @@ inputEl.addEventListener('input', () => { if (inputGraphActive) RecastGraph.rend
 $('inputPopoutBtn')?.addEventListener('click', () => {
   const cfg = modeConfig[currentMode];
   if (cfg?.isDiff) { openDiffPopout(); return; }
+  if (cfg?.dual) { openDualInputPopout(); return; }
   openPopoutMirror(inputEl, cfg?.inFmt ? cfg.inFmt + ' input' : 'Input', { id: 'input' });
 });
 $('outputPopoutBtn')?.addEventListener('click', () => openPopoutMirror(outputEl, modeConfig[currentMode]?.outFmt ? modeConfig[currentMode].outFmt + ' output' : 'Output', { id: 'output', readOnly: true }));

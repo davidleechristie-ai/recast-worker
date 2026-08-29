@@ -279,18 +279,22 @@
   /* Diff tools: File A / File B side by side, and no separate "Diff"
      output panel — its content is superseded by the richer, interactive
      summary/structural panel below (which also has click-to-jump into
-     these very panels). Scoped to #diffFullscreenWrap, which only exists
-     on the 3 diff tool pages, so this never touches any other tool's
-     shared .dual-input/.wb-grid markup. */
-  #diffFullscreenWrap .dual-input.show{ display:flex; gap:12px; }
-  #diffFullscreenWrap .dual-input .ta-wrap{ flex:1; min-width:0; border-right:1px solid rgba(140,182,214,0.16); }
-  #diffFullscreenWrap .dual-input .ta-wrap:last-child{ border-right:none; }
-  #diffFullscreenWrap .wb-grid{ grid-template-columns:1fr auto; }
-  #diffFullscreenWrap #outputPanel{ display:none; }
+     these very panels). Scoped to #diffFullscreenWrap.diff-mode-active
+     — the class is toggled by setMode() based on the active mode's own
+     isDiff flag, not just the wrapper's mere presence on the page —
+     because other, non-diff dual-input modes share this same page and
+     wrapper (e.g. validateSchema, reachable from every tool page via the
+     nav) and still need the original 3-column layout with the output
+     panel visible for their own, differently-shaped report. */
+  #diffFullscreenWrap.diff-mode-active .dual-input.show{ display:flex; gap:12px; }
+  #diffFullscreenWrap.diff-mode-active .dual-input .ta-wrap{ flex:1; min-width:0; border-right:1px solid rgba(140,182,214,0.16); }
+  #diffFullscreenWrap.diff-mode-active .dual-input .ta-wrap:last-child{ border-right:none; }
+  #diffFullscreenWrap.diff-mode-active .wb-grid{ grid-template-columns:1fr auto; }
+  #diffFullscreenWrap.diff-mode-active #outputPanel{ display:none; }
   @media (max-width:820px){
-    #diffFullscreenWrap .dual-input.show{ display:block; }
-    #diffFullscreenWrap .dual-input .ta-wrap{ border-right:none; border-bottom:1px solid rgba(140,182,214,0.16); }
-    #diffFullscreenWrap .dual-input .ta-wrap:last-child{ border-bottom:none; }
+    #diffFullscreenWrap.diff-mode-active .dual-input.show{ display:block; }
+    #diffFullscreenWrap.diff-mode-active .dual-input .ta-wrap{ border-right:none; border-bottom:1px solid rgba(140,182,214,0.16); }
+    #diffFullscreenWrap.diff-mode-active .dual-input .ta-wrap:last-child{ border-bottom:none; }
   }
   .diff-add{color:#3AA2FC;}
   .diff-rem{color:#F2846B;}
@@ -1782,3 +1786,108 @@ body.wb-lock{ overflow:hidden; }
 .related-group-all{ padding-bottom:6px; border-bottom:1px solid rgba(var(--border-rgb),0.16); }
 .related-group-all a{ font-weight:600; color:#A855F7; text-decoration:none; }
 .related-group-all a:hover{ text-decoration:underline; }
+
+
+/* Workflow Copilot — revenue/product MVP */
+.workflow-copilot{
+  margin:28px auto 34px; max-width:980px; padding:24px;
+  border:1px solid rgba(var(--border-rgb),.28); border-radius:18px;
+  background:linear-gradient(145deg,rgba(139,92,246,.10),rgba(58,162,252,.06)),var(--panel);
+  box-shadow:0 18px 55px rgba(0,0,0,.12);
+}
+.wc-head{display:flex;align-items:flex-start;justify-content:space-between;gap:18px}
+.wc-head h2{margin:2px 0 7px;font-size:28px;letter-spacing:-.02em}
+.wc-sub{margin:0;color:var(--text-muted);line-height:1.6;max-width:680px}
+.wc-badge{font:600 11px/1.2 var(--mono,monospace);letter-spacing:.08em;padding:7px 9px;border:1px solid rgba(var(--border-rgb),.3);border-radius:999px;white-space:nowrap;color:var(--text-muted)}
+.wc-input-row{display:flex;gap:10px;margin-top:18px}
+.wc-prompt{flex:1;min-height:54px;resize:vertical;border:1px solid rgba(var(--border-rgb),.35);border-radius:10px;background:var(--bg);color:var(--text);padding:14px;font:14px/1.5 var(--mono,monospace);outline:none}
+.wc-prompt:focus{border-color:#8B5CF6;box-shadow:0 0 0 3px rgba(139,92,246,.12)}
+.wc-build{align-self:stretch;min-width:170px}
+.wc-examples{display:flex;flex-wrap:wrap;gap:7px;margin-top:11px}
+.wc-examples button{border:1px solid rgba(var(--border-rgb),.25);background:transparent;color:var(--text-muted);border-radius:999px;padding:6px 10px;font-size:12px;cursor:pointer}
+.wc-examples button:hover{color:var(--text);border-color:rgba(139,92,246,.45)}
+.wc-result{margin-top:18px;padding-top:18px;border-top:1px solid rgba(var(--border-rgb),.18)}
+.wc-result-head{display:flex;justify-content:space-between;align-items:center;gap:10px}
+.wc-result-head strong{font-size:15px}
+.wc-result-head span{margin-left:9px;color:var(--text-muted);font-size:12px}
+.wc-pipeline{display:flex;align-items:stretch;gap:8px;flex-wrap:wrap;margin:14px 0}
+.wc-step{display:flex;align-items:center;gap:9px;min-width:145px;flex:1;padding:11px 12px;border:1px solid rgba(var(--border-rgb),.22);border-radius:10px;background:rgba(var(--bg-rgb,0,0,0),.18)}
+.wc-step-num{display:grid;place-items:center;width:23px;height:23px;border-radius:50%;background:rgba(139,92,246,.15);color:#A855F7;font:600 11px var(--mono,monospace)}
+.wc-step strong{display:block;font-size:12.5px}.wc-step small{display:block;color:var(--text-muted);margin-top:2px;font:11px var(--mono,monospace);overflow-wrap:anywhere}
+.wc-arrow{display:grid;place-items:center;color:var(--text-muted);padding:0 1px}
+.wc-actions{display:flex;gap:9px;flex-wrap:wrap}
+.wc-note{margin:11px 0 0;color:var(--text-muted);font-size:12px;line-height:1.5}
+.wc-empty{padding:12px;color:var(--text-muted)}
+@media(max-width:700px){
+  .workflow-copilot{margin:20px 12px 26px;padding:18px}
+  .wc-head{display:block}.wc-badge{display:inline-block;margin-top:12px}
+  .wc-head h2{font-size:23px}.wc-input-row{display:block}.wc-build{width:100%;margin-top:9px;min-height:46px}
+  .wc-step{min-width:100%}.wc-arrow{width:100%;height:5px}
+}
+
+/* Workflow Library — converts the Copilot from a one-off demo into a reusable asset. */
+.workflow-library{max-width:980px;margin:0 auto 30px;padding:22px 24px;border:1px solid rgba(var(--border-rgb),.22);border-radius:16px;background:var(--panel)}
+.wf-head{display:flex;justify-content:space-between;align-items:flex-start;gap:18px}.wf-head h3{margin:2px 0 7px;font-size:22px}.wf-head p:not(.eyebrow){margin:0;max-width:700px;color:var(--text-muted);line-height:1.55;font-size:13px}.wf-count{white-space:nowrap;padding:7px 10px;border:1px solid rgba(var(--border-rgb),.25);border-radius:999px;color:var(--text-muted);font:600 11px var(--mono,monospace)}
+.wf-card{display:flex;justify-content:space-between;align-items:center;gap:15px;margin-top:10px;padding:13px 14px;border:1px solid rgba(var(--border-rgb),.18);border-radius:10px;background:rgba(var(--bg-rgb,0,0,0),.16)}.wf-card-main{min-width:0}.wf-card-main strong{display:block;font-size:13px}.wf-card-main span{font-size:11px;color:var(--text-muted);margin-left:7px}.wf-card-main small{display:block;margin-top:5px;color:var(--text-muted);font:11px var(--mono,monospace);overflow:hidden;text-overflow:ellipsis;white-space:nowrap}.wf-card-actions{display:flex;gap:6px;flex-shrink:0}.wf-empty{padding:16px 2px;color:var(--text-muted);display:flex;flex-direction:column;gap:4px}.wf-empty strong{color:var(--text)}.wf-empty span{font-size:12px}.wf-next{display:flex;align-items:center;gap:10px;flex-wrap:wrap;margin-top:15px;padding-top:15px;border-top:1px solid rgba(var(--border-rgb),.16);font-size:12px}.wf-next strong{color:var(--text)}.wf-next span{color:var(--text-muted);flex:1;min-width:230px}.wf-next .btn{font-size:12px;padding:7px 11px}
+@media(max-width:700px){.workflow-library{margin:0 12px 24px;padding:18px}.wf-head{display:block}.wf-count{display:inline-block;margin-top:11px}.wf-card{align-items:flex-start;flex-direction:column}.wf-card-actions{width:100%}.wf-card-actions .icon-btn{flex:1}.wf-next{display:block}.wf-next span{display:block;margin:6px 0 10px}}
+
+/* Hosted workflow automation */
+.automation-hub{max-width:1120px;margin:28px auto;padding:28px;border:1px solid rgba(var(--border-rgb),.16);border-radius:18px;background:rgba(var(--panel-rgb),.34)}
+.auto-head{display:flex;align-items:flex-start;justify-content:space-between;gap:24px;margin-bottom:18px}.auto-head h3{margin:4px 0 8px;font-size:1.45rem}.auto-head p{max-width:760px;margin:0;color:var(--muted);line-height:1.6}
+#automationWorkflowList{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:12px}.auto-card{border:1px solid rgba(var(--border-rgb),.16);border-radius:14px;padding:16px;background:rgba(var(--bg-rgb),.35)}
+.auto-card-top{display:flex;justify-content:space-between;gap:16px;align-items:flex-start}.auto-card-top>div{display:flex;flex-direction:column;gap:4px}.auto-card-top span,.auto-card small{color:var(--muted)}.auto-card code{display:block;margin:14px 0;padding:9px 10px;border-radius:8px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;background:rgba(var(--bg-rgb),.65);color:var(--text)}
+.auto-pill{font-size:.72rem;padding:4px 8px;border:1px solid rgba(var(--border-rgb),.2);border-radius:999px;white-space:nowrap}.auto-pill.active{border-color:rgba(88,214,141,.45);color:#58d68d}.auto-actions{display:flex;flex-wrap:wrap;gap:7px}.automation-history{margin-top:14px;border-top:1px solid rgba(var(--border-rgb),.13);padding-top:14px}.auto-empty{display:flex;flex-direction:column;gap:4px;color:var(--muted);padding:12px}.auto-history-head{display:flex;justify-content:space-between;gap:16px;margin-bottom:8px}.auto-run{display:flex;align-items:center;gap:10px;padding:10px 4px;border-top:1px solid rgba(var(--border-rgb),.1)}.auto-run>div{display:flex;flex-direction:column;gap:2px}.auto-status{display:grid;place-items:center;width:26px;height:26px;border-radius:50%;border:1px solid currentColor}.auto-status.ok{color:#58d68d}.auto-status.bad{color:#f2846b}
+@media(max-width:760px){.automation-hub{margin:18px 12px;padding:18px}.auto-head{flex-direction:column}.auto-head .btn{width:100%;text-align:center}#automationWorkflowList{grid-template-columns:1fr}.auto-card-top{gap:8px}.auto-actions .icon-btn{flex:1 1 calc(50% - 7px)}}
+
+/* V6 Automation setup */
+#automationSetupModal[hidden]{display:none!important}
+#automationSetupModal{position:fixed;inset:0;z-index:10000;background:rgba(5,8,18,.72);display:flex;align-items:center;justify-content:center;padding:20px}
+.automation-setup-modal{position:relative;width:min(680px,100%);max-height:90vh;overflow:auto;background:var(--panel,#111827);border:1px solid var(--border,#2a3446);border-radius:18px;padding:28px}
+.automation-setup-modal label{display:grid;gap:7px;margin:10px 0}.automation-setup-modal input,.automation-setup-modal select{width:100%}
+.automation-form-grid{display:grid;grid-template-columns:1fr 1fr;gap:12px}.automation-setup-modal fieldset{border:1px solid var(--border,#2a3446);border-radius:12px;padding:14px;margin:16px 0}.automation-setup-modal fieldset label{display:flex;align-items:center;gap:8px}.automation-setup-modal fieldset input[type=radio]{width:auto}
+.automation-security-note{padding:12px;border-radius:10px;background:rgba(255,255,255,.04);font-size:.88rem;line-height:1.5}.modal-actions{display:flex;justify-content:flex-end;gap:10px;margin-top:20px}.modal-close{position:absolute;right:16px;top:12px;background:none;border:0;font-size:28px;cursor:pointer}
+@media(max-width:640px){.automation-form-grid{grid-template-columns:1fr}.automation-setup-modal{padding:22px 16px}}
+
+.automation-vault-list{display:grid;gap:8px;margin-top:18px}.automation-vault-row{display:flex;align-items:center;justify-content:space-between;gap:12px;padding:12px;border:1px solid var(--border,#2a3446);border-radius:10px}.automation-vault-row small{display:block;margin-top:3px;opacity:.7}
+
+/* V8 commercial automation dashboard */
+.automation-metrics{display:grid;grid-template-columns:repeat(4,1fr);gap:10px;margin:18px 0}.automation-metrics>div{padding:15px;border:1px solid var(--border,#2a3446);border-radius:12px;background:rgba(255,255,255,.025)}.automation-metrics strong{display:block;font-size:1.35rem}.automation-metrics span{font-size:.78rem;opacity:.68}
+@media(max-width:640px){.automation-metrics{grid-template-columns:1fr 1fr}}
+
+/* V9 workflow-template onboarding */
+.workflow-templates{max-width:1180px;margin:42px auto;padding:0 22px}.template-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:14px}.template-card{display:flex;flex-direction:column;min-height:285px;padding:20px;border:1px solid var(--border,#2a3446);border-radius:16px;background:rgba(255,255,255,.025)}.template-top{display:flex;justify-content:space-between;align-items:center}.template-icon{font-size:1.45rem}.template-tag{font-size:.7rem;text-transform:uppercase;letter-spacing:.08em;padding:5px 8px;border:1px solid var(--border,#2a3446);border-radius:999px}.template-card h4{font-size:1.05rem;margin:18px 0 7px}.template-card p{font-size:.88rem;line-height:1.55;opacity:.76;flex:1}.template-flow{display:flex;align-items:center;gap:6px;flex-wrap:wrap;font-size:.72rem;margin:14px 0}.template-flow span{padding:5px 7px;border-radius:7px;background:rgba(255,255,255,.05)}.template-actions{display:flex;gap:8px}.template-actions .btn{flex:1;justify-content:center}
+@media(max-width:900px){.template-grid{grid-template-columns:1fr 1fr}}@media(max-width:600px){.template-grid{grid-template-columns:1fr}.workflow-templates{padding:0 14px}}
+
+/* V10 conversion UX */
+.plans-commercial{grid-template-columns:repeat(4,1fr)}.automation-plan{position:relative}.automation-plan:before{content:"AUTOMATE";position:absolute;right:14px;top:14px;font-size:.62rem;letter-spacing:.12em;opacity:.65}.checkout-pending-note{display:block;margin-top:9px;line-height:1.4;opacity:.58}.upgrade-context{font-size:.78rem}
+@media(max-width:1000px){.plans-commercial{grid-template-columns:1fr 1fr}}@media(max-width:600px){.plans-commercial{grid-template-columns:1fr}}
+
+/* V11 automation use-case landing pages */
+.uc-nav{max-width:1120px;margin:auto;padding:22px;display:flex;justify-content:space-between;align-items:center}.uc-nav nav{display:flex;gap:20px}.uc-brand{font-weight:700;font-size:1.2rem}.uc-main{max-width:1040px;margin:auto;padding:50px 22px}.uc-hero{max-width:820px;padding:40px 0 55px}.uc-hero h1{font-size:clamp(2.4rem,6vw,4.8rem);line-height:1.02;margin:10px 0 20px}.uc-lead{font-size:1.15rem;line-height:1.65;max-width:720px;opacity:.78}.uc-flow{display:flex;align-items:center;gap:10px;flex-wrap:wrap;margin:28px 0}.uc-flow span{padding:10px 13px;border:1px solid var(--border,#2a3446);border-radius:9px}.uc-actions{display:flex;gap:10px;flex-wrap:wrap}.uc-content{max-width:900px}.uc-content>h2{margin-top:45px}.uc-content>p{line-height:1.75;opacity:.8}.uc-steps{display:grid;grid-template-columns:repeat(3,1fr);gap:14px}.uc-steps article,.uc-hub-card{padding:20px;border:1px solid var(--border,#2a3446);border-radius:14px;background:rgba(255,255,255,.025)}.uc-steps article>b{font-size:1.4rem}.uc-steps p,.uc-hub-card span{line-height:1.55;opacity:.72}.uc-cta{margin:55px 0;padding:28px;border:1px solid var(--border,#2a3446);border-radius:16px}.uc-footer{max-width:1040px;margin:auto;padding:25px 22px 50px;opacity:.6}.uc-hub-grid{display:grid;grid-template-columns:1fr 1fr;gap:14px}.uc-hub-card{display:grid;gap:8px;text-decoration:none}.template-highlight{outline:2px solid currentColor;outline-offset:3px}
+@media(max-width:650px){.uc-steps,.uc-hub-grid{grid-template-columns:1fr}.uc-nav nav{gap:10px;font-size:.82rem}}
+
+/* V12 — Recast visual refresh / workflow-first product language */
+:root{--rc-panel:rgba(15,19,35,.72);--rc-line:rgba(148,163,184,.16);--rc-soft:rgba(139,92,246,.10)}
+body{background-image:radial-gradient(circle at 18% 3%,rgba(109,143,248,.09),transparent 28rem),radial-gradient(circle at 82% 16%,rgba(190,111,248,.07),transparent 26rem)}
+.hero{max-width:1220px}.hero>h1{font-size:clamp(2.75rem,6.6vw,6.4rem);line-height:.93;letter-spacing:-.055em;max-width:1000px}.hero>.sub{max-width:830px;font-size:1.02rem;line-height:1.72}
+.recast-command{display:grid;grid-template-columns:.82fr 1.18fr;gap:38px;align-items:center;margin:48px 0 36px;padding:34px;border:1px solid var(--rc-line);border-radius:24px;background:linear-gradient(145deg,rgba(255,255,255,.035),rgba(255,255,255,.012));box-shadow:0 24px 70px rgba(0,0,0,.18);overflow:hidden}
+.rc-copy h2{font-size:clamp(1.85rem,3.2vw,3.15rem);line-height:1.03;letter-spacing:-.04em;margin:13px 0 16px}.rc-copy h2 span{opacity:.62}.rc-copy>p{line-height:1.65;opacity:.72}.rc-kicker{display:inline-flex;align-items:center;gap:8px;font-size:.74rem;text-transform:uppercase;letter-spacing:.09em}.rc-kicker i,.rc-schedule i{width:7px;height:7px;border-radius:50%;background:#6ee7b7;box-shadow:0 0 14px #6ee7b7}.rc-actions{display:flex;gap:9px;flex-wrap:wrap;margin:23px 0}.rc-trust{display:flex;gap:14px;flex-wrap:wrap;font-size:.7rem;opacity:.58}.rc-trust span::first-letter{color:#8b5cf6}
+.rc-stage{position:relative}.rc-stage:before{content:"";position:absolute;inset:-80px;background:radial-gradient(circle,rgba(109,143,248,.13),transparent 60%);pointer-events:none}.rc-window{position:relative;border:1px solid rgba(148,163,184,.2);border-radius:16px;background:rgba(8,11,23,.92);box-shadow:0 25px 60px rgba(0,0,0,.35);overflow:hidden;color:#e5e7eb}.rc-windowbar{height:44px;display:flex;align-items:center;gap:6px;padding:0 13px;border-bottom:1px solid rgba(148,163,184,.12);font-size:.68rem}.rc-windowbar>span{width:7px;height:7px;border-radius:50%;background:#475569}.rc-windowbar b{margin-left:8px;font-family:monospace;font-weight:500;opacity:.65}.rc-windowbar em{margin-left:auto;font-style:normal;color:#6ee7b7}.rc-pipeline{display:grid;grid-template-columns:1fr auto 1fr auto 1fr;gap:9px;align-items:center;padding:25px 18px}.rc-node{min-width:0;padding:15px;border:1px solid rgba(148,163,184,.13);border-radius:11px;background:rgba(255,255,255,.025)}.rc-node.active{border-color:rgba(139,92,246,.55);background:rgba(139,92,246,.10)}.rc-node small,.rc-node span{display:block}.rc-node small{font-size:.58rem;letter-spacing:.12em;opacity:.48}.rc-node strong{display:block;font-size:.83rem;margin:7px 0 3px}.rc-node span{font-size:.66rem;opacity:.5}.rc-arrow{opacity:.3}.rc-console{margin:0 18px 14px;padding:13px 14px;border:1px solid rgba(148,163,184,.1);border-radius:10px;background:#060914}.rc-console div{display:flex;align-items:center;gap:7px;font-size:.72rem}.rc-console time{margin-left:auto;opacity:.45}.rc-console code{display:block;margin-top:7px;font-size:.65rem;opacity:.48}.rc-ok{color:#6ee7b7}.rc-schedule{display:flex;align-items:center;gap:8px;padding:14px 18px;border-top:1px solid rgba(148,163,184,.1);font-size:.67rem}.rc-schedule span{display:flex;align-items:center;gap:6px;color:#6ee7b7}.rc-schedule b{font-weight:500;opacity:.65}.rc-schedule button{margin-left:auto;border:0;background:none;color:#a78bfa;cursor:pointer}
+.workflow-copilot,.workflow-templates,.workflow-library,.automation-hub{border-radius:20px!important}.workflow-copilot{box-shadow:0 18px 50px rgba(0,0,0,.12)}.template-card,.wf-card,.auto-card{transition:transform .18s ease,border-color .18s ease,background .18s ease}.template-card:hover,.wf-card:hover,.auto-card:hover{transform:translateY(-2px);border-color:rgba(139,92,246,.35);background:rgba(139,92,246,.035)}
+@media(max-width:900px){.recast-command{grid-template-columns:1fr}.rc-copy{max-width:680px}}@media(max-width:620px){.recast-command{margin:30px 0 24px;padding:20px;border-radius:18px}.rc-pipeline{grid-template-columns:1fr}.rc-arrow{transform:rotate(90deg);text-align:center}.rc-schedule{align-items:flex-start;flex-wrap:wrap}.rc-schedule button{margin-left:0;width:100%;text-align:left}.rc-trust{display:grid;gap:5px}}
+
+/* V13 — Automation management polish */
+.automation-hub{position:relative;overflow:hidden}.automation-hub:before{content:"";position:absolute;right:-180px;top:-220px;width:420px;height:420px;border-radius:50%;background:radial-gradient(circle,rgba(109,143,248,.09),transparent 65%);pointer-events:none}.automation-metrics{position:relative}.automation-metrics>div{min-height:78px;display:flex;flex-direction:column;justify-content:center}.automation-metrics strong{letter-spacing:-.035em}.auto-card{position:relative;padding:18px!important}.auto-card-top strong{font-size:.94rem}.auto-card code{display:block;margin:13px 0;padding:10px 12px;border:1px solid rgba(148,163,184,.09);border-radius:8px;background:rgba(3,6,16,.38);font-size:.68rem;overflow:auto}.auto-actions{gap:6px!important}.auto-actions .icon-btn{border-radius:8px!important}.danger-soft{opacity:.58}.danger-soft:hover{opacity:1;border-color:rgba(248,113,113,.35)!important}.auto-history-head{padding:4px 0 13px}.auto-run{border-radius:10px;margin:5px 0}.auto-run small{line-height:1.45}
+
+/* V15 — account / entitlement state */
+.plan-state{position:relative;display:grid;grid-template-columns:minmax(220px,1fr) auto auto;gap:18px;align-items:center;margin:18px 0 20px;padding:16px 18px;border:1px solid rgba(148,163,184,.15);border-radius:14px;background:rgba(7,10,22,.42);overflow:hidden}.plan-state:after{content:"";position:absolute;left:0;top:0;bottom:0;width:3px;background:#64748b}.plan-state[data-plan="pro"]:after{background:#a78bfa}.plan-state[data-plan="api"]:after{background:#60a5fa}.plan-state[data-plan="automation"]:after{background:#6ee7b7}.plan-state-main{display:flex;gap:11px;align-items:center}.plan-state-dot{width:10px;height:10px;border-radius:50%;background:#64748b;box-shadow:0 0 0 5px rgba(100,116,139,.08)}.plan-state[data-plan="automation"] .plan-state-dot{background:#6ee7b7;box-shadow:0 0 0 5px rgba(110,231,183,.08)}.plan-state[data-plan="api"] .plan-state-dot{background:#60a5fa}.plan-state[data-plan="pro"] .plan-state-dot{background:#a78bfa}.plan-state-main small,.plan-state-main span{display:block}.plan-state-main small{font-size:.56rem;letter-spacing:.12em;opacity:.46}.plan-state-main strong{display:block;font-size:1rem;margin:2px 0}.plan-state-main span{font-size:.67rem;opacity:.58}.plan-state-capabilities{display:flex;gap:6px;flex-wrap:wrap}.plan-state-capabilities span{font-size:.61rem;padding:5px 7px;border:1px solid rgba(148,163,184,.1);border-radius:6px;opacity:.38}.plan-state-capabilities span.enabled{opacity:.9;border-color:rgba(110,231,183,.18)}.plan-state-action{white-space:nowrap}
+@media(max-width:850px){.plan-state{grid-template-columns:1fr}.plan-state-action{justify-self:start}}
+
+/* V16 — production readiness diagnostics */
+.launch-health{margin:18px 0;padding:16px;border:1px solid rgba(148,163,184,.14);border-radius:14px;background:rgba(7,10,22,.32)}.launch-health-head{display:flex;align-items:center;justify-content:space-between;gap:15px;margin-bottom:12px}.launch-health-head small{display:block;font-size:.55rem;letter-spacing:.12em;opacity:.45}.launch-health-head strong{font-size:.9rem}.launch-health-grid{display:grid;grid-template-columns:repeat(5,1fr);gap:7px}.health-row{display:flex;gap:8px;align-items:flex-start;padding:10px;border:1px solid rgba(148,163,184,.09);border-radius:9px}.health-row>span{width:19px;height:19px;display:grid;place-items:center;border-radius:50%;font-size:.65rem;background:rgba(148,163,184,.08)}.health-row.ok>span{color:#6ee7b7;background:rgba(110,231,183,.08)}.health-row.bad>span{color:#fca5a5;background:rgba(248,113,113,.08)}.health-row strong,.health-row small{display:block}.health-row strong{font-size:.66rem}.health-row small{font-size:.57rem;line-height:1.35;opacity:.48;margin-top:3px}.launch-health>p{font-size:.62rem;opacity:.5;margin:11px 2px 0}@media(max-width:980px){.launch-health-grid{grid-template-columns:1fr 1fr}}@media(max-width:560px){.launch-health-grid{grid-template-columns:1fr}}
+
+/* V17 — interactive workflow demo */
+.instant-demo{margin:36px 0 42px}.demo-intro{max-width:720px;margin-bottom:18px}.demo-intro h3{font-size:clamp(1.65rem,3vw,2.55rem);letter-spacing:-.035em;margin:7px 0 10px}.demo-intro>p:last-child{line-height:1.6;opacity:.65}.demo-shell{border:1px solid rgba(148,163,184,.16);border-radius:19px;background:rgba(7,10,22,.66);box-shadow:0 24px 70px rgba(0,0,0,.2);overflow:hidden}.demo-tabs{display:flex;gap:4px;padding:9px;border-bottom:1px solid rgba(148,163,184,.1)}.demo-tabs button{border:0;border-radius:8px;background:transparent;color:inherit;padding:8px 11px;font-size:.68rem;opacity:.5;cursor:pointer}.demo-tabs button.active{background:rgba(139,92,246,.12);opacity:1}.demo-workspace{display:grid;grid-template-columns:1fr 190px 1fr;min-height:315px}.demo-pane{min-width:0;padding:14px}.demo-pane:first-child{border-right:1px solid rgba(148,163,184,.08)}.demo-pane:last-child{border-left:1px solid rgba(148,163,184,.08)}.demo-pane-head{display:flex;justify-content:space-between;gap:10px;font-size:.61rem;margin-bottom:12px}.demo-pane-head span{letter-spacing:.12em;opacity:.4}.demo-pane-head b{font-weight:500;opacity:.7}.demo-pane pre{height:255px;overflow:auto;margin:0;padding:14px;border:1px solid rgba(148,163,184,.07);border-radius:10px;background:#060914;font-size:.69rem;line-height:1.55;white-space:pre-wrap}.demo-placeholder{opacity:.3}.demo-middle{display:flex;flex-direction:column;justify-content:center;align-items:center;padding:16px;text-align:center}.demo-flow-mini{display:grid;justify-items:center;gap:7px;font-size:.65rem}.demo-flow-mini span{padding:7px 9px;border:1px solid rgba(148,163,184,.13);border-radius:7px;background:rgba(255,255,255,.02)}.demo-flow-mini b{opacity:.25;transform:rotate(90deg)}.demo-run{margin:20px 0 8px;padding:9px 13px;border:1px solid rgba(139,92,246,.35);border-radius:9px;background:rgba(139,92,246,.12);color:inherit;cursor:pointer}.demo-run span{margin-right:5px}.demo-run.running span{display:inline-block;animation:demoSpin .55s linear infinite}.demo-middle small{font-size:.57rem;opacity:.4}.demo-footer{display:flex;justify-content:space-between;align-items:center;gap:18px;padding:14px 16px;border-top:1px solid rgba(148,163,184,.1)}.demo-footer strong,.demo-footer span{display:block}.demo-footer strong{font-size:.72rem}.demo-footer span{font-size:.6rem;opacity:.48;margin-top:3px}@keyframes demoSpin{to{transform:rotate(360deg)}}@media(max-width:800px){.demo-workspace{grid-template-columns:1fr}.demo-pane:first-child,.demo-pane:last-child{border:0}.demo-middle{border-top:1px solid rgba(148,163,184,.08);border-bottom:1px solid rgba(148,163,184,.08)}.demo-flow-mini{display:flex;align-items:center;flex-wrap:wrap}.demo-flow-mini b{transform:none}.demo-pane pre{height:190px}}@media(max-width:520px){.demo-tabs{overflow:auto}.demo-tabs button{white-space:nowrap}.demo-footer{align-items:flex-start;flex-direction:column}}
+
+/* V18 — template-to-builder conversion */
+.rb2-commercial-cta{border-color:rgba(110,231,183,.3)!important;background:rgba(110,231,183,.07)!important;color:#a7f3d0!important}.rb2-commercial-cta:hover{background:rgba(110,231,183,.12)!important}.template-actions .btn{min-width:104px}.template-card .template-flow{margin-bottom:13px}
