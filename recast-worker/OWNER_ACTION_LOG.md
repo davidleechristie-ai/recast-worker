@@ -1,3 +1,12 @@
+## V31 approved homepage
+- [x] Rebuild homepage from clean layout rules.
+- [x] Preserve existing RECAST logo/header.
+- [x] Use final approved feature-focused supporting copy.
+- [x] Align Copilot and quick actions.
+- [x] Fix Workbench heading/icon spacing.
+- [x] Preserve Workbench functionality.
+- [ ] Verify desktop and iPhone after deployment.
+
 ## V30 homepage UI cleanup
 - [x] Fix hero/quick-action horizontal layout issue.
 - [x] Reinstate clear Recast brand hierarchy.

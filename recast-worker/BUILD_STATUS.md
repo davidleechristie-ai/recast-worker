@@ -1,20 +1,22 @@
-# Recast V30 — Homepage UI Cleanup
+# Recast V31 — Approved Homepage
 
-Built from V29 after reviewing the deployed desktop layout.
+Built from the latest working build to match the approved mockup.
 
-## Changes
-- Fixed the accidental side-by-side hero / quick-action composition.
-- Kept the hero fully left aligned.
-- Preserved “Fix the data.” in white and “Then stop fixing it.” in purple.
-- Made the Copilot the primary full-width interaction beneath the hero.
-- Positioned four quick actions consistently beneath the Copilot.
-- Added stronger vertical separation before the Workbench.
-- Refined the Workbench heading and container.
-- Preserved the current Recast logo, dark theme and purple/blue branding.
-- Improved responsive behaviour.
+## Homepage
+- Existing RECAST logo/header retained.
+- “Fix the data.” in white.
+- “Then stop fixing it.” in purple.
+- Exact supporting copy:
+  “Transform, compare, validate and inspect JSON, CSV, XML and API data in your browser. Turn repeatable jobs into reusable workflows, APIs and automations.”
+- Copilot directly beneath hero copy.
+- Four aligned quick-action cards beneath the Copilot.
+- Clear vertical spacing before the Workbench.
+- Workbench heading and icon fixed so they cannot overlap.
+- Real interactive Workbench retained.
+- Lower catalogue/proof clutter removed from the homepage.
 
 ## Preserved
 - V24 Copilot intent hardening.
 - V27 Search Console SEO updates.
-- Full Recast Workbench functionality.
+- Full Workbench functionality.
 - API, Automation, pricing and entitlements.
