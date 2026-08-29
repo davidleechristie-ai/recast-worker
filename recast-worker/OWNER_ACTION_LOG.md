@@ -1,3 +1,23 @@
+## V23 clean opportunistic homepage
+
+- [x] Made the plain-English request the primary homepage action.
+- [x] Moved Workflow Copilot into a prominent always-visible surface.
+- [x] Removed duplicate homepage pathway cards already represented in main navigation.
+- [x] Preserved interactive demo as immediate proof.
+- [x] No backend, entitlement, Stripe or external configuration changes.
+- [ ] After deployment, verify hero → plain-English request on desktop and iPhone.
+- [ ] Compare `builder_automate_clicked` / workflow starts and interactive-demo engagement against the previous homepage.
+
+## V22 demo suite refresh
+
+- [x] Updated `/demo/` to reflect workflows, hosted API and Automation.
+- [x] Added dedicated Workflow, API and Automation guided demos.
+- [x] Corrected outdated privacy wording on the Demo page.
+- [x] Updated How-To demo description and sitemap.
+- [x] No new secrets, price IDs or external configuration introduced.
+- [ ] After deployment, open all four demo pages on desktop and iPhone and verify card/link layout.
+- [ ] Use the three guided demo URLs as direct destinations for launch content and product-demo videos.
+
 # Recast Owner Action Log
 
 This is the running list of tasks that **must be completed outside the codebase**.  

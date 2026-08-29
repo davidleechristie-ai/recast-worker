@@ -4,8 +4,8 @@
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <script>(function(){try{if(localStorage.getItem('recast_theme')==='light')document.documentElement.setAttribute('data-theme','light');}catch(e){}})();</script>
-<title>Live Demo — real datasets, thousands of rows | Recast</title>
-<meta name="description" content="Try Recast with real, full-sized datasets — Inspect, Transform, Validate, Compare, and Automate, one demo card per step. Drag or tap to load, entirely in your browser.">
+<title>Recast Demos — tools, workflows, API & automation</title>
+<meta name="description" content="Try Recast with real datasets, then see how a local data fix becomes a reusable workflow, hosted API endpoint or scheduled automation.">
 <meta property="og:type" content="website">
 <meta property="og:title" content="Live Demo — real datasets, thousands of rows | Recast">
 <meta property="og:description" content="Try Recast with real, full-sized datasets — Inspect, Transform, Validate, Compare, and Automate, one demo card per step. Drag or tap to load, entirely in your browser.">
@@ -102,6 +102,11 @@
   ]
 }
 </script>
+<style id="v22-demo-styles">
+.demo-next{margin:22px 0 42px;padding:24px;border:1px solid rgba(139,92,246,.18);border-radius:18px;background:linear-gradient(135deg,rgba(139,92,246,.07),rgba(59,130,246,.025))}
+.demo-next-head{max-width:760px}.demo-next-head h2{font-size:clamp(1.35rem,2.5vw,2rem);letter-spacing:-.035em;margin:6px 0 8px}.demo-next-head>p:last-child{font-size:.78rem;line-height:1.6;opacity:.62}
+.demo-next-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:10px;margin-top:18px}.demo-next-card{display:flex;flex-direction:column;min-height:170px;padding:17px;border:1px solid rgba(148,163,184,.12);border-radius:12px;background:rgba(10,15,28,.32);color:inherit;text-decoration:none}.demo-next-step{font-size:.58rem;letter-spacing:.12em;opacity:.48}.demo-next-card strong{font-size:.9rem;margin-top:15px}.demo-next-card>span:nth-of-type(2){font-size:.67rem;line-height:1.55;opacity:.57;margin-top:7px}.demo-next-card b{font-size:.65rem;color:#c4b5fd;margin-top:auto;padding-top:16px}@media(max-width:780px){.demo-next-grid{grid-template-columns:1fr}.demo-next-card{min-height:135px}}
+</style>
 </head>
 
 <body style="background:var(--bg);color:var(--text);margin:0;min-height:100vh;">
@@ -287,12 +292,20 @@
 
 <main>
   <section class="hero" id="tool">
-    <p class="eyebrow">Demo — Inspect. Transform. Validate. Compare. Automate.</p>
-    <h1>Real datasets, thousands of rows<br><em>the whole workbench, in five steps.</em></h1>
-    <p class="sub">No need to make up test data or read the docs first. Every card below loads a real, full-sized file — some jump straight into a specific tool, so you can see each stage of Recast in action with data that actually looks like something you'd work with. Drag a card onto the input panel below, or just tap it. Everything still runs entirely in your browser — nothing here is uploaded either.</p>
+    <p class="eyebrow">Demo — Solve once. Reuse. Deploy. Automate.</p>
+    <h1>Start with real data.<br><em>Then see what happens when the job repeats.</em></h1>
+    <p class="sub">Start with the real-dataset playground below to inspect, transform, validate and compare data locally in your browser. Then follow the guided demos to turn the same kind of work into a reusable workflow, deploy it as an authenticated endpoint, or schedule it to run without you.</p>
 
     <div class="demo-gallery" id="demoGallery">
 
+      <section class="demo-next" aria-label="Guided product demos">
+  <div class="demo-next-head"><p class="eyebrow">New — workflow & automation demos</p><h2>See the path from a one-off fix to something that runs repeatedly.</h2><p>The browser tools stay local. Hosted execution only starts when you explicitly deploy or run a workflow.</p></div>
+  <div class="demo-next-grid">
+    <a class="demo-next-card" href="workflows.html"><span class="demo-next-step">01 · WORKFLOW</span><strong>Build once, reuse the steps</strong><span>JSON → flatten → select fields → CSV, saved as a visual workflow.</span><b>Open workflow demo →</b></a>
+    <a class="demo-next-card" href="api.html"><span class="demo-next-step">02 · HOSTED API</span><strong>Deploy the workflow as an endpoint</strong><span>See the local→hosted boundary, authenticated run endpoint and usage model.</span><b>Open API demo →</b></a>
+    <a class="demo-next-card" href="automation.html"><span class="demo-next-step">03 · AUTOMATION</span><strong>Schedule it and monitor the run</strong><span>HTTPS input, encrypted credentials, webhook delivery, retries and run history.</span><b>Open Automation demo →</b></a>
+  </div>
+</section>
       <div class="demo-group-label"><span class="demo-group-num">1</span> Inspect — see what you're working with, automatically</div>
       <div class="demo-card" draggable="true" data-demo="orders_inspect" data-mode="json2csv" data-side="single">
         <div class="demo-card-head"><svg class="ico"><use href="#ico-json"/></svg><span class="demo-format">INSPECT</span></div>
@@ -357,11 +370,11 @@
         <span class="demo-meta">400 → 413 records · 225 real changes</span>
       </div>
 
-      <div class="demo-group-label"><span class="demo-group-num">5</span> Automate — turn what you just did into a saved, repeatable workflow</div>
+      <div class="demo-group-label"><span class="demo-group-num">5</span> Reuse — turn what you just did into a workflow, then choose API or Automation</div>
       <div class="demo-card" draggable="true" data-demo="orders_recipe" data-mode="json2csv" data-side="single">
         <div class="demo-card-head"><svg class="ico"><use href="#ico-json"/></svg><span class="demo-format">AUTOMATE</span></div>
-        <h3>Build a recipe from real data</h3>
-        <p>Opens Recipe Builder 2.0 with the orders data ready to go — chain steps visually, preview the result after any step, then save it as a recipe the API and CLI can run too.</p>
+        <h3>Build a reusable workflow from real data</h3>
+        <p>Opens the visual builder with the orders data ready to go — chain steps, preview the result, save the workflow, then continue to hosted API deployment or scheduled Automation when the job needs to run outside this browser.</p>
         <div class="demo-card-loading">Loading…</div>
         <span class="demo-meta">visual, step-by-step</span>
       </div>
@@ -889,7 +902,7 @@
       </details>
       <details class="faq-item">
         <summary>Is my data ever uploaded anywhere?</summary>
-        <p>No. Every conversion, diff, and validation runs entirely inside your browser tab. Nothing you paste into the tool is ever sent to a server — the only exception is the checkout process itself, which is handled directly by Stripe.</p>
+        <p>The browser tools process the data you paste locally in your browser. If you explicitly deploy a workflow or use a hosted API/Automation run, the input for that hosted execution is sent to Recast for server-side processing. Automation configuration can also store URLs, fixed input and encrypted credentials when you choose to configure them. Checkout is handled separately by Stripe.</p>
       </details>
       <details class="faq-item">
         <summary>What happens if I cancel?</summary>

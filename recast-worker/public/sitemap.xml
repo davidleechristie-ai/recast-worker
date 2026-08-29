@@ -74,4 +74,7 @@
   <url><loc>https://tryrecast.app/tools/compare-csv-files-by-id.html</loc><changefreq>monthly</changefreq><priority>0.8</priority></url>
   <url><loc>https://tryrecast.app/tools/compare-json-arrays-by-id.html</loc><changefreq>monthly</changefreq><priority>0.8</priority></url>
   <url><loc>https://tryrecast.app/tools/api-response-to-csv.html</loc><changefreq>monthly</changefreq><priority>0.8</priority></url>
+  <url><loc>https://tryrecast.app/demo/workflows.html</loc><changefreq>monthly</changefreq><priority>0.7</priority></url>
+  <url><loc>https://tryrecast.app/demo/api.html</loc><changefreq>monthly</changefreq><priority>0.7</priority></url>
+  <url><loc>https://tryrecast.app/demo/automation.html</loc><changefreq>monthly</changefreq><priority>0.7</priority></url>
 </urlset>

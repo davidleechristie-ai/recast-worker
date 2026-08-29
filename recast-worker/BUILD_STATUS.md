@@ -1,23 +1,19 @@
-# Recast V21 — SEO Authority Release
+# Recast V23 — Clean Opportunistic Homepage
 
 ## Objective
-Improve visibility for language developers actually search, while preserving the cleaner V19/V20 product experience.
+Reduce homepage choice overload and make the plain-English workflow request the obvious first interaction for a visitor who does not yet know which Recast tool they need.
 
 ## Changes
-- Privacy wording corrected across 29 tool pages.
-- Search-intent content strengthened on five priority pages:
-  - JSON to CSV
-  - CSV Diff / compare CSV files
-  - JSON Diff / compare JSON files
-  - JSONPath Tester
-  - Flatten Nested JSON
-- Three focused long-tail pages added:
-  - `/tools/compare-csv-files-by-id.html`
-  - `/tools/compare-json-arrays-by-id.html`
-  - `/tools/api-response-to-csv.html`
-- Contextual internal linking added.
-- Tool directory and sitemap updated.
-- No speculative bulk page generation: these pages correspond to concrete developer problems and existing Recast functionality.
+- Hero primary CTA is now `Tell Recast what you need`.
+- Plain-English Workflow Copilot moved out of progressive disclosure and into a prominent standalone surface immediately after the hero.
+- Added simple outcome-led explanation and concrete example request.
+- Removed the three floating/duplicate pathway cards for Tools, Workflows and Automation because those destinations are already available through the main navigation.
+- Kept the interactive example directly below the plain-English request as proof rather than another navigation choice.
+- Existing deep product surfaces, pricing, tools and automation remain available through navigation and progressive disclosure.
+- Mobile layout remains single-column.
 
-## Measurement
-Track the fixed 20-keyword search scoreboard. Prioritise pages that begin receiving impressions in positions 8–30. Do not rewrite pages merely because Recast is not yet ranking; domain authority and distribution remain the primary constraint.
+## Principle
+The homepage should answer three questions quickly:
+1. What can I ask Recast to do?
+2. Can I see it work?
+3. Where do I go deeper if I need a specific tool or hosted capability?

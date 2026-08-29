@@ -82,6 +82,12 @@
     } catch (e) {}
   })();
 </script>
+<style id="v23-clean-home">
+.ai-request-feature{max-width:1120px;margin:28px auto 34px;padding:clamp(22px,4vw,38px);border:1px solid rgba(139,92,246,.22);border-radius:22px;background:linear-gradient(135deg,rgba(124,58,237,.10),rgba(37,99,235,.035));box-shadow:0 24px 70px rgba(0,0,0,.12)}
+.ai-request-intro{max-width:760px;margin-bottom:18px}.ai-request-intro h2{font-size:clamp(1.65rem,3.6vw,2.75rem);line-height:1.03;letter-spacing:-.045em;margin:7px 0 12px}.ai-request-intro>p:last-child{font-size:.82rem;line-height:1.65;opacity:.68;max-width:700px}
+.ai-request-feature .workflow-copilot{margin:0}.landing-home .hero-v19{padding-bottom:22px}.landing-home .hero-v19-actions{margin-top:24px}
+@media(max-width:760px){.ai-request-feature{margin:18px 12px 28px;padding:20px 15px;border-radius:16px}}
+</style>
 </head>
 
 <body class="landing-home" style="background:var(--bg);color:var(--text);margin:0;min-height:100vh;">
@@ -273,8 +279,8 @@
         <h1>Fix the data.<br><em>Then stop fixing it.</em></h1>
         <p class="sub">Use Recast instantly for JSON, CSV, XML, YAML and API data. When the job repeats, turn the same steps into a reusable workflow, endpoint or schedule.</p>
         <div class="hero-v19-actions">
-          <a class="btn btn-gold" href="#instantDemo">See it work <span>↓</span></a>
-          <a class="btn btn-ghost" href="#workflowTemplates" data-depth-link="templates">Start with a workflow</a>
+          <a class="btn btn-gold" href="#workflowCopilot">Tell Recast what you need <span>↓</span></a>
+          <a class="btn btn-ghost" href="#instantDemo">See an example</a>
         </div>
         <div class="hero-v19-proof">
           <span>✓ No signup for browser tools</span>
@@ -297,65 +303,16 @@
       </div>
     </div>
 
-    <div class="pathway-strip" aria-label="Ways to use Recast">
-      <a href="#workbench" class="pathway-card">
-        <small>01 · ONE-OFF JOB</small><strong>Use a tool now</strong><span>Convert, inspect, validate or compare data in the browser.</span><b>Open the workbench →</b>
-      </a>
-      <a href="#workflowTemplates" class="pathway-card" data-depth-link="templates">
-        <small>02 · REPEATABLE JOB</small><strong>Build a workflow</strong><span>Chain transformations, test them, save them and reuse them.</span><b>Explore workflows →</b>
-      </a>
-      <a href="#automationHub" class="pathway-card" data-depth-link="automation">
-        <small>03 · RUNS WITHOUT YOU</small><strong>Automate it</strong><span>Deploy as an endpoint or run on a schedule with retries and history.</span><b>See Automation →</b>
-      </a>
-    </div>
-
-    <section class="instant-demo" id="instantDemo">
-      <div class="demo-intro">
-        <p class="eyebrow">Interactive demo</p>
-        <h3>See a workflow finish before you build one.</h3>
-        <p>Choose a common data job. Recast shows the input, the workflow and the real transformed result — then opens the same workflow as a template.</p>
-      </div>
-      <div class="demo-shell">
-        <div class="demo-tabs" role="tablist">
-          <button class="active" data-demo="api-csv" type="button">API → CSV</button>
-          <button data-demo="clean-webhook" type="button">Clean → webhook</button>
-          <button data-demo="jsonpath" type="button">JSONPath → CSV</button>
-        </div>
-        <div class="demo-workspace">
-          <div class="demo-pane"><div class="demo-pane-head"><span>INPUT</span><b id="demoInputLabel">API response</b></div><pre id="demoInput"></pre></div>
-          <div class="demo-middle">
-            <div class="demo-flow-mini" id="demoFlow"></div>
-            <button class="demo-run" id="demoRun" type="button"><span>▶</span> Run demo</button>
-            <small id="demoStatus">Ready to run locally</small>
-          </div>
-          <div class="demo-pane"><div class="demo-pane-head"><span>RESULT</span><b id="demoOutputLabel">CSV</b></div><pre id="demoOutput"><span class="demo-placeholder">Run the workflow to see output</span></pre></div>
-        </div>
-        <div class="demo-footer"><div><strong id="demoResultTitle">No setup. No account.</strong><span id="demoResultMeta">This demo runs in your browser.</span></div><a class="btn btn-gold" id="demoTemplateCta" href="?template=api-json-csv#workflowTemplates">Use this workflow →</a></div>
-      </div>
-    </section>
-
-    <section class="home-depth" id="exploreRecast">
-      <div class="home-depth-head">
-        <div><p class="eyebrow">Go deeper when you're ready</p><h2>Choose what you want to do next.</h2></div>
-        <div class="depth-tabs" role="tablist" aria-label="Explore Recast">
-          <button type="button" class="active" data-depth-tab="templates">Templates</button>
-          <button type="button" data-depth-tab="builder">Build</button>
-          <button type="button" data-depth-tab="library">Saved</button>
-          <button type="button" data-depth-tab="automation">Automation</button>
-        </div>
-      </div>
-      <div class="depth-panels">
-<section data-depth-panel="templates" class="workflow-templates" id="workflowTemplates">
-  <div class="wf-head">
-    <div><p class="eyebrow">Workflow templates</p><h3>Start with a workflow that already makes sense.</h3>
-      <p>Choose a common data job, preview the pipeline, then customise it in Recipe Builder. Templates stay local until you explicitly deploy or automate them.</p></div>
-    <span class="wf-count">6 launch templates</span>
+    <section class="ai-request-feature" aria-labelledby="aiRequestTitle">
+  <div class="ai-request-intro">
+    <p class="eyebrow">Start here</p>
+    <h2 id="aiRequestTitle">Describe what you need in plain English.</h2>
+    <p>Don't hunt through tools or build a pipeline from scratch. Tell Recast the outcome — for example, “flatten this JSON, remove internal_id and convert it to CSV” — and Recast will build the workflow for you to inspect before anything runs.</p>
   </div>
-  <div class="template-grid" id="workflowTemplateGrid"></div>
-</section>
 
 
-    <div data-depth-panel="builder" class="workflow-copilot" id="workflowCopilot">
+
+    <div class="workflow-copilot" id="workflowCopilot">
       <div class="wc-head">
         <div>
           <p class="eyebrow">Workflow Builder</p>
@@ -389,6 +346,51 @@
         <p class="wc-note" id="wcNote"></p>
       </div>
     </div>
+</section>
+<section class="instant-demo" id="instantDemo">
+      <div class="demo-intro">
+        <p class="eyebrow">Interactive demo</p>
+        <h3>See a workflow finish before you build one.</h3>
+        <p>Choose a common data job. Recast shows the input, the workflow and the real transformed result — then opens the same workflow as a template.</p>
+      </div>
+      <div class="demo-shell">
+        <div class="demo-tabs" role="tablist">
+          <button class="active" data-demo="api-csv" type="button">API → CSV</button>
+          <button data-demo="clean-webhook" type="button">Clean → webhook</button>
+          <button data-demo="jsonpath" type="button">JSONPath → CSV</button>
+        </div>
+        <div class="demo-workspace">
+          <div class="demo-pane"><div class="demo-pane-head"><span>INPUT</span><b id="demoInputLabel">API response</b></div><pre id="demoInput"></pre></div>
+          <div class="demo-middle">
+            <div class="demo-flow-mini" id="demoFlow"></div>
+            <button class="demo-run" id="demoRun" type="button"><span>▶</span> Run demo</button>
+            <small id="demoStatus">Ready to run locally</small>
+          </div>
+          <div class="demo-pane"><div class="demo-pane-head"><span>RESULT</span><b id="demoOutputLabel">CSV</b></div><pre id="demoOutput"><span class="demo-placeholder">Run the workflow to see output</span></pre></div>
+        </div>
+        <div class="demo-footer"><div><strong id="demoResultTitle">No setup. No account.</strong><span id="demoResultMeta">This demo runs in your browser.</span></div><a class="btn btn-gold" id="demoTemplateCta" href="?template=api-json-csv#workflowTemplates">Use this workflow →</a></div>
+      </div>
+    </section>
+
+    <section class="home-depth" id="exploreRecast">
+      <div class="home-depth-head">
+        <div><p class="eyebrow">Go deeper when you're ready</p><h2>Choose what you want to do next.</h2></div>
+        <div class="depth-tabs" role="tablist" aria-label="Explore Recast">
+          <button type="button" class="active" data-depth-tab="templates">Templates</button>
+          <button type="button" data-depth-tab="builder" data-copilot-jump>Build</button>
+          <button type="button" data-depth-tab="library">Saved</button>
+          <button type="button" data-depth-tab="automation">Automation</button>
+        </div>
+      </div>
+      <div class="depth-panels">
+<section data-depth-panel="templates" class="workflow-templates" id="workflowTemplates">
+  <div class="wf-head">
+    <div><p class="eyebrow">Workflow templates</p><h3>Start with a workflow that already makes sense.</h3>
+      <p>Choose a common data job, preview the pipeline, then customise it in Recipe Builder. Templates stay local until you explicitly deploy or automate them.</p></div>
+    <span class="wf-count">6 launch templates</span>
+  </div>
+  <div class="template-grid" id="workflowTemplateGrid"></div>
+</section>
 
     
 
@@ -1283,5 +1285,13 @@
  </div>
 </div>
 
+<script id="v23-clean-home-script">
+document.addEventListener('click', function(e){
+  const b=e.target.closest('[data-copilot-jump]');
+  if(!b) return;
+  e.preventDefault();
+  document.getElementById('workflowCopilot')?.scrollIntoView({behavior:'smooth',block:'center'});
+});
+</script>
 </body>
 </html>

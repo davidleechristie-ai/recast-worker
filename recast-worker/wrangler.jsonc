@@ -16,7 +16,7 @@
     "secret_name": "RESEND_API_KEY"
   }
 ],
-    "name": "falling-cloud-0deb",
+  "name": "falling-cloud-0deb",
   "main": "src/worker.js",
   "compatibility_date": "2026-08-13",
 
