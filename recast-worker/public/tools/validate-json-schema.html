@@ -4,8 +4,8 @@
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <script>(function(){try{if(localStorage.getItem('recast_theme')==='light')document.documentElement.setAttribute('data-theme','light');}catch(e){}})();</script>
-<title>Validate JSON Against a Schema — online | Recast</title>
-<meta name="description" content="Check whether JSON data matches a JSON Schema (draft-07 subset), with exact violation paths and messages. Runs in your browser — also available as a CLI for CI pipelines.">
+<title>JSON Schema Validator – Validate JSON Against a Schema | Recast</title>
+<meta name="description" content="Validate JSON against a JSON Schema online. Paste your JSON and schema to find structural, type and required-field validation errors in your browser.">
 <meta property="og:type" content="website">
 <meta property="og:title" content="Validate JSON Against a Schema — online | Recast">
 <meta property="og:description" content="Check whether JSON data matches a JSON Schema (draft-07 subset), with exact violation paths and messages. Runs in your browser — also available as a CLI for CI pipelines.">
@@ -102,6 +102,11 @@
   ]
 }
 </script>
+<style id="search-console-seo-v27">
+.seo-intent-block{max-width:980px;margin:32px auto;padding:26px 28px;border-top:1px solid rgba(255,255,255,.10)}
+.seo-intent-block h2{margin:0 0 10px;font-size:1.45rem}.seo-intent-block h3{margin:22px 0 8px;font-size:1.05rem}
+.seo-intent-block p{max-width:820px;line-height:1.7;color:var(--muted,#aeb4c8)}.seo-intent-block a{text-decoration:underline;text-underline-offset:3px}
+</style>
 </head>
 
 <body style="background:var(--bg);color:var(--text);margin:0;min-height:100vh;">
@@ -288,7 +293,7 @@
 <main>
   <section class="hero" id="tool">
     <p class="eyebrow">Your private data workbench</p>
-    <h1>Validate JSON Against a Schema</h1>
+    <h1>JSON Schema Validator</h1>
     <p class="sub">Paste a JSON Schema and a data payload to check whether the data actually conforms — get back the exact path and reason for every violation (<code>user.age: must be &gt;= 0</code>), not just pass/fail. The same engine is available as a <a href="https://www.npmjs.com/package/recast-cli">CLI</a> with a proper exit code, for gating a CI pipeline on schema conformance. <a href="../blog/json-schema-validation-guide.html">Read the full guide →</a></p>
     <p style="font-size:13px;"><a href="../index.html" style="color:#B9CBDA;">← Full toolkit (all 23 tools)</a></p>
 
@@ -820,6 +825,7 @@
   </div>
 </main>
 
+<section class="seo-intent-block"><h2>Validate JSON against a JSON Schema</h2><p>Check whether JSON data conforms to the schema you expect. Recast helps surface incorrect value types, missing required fields and structural mismatches before the data reaches an API or pipeline.</p><h3>Need a schema first?</h3><p>Use the <a href="/tools/json-schema-generator.html">JSON Schema Generator</a> to generate one from example JSON. For syntax-only checks, use the <a href="/tools/json-validator.html">JSON Validator</a>.</p></section>
 <footer>
   <div class="tb-row foot-row" style="max-width:1180px;margin:0 auto;padding:0 24px;">
     <span>© 2026 Recast · tryrecast.app · Built with care, no tracking scripts.</span>

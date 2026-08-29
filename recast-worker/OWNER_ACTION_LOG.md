@@ -1,3 +1,13 @@
+## V27 Google Search Console follow-up
+After deployment, request indexing for:
+- https://tryrecast.app/tools/json-schema-generator.html
+- https://tryrecast.app/tools/validate-json-schema.html
+- https://tryrecast.app/tools/json-diff.html
+- https://tryrecast.app/tools/xml-diff.html
+- https://tryrecast.app/tools/flatten-json.html
+
+Then allow 7–14 days before materially changing these pages again.
+
 ## V26 minimal acquisition homepage
 
 - [x] Made “Fix the data. Then stop fixing it.” the main homepage strapline.

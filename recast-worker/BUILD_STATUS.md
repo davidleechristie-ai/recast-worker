@@ -1,31 +1,14 @@
-# Recast V26 — Minimal Acquisition Homepage
+# Recast V27 — Search Console SEO Consolidation
 
-## Goal
-Turn the homepage into a focused acquisition surface for new visitors rather than a catalogue of Recast features.
+Built from V26.1 using real Google Search Console evidence.
 
-## Visible homepage
-1. Primary strapline: “Fix the data. Then stop fixing it.”
-2. One-sentence value proposition.
-3. Plain-English Workflow Copilot request box.
-4. Four short example prompts.
-5. Four commercial proof points:
-   - Private by default
-   - No signup
-   - Free to start
-   - Deploy & automate
+Optimised only:
+- JSON Schema Generator
+- Validate JSON Schema
+- JSON Diff
+- XML Diff
+- Flatten JSON
 
-## Removed from the visible homepage
-- Interactive demo
-- Progressive feature/depth section
-- Workflow templates
-- Workflow Builder feature section
-- Workflow Library
-- Hosted Automation dashboard
-- Pricing feature block
-- FAQ
-- API feature block
+Changes: search-intent titles/H1/meta descriptions, concise supporting content below the tools, and contextual internal links within the Schema, Comparison and Transformation clusters.
 
-These existing surfaces remain in the codebase/routes where required; the homepage no longer tries to explain the entire product before a visitor engages.
-
-## Functional preservation
-The V24 hardened Copilot parser, workflow generation, save/run/deploy actions, tools, API, automation and supporting pages are unchanged.
+Deliberately unchanged: minimalist homepage, JSON Formatter, JSON → CSV, Unflatten JSON, JSONPath Tester, Copilot, pricing, API and Automation.
