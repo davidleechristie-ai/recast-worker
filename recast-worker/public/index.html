@@ -143,87 +143,74 @@ body{background:#080b1a}
   .minimal-proof{width:calc(100% - 36px);margin-top:30px!important}
 }
 </style>
-<style id="v31-approved-homepage">
-:root{
-  --home-purple:#8b5cf6;
-  --home-purple-2:#6f4be8;
-  --home-panel:#0a1020;
-}
+
+<style id="v32-homepage-structure-fix">
 .minimal-home{
+  padding:64px 24px 48px!important;
   min-height:auto!important;
-  padding:64px 24px 42px!important;
   background:
-    radial-gradient(circle at 18% 8%, rgba(123,82,246,.08), transparent 32%),
-    radial-gradient(circle at 82% 14%, rgba(43,113,255,.05), transparent 28%),
-    transparent!important;
+    radial-gradient(circle at 18% 10%,rgba(127,82,246,.08),transparent 32%),
+    radial-gradient(circle at 85% 15%,rgba(55,115,255,.05),transparent 27%)!important;
 }
 .minimal-hero-inner{
-  width:min(1160px,100%)!important;
+  width:min(1120px,100%)!important;
   margin:0 auto!important;
+  display:block!important;
 }
 .minimal-hero-copy{
   width:min(760px,100%)!important;
   max-width:none!important;
+  margin:0!important;
   text-align:left!important;
 }
 .minimal-hero-copy h1{
-  margin:0 0 24px!important;
-  font-size:clamp(4.2rem,7vw,6.8rem)!important;
+  margin:0 0 26px!important;
+  font-size:clamp(4rem,7vw,6.6rem)!important;
   line-height:.94!important;
-  letter-spacing:-.058em!important;
-  font-style:normal!important;
+  letter-spacing:-.06em!important;
   text-align:left!important;
 }
-.minimal-hero-copy .hero-primary,
-.minimal-hero-copy .hero-accent{
-  display:block!important;
-  font-style:normal!important;
-}
-.minimal-hero-copy .hero-primary{
-  color:#f6f7fb!important;
-}
-.minimal-hero-copy .hero-accent{
-  margin-top:6px!important;
-  color:var(--home-purple)!important;
-  background:linear-gradient(90deg,#965fff 0%,#7a58f1 72%,#6c50e2 100%);
+.minimal-hero-copy h1 span{display:block!important}
+.hero-primary{color:#f7f8fc!important}
+.hero-accent{
+  margin-top:8px!important;
+  color:#8b5cf6!important;
+  background:linear-gradient(90deg,#9860ff,#7a58f1 75%,#6d50e4);
   -webkit-background-clip:text;
   background-clip:text;
   -webkit-text-fill-color:transparent;
 }
 .minimal-hero-copy .sub{
   width:min(700px,100%)!important;
-  max-width:none!important;
-  margin:0 0 48px!important;
+  margin:0 0 46px!important;
   color:var(--text-muted)!important;
-  font-size:clamp(1.08rem,1.55vw,1.22rem)!important;
+  font-size:1.12rem!important;
   line-height:1.65!important;
-  text-align:left!important;
 }
-.minimal-home .ai-request-feature{
+.ai-request-feature{
   width:min(1040px,100%)!important;
   margin:0!important;
   padding:0!important;
+  display:block!important;
   background:transparent!important;
   border:0!important;
 }
 .minimal-request-heading{
   margin:0 0 14px!important;
-  color:#f5f7fb!important;
-  font-size:1.25rem!important;
+  font-size:1.24rem!important;
   line-height:1.25!important;
-  font-weight:700!important;
-  letter-spacing:-.02em!important;
   text-align:left!important;
 }
-.minimal-home .workflow-copilot{
+.workflow-copilot{
   width:100%!important;
   margin:0!important;
   padding:0!important;
+  display:block!important;
   background:transparent!important;
   border:0!important;
   box-shadow:none!important;
 }
-.minimal-home .wc-input-row{
+.wc-input-row{
   display:grid!important;
   grid-template-columns:minmax(0,1fr) auto!important;
   gap:10px!important;
@@ -231,36 +218,23 @@ body{background:#080b1a}
   padding:8px!important;
   border:1px solid rgba(139,92,246,.62)!important;
   border-radius:14px!important;
-  background:linear-gradient(180deg,rgba(10,15,33,.88),rgba(7,11,26,.88))!important;
+  background:linear-gradient(180deg,rgba(10,15,33,.9),rgba(7,11,26,.88))!important;
 }
-.minimal-home .wc-prompt{
+.wc-prompt{
   width:100%!important;
   min-height:72px!important;
-  margin:0!important;
-  padding:20px 20px!important;
+  padding:20px!important;
   border:0!important;
   background:transparent!important;
-  box-shadow:none!important;
-  color:#f5f7fb!important;
   resize:none!important;
-  font-size:1rem!important;
-  line-height:1.45!important;
+  box-shadow:none!important;
 }
-.minimal-home .wc-prompt::placeholder{
-  color:rgba(171,179,202,.70)!important;
-}
-.minimal-home .wc-build{
-  align-self:stretch!important;
+.wc-build{
   min-width:196px!important;
   min-height:72px!important;
-  padding:0 24px!important;
   border-radius:10px!important;
-  font-weight:700!important;
   background:linear-gradient(135deg,#7340d8,#8f5cf6)!important;
-  box-shadow:0 10px 26px rgba(119,72,218,.22)!important;
-}
-.minimal-home .wc-examples{
-  display:none!important;
+  font-weight:700!important;
 }
 .home-quick-actions{
   width:min(1040px,100%)!important;
@@ -273,99 +247,84 @@ body{background:#080b1a}
   display:flex!important;
   align-items:center!important;
   justify-content:flex-start!important;
-  gap:14px!important;
+  gap:12px!important;
   min-width:0!important;
-  min-height:112px!important;
-  padding:18px 20px!important;
-  color:#f4f6fb!important;
-  background:linear-gradient(180deg,rgba(10,15,31,.70),rgba(8,12,27,.62))!important;
+  min-height:86px!important;
+  padding:16px 18px!important;
+  color:#f5f7fb!important;
+  background:rgba(9,14,30,.68)!important;
   border:1px solid rgba(255,255,255,.14)!important;
-  border-radius:13px!important;
-  cursor:pointer!important;
+  border-radius:12px!important;
   font:inherit!important;
   text-align:left!important;
-}
-.home-quick-action:hover{
-  border-color:rgba(139,92,246,.66)!important;
-  background:rgba(139,92,246,.065)!important;
+  cursor:pointer!important;
 }
 .home-quick-action .ico{
+  width:24px!important;
+  height:24px!important;
   flex:0 0 auto!important;
-  width:28px!important;
-  height:28px!important;
-  color:var(--home-purple)!important;
+  color:#8b5cf6!important;
 }
 .home-quick-action span{
-  min-width:0!important;
-  font-size:1rem!important;
-  line-height:1.45!important;
-  font-weight:500!important;
+  font-size:.96rem!important;
+  line-height:1.35!important;
+  font-weight:600!important;
 }
 .home-workbench-section{
-  width:min(1160px,calc(100% - 48px))!important;
-  margin:82px auto 88px!important;
+  width:min(1120px,calc(100% - 48px))!important;
+  margin:78px auto 84px!important;
   padding:0!important;
   border:0!important;
 }
 .home-workbench-heading{
-  display:flex!important;
-  align-items:center!important;
-  justify-content:flex-start!important;
-  margin:0 0 20px!important;
+  display:block!important;
+  margin:0 0 22px!important;
 }
 .home-workbench-heading h2{
   position:relative!important;
+  display:inline-block!important;
   margin:0!important;
   padding-left:54px!important;
   color:#f5f7fb!important;
-  font-size:clamp(2rem,3vw,2.6rem)!important;
-  line-height:1!important;
-  letter-spacing:-.045em!important;
+  font-size:clamp(2rem,3vw,2.55rem)!important;
+  line-height:1.1!important;
+  letter-spacing:-.04em!important;
 }
 .home-workbench-heading h2::before{
   content:""!important;
   position:absolute!important;
-  left:2px!important;
+  left:0!important;
   top:50%!important;
-  width:14px!important;
-  height:14px!important;
+  width:13px!important;
+  height:13px!important;
   transform:translateY(-50%)!important;
   border-radius:3px!important;
-  background:var(--home-purple)!important;
-  box-shadow:
-    18px 0 0 var(--home-purple),
-    0 18px 0 var(--home-purple),
-    18px 18px 0 var(--home-purple)!important;
+  background:#8b5cf6!important;
+  box-shadow:18px 0 0 #8b5cf6,0 18px 0 #8b5cf6,18px 18px 0 #8b5cf6!important;
 }
-.home-workbench-section .mode-nav{
-  display:none!important;
-}
+.home-workbench-section .mode-nav{display:none!important}
 .home-workbench-section .workbench{
   overflow:hidden!important;
   border:1px solid rgba(139,92,246,.54)!important;
   border-radius:15px!important;
   background:linear-gradient(180deg,rgba(8,14,29,.86),rgba(6,11,24,.88))!important;
-  box-shadow:0 26px 72px rgba(0,0,0,.26)!important;
 }
-.minimal-proof,.related-groups,.privacy-banner,.hero-preview,.quick-start{
-  display:none!important;
-}
-@media(max-width:940px){
+.minimal-proof,.related-groups,.privacy-banner,.hero-preview,.quick-start{display:none!important}
+@media(max-width:900px){
   .home-quick-actions{grid-template-columns:repeat(2,minmax(0,1fr))!important}
 }
-@media(max-width:760px){
+@media(max-width:700px){
   .minimal-home{padding:46px 18px 30px!important}
   .minimal-hero-copy h1{font-size:clamp(3.4rem,14vw,5rem)!important}
-  .minimal-hero-copy .sub{margin-bottom:36px!important}
-  .minimal-home .wc-input-row{grid-template-columns:1fr!important}
-  .minimal-home .wc-build{min-width:0!important;min-height:54px!important}
-  .home-workbench-section{width:calc(100% - 36px)!important;margin-top:62px!important}
+  .wc-input-row{grid-template-columns:1fr!important}
+  .wc-build{min-width:0!important;min-height:54px!important}
+  .home-workbench-section{width:calc(100% - 36px)!important;margin-top:60px!important}
 }
 @media(max-width:520px){
   .home-quick-actions{grid-template-columns:1fr!important}
-  .home-quick-action{min-height:84px!important}
 }
 </style>
+
 </head>
 
 <body class="landing-home" style="background:var(--bg);color:var(--text);margin:0;min-height:100vh;">
@@ -550,25 +509,26 @@ body{background:#080b1a}
 </header>
 
 <main>
-  <section class="hero hero-v19 minimal-home" id="tool">
+  
+<section class="hero minimal-home" id="tool">
   <div class="minimal-hero-inner">
     <div class="minimal-hero-copy">
-      <h1><span class="hero-primary">Fix the data.</span><span class="hero-accent">Then stop fixing it.</span></h1>
+      <h1>
+        <span class="hero-primary">Fix the data.</span>
+        <span class="hero-accent">Then stop fixing it.</span>
+      </h1>
       <p class="sub">Transform, compare, validate and inspect JSON, CSV, XML and API data in your browser. Turn repeatable jobs into reusable workflows, APIs and automations.</p>
     </div>
+
     <div class="ai-request-feature" aria-labelledby="requestPromptHeading">
       <h2 id="requestPromptHeading" class="minimal-request-heading">Tell Recast what you want to do.</h2>
+
       <div class="workflow-copilot" id="workflowCopilot">
         <div class="wc-input-row">
           <textarea id="wcPrompt" class="wc-prompt" rows="2" placeholder="e.g. compare two CSV files and output differences only"></textarea>
           <button class="btn btn-gold wc-build" id="wcBuildBtn">Build workflow <span>→</span></button>
         </div>
-        <div class="wc-examples" aria-label="Example requests">
-          <button type="button" data-wc-example="Compare two CSV files and output differences only">Compare CSV files</button>
-          <button type="button" data-wc-example="Flatten this nested JSON, then convert it to CSV">Flatten JSON</button>
-          <button type="button" data-wc-example="Convert this JSON to CSV">JSON → CSV</button>
-          <button type="button" data-wc-example="Extract $.users[*].email with JSONPath">Extract with JSONPath</button>
-        </div>
+
         <div class="wc-result" id="wcResult" hidden>
           <div class="wc-result-head">
             <div><strong id="wcResultTitle">Workflow ready</strong><span id="wcResultMeta"></span></div>
@@ -585,28 +545,28 @@ body{background:#080b1a}
         </div>
       </div>
     </div>
-  </div>
 
-    
     <div class="home-quick-actions" aria-label="Popular Recast actions">
       <button type="button" class="home-quick-action" data-home-mode="json2csv">
         <svg class="ico"><use href="#ico-arrow"/></svg>
-        <span>Convert<br>JSON to CSV</span>
+        <span>Convert JSON to CSV</span>
       </button>
       <button type="button" class="home-quick-action" data-home-mode="diffJson">
         <svg class="ico"><use href="#ico-diff"/></svg>
-        <span>Compare two<br>JSON files</span>
+        <span>Compare two JSON files</span>
       </button>
       <button type="button" class="home-quick-action" data-home-mode="jsonPath">
         <svg class="ico"><use href="#ico-code"/></svg>
-        <span>Extract data with<br>JSONPath</span>
+        <span>Extract data with JSONPath</span>
       </button>
       <button type="button" class="home-quick-action" data-home-mode="validateSchema">
         <svg class="ico"><use href="#ico-check"/></svg>
-        <span>Validate<br>JSON schema</span>
+        <span>Validate JSON schema</span>
       </button>
     </div>
+  </div>
 </section>
+
 <section class="instant-demo" id="instantDemo">
       <div class="demo-intro">
         <h3>See a workflow finish before you build one.</h3>
@@ -697,58 +657,12 @@ body{background:#080b1a}
       </div>
     </section>
 
-    <section class="home-workbench-section" aria-labelledby="homeWorkbenchHeading">
+    
+<section class="home-workbench-section" aria-labelledby="homeWorkbenchHeading">
   <div class="home-workbench-heading">
-      <h2 id="homeWorkbenchHeading">Workbench</h2>
-    </div>
-    <div class="mode-nav" id="modeNav">
-      <div class="mode-groups" id="modeGroups">
-        <button class="mode-group-btn active" data-group="convert">Convert</button>
-        <button class="mode-group-btn" data-group="transform">Transform</button>
-        <button class="mode-group-btn" data-group="validate">Validate &amp; Format</button>
-        <button class="mode-group-btn" data-group="compare">Compare</button>
-        <button class="mode-group-btn" data-group="query">Query</button>
-        <button class="mode-group-btn" data-group="schema">Schema</button>
-      </div>
-      <div class="mode-chips" id="modes">
-        <button class="mode-chip active" data-mode="json2csv" data-group="convert"><svg class="ico"><use href="#ico-json"/></svg><svg class="ico ico-swap"><use href="#ico-arrow"/></svg><svg class="ico"><use href="#ico-table"/></svg>JSON → CSV</button>
-        <button class="mode-chip" data-mode="csv2json" data-group="convert"><svg class="ico"><use href="#ico-table"/></svg><svg class="ico ico-swap"><use href="#ico-arrow"/></svg><svg class="ico"><use href="#ico-json"/></svg>CSV → JSON</button>
-        <button class="mode-chip" data-mode="json2xml" data-group="convert"><svg class="ico"><use href="#ico-json"/></svg><svg class="ico ico-swap"><use href="#ico-arrow"/></svg><svg class="ico"><use href="#ico-tag"/></svg>JSON → XML</button>
-        <button class="mode-chip" data-mode="xml2json" data-group="convert"><svg class="ico"><use href="#ico-tag"/></svg><svg class="ico ico-swap"><use href="#ico-arrow"/></svg><svg class="ico"><use href="#ico-json"/></svg>XML → JSON</button>
-        <button class="mode-chip" data-mode="json2yaml" data-group="convert"><svg class="ico"><use href="#ico-json"/></svg><svg class="ico ico-swap"><use href="#ico-arrow"/></svg><svg class="ico"><use href="#ico-yaml"/></svg>JSON → YAML</button>
-        <button class="mode-chip" data-mode="yaml2json" data-group="convert"><svg class="ico"><use href="#ico-yaml"/></svg><svg class="ico ico-swap"><use href="#ico-arrow"/></svg><svg class="ico"><use href="#ico-json"/></svg>YAML → JSON</button>
-        <button class="mode-chip" data-mode="json2markdown" data-group="convert"><svg class="ico"><use href="#ico-json"/></svg><svg class="ico ico-swap"><use href="#ico-arrow"/></svg><svg class="ico"><use href="#ico-mdtable"/></svg>JSON → Markdown</button>
-        <button class="mode-chip" data-mode="markdown2json" data-group="convert"><svg class="ico"><use href="#ico-mdtable"/></svg><svg class="ico ico-swap"><use href="#ico-arrow"/></svg><svg class="ico"><use href="#ico-json"/></svg>Markdown → JSON</button>
-        <button class="mode-chip hidden" data-mode="flatten" data-group="transform"><svg class="ico"><use href="#ico-tree"/></svg>Flatten JSON</button>
-        <button class="mode-chip hidden" data-mode="unflatten" data-group="transform"><svg class="ico"><use href="#ico-tree"/></svg>Unflatten JSON</button>
-        <button class="mode-chip hidden" data-mode="sortJson" data-group="transform"><svg class="ico"><use href="#ico-json"/></svg>Sort keys</button>
-        <button class="mode-chip hidden" data-mode="validateJson" data-group="validate"><svg class="ico"><use href="#ico-check"/></svg>Validate JSON</button>
-        <button class="mode-chip hidden" data-mode="validateXml" data-group="validate"><svg class="ico"><use href="#ico-check"/></svg>Validate XML</button>
-        <button class="mode-chip hidden" data-mode="formatJson" data-group="validate"><svg class="ico"><use href="#ico-json"/></svg>Format JSON</button>
-        <button class="mode-chip hidden" data-mode="formatXml" data-group="validate"><svg class="ico"><use href="#ico-tag"/></svg>Format XML</button>
-        <button class="mode-chip hidden" data-mode="diffJson" data-group="compare"><svg class="ico"><use href="#ico-diff"/></svg>Diff JSON</button>
-        <button class="mode-chip hidden" data-mode="diffXml" data-group="compare"><svg class="ico"><use href="#ico-diff"/></svg>Diff XML</button>
-        <button class="mode-chip hidden" data-mode="diffCsv" data-group="compare"><svg class="ico"><use href="#ico-diff"/></svg>Diff CSV</button>
-        <button class="mode-chip hidden" data-mode="jsonPath" data-group="query"><svg class="ico"><use href="#ico-path"/></svg>JSONPath</button>
-        <button class="mode-chip hidden" data-mode="jsonSchema" data-group="schema"><svg class="ico"><use href="#ico-schema"/></svg>JSON → Schema</button>
-        <button class="mode-chip hidden" data-mode="jsonStructure" data-group="schema"><svg class="ico"><use href="#ico-tree"/></svg>JSON → Structure</button>
-        <button class="mode-chip hidden" data-mode="json2ts" data-group="schema"><svg class="ico"><use href="#ico-code"/></svg>JSON → TypeScript</button>
-        <button class="mode-chip hidden" data-mode="json2zod" data-group="schema"><svg class="ico"><use href="#ico-code"/></svg>JSON → Zod</button>
-        <button class="mode-chip hidden" data-mode="json2python" data-group="schema"><svg class="ico"><use href="#ico-code"/></svg>JSON → Python</button>
-        <button class="mode-chip hidden" data-mode="json2pydantic" data-group="schema"><svg class="ico"><use href="#ico-code"/></svg>JSON → Pydantic</button>
-        <button class="mode-chip hidden" data-mode="json2go" data-group="schema"><svg class="ico"><use href="#ico-code"/></svg>JSON → Go</button>
-        <button class="mode-chip hidden" data-mode="json2kotlin" data-group="schema"><svg class="ico"><use href="#ico-code"/></svg>JSON → Kotlin</button>
-        <button class="mode-chip hidden" data-mode="json2rust" data-group="schema"><svg class="ico"><use href="#ico-code"/></svg>JSON → Rust</button>
-        <button class="mode-chip hidden" data-mode="json2java" data-group="schema"><svg class="ico"><use href="#ico-code"/></svg>JSON → Java</button>
-        <button class="mode-chip hidden" data-mode="json2swift" data-group="schema"><svg class="ico"><use href="#ico-code"/></svg>JSON → Swift</button>
-        <button class="mode-chip hidden" data-mode="json2csharp" data-group="schema"><svg class="ico"><use href="#ico-code"/></svg>JSON → C#</button>
-        <button class="mode-chip hidden" data-mode="json2sql" data-group="schema"><svg class="ico"><use href="#ico-schema"/></svg>JSON → SQL</button>
-        <button class="mode-chip hidden" data-mode="jsonMock" data-group="schema"><svg class="ico"><use href="#ico-json"/></svg>JSON → Mock data</button>
-        <button class="mode-chip hidden" data-mode="validateSchema" data-group="schema"><svg class="ico"><use href="#ico-check"/></svg>Validate against Schema</button>
-      </div>
-    </div>
-
-    <div class="diff-fullscreen-wrap" id="diffFullscreenWrap">
+    <h2 id="homeWorkbenchHeading">Workbench</h2>
+  </div>
+<div class="diff-fullscreen-wrap" id="diffFullscreenWrap">
     <div class="workbench" id="workbench">
       <div class="path-row" id="pathRow">
         <span style="font-family:'IBM Plex Mono', monospace;font-size:12px;color:var(--text-muted);">JSONPath</span>
@@ -893,6 +807,7 @@ body{background:#080b1a}
     </div>
     </div>
 </section>
+
 <div class="batch-panel" id="batchPanel">
       <div class="batch-head" id="batchHeadSingle">
         <span class="title" id="batchModeLabel">Batch: JSON → CSV</span>
@@ -1455,20 +1370,22 @@ document.addEventListener('click', function(e){
   document.getElementById('workflowCopilot')?.scrollIntoView({behavior:'smooth',block:'center'});
 });
 </script>
-<script id="v31-home-quick-actions">
+
+<script id="v32-home-quick-actions">
 document.addEventListener('click',function(e){
   const btn=e.target.closest('[data-home-mode]');
   if(!btn)return;
   const mode=btn.getAttribute('data-home-mode');
   try{
-    if(typeof window.setMode==='function') window.setMode(mode);
+    if(typeof window.setMode==='function')window.setMode(mode);
     else{
       const target=document.querySelector('[data-mode="'+mode+'"]');
-      if(target) target.click();
+      if(target)target.click();
     }
   }catch(_){}
   document.getElementById('homeWorkbenchHeading')?.scrollIntoView({behavior:'smooth',block:'start'});
 });
 </script>
+
 </body>
 </html>

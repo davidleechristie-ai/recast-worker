@@ -1,3 +1,11 @@
+## V32 homepage structure fix
+- [x] Rebuild hero DOM from scratch.
+- [x] Force quick actions below Copilot.
+- [x] Remove Workbench heading overlap risk.
+- [x] Preserve current copy and branding.
+- [x] Preserve Workbench and Copilot functionality.
+- [ ] Verify desktop and iPhone after deployment.
+
 ## V31 approved homepage
 - [x] Rebuild homepage from clean layout rules.
 - [x] Preserve existing RECAST logo/header.
