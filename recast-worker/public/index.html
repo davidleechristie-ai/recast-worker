@@ -143,6 +143,127 @@ body{background:#080b1a}
   .minimal-proof{width:calc(100% - 36px);margin-top:30px!important}
 }
 </style>
+<style id="v29-final-minimal-home">
+/* Approved Recast homepage hierarchy */
+.minimal-home{
+  min-height:auto!important;
+  padding:58px 24px 38px!important;
+  background:transparent!important;
+}
+.minimal-hero-inner{width:min(1120px,100%);margin:0 auto}
+.minimal-hero-copy{max-width:760px;text-align:left!important}
+.minimal-hero-copy h1{
+  margin:0 0 24px!important;
+  font-size:clamp(3.5rem,7vw,6.2rem)!important;
+  line-height:.96!important;
+  letter-spacing:-.055em!important;
+  text-align:left!important;
+  font-style:normal!important;
+}
+.minimal-hero-copy h1 .hero-primary{
+  color:var(--text,#f7f8fc)!important;
+  font-style:normal!important;
+}
+.minimal-hero-copy h1 .hero-accent{
+  color:#8b5cf6!important;
+  font-style:normal!important;
+  background:linear-gradient(90deg,#9a5cff 0%,#7657f4 100%);
+  -webkit-background-clip:text;
+  background-clip:text;
+  -webkit-text-fill-color:transparent;
+}
+.minimal-hero-copy .sub{
+  max-width:720px!important;
+  margin:0 0 42px!important;
+  text-align:left!important;
+}
+.minimal-home .ai-request-feature{margin:0!important;padding:0!important}
+.minimal-request-heading{
+  margin:0 0 14px!important;
+  text-align:left!important;
+  font-size:1.3rem!important;
+}
+.minimal-home .workflow-copilot{background:transparent!important;border:0!important;padding:0!important;box-shadow:none!important}
+.minimal-home .wc-input-row{
+  display:grid!important;
+  grid-template-columns:minmax(0,1fr) auto!important;
+  gap:10px!important;
+  padding:7px!important;
+  border:1px solid rgba(139,92,246,.68)!important;
+  border-radius:14px!important;
+  background:rgba(8,12,29,.74)!important;
+}
+.minimal-home .wc-prompt{
+  min-height:64px!important;
+  border:0!important;
+  background:transparent!important;
+  box-shadow:none!important;
+  padding:17px 18px!important;
+  resize:none!important;
+}
+.minimal-home .wc-build{
+  min-width:188px!important;
+  border-radius:10px!important;
+  background:linear-gradient(135deg,#6d3fd8,#8b5cf6)!important;
+}
+.minimal-home .wc-examples{display:none!important}
+.home-quick-actions{
+  display:grid;
+  grid-template-columns:repeat(4,minmax(0,1fr));
+  gap:14px;
+  margin-top:18px;
+}
+.home-quick-action{
+  display:flex;
+  align-items:center;
+  justify-content:center;
+  gap:10px;
+  min-height:62px;
+  padding:12px 14px;
+  color:var(--text,#f6f7fb);
+  background:rgba(8,12,29,.48);
+  border:1px solid rgba(255,255,255,.13);
+  border-radius:12px;
+  cursor:pointer;
+  font:inherit;
+}
+.home-quick-action:hover{border-color:rgba(139,92,246,.72);background:rgba(139,92,246,.07)}
+.home-quick-action .ico{color:#8b5cf6;width:22px;height:22px}
+.home-workbench-section{
+  width:min(1120px,calc(100% - 48px))!important;
+  margin:76px auto 70px!important;
+}
+.home-workbench-heading{
+  display:block!important;
+  margin:0 0 18px!important;
+}
+.home-workbench-heading h2{
+  margin:0!important;
+  color:var(--text,#f7f8fc)!important;
+  font-size:clamp(1.8rem,3vw,2.35rem)!important;
+  letter-spacing:-.035em!important;
+}
+.home-workbench-heading p{display:none!important}
+/* Keep full real workbench, but remove catalogue-style navigation from the homepage. */
+.home-workbench-section .mode-nav{display:none!important}
+.home-workbench-section .workbench{
+  border-color:rgba(139,92,246,.6)!important;
+  box-shadow:0 18px 60px rgba(0,0,0,.22)!important;
+}
+/* Remove lower catalogue / proof-strip visual clutter on homepage. */
+.minimal-proof,.related-groups{display:none!important}
+@media(max-width:800px){
+  .minimal-home{padding:42px 18px 30px!important}
+  .minimal-hero-copy h1{font-size:clamp(3rem,14vw,4.6rem)!important}
+  .minimal-home .wc-input-row{grid-template-columns:1fr!important}
+  .minimal-home .wc-build{min-height:52px!important}
+  .home-quick-actions{grid-template-columns:1fr 1fr}
+  .home-workbench-section{width:calc(100% - 36px)!important;margin-top:56px!important}
+}
+@media(max-width:520px){
+  .home-quick-actions{grid-template-columns:1fr}
+}
+</style>
 </head>
 
 <body class="landing-home" style="background:var(--bg);color:var(--text);margin:0;min-height:100vh;">
@@ -330,7 +451,7 @@ body{background:#080b1a}
   <section class="hero hero-v19 minimal-home" id="tool">
   <div class="minimal-hero-inner">
     <div class="minimal-hero-copy">
-      <h1>Fix the data.<br><span class="hero-accent">Then stop fixing it.</span></h1>
+      <h1><span class="hero-primary">Fix the data.</span><br><span class="hero-accent">Then stop fixing it.</span></h1>
       <p class="sub">Describe the job in plain English. Recast turns it into a workflow to transform, compare or validate your data — then lets you reuse, deploy or automate it.</p>
     </div>
 
@@ -364,6 +485,21 @@ body{background:#080b1a}
       </div>
     </div>
   </div>
+
+    <div class="home-quick-actions" aria-label="Popular Recast actions">
+      <button type="button" class="home-quick-action" data-home-mode="json2csv">
+        <svg class="ico"><use href="#ico-arrow"/></svg><span>Convert JSON to CSV</span>
+      </button>
+      <button type="button" class="home-quick-action" data-home-mode="diffJson">
+        <svg class="ico"><use href="#ico-diff"/></svg><span>Compare two JSON files</span>
+      </button>
+      <button type="button" class="home-quick-action" data-home-mode="jsonPath">
+        <svg class="ico"><use href="#ico-code"/></svg><span>Extract data with JSONPath</span>
+      </button>
+      <button type="button" class="home-quick-action" data-home-mode="validateSchema">
+        <svg class="ico"><use href="#ico-check"/></svg><span>Validate JSON schema</span>
+      </button>
+    </div>
 </section>
 <section class="instant-demo" id="instantDemo">
       <div class="demo-intro">
@@ -652,14 +788,7 @@ body{background:#080b1a}
     </div>
     </div>
 </section>
-<div class="minimal-proof" aria-label="Why Recast">
-      <span><strong>Private by default</strong><small>Browser tools run locally</small></span>
-      <span><strong>No signup</strong><small>Start using Recast immediately</small></span>
-      <span><strong>Free to start</strong><small>Upgrade when the workflow repeats</small></span>
-      <span><strong>Deploy &amp; automate</strong><small>Turn workflows into APIs or schedules</small></span>
-    </div>
-
-    <div class="batch-panel" id="batchPanel">
+<div class="batch-panel" id="batchPanel">
       <div class="batch-head" id="batchHeadSingle">
         <span class="title" id="batchModeLabel">Batch: JSON → CSV</span>
         <label class="icon-btn" style="cursor:pointer;margin:0;">
@@ -866,61 +995,7 @@ body{background:#080b1a}
       <button id="paywallEscalationClose" title="Dismiss">✕</button>
     </div>
 
-    <div class="related-groups">
-      <div class="related-group">
-        <span class="rg-label">Convert</span>
-        <a href="tools/json-to-csv.html" onclick="setMode('json2csv');return false;"><svg class="ico"><use href="#ico-json"/></svg>JSON→CSV</a>
-        <a href="tools/csv-to-json.html" onclick="setMode('csv2json');return false;"><svg class="ico"><use href="#ico-table"/></svg>CSV→JSON</a>
-        <a href="tools/json-to-xml.html" onclick="setMode('json2xml');return false;"><svg class="ico"><use href="#ico-json"/></svg>JSON→XML</a>
-        <a href="tools/xml-to-json.html" onclick="setMode('xml2json');return false;"><svg class="ico"><use href="#ico-tag"/></svg>XML→JSON</a>
-        <a href="tools/json-to-yaml.html" onclick="setMode('json2yaml');return false;"><svg class="ico"><use href="#ico-json"/></svg>JSON→YAML</a>
-        <a href="tools/yaml-to-json.html" onclick="setMode('yaml2json');return false;"><svg class="ico"><use href="#ico-yaml"/></svg>YAML→JSON</a>
-        <a href="tools/json-to-markdown.html" onclick="setMode('json2markdown');return false;"><svg class="ico"><use href="#ico-json"/></svg>JSON→Markdown</a>
-        <a href="tools/markdown-to-json.html" onclick="setMode('markdown2json');return false;"><svg class="ico"><use href="#ico-mdtable"/></svg>Markdown→JSON</a>
-      </div>
-      <div class="related-group">
-        <span class="rg-label">Transform</span>
-        <a href="tools/flatten-json.html" onclick="setMode('flatten');return false;"><svg class="ico"><use href="#ico-tree"/></svg>Flatten</a>
-        <a href="tools/unflatten-json.html" onclick="setMode('unflatten');return false;"><svg class="ico"><use href="#ico-tree"/></svg>Unflatten</a>
-        <a href="#" onclick="setMode('sortJson');return false;"><svg class="ico"><use href="#ico-json"/></svg>Sort keys</a>
-      </div>
-      <div class="related-group">
-        <span class="rg-label">Validate &amp; format</span>
-        <a href="tools/json-validator.html" onclick="setMode('validateJson');return false;"><svg class="ico"><use href="#ico-check"/></svg>Validate JSON</a>
-        <a href="#" onclick="setMode('validateXml');return false;"><svg class="ico"><use href="#ico-check"/></svg>Validate XML</a>
-        <a href="tools/json-formatter.html" onclick="setMode('formatJson');return false;"><svg class="ico"><use href="#ico-json"/></svg>Format JSON</a>
-        <a href="#" onclick="setMode('formatXml');return false;"><svg class="ico"><use href="#ico-tag"/></svg>Format XML</a>
-      </div>
-      <div class="related-group">
-        <span class="rg-label">Compare</span>
-        <a href="tools/json-diff.html" onclick="setMode('diffJson');return false;"><svg class="ico"><use href="#ico-diff"/></svg>Diff JSON</a>
-        <a href="tools/xml-diff.html" onclick="setMode('diffXml');return false;"><svg class="ico"><use href="#ico-diff"/></svg>Diff XML</a>
-        <a href="tools/csv-diff.html" onclick="setMode('diffCsv');return false;"><svg class="ico"><use href="#ico-diff"/></svg>Diff CSV</a>
-      </div>
-      <div class="related-group">
-        <span class="rg-label">Query</span>
-        <a href="tools/jsonpath-tester.html" onclick="setMode('jsonPath');return false;"><svg class="ico"><use href="#ico-path"/></svg>JSONPath</a>
-      </div>
-      <div class="related-group">
-        <span class="rg-label">Schema &amp; types</span>
-        <a href="tools/json-schema-generator.html" onclick="setMode('jsonSchema');return false;"><svg class="ico"><use href="#ico-schema"/></svg>JSON → Schema</a>
-        <a href="#" onclick="setMode('jsonStructure');return false;"><svg class="ico"><use href="#ico-tree"/></svg>JSON → Structure</a>
-        <a href="tools/json-to-typescript.html" onclick="setMode('json2ts');return false;"><svg class="ico"><use href="#ico-code"/></svg>JSON → TypeScript</a>
-        <a href="tools/json-to-zod.html" onclick="setMode('json2zod');return false;"><svg class="ico"><use href="#ico-code"/></svg>JSON → Zod</a>
-        <a href="tools/json-to-python.html" onclick="setMode('json2python');return false;"><svg class="ico"><use href="#ico-code"/></svg>JSON → Python</a>
-        <a href="tools/json-to-pydantic.html" onclick="setMode('json2pydantic');return false;"><svg class="ico"><use href="#ico-code"/></svg>JSON → Pydantic</a>
-        <a href="tools/json-to-go.html" onclick="setMode('json2go');return false;"><svg class="ico"><use href="#ico-code"/></svg>JSON → Go</a>
-        <a href="#" onclick="setMode('json2kotlin');return false;"><svg class="ico"><use href="#ico-code"/></svg>JSON → Kotlin</a>
-        <a href="#" onclick="setMode('json2rust');return false;"><svg class="ico"><use href="#ico-code"/></svg>JSON → Rust</a>
-        <a href="#" onclick="setMode('json2java');return false;"><svg class="ico"><use href="#ico-code"/></svg>JSON → Java</a>
-        <a href="#" onclick="setMode('json2swift');return false;"><svg class="ico"><use href="#ico-code"/></svg>JSON → Swift</a>
-        <a href="#" onclick="setMode('json2csharp');return false;"><svg class="ico"><use href="#ico-code"/></svg>JSON → C#</a>
-        <a href="#" onclick="setMode('json2sql');return false;"><svg class="ico"><use href="#ico-schema"/></svg>JSON → SQL</a>
-        <a href="#" onclick="setMode('jsonMock');return false;"><svg class="ico"><use href="#ico-json"/></svg>JSON → Mock data</a>
-        <a href="tools/validate-json-schema.html" onclick="setMode('validateSchema');return false;"><svg class="ico"><use href="#ico-check"/></svg>Validate against Schema</a>
-      </div>
-    </div>
-  </section>
+    </section>
 
   <section id="pricing">
     <div class="section-head">
@@ -1273,6 +1348,21 @@ document.addEventListener('click', function(e){
   if(!b) return;
   e.preventDefault();
   document.getElementById('workflowCopilot')?.scrollIntoView({behavior:'smooth',block:'center'});
+});
+</script>
+<script id="v29-home-quick-actions">
+document.addEventListener('click', function(e){
+  const btn=e.target.closest('[data-home-mode]');
+  if(!btn) return;
+  const mode=btn.getAttribute('data-home-mode');
+  try{
+    if(typeof window.setMode==='function') window.setMode(mode);
+    else {
+      const chip=document.querySelector('[data-mode="'+mode+'"]');
+      if(chip) chip.click();
+    }
+  }catch(_){}
+  document.getElementById('homeWorkbenchHeading')?.scrollIntoView({behavior:'smooth',block:'start'});
 });
 </script>
 </body>

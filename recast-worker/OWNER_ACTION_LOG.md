@@ -1,3 +1,14 @@
+## V29 approved homepage composition
+- [x] Restore Recast dark/purple branding.
+- [x] White “Fix the data.”
+- [x] Purple, non-italic “Then stop fixing it.”
+- [x] Copilot immediately beneath hero.
+- [x] Four quick actions beneath Copilot.
+- [x] Larger gap before Workbench.
+- [x] Keep real Workbench with a “Workbench” heading.
+- [x] Remove bottom catalogue and proof-strip clutter.
+- [ ] Verify final desktop and iPhone appearance after deployment.
+
 ## V28 homepage workbench layout
 - [x] Preserve latest Recast logo/header.
 - [x] Keep Copilot directly below left-aligned hero.
