@@ -178,6 +178,45 @@ Do not paste secret values into this file or commit them to Git.
 - [ ] After deployment, test `Try example` on all six templates and confirm the preview/result is sensible for each.
 - [ ] Verify the Builder `Automate →` handoff saves the workflow and surfaces it in Hosted Automation on desktop and iPhone.
 
+## V19 focused homepage
+
+- [x] Homepage hierarchy simplified around one primary job: hook the visitor, prove value quickly, then offer a clear next step.
+- [x] Replaced the duplicated hero/showcase stack with one concise workflow-first hero and retained the strongest product visual.
+- [x] Added three clear pathways: one-off browser tool, repeatable workflow, hosted Automation.
+- [x] Templates, Builder, Saved Workflows and Automation now use progressive disclosure instead of appearing as four competing full-width sections.
+- [x] Cross-surface links automatically reveal the correct deeper panel before scrolling.
+- [x] Header utility controls stay visually quiet during landing-page browsing and return when the workbench is in use.
+- [x] Mobile layout simplified for hero, pathways and deeper-product navigation.
+- [x] Added `homepage_depth_selected` and `homepage_path_selected` funnel events.
+- [x] V19 adds **no new external configuration**.
+- [ ] After deployment, visually smoke-test the new hierarchy on desktop and iPhone, particularly hero height, tab switching, deep links and reappearance of workbench utility controls.
+- [ ] Compare homepage → demo/template interaction rate against the V18 baseline before adding more homepage content.
+
+## V20 conversion boundary & upgrade clarity
+
+- [x] Added an explicit Local → Hosted disclosure before first deployment.
+- [x] Disclosure explains exactly what remains local, what the hosted deployment stores, and when workflow input leaves the browser.
+- [x] API vs Automation capability differences are shown at the deploy moment without inventing or changing pricing.
+- [x] API-only users attempting to schedule now receive a direct Automation upgrade explanation before the setup form.
+- [x] Saved Workflow and Automation empty states now route users back to a proven template instead of presenting passive blank states.
+- [x] Added `hosted_disclosure_viewed`, `hosted_deploy_confirmed` and `hosted_plan_compare_clicked` funnel events.
+- [x] V20 adds **no new external configuration**.
+- [ ] After deployment, verify the disclosure with no token, an API token and an Automation token.
+- [ ] Confirm `Deploy` uploads only the workflow definition; verify current editor input remains local until a hosted run or Automation input is explicitly submitted.
+- [ ] Test API-user `Automate` behaviour and confirm the user sees the upgrade state without entering an unusable schedule form.
+
+## V21 SEO authority release
+
+- [x] Corrected outdated privacy FAQ wording across 29 indexed tool pages to distinguish local browser processing from explicitly invoked hosted API/Automation processing.
+- [x] Strengthened search-intent content on JSON→CSV, CSV Diff, JSON Diff, JSONPath Tester and Flatten JSON without changing the tool-first UX.
+- [x] Added focused long-tail pages for `compare CSV files by ID`, `compare JSON arrays by ID`, and `API response to CSV`.
+- [x] Added contextual internal links between the long-tail pages and the underlying working tools.
+- [x] Added all three new URLs to sitemap.xml and the tool directory.
+- [x] V21 adds **no new external configuration**.
+- [ ] Deploy V21, submit the updated sitemap in Google Search Console and request indexing for the three new intent pages.
+- [ ] Record baseline impressions/positions for the 20-keyword scoreboard before making further title/H1 changes.
+- [ ] Build external links directly to the most relevant tool/intent page rather than repeatedly linking only to the homepage.
+
 ## P2 — after first paying users
 
 - [ ] Review actual runs/customer and adjust Automation limits.

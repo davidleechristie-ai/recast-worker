@@ -1,17 +1,23 @@
-# Recast Revenue Build V18 — Template → Builder → Automation
+# Recast V21 — SEO Authority Release
 
-## Conversion journey
-The template layer now proves the workflow inside the real product rather than merely opening an empty definition.
+## Objective
+Improve visibility for language developers actually search, while preserving the cleaner V19/V20 product experience.
 
-- Six templates include realistic sample inputs.
-- `Try example` preloads the sample and opens the actual Workflow Builder.
-- Existing live preview executes against that sample.
-- Builder adds a prominent `Automate →` action.
-- That action saves the workflow to the Workflow Library and takes the user to Hosted Automation.
-- Funnel events measure sample loading and the Automation handoff.
+## Changes
+- Privacy wording corrected across 29 tool pages.
+- Search-intent content strengthened on five priority pages:
+  - JSON to CSV
+  - CSV Diff / compare CSV files
+  - JSON Diff / compare JSON files
+  - JSONPath Tester
+  - Flatten Nested JSON
+- Three focused long-tail pages added:
+  - `/tools/compare-csv-files-by-id.html`
+  - `/tools/compare-json-arrays-by-id.html`
+  - `/tools/api-response-to-csv.html`
+- Contextual internal linking added.
+- Tool directory and sitemap updated.
+- No speculative bulk page generation: these pages correspond to concrete developer problems and existing Recast functionality.
 
-## External work
-No new configuration. Production UX checks are recorded in `OWNER_ACTION_LOG.md`.
-
-## Next
-V19 should concentrate on conversion polish: better empty states, clearer hosted-vs-local disclosure at the exact deploy moment, and pricing/checkout readiness once the real Automation Stripe links are available.
+## Measurement
+Track the fixed 20-keyword search scoreboard. Prioritise pages that begin receiving impressions in positions 8–30. Do not rewrite pages merely because Recast is not yet ranking; domain authority and distribution remain the primary constraint.

@@ -84,7 +84,7 @@
 </script>
 </head>
 
-<body style="background:var(--bg);color:var(--text);margin:0;min-height:100vh;">
+<body class="landing-home" style="background:var(--bg);color:var(--text);margin:0;min-height:100vh;">
 <svg style="display:none" aria-hidden="true">
   <symbol id="ico-json" viewBox="0 0 18 18" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round">
     <path d="M6.5 2.5c-1.4 0-1.9.5-1.9 1.9v1.7c0 1-.5 1.5-1.4 1.5.9 0 1.4.5 1.4 1.5v1.7c0 1.4.5 1.9 1.9 1.9"/>
@@ -266,21 +266,20 @@
 </header>
 
 <main>
-  <section class="hero" id="tool">
-    <p class="eyebrow">Your private data workbench</p>
-    <h1>Inspect. Transform. Validate.<br><em>Compare. Automate.</em></h1>
-    <p class="sub">Your data doesn't leave your browser. Your workflow can. Recast runs entirely locally — parse, reshape, and check JSON, CSV, XML, YAML and Markdown with nothing uploaded — then save what you built as a recipe you can automate, or call the same engine through the API when a script needs it.</p>
-
-    <div class="recast-command" aria-label="Recast workflow overview">
-      <div class="rc-copy">
-        <span class="rc-kicker"><i></i> Local tools + hosted workflows</span>
-        <h2>One place to fix the data.<br><span>One workflow to keep it fixed.</span></h2>
-        <p>Start with a file, an API response or a plain-English instruction. Build the transformation visually, test it locally, then reuse it as an endpoint or scheduled automation.</p>
-        <div class="rc-actions">
-          <a class="btn btn-gold" href="#workflowTemplates">Explore workflows</a>
-          <a class="btn btn-ghost" href="automation/index.html">See automation use cases</a>
+  <section class="hero hero-v19" id="tool">
+    <div class="hero-v19-grid">
+      <div class="hero-v19-copy">
+        <p class="eyebrow">Private data tools. Repeatable workflows.</p>
+        <h1>Fix the data.<br><em>Then stop fixing it.</em></h1>
+        <p class="sub">Use Recast instantly for JSON, CSV, XML, YAML and API data. When the job repeats, turn the same steps into a reusable workflow, endpoint or schedule.</p>
+        <div class="hero-v19-actions">
+          <a class="btn btn-gold" href="#instantDemo">See it work <span>↓</span></a>
+          <a class="btn btn-ghost" href="#workflowTemplates" data-depth-link="templates">Start with a workflow</a>
         </div>
-        <div class="rc-trust"><span>● Browser-first</span><span>● Encrypted credentials</span><span>● API + schedules</span></div>
+        <div class="hero-v19-proof">
+          <span>✓ No signup for browser tools</span>
+          <span>✓ Data stays local until you deploy</span>
+        </div>
       </div>
       <div class="rc-stage">
         <div class="rc-window">
@@ -293,9 +292,21 @@
             <div class="rc-node"><small>OUTPUT</small><strong>Webhook</strong><span>POST JSON</span></div>
           </div>
           <div class="rc-console"><div><span class="rc-ok">✓</span><b>Workflow completed</b><time>428 ms</time></div><code>248 records transformed · 0 validation errors</code></div>
-          <div class="rc-schedule"><span><i></i> Automated</span><b>Daily · 08:00 Europe/London</b><button type="button" onclick="document.getElementById('automationHub')?.scrollIntoView({behavior:'smooth'})">View activity →</button></div>
+          <div class="rc-schedule"><span><i></i> Automated</span><b>Daily · 08:00 Europe/London</b><button type="button" onclick="window.RecastHomeDepth?.activate('automation',true)">View activity →</button></div>
         </div>
       </div>
+    </div>
+
+    <div class="pathway-strip" aria-label="Ways to use Recast">
+      <a href="#workbench" class="pathway-card">
+        <small>01 · ONE-OFF JOB</small><strong>Use a tool now</strong><span>Convert, inspect, validate or compare data in the browser.</span><b>Open the workbench →</b>
+      </a>
+      <a href="#workflowTemplates" class="pathway-card" data-depth-link="templates">
+        <small>02 · REPEATABLE JOB</small><strong>Build a workflow</strong><span>Chain transformations, test them, save them and reuse them.</span><b>Explore workflows →</b>
+      </a>
+      <a href="#automationHub" class="pathway-card" data-depth-link="automation">
+        <small>03 · RUNS WITHOUT YOU</small><strong>Automate it</strong><span>Deploy as an endpoint or run on a schedule with retries and history.</span><b>See Automation →</b>
+      </a>
     </div>
 
     <section class="instant-demo" id="instantDemo">
@@ -323,7 +334,28 @@
       </div>
     </section>
 
-    <div class="workflow-copilot" id="workflowCopilot">
+    <section class="home-depth" id="exploreRecast">
+      <div class="home-depth-head">
+        <div><p class="eyebrow">Go deeper when you're ready</p><h2>Choose what you want to do next.</h2></div>
+        <div class="depth-tabs" role="tablist" aria-label="Explore Recast">
+          <button type="button" class="active" data-depth-tab="templates">Templates</button>
+          <button type="button" data-depth-tab="builder">Build</button>
+          <button type="button" data-depth-tab="library">Saved</button>
+          <button type="button" data-depth-tab="automation">Automation</button>
+        </div>
+      </div>
+      <div class="depth-panels">
+<section data-depth-panel="templates" class="workflow-templates" id="workflowTemplates">
+  <div class="wf-head">
+    <div><p class="eyebrow">Workflow templates</p><h3>Start with a workflow that already makes sense.</h3>
+      <p>Choose a common data job, preview the pipeline, then customise it in Recipe Builder. Templates stay local until you explicitly deploy or automate them.</p></div>
+    <span class="wf-count">6 launch templates</span>
+  </div>
+  <div class="template-grid" id="workflowTemplateGrid"></div>
+</section>
+
+
+    <div data-depth-panel="builder" class="workflow-copilot" id="workflowCopilot">
       <div class="wc-head">
         <div>
           <p class="eyebrow">Workflow Builder</p>
@@ -359,16 +391,8 @@
     </div>
 
     
-<section class="workflow-templates" id="workflowTemplates">
-  <div class="wf-head">
-    <div><p class="eyebrow">Workflow templates</p><h3>Start with a workflow that already makes sense.</h3>
-      <p>Choose a common data job, preview the pipeline, then customise it in Recipe Builder. Templates stay local until you explicitly deploy or automate them.</p></div>
-    <span class="wf-count">6 launch templates</span>
-  </div>
-  <div class="template-grid" id="workflowTemplateGrid"></div>
-</section>
 
-    <section class="workflow-library" id="workflowLibrary">
+    <section data-depth-panel="library" class="workflow-library" id="workflowLibrary">
       <div class="wf-head">
         <div><p class="eyebrow">Workflow Library</p><h3>Build it once. Reuse it.</h3><p>Saved workflows turn one-off data jobs into repeatable assets. They stay local by default; API deployment and hosted automation are available on paid plans.</p></div>
         <span class="wf-count" id="workflowLibraryCount">Nothing saved yet</span>
@@ -377,7 +401,8 @@
       <div class="wf-next"><strong>Next step: automation.</strong><span>Scheduled runs, hosted workflow execution and workflow-specific API endpoints are the natural paid layer.</span><a href="#pricing" class="btn btn-gold">Explore API access →</a></div>
     </section>
 
-    <section class="automation-hub" id="automationHub">
+
+    <section data-depth-panel="automation" class="automation-hub" id="automationHub">
       <div class="auto-head">
         <div><p class="eyebrow">Hosted Automation</p><h3>Make the workflow run without you.</h3><p>Deploy a saved workflow as an authenticated endpoint, run it on demand, or schedule it hourly, daily or weekly. Browser tools remain local; hosted automation only stores data you explicitly choose to deploy.</p></div>
         <a class="btn btn-gold" href="#pricing">View Automation plan →</a>
@@ -405,6 +430,10 @@
       </div>
       <div id="automationWorkflowList"></div>
       <div class="automation-history" id="automationHistory"><div class="auto-empty">Run history will appear here when you select History on a deployed workflow.</div></div>
+    </section>
+
+
+      </div>
     </section>
 
     <div class="privacy-banner">
@@ -496,7 +525,7 @@
     </div>
 
     <div class="diff-fullscreen-wrap" id="diffFullscreenWrap">
-    <div class="workbench">
+    <div class="workbench" id="workbench">
       <div class="path-row" id="pathRow">
         <span style="font-family:'IBM Plex Mono', monospace;font-size:12px;color:var(--text-muted);">JSONPath</span>
         <input type="text" id="jsonPathInput" placeholder="e.g. $.users[*].name  or  address.city" spellcheck="false">
@@ -1171,12 +1200,47 @@
 <script src="lib/presets.js"></script>
 <script src="lib/csv-compare.js"></script>
 <script src="lib/workflow-copilot.js"></script>
-<script src="lib/instant-demo.js"></script>
+<script src="lib/home-depth.js"></script>
+  <script src="lib/instant-demo.js"></script>
   <script src="lib/workflow-templates.js"></script>
   <script src="lib/workflow-library.js"></script>
 <script src="lib/workflow-automation.js"></script>
 <script src="app.js"></script>
 <!-- Cloudflare Web Analytics --><script type='module' src='https://static.cloudflareinsights.com/beacon.min.js' data-cf-beacon='{"token": "13426e11249049dba542ef0b69a55823"}'></script><!-- End Cloudflare Web Analytics -->
+
+
+<div class="modal-overlay" id="hostedDeployModal" hidden>
+  <div class="modal hosted-deploy-modal" role="dialog" aria-modal="true" aria-labelledby="hostedDeployTitle">
+    <button class="modal-close" id="hostedDeployClose" type="button" aria-label="Close">×</button>
+    <p class="eyebrow">Local → Hosted</p>
+    <h2 id="hostedDeployTitle">Deploy this workflow?</h2>
+    <p class="hosted-deploy-lead">Your browser tools stay private. Deploying creates a hosted copy of the <strong>workflow definition</strong> so it can run through an authenticated endpoint.</p>
+
+    <div class="hosted-boundary">
+      <div class="hosted-boundary-side local"><small>STAYS LOCAL</small><strong>Your current browser input</strong><span>Nothing in the editor is uploaded just because you deploy the workflow.</span></div>
+      <div class="hosted-boundary-arrow">→</div>
+      <div class="hosted-boundary-side hosted"><small>HOSTED</small><strong>Workflow definition</strong><span>Step configuration is stored so Recast can execute it server-side.</span></div>
+    </div>
+
+    <div class="hosted-when-data">
+      <strong>When does data leave the browser?</strong>
+      <span><b>Run now / API:</b> the input sent to that hosted run is processed server-side.</span>
+      <span><b>Automation:</b> fixed input, URLs, webhook configuration and encrypted credentials are stored only when you explicitly configure them.</span>
+    </div>
+
+    <div class="hosted-plan-choice">
+      <div><small>API ACCESS</small><strong>Run when you call it</strong><span>Authenticated workflow endpoint · manual hosted runs · API usage allowance.</span></div>
+      <div class="featured"><small>AUTOMATION</small><strong>Run without you</strong><span>Everything needed for hosted workflows plus schedules, encrypted credentials, retries and run history.</span></div>
+    </div>
+
+    <div class="hosted-current-plan" id="hostedCurrentPlan">Checking your plan…</div>
+    <div class="modal-actions">
+      <button class="btn secondary" id="hostedDeployCancel" type="button">Keep it local</button>
+      <a class="btn secondary" id="hostedDeployPlans" href="#pricing">Compare plans</a>
+      <button class="btn primary" id="hostedDeployConfirm" type="button">Deploy workflow →</button>
+    </div>
+  </div>
+</div>
 
 <div class="modal-overlay" id="automationSetupModal" hidden>
   <div class="modal automation-setup-modal" role="dialog" aria-modal="true" aria-labelledby="automationSetupTitle">

@@ -1,0 +1,611 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<script>(function(){try{if(localStorage.getItem('recast_theme')!=='dark')document.documentElement.setAttribute('data-theme','light');}catch(e){}})();</script>
+<title>How To — Transform | Recast</title>
+<meta name="description" content="Turn messy data into useful data — select, filter, rename, flatten, and sort, explained in plain English.">
+<meta property="og:type" content="website">
+<meta property="og:title" content="How To — Transform | Recast">
+<meta property="og:description" content="Turn messy data into useful data — select, filter, rename, flatten, and sort, explained in plain English.">
+<meta property="og:url" content="https://tryrecast.app/how-to/transform.html">
+<meta property="og:image" content="https://tryrecast.app/og-image.png">
+<meta property="og:site_name" content="Recast">
+<meta name="twitter:card" content="summary_large_image">
+<meta name="twitter:title" content="How To — Transform | Recast">
+<meta name="twitter:description" content="Turn messy data into useful data — select, filter, rename, flatten, and sort, explained in plain English.">
+<meta name="twitter:image" content="https://tryrecast.app/og-image.png">
+<link rel="canonical" href="https://tryrecast.app/how-to/transform.html">
+<link rel="stylesheet" href="../styles.css">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@400;500;600;700&family=IBM+Plex+Sans:wght@400;500;600&family=IBM+Plex+Mono:wght@400;500&display=swap" rel="stylesheet">
+<link rel="manifest" href="../manifest.json">
+<meta name="theme-color" content="#FFFFFF">
+<link rel="apple-touch-icon" href="../icons/icon-192.png">
+<script type="application/ld+json">
+{
+  "@context": "https://schema.org",
+  "@type": "Article",
+  "headline": "How To — Transform",
+  "description": "Turn messy data into useful data — select, filter, rename, flatten, and sort, explained in plain English.",
+  "url": "https://tryrecast.app/how-to/transform.html",
+  "publisher": { "@type": "Organization", "name": "Recast", "url": "https://tryrecast.app/" },
+  "datePublished": "2026-08-20",
+  "dateModified": "2026-08-22"
+}
+</script>
+<script async src="https://www.googletagmanager.com/gtag/js?id=G-MW47YKCSLX"></script>
+<script>
+  window.dataLayer = window.dataLayer || [];
+  function gtag(){dataLayer.push(arguments);}
+  gtag('js', new Date());
+  gtag('config', 'G-MW47YKCSLX');
+</script>
+<!-- Upgrade-to-Pro click tracking — event delegation so it works
+     regardless of where this script sits relative to the button in the
+     page, and never depends on app.js (which only loads on index.html
+     and /tools/, not on blog/how-to/contact/demo pages that also have
+     this same button). -->
+<script>
+  document.addEventListener('click', function (e) {
+    var btn = e.target.closest && e.target.closest('#accountBtn');
+    if (!btn) return;
+    try { if (typeof gtag === 'function') gtag('event', 'upgrade_click', { page_path: location.pathname }); } catch (err) {}
+  });
+</script>
+<!-- Attribution capture — records this session's FIRST landing page and any
+     UTM params, once, in sessionStorage. Read later by app.js's
+     appendAttributionParams() when checkout starts, so a completed Stripe
+     payment can be traced back to the specific page or campaign that
+     actually brought the visitor in, not just "some visit happened." -->
+<script>
+  (function () {
+    try {
+      if (!sessionStorage.getItem('recast_landing_path')) {
+        var path = location.pathname.replace(/^\//, '').replace(/\.html$/, '') || 'home';
+        sessionStorage.setItem('recast_landing_path', path);
+        var params = new URLSearchParams(location.search);
+        var utm = {};
+        ['utm_source', 'utm_medium', 'utm_campaign', 'utm_term', 'utm_content'].forEach(function (key) {
+          if (params.get(key)) utm[key] = params.get(key);
+        });
+        sessionStorage.setItem('recast_landing_utm', JSON.stringify(utm));
+      }
+    } catch (e) {}
+  })();
+</script>
+<script type="application/ld+json">
+{
+  "@context": "https://schema.org",
+  "@type": "BreadcrumbList",
+  "itemListElement": [
+    {
+      "@type": "ListItem",
+      "position": 1,
+      "name": "Home",
+      "item": "https://tryrecast.app/"
+    },
+    {
+      "@type": "ListItem",
+      "position": 2,
+      "name": "How-to",
+      "item": "https://tryrecast.app/how-to/index.html"
+    },
+    {
+      "@type": "ListItem",
+      "position": 3,
+      "name": "Transform messy data",
+      "item": "https://tryrecast.app/how-to/transform.html"
+    }
+  ]
+}
+</script>
+<script type="application/ld+json">
+{
+  "@context": "https://schema.org",
+  "@type": "FAQPage",
+  "mainEntity": [
+    {
+      "@type": "Question",
+      "name": "What's the difference between converting and transforming data?",
+      "acceptedAnswer": {
+        "@type": "Answer",
+        "text": "Converting changes the format (for example, JSON to CSV) without changing the content. Transforming changes the content itself — removing fields, renaming them, or building new fields from existing ones."
+      }
+    },
+    {
+      "@type": "Question",
+      "name": "What kinds of steps can I chain together in Transform Builder?",
+      "acceptedAnswer": {
+        "@type": "Answer",
+        "text": "Select, remove, rename, filter, combine, and convert type — each with a live preview."
+      }
+    },
+    {
+      "@type": "Question",
+      "name": "Where do I find the Transform Builder?",
+      "acceptedAnswer": {
+        "@type": "Answer",
+        "text": "Click \"Transform Builder\" above the input box on the Convert or Transform tool."
+      }
+    }
+  ]
+}
+</script>
+</head>
+<body style="background:var(--bg);color:var(--text);margin:0;min-height:100vh;">
+<svg style="display:none" aria-hidden="true">
+  <symbol id="ico-json" viewBox="0 0 18 18" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round">
+    <path d="M6.5 2.5c-1.4 0-1.9.5-1.9 1.9v1.7c0 1-.5 1.5-1.4 1.5.9 0 1.4.5 1.4 1.5v1.7c0 1.4.5 1.9 1.9 1.9"/>
+    <path d="M11.5 2.5c1.4 0 1.9.5 1.9 1.9v1.7c0 1 .5 1.5 1.4 1.5-.9 0-1.4.5-1.4 1.5v1.7c0 1.4-.5 1.9-1.9 1.9"/>
+  </symbol>
+  <symbol id="ico-table" viewBox="0 0 18 18" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round">
+    <rect x="2.2" y="3" width="13.6" height="12" rx="1"/>
+    <line x1="2.2" y1="7.4" x2="15.8" y2="7.4"/>
+    <line x1="7.3" y1="3" x2="7.3" y2="15"/>
+    <line x1="11.7" y1="3" x2="11.7" y2="15"/>
+  </symbol>
+  <symbol id="ico-mdtable" viewBox="0 0 18 18" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round">
+    <rect x="2.2" y="3" width="13.6" height="12" rx="1"/>
+    <rect x="2.2" y="3" width="13.6" height="3.6" fill="currentColor" fill-opacity="0.22" stroke="none"/>
+    <line x1="2.2" y1="7.4" x2="15.8" y2="7.4"/>
+    <line x1="7.3" y1="3" x2="7.3" y2="15"/>
+    <line x1="11.7" y1="3" x2="11.7" y2="15"/>
+  </symbol>
+  <symbol id="ico-tag" viewBox="0 0 18 18" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round">
+    <polyline points="6,4 2,9 6,14"/>
+    <polyline points="12,4 16,9 12,14"/>
+    <line x1="9.6" y1="4" x2="9.6" y2="14"/>
+  </symbol>
+  <symbol id="ico-code" viewBox="0 0 18 18" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round">
+    <polyline points="6,4.5 2,9 6,13.5"/>
+    <polyline points="12,4.5 16,9 12,13.5"/>
+    <line x1="10.6" y1="3" x2="7.4" y2="15"/>
+  </symbol>
+  <symbol id="ico-yaml" viewBox="0 0 18 18" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round">
+    <circle cx="3" cy="5" r=".55" fill="currentColor" stroke="none"/>
+    <line x1="5" y1="5" x2="11" y2="5"/>
+    <circle cx="3" cy="9" r=".55" fill="currentColor" stroke="none"/>
+    <line x1="5" y1="9" x2="15" y2="9"/>
+    <circle cx="3" cy="13" r=".55" fill="currentColor" stroke="none"/>
+    <line x1="5" y1="13" x2="13" y2="13"/>
+  </symbol>
+  <symbol id="ico-schema" viewBox="0 0 18 18" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round">
+    <rect x="3" y="3" width="12" height="12" rx="1" stroke-dasharray="2.4 2.1"/>
+    <line x1="3" y1="9" x2="1.2" y2="9" stroke-dasharray="none"/>
+    <line x1="15" y1="9" x2="16.8" y2="9" stroke-dasharray="none"/>
+    <line x1="9" y1="3" x2="9" y2="1.2" stroke-dasharray="none"/>
+    <line x1="9" y1="15" x2="9" y2="16.8" stroke-dasharray="none"/>
+  </symbol>
+  <symbol id="ico-diff" viewBox="0 0 18 18" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round">
+    <rect x="2" y="2" width="9.5" height="9.5" rx="1"/>
+    <rect x="6.5" y="6.5" width="9.5" height="9.5" rx="1"/>
+  </symbol>
+  <symbol id="ico-path" viewBox="0 0 18 18" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round">
+    <rect x="2" y="2" width="14" height="14" rx="2.5"/>
+    <path d="M9 4.5v9"/>
+    <path d="M11.4 6.2c0-.85-1-1.5-2.4-1.5s-2.4.7-2.4 1.6c0 2.3 4.8 1 4.8 3.3 0 1-1.1 1.7-2.4 1.7s-2.4-.6-2.4-1.5"/>
+  </symbol>
+  <symbol id="ico-tree" viewBox="0 0 18 18" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round">
+    <circle cx="2.6" cy="4" r="1"/>
+    <circle cx="2.6" cy="9" r="1"/>
+    <circle cx="2.6" cy="14" r="1"/>
+    <circle cx="15.4" cy="9" r="1"/>
+    <path d="M3.6 4H8a2 2 0 012 2"/>
+    <path d="M3.6 9h10.8"/>
+    <path d="M3.6 14H8a2 2 0 002-2"/>
+  </symbol>
+  <symbol id="ico-check" viewBox="0 0 18 18" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round">
+    <circle cx="9" cy="9" r="7"/>
+    <polyline points="5.5,9.2 8,11.7 12.7,6.4"/>
+  </symbol>
+  <symbol id="ico-arrow" viewBox="0 0 18 18" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round">
+    <line x1="2" y1="9" x2="14.5" y2="9"/>
+    <polyline points="10.5,5 14.5,9 10.5,13"/>
+  </symbol>
+  <symbol id="ico-bolt" viewBox="0 0 18 18" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round">
+    <polygon points="9.5,2 4,10.5 8,10.5 7.2,16 14,7 9.6,7"/>
+  </symbol>
+  <symbol id="ico-star" viewBox="0 0 18 18" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round">
+    <polygon points="9,2.3 11.1,7 16,7.5 12.3,10.8 13.4,15.7 9,13.1 4.6,15.7 5.7,10.8 2,7.5 6.9,7"/>
+  </symbol>
+  <symbol id="ico-expand" viewBox="0 0 18 18" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round">
+    <polyline points="6.5,2.5 2.5,2.5 2.5,6.5"/>
+    <polyline points="11.5,2.5 15.5,2.5 15.5,6.5"/>
+    <polyline points="6.5,15.5 2.5,15.5 2.5,11.5"/>
+    <polyline points="11.5,15.5 15.5,15.5 15.5,11.5"/>
+  </symbol>
+  <symbol id="ico-collapse" viewBox="0 0 18 18" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round">
+    <polyline points="2.5,6.5 6.5,6.5 6.5,2.5"/>
+    <polyline points="15.5,6.5 11.5,6.5 11.5,2.5"/>
+    <polyline points="2.5,11.5 6.5,11.5 6.5,15.5"/>
+    <polyline points="15.5,11.5 11.5,11.5 11.5,15.5"/>
+  </symbol>
+  <symbol id="ico-popout" viewBox="0 0 18 18" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round">
+    <path d="M7 3H3.5a1 1 0 00-1 1v10a1 1 0 001 1h10a1 1 0 001-1V11"/>
+    <path d="M10 2.5h5.5V8"/>
+    <line x1="15.3" y1="2.7" x2="8.5" y2="9.5"/>
+  </symbol>
+  <symbol id="ico-history" viewBox="0 0 18 18" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round">
+    <path d="M3 9a6 6 0 1 0 1.8-4.3"/>
+    <polyline points="1.8,3 2,5.5 4.5,5.2"/>
+    <polyline points="9,5.5 9,9 11.5,10.5"/>
+  </symbol>
+  <symbol id="ico-settings" viewBox="0 0 18 18" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round">
+    <circle cx="9" cy="9" r="2.8"/>
+    <path d="M9 3v2.2M9 12.8V15M15 9h-2.2M5.2 9H3"/>
+  </symbol>
+  <symbol id="ico-link" viewBox="0 0 18 18" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round">
+    <path d="M7.5 10.5a3 3 0 0 0 4.3.2l2-2a3 3 0 0 0-4.2-4.2l-1.1 1.1"/>
+    <path d="M10.5 7.5a3 3 0 0 0-4.3-.2l-2 2a3 3 0 0 0 4.2 4.2l1.1-1.1"/>
+  </symbol>
+  <symbol id="ico-sun" viewBox="0 0 18 18" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round">
+    <circle cx="9" cy="9" r="3.2"/>
+    <path d="M9 1.8v2M9 14.2v2M16.2 9h-2M3.8 9h-2M14.2 3.8l-1.4 1.4M5.2 12.8l-1.4 1.4M14.2 14.2l-1.4-1.4M5.2 5.2L3.8 3.8"/>
+  </symbol>
+  <symbol id="ico-moon" viewBox="0 0 18 18" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round">
+    <path d="M15 10.2A6.2 6.2 0 0 1 7.8 3 6.5 6.5 0 1 0 15 10.2Z"/>
+  </symbol>
+  <symbol id="ico-chevron" viewBox="0 0 18 18" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round">
+    <polyline points="4.5,7 9,11.5 13.5,7"/>
+  </symbol>
+  <symbol id="ico-search" viewBox="0 0 18 18" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round">
+    <circle cx="7.8" cy="7.8" r="5.3"/>
+    <line x1="11.7" y1="11.7" x2="16" y2="16"/>
+  </symbol>
+  <symbol id="ico-copy" viewBox="0 0 18 18" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round">
+    <rect x="6.5" y="6.5" width="9" height="9" rx="1.2"/>
+    <path d="M4.5 11.5h-1a1 1 0 01-1-1v-7a1 1 0 011-1h7a1 1 0 011 1v1"/>
+  </symbol>
+</svg>
+<header class="titleblock">
+  <div class="ruler" id="ruler"></div>
+  <div class="tb-row">
+    <a href="../index.html" class="brand" style="text-decoration:none;color:inherit;"><svg class="mark" viewBox="0 0 32 32" fill="none" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><defs><linearGradient id="logoGradA" x1="0%" y1="0%" x2="100%" y2="100%"><stop offset="0%" stop-color="#BE6FF8"/><stop offset="100%" stop-color="#8B5CF6"/></linearGradient><linearGradient id="logoGradB" x1="0%" y1="0%" x2="100%" y2="100%"><stop offset="0%" stop-color="#6D8FF8"/><stop offset="100%" stop-color="#3AA2FC"/></linearGradient></defs><path d="M13 5 L4 16 L13 27" stroke="url(#logoGradA)" stroke-width="4.5"/><path d="M19 5 L28 16 L19 27" stroke="url(#logoGradB)" stroke-width="4.5"/></svg>RECAST</a>
+    <nav class="tb-nav" id="primaryNav">
+      <div class="nav-group" data-nav-group="tools">
+        <button type="button" class="nav-group-btn" aria-expanded="false" aria-haspopup="true">Tools<svg class="ico nav-caret"><use href="#ico-chevron"/></svg></button>
+        <div class="nav-dropdown" role="menu">
+          <button type="button" class="nav-dropdown-item" data-nav-action="group" data-group="convert" role="menuitem">Convert</button>
+          <button type="button" class="nav-dropdown-item" data-nav-action="group" data-group="transform" role="menuitem">Transform</button>
+          <button type="button" class="nav-dropdown-item" data-nav-action="group" data-group="query" role="menuitem">Query</button>
+          <button type="button" class="nav-dropdown-item" data-nav-action="group" data-group="validate" role="menuitem">Validate</button>
+          <button type="button" class="nav-dropdown-item" data-nav-action="group" data-group="compare" role="menuitem">Compare</button>
+          <button type="button" class="nav-dropdown-item" data-nav-action="group" data-group="schema" role="menuitem">Inspect</button>
+          <a href="../tools/index.html" class="nav-dropdown-item" role="menuitem">See all 23 tools &rarr;</a>
+        </div>
+      </div>
+      <div class="nav-group" data-nav-group="automate">
+        <button type="button" class="nav-group-btn" aria-expanded="false" aria-haspopup="true">Automate<svg class="ico nav-caret"><use href="#ico-chevron"/></svg></button>
+        <div class="nav-dropdown" role="menu">
+          <button type="button" class="nav-dropdown-item" data-nav-action="recipes" role="menuitem">Recipes</button>
+          <a href="../api/index.html" class="nav-dropdown-item" role="menuitem">API</a>
+          <a href="https://www.npmjs.com/package/recast-cli" class="nav-dropdown-item" role="menuitem">CLI</a>
+        </div>
+      </div>
+      <div class="nav-group" data-nav-group="resources">
+        <button type="button" class="nav-group-btn" aria-expanded="false" aria-haspopup="true">Resources<svg class="ico nav-caret"><use href="#ico-chevron"/></svg></button>
+        <div class="nav-dropdown" role="menu">
+          <a href="../demo/index.html" class="nav-dropdown-item" role="menuitem">Demo</a>
+          <a href="../blog/index.html" class="nav-dropdown-item" role="menuitem">Blog</a>
+          <a href="index.html" class="nav-dropdown-item" role="menuitem">How-to</a>
+          <a href="../contact.html" class="nav-dropdown-item" role="menuitem">Contact</a>
+        </div>
+      </div>
+      <a href="../index.html#pricing" class="nav-plain-link">Pricing</a>
+    </nav>
+    <button type="button" class="nav-hamburger" id="navHamburger" aria-label="Open menu" aria-expanded="false" aria-controls="primaryNav">
+      <span></span><span></span><span></span>
+    </button>
+    <div class="header-actions">
+      <a href="../index.html#tool" class="icon-btn" title="View your conversion history — opens the tool"><svg class="ico"><use href="#ico-history"/></svg><span class="btn-label">History</span></a>
+      <a href="../index.html#tool" class="icon-btn" title="View your saved presets — opens the tool"><svg class="ico"><use href="#ico-settings"/></svg><span class="btn-label">Presets</span></a>
+      <a href="../index.html#tool" class="icon-btn" title="Share a conversion — opens the tool"><svg class="ico"><use href="#ico-link"/></svg><span class="btn-label">Share link</span></a>
+      <button class="icon-btn" id="themeToggleBtn" title="Switch between dark and light theme"><svg class="ico"><use href="#ico-sun" id="themeIconUse"/></svg></button>
+      <a href="../index.html#pricing" class="btn btn-gold" id="accountBtn">Upgrade to Pro</a>
+    </div>
+  </div>
+</header>
+
+<main style="max-width:1180px;margin:0 auto;padding:48px 24px 80px;">
+
+<article class="post tour-post" style="max-width:1000px;">
+  <div class="post-meta">How To &rarr; Transform</div>
+<nav class="howto-subnav" aria-label="How To navigation">
+  <a href="index.html" class="howto-subnav-link">Overview</a>
+  <a href="convert.html" class="howto-subnav-link">Convert</a>
+  <a href="transform.html" class="howto-subnav-link howto-subnav-active" aria-current="page">Transform</a>
+  <a href="find-inspect.html" class="howto-subnav-link">Find &amp; Inspect</a>
+  <a href="compare.html" class="howto-subnav-link">Compare</a>
+  <a href="validate.html" class="howto-subnav-link">Validate</a>
+  <a href="api-workbench.html" class="howto-subnav-link">API Workbench</a>
+  <a href="automate.html" class="howto-subnav-link">Automate</a>
+  <a href="examples.html" class="howto-subnav-link">Examples</a>
+  <a href="choose-a-tool.html" class="howto-subnav-link">Choose a Tool</a>
+  <a href="capability-map.html" class="howto-subnav-link">Full Capability Map</a>
+</nav>
+  <h1 id="transform">Transform messy data</h1>
+  <p>Converting a format is one thing — but sometimes you don't just want different formatting, you want a <em>different, cleaner version</em> of what you already have: fewer fields, renamed fields, or a new field built out of two others. That's <strong>Transform Builder</strong> — click "Transform Builder" above the input box to open it.</p>
+  <p>It works by chaining simple steps — select, remove, rename, filter, combine, convert type — each with a live preview, and each step correctly sees the output of the step before it (not the original data), so a field you renamed in step 1 is what step 2 actually works with.</p>
+
+  <div class="tour-ba">
+    <div class="tour-ba-side">
+      <span class="tour-ba-label">Before</span>
+      <div class="howto-example">{
+  "first": "John",
+  "last": "Smith"
+}</div>
+    </div>
+    <div class="tour-ba-arrow"><svg class="ico"><use href="#ico-arrow"/></svg></div>
+    <div class="tour-ba-side">
+      <span class="tour-ba-label">After — 3 clicked steps</span>
+      <div class="howto-example">{
+  "first_name": "John",
+  "last_name": "Smith",
+  "full_name": "John Smith"
+}</div>
+    </div>
+  </div>
+  <p class="tour-caption">Rename <code>first</code> → <code>first_name</code>, rename <code>last</code> → <code>last_name</code>, then combine <code>{first_name} {last_name}</code> into a new <code>full_name</code> field — no code, three clicks, live preview after each one.</p>
+
+  <div class="post-cta"><p><strong>Try it:</strong> <a href="../index.html?open=transform#tool">Open Transform Builder</a>, or <a href="../demo/index.html?card=orders_recipe">load the real orders demo</a> to see a whole workflow built from real steps.</p></div>
+
+  <h2 id="transform-visual">Turn messy data into useful data</h2>
+  <p>You don't always need to change the format. Sometimes you need to change what's inside the data.</p>
+
+  <div class="tour-flow-diagram">
+    <div class="tour-flow-box tour-flow-messy"><span>Messy data</span></div>
+    <div class="tour-flow-arrow">↓</div>
+    <div class="tour-flow-box tour-flow-step"><span>Select</span></div>
+    <div class="tour-flow-arrow">↓</div>
+    <div class="tour-flow-box tour-flow-step"><span>Filter</span></div>
+    <div class="tour-flow-arrow">↓</div>
+    <div class="tour-flow-box tour-flow-step"><span>Rename</span></div>
+    <div class="tour-flow-arrow">↓</div>
+    <div class="tour-flow-box tour-flow-step"><span>Flatten</span></div>
+    <div class="tour-flow-arrow">↓</div>
+    <div class="tour-flow-box tour-flow-useful"><span>Clean data</span></div>
+  </div>
+
+  <div class="tour-ba">
+    <div class="tour-ba-side">
+      <span class="tour-ba-label">Before — nested</span>
+      <pre class="tour-code">customer
+ └── profile
+      └── address
+           └── city</pre>
+    </div>
+    <div class="tour-ba-arrow"><svg class="ico"><use href="#ico-arrow"/></svg></div>
+    <div class="tour-ba-side">
+      <span class="tour-ba-label">After — flat</span>
+      <table class="tour-flat-table">
+        <thead><tr><th>customer_name</th><th>city</th></tr></thead>
+        <tbody><tr><td>Sarah</td><td>London</td></tr></tbody>
+      </table>
+    </div>
+  </div>
+
+  <div class="tour-concept-list">
+    <div class="tour-concept">
+      <h3>Select</h3>
+      <p>Keep only the information you need.</p>
+      <a class="tour-try-link" href="../index.html?open=transform#tool">Try it →</a>
+    </div>
+    <div class="tour-concept">
+      <h3>Filter</h3>
+      <p>Remove records you don't want.</p>
+      <a class="tour-try-link" href="../index.html?open=transform#tool">Try it →</a>
+    </div>
+    <div class="tour-concept">
+      <h3>Rename</h3>
+      <p>Give fields clearer names.</p>
+      <a class="tour-try-link" href="../index.html?open=transform#tool">Try it →</a>
+    </div>
+    <div class="tour-concept">
+      <h3>Flatten</h3>
+      <p>Turn complicated nested data into a simpler structure.</p>
+      <a class="tour-try-link" href="../index.html?open=transform#tool">Try it →</a>
+    </div>
+    <div class="tour-concept">
+      <h3>Sort</h3>
+      <p>Put your data in the order you need.</p>
+      <a class="tour-try-link" href="../index.html?open=transform#tool">Try it →</a>
+    </div>
+  </div>
+
+  <details class="tour-dev-details">
+    <summary>For developers</summary>
+    <p>Transform Builder is a pipeline of steps — each step's output becomes the next step's input, so a field renamed in an earlier step is what a later step actually operates on. Renaming a nested field can leave its now-empty parent container behind, which is why a real chain often includes a cleanup <code>remove</code> step before flattening. Saving the whole chain as a Recipe stores exactly this step list — the same format the API and CLI run.</p>
+    <pre class="tour-code">[
+  {
+    <span class="tok-key">"op":</span> <span class="tok-str">"select"</span>,
+    <span class="tok-key">"params":</span> {
+      <span class="tok-key">"paths":</span> [
+        <span class="tok-str">"name"</span>,
+        <span class="tok-str">"address.city"</span>
+      ]
+    }
+  },
+  {
+    <span class="tok-key">"op":</span> <span class="tok-str">"rename"</span>,
+    <span class="tok-key">"params":</span> {
+      <span class="tok-key">"from":</span> <span class="tok-str">"name"</span>,
+      <span class="tok-key">"to":</span> <span class="tok-str">"customer_name"</span>
+    }
+  },
+  {
+    <span class="tok-key">"op":</span> <span class="tok-str">"rename"</span>,
+    <span class="tok-key">"params":</span> {
+      <span class="tok-key">"from":</span> <span class="tok-str">"address.city"</span>,
+      <span class="tok-key">"to":</span> <span class="tok-str">"city"</span>
+    }
+  },
+  {
+    <span class="tok-key">"op":</span> <span class="tok-str">"remove"</span>,
+    <span class="tok-key">"params":</span> {
+      <span class="tok-key">"paths":</span> [<span class="tok-str">"address"</span>]
+    }
+  },
+  { <span class="tok-key">"op":</span> <span class="tok-str">"flatten"</span> }
+]</pre>
+    <p class="tour-caption">Result: <code>{ "customer_name": "Sarah", "city": "London" }</code></p>
+  </details>
+
+  <h2 id="faq">Common questions</h2>
+  <div class="faq-list">
+    <details class="faq-item">
+      <summary>What's the difference between converting and transforming data?</summary>
+      <p>Converting changes the format (for example, JSON to CSV) without changing the content. Transforming changes the content itself — removing fields, renaming them, or building new fields from existing ones.</p>
+    </details>
+    <details class="faq-item">
+      <summary>What kinds of steps can I chain together in Transform Builder?</summary>
+      <p>Select, remove, rename, filter, combine, and convert type — each with a live preview.</p>
+    </details>
+    <details class="faq-item">
+      <summary>Where do I find the Transform Builder?</summary>
+      <p>Click "Transform Builder" above the input box on the Convert or Transform tool.</p>
+    </details>
+  </div>
+
+<div class="howto-crosslinks">
+  <div class="howto-crosslinks-title">Where next</div>
+  <div class="howto-crosslinks-list">
+    <div><a href="find-inspect.html">Need to inspect the data first? &rarr; Find &amp; Inspect</a></div>
+    <div><a href="validate.html">Need to check the result? &rarr; Validate</a></div>
+    <div><a href="automate.html">Want to automate repeated transformations? &rarr; Automate</a></div>
+  </div>
+</div>
+</article>
+
+</main>
+
+<footer style="max-width:1180px;margin:0 auto;padding:24px;text-align:center;color:var(--text-muted);font-size:12.5px;border-top:1px solid rgba(var(--border-rgb),0.16);">
+  <a href="../index.html" style="color:var(--text-muted);">Recast</a> — your private data workbench. Your data doesn't leave your browser. Your workflow can.
+</footer>
+
+<script src="../lib/engine.js"></script>
+<script src="../lib/transform-builder.js"></script>
+<script src="../lib/highlight.js"></script>
+<script src="../lib/data-profiler.js"></script>
+<script src="../lib/ruler.js"></script>
+<script src="../lib/theme.js"></script>
+<script src="../lib/nav.js"></script>
+<script>
+  document.getElementById('tourSeeMoreBtn')?.addEventListener('click', () => {
+    document.getElementById('what-is-it')?.scrollIntoView({ behavior: 'smooth', block: 'start' });
+  });
+  document.getElementById('problemCardGrid')?.addEventListener('click', (evt) => {
+    const card = evt.target.closest('[data-scroll-target]');
+    if (!card) return;
+    document.getElementById(card.dataset.scrollTarget)?.scrollIntoView({ behavior: 'smooth', block: 'start' });
+  });
+  document.querySelectorAll('.tour-copy-btn').forEach((btn) => {
+    btn.addEventListener('click', async () => {
+      const code = btn.closest('.tour-code-block')?.querySelector('.tour-code');
+      if (!code) return;
+      try {
+        await navigator.clipboard.writeText(code.textContent);
+        const original = btn.innerHTML;
+        btn.classList.add('copied');
+        btn.textContent = 'Copied';
+        setTimeout(() => { btn.classList.remove('copied'); btn.innerHTML = original; }, 1500);
+      } catch (e) { /* clipboard permission denied or unavailable — fail silently, nothing else to do */ }
+    });
+  });
+
+  // Live JSONPath demo — genuinely runs the same engine the real tool uses
+  // (RecastEngine.jsonPathQuery), against a small fixed sample, so typing a
+  // different expression here shows a real result, not a canned one.
+  (function () {
+    const sampleData = {
+      customers: [
+        { name: 'Ada', email: 'email@example.com' },
+        { name: 'Grace', email: 'email2@example.com' },
+        { name: 'Alan', email: 'email3@example.com' },
+      ],
+    };
+    const exprInput = document.getElementById('tourJsonPathExpr');
+    const resultEl = document.getElementById('tourJsonPathResult');
+    if (!exprInput || !resultEl) return;
+
+    function run() {
+      if (!window.RecastEngine) { resultEl.textContent = 'Loading…'; return; }
+      try {
+        const value = window.RecastEngine.jsonPathQuery(sampleData, exprInput.value);
+        const text = JSON.stringify(value, null, 2);
+        resultEl.innerHTML = window.RecastHighlight ? window.RecastHighlight.highlightFor('json', text) : text;
+        resultEl.classList.remove('tour-code-error');
+      } catch (e) {
+        resultEl.textContent = e.message || String(e);
+        resultEl.classList.add('tour-code-error');
+      }
+    }
+    exprInput.addEventListener('input', run);
+    run();
+  })();
+
+  // Live Data Inspector demo — genuinely profiles a real, generated sample
+  // using the same RecastDataProfiler.profileDataset the real tool calls,
+  // right here in the browser, not a hard-coded snapshot dressed up to
+  // look computed.
+  (function () {
+    const countEl = document.getElementById('tourInspectCount');
+    const fieldsEl = document.getElementById('tourInspectFields');
+    if (!countEl || !fieldsEl || !window.RecastDataProfiler) return;
+
+    const statuses = ['active', 'pending', 'cancelled', 'active', 'active'];
+    const records = [];
+    for (let i = 1; i <= 48; i++) {
+      const rec = { id: i, status: statuses[i % statuses.length] };
+      rec.email = (i % 24 === 0) ? null : 'user' + i + '@example.com';
+      rec.age = (i % 11 === 0) ? String(20 + (i % 40)) : 20 + (i % 40);
+      rec.signup_date = (i % 17 === 0) ? 'not-a-date' : ('2025-0' + (1 + (i % 9)) + '-1' + (i % 9));
+      records.push(rec);
+    }
+
+    const result = window.RecastDataProfiler.profileDataset(records);
+    const byPath = {};
+    result.fields.forEach((f) => { byPath[f.path] = f; });
+
+    countEl.textContent = result.summary.recordCount;
+
+    function fieldCard(label, field, facts) {
+      const factsHtml = facts.map((f) => `<span class="tour-inspect-field-fact${f.warn ? ' tour-inspect-warn' : ''}">${f.text}</span>`).join('');
+      return `<div class="tour-inspect-field"><span class="tour-inspect-field-name">${label}</span>${factsHtml}</div>`;
+    }
+
+    const email = byPath.email;
+    const age = byPath.age;
+    const signupDate = byPath.signup_date;
+    const status = byPath.status;
+    let html = '';
+    if (email) {
+      const uniquePct = Math.round((email.uniqueCount / email.total) * 100);
+      html += fieldCard('Email', email, [
+        { text: uniquePct + '% unique' },
+        { text: email.nullPercent + '% empty' },
+      ]);
+    }
+    if (age) {
+      const mixed = Object.keys(age.typeCounts).filter((t) => t !== 'null').length > 1;
+      html += fieldCard('Age', age, [
+        { text: mixed ? 'Mixed values — mostly numbers, some text' : 'Consistent type', warn: mixed },
+      ]);
+    }
+    if (signupDate) {
+      html += fieldCard('Signup date', signupDate, [
+        signupDate.invalidDateCount > 0
+          ? { text: signupDate.invalidDateCount + ' value' + (signupDate.invalidDateCount === 1 ? '' : 's') + " don't look like valid dates", warn: true }
+          : { text: 'All values look like valid dates' },
+      ]);
+    }
+    if (status) {
+      html += fieldCard('Status', status, [{ text: status.uniqueCount + ' unique values' }]);
+    }
+    fieldsEl.innerHTML = html;
+  })();
+
+</script>
+</body>
+</html>

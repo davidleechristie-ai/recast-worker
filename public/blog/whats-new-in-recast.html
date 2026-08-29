@@ -1,0 +1,239 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<script>(function(){try{if(localStorage.getItem('recast_theme')!=='dark')document.documentElement.setAttribute('data-theme','light');}catch(e){}})();</script>
+<title>What's New in Recast: Graphs, Recipes, Offline Mode, and a Real Demo | Recast</title>
+<meta name="description" content="A catalog of what's shipped recently: 11-language code-gen, graph export, a light theme, saved conversion recipes, live schema validation, batch diffing, offline support, and a demo page with real datasets.">
+<meta property="og:type" content="article">
+<meta property="og:title" content="What's New in Recast: Graphs, Recipes, Offline Mode, and a Real Demo | Recast">
+<meta property="og:description" content="A catalog of what's shipped recently: 11-language code-gen, graph export, a light theme, saved conversion recipes, live schema validation, batch diffing, offline support, and a demo page with real datasets.">
+<meta property="og:url" content="https://tryrecast.app/blog/whats-new-in-recast.html">
+<meta property="og:image" content="https://tryrecast.app/og-image.png">
+<meta property="og:site_name" content="Recast">
+<meta name="twitter:card" content="summary_large_image">
+<meta name="twitter:title" content="What's New in Recast: Graphs, Recipes, Offline Mode, and a Real Demo | Recast">
+<meta name="twitter:description" content="A catalog of what's shipped recently: 11-language code-gen, graph export, a light theme, saved conversion recipes, live schema validation, batch diffing, offline support, and a demo page with real datasets.">
+<meta name="twitter:image" content="https://tryrecast.app/og-image.png">
+<link rel="canonical" href="https://tryrecast.app/blog/whats-new-in-recast.html">
+<link rel="stylesheet" href="../styles.css">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@400;500;600;700&family=IBM+Plex+Sans:wght@400;500;600&family=IBM+Plex+Mono:wght@400;500&display=swap" rel="stylesheet">
+<script type="application/ld+json">
+{
+  "@context": "https://schema.org",
+  "@type": "Article",
+  "headline": "What's New in Recast: Graphs, Recipes, Offline Mode, and a Real Demo",
+  "description": "A catalog of what's shipped recently: 11-language code-gen, graph export, a light theme, saved conversion recipes, live schema validation, batch diffing, offline support, and a demo page with real datasets.",
+  "url": "https://tryrecast.app/blog/whats-new-in-recast.html",
+  "publisher": { "@type": "Organization", "name": "Recast", "url": "https://tryrecast.app/" },
+  "datePublished": "2026-08-20"
+}
+</script>
+<!-- Google tag (gtag.js) -->
+<script async src="https://www.googletagmanager.com/gtag/js?id=G-MW47YKCSLX"></script>
+<script>
+  window.dataLayer = window.dataLayer || [];
+  function gtag(){dataLayer.push(arguments);}
+  gtag('js', new Date());
+
+  gtag('config', 'G-MW47YKCSLX');
+</script>
+<!-- Upgrade-to-Pro click tracking — event delegation so it works
+     regardless of where this script sits relative to the button in the
+     page, and never depends on app.js (which only loads on index.html
+     and /tools/, not on blog/how-to/contact/demo pages that also have
+     this same button). -->
+<script>
+  document.addEventListener('click', function (e) {
+    var btn = e.target.closest && e.target.closest('#accountBtn');
+    if (!btn) return;
+    try { if (typeof gtag === 'function') gtag('event', 'upgrade_click', { page_path: location.pathname }); } catch (err) {}
+  });
+</script>
+<!-- Attribution capture — records this session's FIRST landing page and any
+     UTM params, once, in sessionStorage. Read later by app.js's
+     appendAttributionParams() when checkout starts, so a completed Stripe
+     payment can be traced back to the specific page or campaign that
+     actually brought the visitor in, not just "some visit happened." -->
+<script>
+  (function () {
+    try {
+      if (!sessionStorage.getItem('recast_landing_path')) {
+        var path = location.pathname.replace(/^\//, '').replace(/\.html$/, '') || 'home';
+        sessionStorage.setItem('recast_landing_path', path);
+        var params = new URLSearchParams(location.search);
+        var utm = {};
+        ['utm_source', 'utm_medium', 'utm_campaign', 'utm_term', 'utm_content'].forEach(function (key) {
+          if (params.get(key)) utm[key] = params.get(key);
+        });
+        sessionStorage.setItem('recast_landing_utm', JSON.stringify(utm));
+      }
+    } catch (e) {}
+  })();
+</script>
+<script type="application/ld+json">
+{
+  "@context": "https://schema.org",
+  "@type": "BreadcrumbList",
+  "itemListElement": [
+    {
+      "@type": "ListItem",
+      "position": 1,
+      "name": "Home",
+      "item": "https://tryrecast.app/"
+    },
+    {
+      "@type": "ListItem",
+      "position": 2,
+      "name": "Blog",
+      "item": "https://tryrecast.app/blog/index.html"
+    },
+    {
+      "@type": "ListItem",
+      "position": 3,
+      "name": "What's new in Recast: graphs, recipes, offline mode, and a real demo",
+      "item": "https://tryrecast.app/blog/whats-new-in-recast.html"
+    }
+  ]
+}
+</script>
+</head>
+<body style="background:var(--bg);color:var(--text);margin:0;min-height:100vh;">
+
+<svg style="display:none" aria-hidden="true">
+  <symbol id="ico-history" viewBox="0 0 18 18" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round">
+    <path d="M3 9a6 6 0 1 0 1.8-4.3"/>
+    <polyline points="1.8,3 2,5.5 4.5,5.2"/>
+    <polyline points="9,5.5 9,9 11.5,10.5"/>
+  </symbol>
+  <symbol id="ico-settings" viewBox="0 0 18 18" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round">
+    <circle cx="9" cy="9" r="2.8"/>
+    <path d="M9 3v2.2M9 12.8V15M15 9h-2.2M5.2 9H3"/>
+  </symbol>
+  <symbol id="ico-link" viewBox="0 0 18 18" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round">
+    <path d="M7.5 10.5a3 3 0 0 0 4.3.2l2-2a3 3 0 0 0-4.2-4.2l-1.1 1.1"/>
+    <path d="M10.5 7.5a3 3 0 0 0-4.3-.2l-2 2a3 3 0 0 0 4.2 4.2l1.1-1.1"/>
+  </symbol>
+  <symbol id="ico-sun" viewBox="0 0 18 18" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round">
+    <circle cx="9" cy="9" r="3.2"/>
+    <path d="M9 1.8v2M9 14.2v2M16.2 9h-2M3.8 9h-2M14.2 3.8l-1.4 1.4M5.2 12.8l-1.4 1.4M14.2 14.2l-1.4-1.4M5.2 5.2L3.8 3.8"/>
+  </symbol>
+  <symbol id="ico-moon" viewBox="0 0 18 18" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round">
+    <path d="M15 10.2A6.2 6.2 0 0 1 7.8 3 6.5 6.5 0 1 0 15 10.2Z"/>
+  </symbol>
+  <symbol id="ico-chevron" viewBox="0 0 18 18" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round">
+    <polyline points="4.5,7 9,11.5 13.5,7"/>
+  </symbol>
+</svg>
+
+<header class="titleblock">
+  <div class="ruler" id="ruler"></div>
+  <div class="tb-row">
+    <a href="../index.html" class="brand" style="text-decoration:none;color:inherit;"><svg class="mark" viewBox="0 0 32 32" fill="none" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><defs><linearGradient id="logoGradA" x1="0%" y1="0%" x2="100%" y2="100%"><stop offset="0%" stop-color="#BE6FF8"/><stop offset="100%" stop-color="#8B5CF6"/></linearGradient><linearGradient id="logoGradB" x1="0%" y1="0%" x2="100%" y2="100%"><stop offset="0%" stop-color="#6D8FF8"/><stop offset="100%" stop-color="#3AA2FC"/></linearGradient></defs><path d="M13 5 L4 16 L13 27" stroke="url(#logoGradA)" stroke-width="4.5"/><path d="M19 5 L28 16 L19 27" stroke="url(#logoGradB)" stroke-width="4.5"/></svg>RECAST</a>
+    <nav class="tb-nav" id="primaryNav">
+      <div class="nav-group" data-nav-group="tools">
+        <button type="button" class="nav-group-btn" aria-expanded="false" aria-haspopup="true">Tools<svg class="ico nav-caret"><use href="#ico-chevron"/></svg></button>
+        <div class="nav-dropdown" role="menu">
+          <button type="button" class="nav-dropdown-item" data-nav-action="group" data-group="convert" role="menuitem">Convert</button>
+          <button type="button" class="nav-dropdown-item" data-nav-action="group" data-group="transform" role="menuitem">Transform</button>
+          <button type="button" class="nav-dropdown-item" data-nav-action="group" data-group="query" role="menuitem">Query</button>
+          <button type="button" class="nav-dropdown-item" data-nav-action="group" data-group="validate" role="menuitem">Validate</button>
+          <button type="button" class="nav-dropdown-item" data-nav-action="group" data-group="compare" role="menuitem">Compare</button>
+          <button type="button" class="nav-dropdown-item" data-nav-action="group" data-group="schema" role="menuitem">Inspect</button>
+          <a href="../tools/index.html" class="nav-dropdown-item" role="menuitem">See all 23 tools &rarr;</a>
+        </div>
+      </div>
+      <div class="nav-group" data-nav-group="automate">
+        <button type="button" class="nav-group-btn" aria-expanded="false" aria-haspopup="true">Automate<svg class="ico nav-caret"><use href="#ico-chevron"/></svg></button>
+        <div class="nav-dropdown" role="menu">
+          <button type="button" class="nav-dropdown-item" data-nav-action="recipes" role="menuitem">Recipes</button>
+          <a href="../api/index.html" class="nav-dropdown-item" role="menuitem">API</a>
+          <a href="https://www.npmjs.com/package/recast-cli" class="nav-dropdown-item" role="menuitem">CLI</a>
+        </div>
+      </div>
+      <div class="nav-group" data-nav-group="resources">
+        <button type="button" class="nav-group-btn" aria-expanded="false" aria-haspopup="true">Resources<svg class="ico nav-caret"><use href="#ico-chevron"/></svg></button>
+        <div class="nav-dropdown" role="menu">
+          <a href="../demo/index.html" class="nav-dropdown-item" role="menuitem">Demo</a>
+          <a href="index.html" class="nav-dropdown-item" role="menuitem">Blog</a>
+          <a href="../how-to/index.html" class="nav-dropdown-item" role="menuitem">How-to</a>
+          <a href="../contact.html" class="nav-dropdown-item" role="menuitem">Contact</a>
+        </div>
+      </div>
+      <a href="../index.html#pricing" class="nav-plain-link">Pricing</a>
+    </nav>
+    <button type="button" class="nav-hamburger" id="navHamburger" aria-label="Open menu" aria-expanded="false" aria-controls="primaryNav">
+      <span></span><span></span><span></span>
+    </button>
+    <div class="header-actions">
+      <a href="../index.html#tool" class="icon-btn" title="View your conversion history — opens the tool"><svg class="ico"><use href="#ico-history"/></svg><span class="btn-label">History</span></a>
+      <a href="../index.html#tool" class="icon-btn" title="View your saved presets — opens the tool"><svg class="ico"><use href="#ico-settings"/></svg><span class="btn-label">Presets</span></a>
+      <a href="../index.html#tool" class="icon-btn" title="Share a conversion — opens the tool"><svg class="ico"><use href="#ico-link"/></svg><span class="btn-label">Share link</span></a>
+      <button class="icon-btn" id="themeToggleBtn" title="Switch between dark and light theme"><svg class="ico"><use href="#ico-sun" id="themeIconUse"/></svg></button>
+      <a href="../index.html#pricing" class="btn btn-gold" id="accountBtn">Upgrade to Pro</a>
+    </div>
+  </div>
+</header>
+
+<main style="max-width:1180px;margin:0 auto;padding:48px 24px 80px;">
+
+<article class="post tour-post">
+  <div class="post-meta">Product update · 20 August 2026</div>
+  <h1>What's new in Recast: graphs, recipes, offline mode, and a real demo</h1>
+
+  <p>Recast started as a converter — JSON to CSV, and back. It's grown a lot since then, faster than the homepage alone can explain. This is a catalog of what's shipped recently, in plain terms: what each thing does, and why it's there.</p>
+
+  <h2>An actual visual graph for JSON</h2>
+  <p>Reading deeply nested JSON as raw text gets hard fast. <strong>Graph view</strong> renders your JSON as an interactive, collapsible node tree instead — click any object or array to fold it away, color-coded by type, connected with real edges rather than indentation you have to trace by eye. It's on both the input and output panels, sitting right next to the existing table view for CSV.</p>
+
+  <h2>Recipes — chain steps, save the pipeline</h2>
+  <p>A lot of real conversion work isn't one step. Flatten, then sort keys, then convert to CSV. <strong>Recipes</strong> let you build that chain once, run it as a single action, and save it with a name so it's there next time — up to 8 steps, each one feeding its output into the next. It's a free feature, not gated behind Pro, since a single saved pipeline isn't the same kind of usage as batch-processing hundreds of files.</p>
+
+  <h2>Live schema validation, as you type</h2>
+  <p>The schema validator used to be click-a-button-see-a-report. Now, in Validate-against-Schema mode, a small badge updates live as you edit — a green check, or a red count of exactly how many issues your data has against the schema — closer to how a real IDE behaves than a static form.</p>
+
+  <h2>Batch diff — not just batch convert</h2>
+  <p>Batch conversion already handled "run this transform on 100 files." Now the diff tools do too: drop a folder of "before" files and a folder of "after" files, and Recast pairs them up by matching filename and runs the same key-aware diffing across every pair at once, downloadable as a single zip of results.</p>
+
+  <h2>Eleven languages now, from one schema</h2>
+  <p>JSON → Schema infers a schema from a real sample, and that same schema now drives eleven different outputs: TypeScript, Zod, Python, Pydantic, Go, Kotlin, Rust, Java, Swift, C#, and SQL <code>CREATE TABLE</code> statements. Java comes out as modern records, not classic JavaBean boilerplate. Swift structs conform to <code>Codable</code>. C# includes <code>[JsonPropertyName]</code> attributes so PascalCase properties still map correctly to your original JSON keys. SQL is the odd one out in a useful way — arrays of objects become their own linked child tables with a real foreign key, rather than trying to cram a list into a single column. All eleven share the same inference engine, so a Go struct and a C# class generated from the same JSON always agree with each other.</p>
+
+  <h2>Mock data, generated from a schema</h2>
+  <p>Need realistic-looking test data and don't have any? JSON → Mock data infers a schema from a sample, then generates however many records you ask for — field-name heuristics fill in sensible values (an <code>email</code> field gets a real-looking email, a <code>city</code> field gets an actual city), all computed locally, no AI involved.</p>
+
+  <h2>Export the graph view as an image</h2>
+  <p>Graph view already turned nested JSON into a collapsible, interactive tree. Now there's a download option sitting right on the graph itself — SVG for something you'll edit or embed cleanly at any size, PNG for something you can just drop straight into a doc or a Slack message. Both export exactly what's currently expanded or collapsed, so you can fold away the noise first and export just the part that matters.</p>
+
+  <h2>A light theme, for anyone who wants one</h2>
+  <p>Recast was dark-only until now. There's a toggle in the header — the sun/moon icon next to Share link — that switches instantly and remembers your choice for next time. It's a real second theme, not an inverted filter: backgrounds, panels, and text all have their own proper light-mode values, checked for the same contrast a dark-mode user gets.</p>
+
+  <h2>A command palette for everything else</h2>
+  <p>With more than two dozen tools now, hunting through the nav gets old. <kbd>Cmd</kbd>/<kbd>Ctrl</kbd> + <kbd>K</kbd> opens a searchable palette — type a few letters of what you want ("kotlin", "diff", "yaml") and jump straight there.</p>
+
+  <h2>It works with no internet connection</h2>
+  <p>Recast is now a proper installable app — add it to your home screen or app dock from the browser's own install prompt, and it keeps working with zero network connection. This isn't a native download; it's a web standard (a service worker) doing the same job, tested by actually disconnecting and running a real conversion offline.</p>
+
+  <h2>A demo page with real, full-sized data</h2>
+  <p>Trying out a data tool usually means either pasting in something of your own (not always something you want to hand a stranger's website, even one that says it doesn't upload anything) or typing three fake rows that don't show you how the tool handles anything real. The <a href="../demo/index.html">Demo page</a> exists to skip both problems: real, full-sized generated datasets — 2,500 nested e-commerce orders, a 4,000-row employee CSV, 2,500 XML log events, 150 YAML service configs, and a genuine before/after order-status pair for the diff tool — that you can drag straight onto the converter or the API playground, or just tap to load. Nothing to make up, nothing of your own at risk.</p>
+
+  <h2>A guide for people who aren't developers</h2>
+  <p>Recast was built for people who already know what JSON and CSV are. Not everyone does, and there's no reason the tool should only be useful to people who do. The <a href="../how-to/index.html">How To guide</a> walks through the whole thing in plain language — what the tool actually does, a step-by-step first conversion with real screenshots, and an honest explanation of when (and whether) you'd ever need the API.</p>
+
+  <div class="post-cta">
+    <p>Most of this is easiest to just try rather than read about. The <a href="../demo/index.html">Demo page</a> has real data already loaded and ready to drag in — including a file pair set up specifically to show the diff tool at work. Or jump straight into <a href="../index.html#tool">the tool</a> with your own.</p>
+  </div>
+</article>
+
+</main>
+
+<footer style="max-width:1180px;margin:0 auto;padding:24px;text-align:center;color:var(--text-muted);font-size:12.5px;border-top:1px solid rgba(var(--border-rgb),0.16);">
+  <a href="../index.html" style="color:var(--text-muted);">Recast</a> — your private data workbench. Your data doesn't leave your browser. Your workflow can.
+</footer>
+
+<script src="../lib/ruler.js"></script>
+<script src="../lib/theme.js"></script>
+<script src="../lib/nav.js"></script>
+</body>
+</html>
