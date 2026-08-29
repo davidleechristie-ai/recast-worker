@@ -1,3 +1,12 @@
+## V30 homepage UI cleanup
+- [x] Fix hero/quick-action horizontal layout issue.
+- [x] Reinstate clear Recast brand hierarchy.
+- [x] Keep Copilot immediately below the hero.
+- [x] Keep quick actions directly beneath Copilot.
+- [x] Add stronger visual separation before Workbench.
+- [x] Preserve full Workbench functionality.
+- [ ] Verify desktop and iPhone spacing after deployment.
+
 ## V29 approved homepage composition
 - [x] Restore Recast dark/purple branding.
 - [x] White “Fix the data.”
