@@ -126,6 +126,23 @@ body{background:#080b1a}
 <style id="v26-1-prompt-heading">
 .minimal-request-heading{margin:0 0 16px;font-size:clamp(1.35rem,2.2vw,1.8rem);line-height:1.2;letter-spacing:-.025em;text-align:left}
 </style>
+<style id="v28-home-workbench">
+.minimal-hero-copy h1{text-align:left!important}
+.minimal-hero-copy h1 .hero-accent{font-style:normal!important}
+.minimal-home{min-height:auto!important;padding-bottom:54px!important}
+.home-workbench-section{width:min(1120px,calc(100% - 48px));margin:74px auto 0}
+.home-workbench-heading{display:flex;align-items:end;justify-content:space-between;gap:24px;margin:0 0 18px;padding-top:6px}
+.home-workbench-heading h2{margin:0;font-size:clamp(1.7rem,3vw,2.25rem);letter-spacing:-.035em}
+.home-workbench-heading p{max-width:560px;margin:0;color:var(--text-muted);font-size:.92rem;line-height:1.5;text-align:right}
+.home-workbench-section .mode-nav{margin-top:0}
+.minimal-proof{width:min(1120px,calc(100% - 48px));margin:38px auto 68px!important}
+@media(max-width:760px){
+  .home-workbench-section{width:calc(100% - 36px);margin-top:54px}
+  .home-workbench-heading{display:block}
+  .home-workbench-heading p{text-align:left;margin-top:8px}
+  .minimal-proof{width:calc(100% - 36px);margin-top:30px!important}
+}
+</style>
 </head>
 
 <body class="landing-home" style="background:var(--bg);color:var(--text);margin:0;min-height:100vh;">
@@ -313,7 +330,7 @@ body{background:#080b1a}
   <section class="hero hero-v19 minimal-home" id="tool">
   <div class="minimal-hero-inner">
     <div class="minimal-hero-copy">
-      <h1>Fix the data.<br><em>Then stop fixing it.</em></h1>
+      <h1>Fix the data.<br><span class="hero-accent">Then stop fixing it.</span></h1>
       <p class="sub">Describe the job in plain English. Recast turns it into a workflow to transform, compare or validate your data — then lets you reuse, deploy or automate it.</p>
     </div>
 
@@ -345,13 +362,6 @@ body{background:#080b1a}
           <p class="wc-note" id="wcNote"></p>
         </div>
       </div>
-    </div>
-
-    <div class="minimal-proof" aria-label="Why Recast">
-      <span><strong>Private by default</strong><small>Browser tools run locally</small></span>
-      <span><strong>No signup</strong><small>Start using Recast immediately</small></span>
-      <span><strong>Free to start</strong><small>Upgrade when the workflow repeats</small></span>
-      <span><strong>Deploy &amp; automate</strong><small>Turn workflows into APIs or schedules</small></span>
     </div>
   </div>
 </section>
@@ -445,47 +455,11 @@ body{background:#080b1a}
       </div>
     </section>
 
-    <div class="privacy-banner">
-      <strong>Your data stays on your machine. Your workflow doesn't have to.</strong> No uploads. No tracking scripts. No server-side processing for browser tools — but every recipe you build here is ready to run again, automated, or called from the API.
-      <span class="privacy-exception">Need server-side processing for a script or pipeline? <a href="#api">That's what the API is for.</a></span>
-    </div>
-
-<div class="hero-preview">
-  <div class="hp-head"><svg class="ico"><use href="#ico-json"/></svg> live example <span class="hp-badge">real output</span></div>
-  <div class="hp-panes">
-    <div class="hp-pane"><div class="hp-pane-label">JSON</div><pre class="hp-code">[
-  {
-    <span class="tok-key">"id":</span> <span class="tok-num">1</span>,
-    <span class="tok-key">"name":</span> <span class="tok-str">"Ada Lovelace"</span>,
-    <span class="tok-key">"role":</span> <span class="tok-str">"Engineer"</span>,
-    <span class="tok-key">"city":</span> <span class="tok-str">"London"</span>
-  },
-  {
-    <span class="tok-key">"id":</span> <span class="tok-num">2</span>,
-    <span class="tok-key">"name":</span> <span class="tok-str">"Grace Hopper"</span>,
-    <span class="tok-key">"role":</span> <span class="tok-str">"Admiral"</span>,
-    <span class="tok-key">"city":</span> <span class="tok-str">"New York"</span>
-  }
-]</pre></div>
-    <div class="hp-mid"><svg class="ico"><use href="#ico-arrow"/></svg></div>
-    <div class="hp-pane"><div class="hp-pane-label">CSV</div><pre class="hp-code"><span class="tok-key">id<span class="tok-punct">,</span>name<span class="tok-punct">,</span>role<span class="tok-punct">,</span>city</span>
-1<span class="tok-punct">,</span>Ada Lovelace<span class="tok-punct">,</span>Engineer<span class="tok-punct">,</span>London
-2<span class="tok-punct">,</span>Grace Hopper<span class="tok-punct">,</span>Admiral<span class="tok-punct">,</span>New York</pre></div>
+    <section class="home-workbench-section" aria-labelledby="homeWorkbenchHeading">
+  <div class="home-workbench-heading">
+    <h2 id="homeWorkbenchHeading">Workbench</h2>
+    <p>Use the full Recast workbench for one-off transformations, validation, comparison and inspection.</p>
   </div>
-</div>
-
-    <div class="quick-start" id="quickStart">
-      <p class="quick-start-label">Start here</p>
-      <div class="quick-start-grid">
-        <button class="qs-card" data-mode="json2csv"><svg class="ico"><use href="#ico-json"/></svg><span class="qs-title">JSON → CSV</span><span class="qs-desc">Turn API responses into spreadsheet rows</span></button>
-        <button class="qs-card" data-mode="csv2json"><svg class="ico"><use href="#ico-table"/></svg><span class="qs-title">CSV → JSON</span><span class="qs-desc">Typed, nested JSON from a spreadsheet export</span></button>
-        <button class="qs-card" data-mode="validateJson"><svg class="ico"><use href="#ico-check"/></svg><span class="qs-title">Validate JSON</span><span class="qs-desc">Find exactly what's wrong, in plain English</span></button>
-        <button class="qs-card" data-mode="diffJson"><svg class="ico"><use href="#ico-diff"/></svg><span class="qs-title">Diff JSON</span><span class="qs-desc">Key-aware comparison, not line noise</span></button>
-        <button class="qs-card" data-mode="jsonSchema"><svg class="ico"><use href="#ico-schema"/></svg><span class="qs-title">JSON → Schema</span><span class="qs-desc">Infer a schema, then generate real types</span></button>
-        <button class="qs-card" data-mode="formatJson"><svg class="ico"><use href="#ico-json"/></svg><span class="qs-title">Format JSON</span><span class="qs-desc">Pretty-print or minify in one click</span></button>
-      </div>
-    </div>
-
     <div class="mode-nav" id="modeNav">
       <div class="mode-groups" id="modeGroups">
         <button class="mode-group-btn active" data-group="convert">Convert</button>
@@ -676,6 +650,13 @@ body{background:#080b1a}
       </div>
       <div id="compareTableWrap"></div>
     </div>
+    </div>
+</section>
+<div class="minimal-proof" aria-label="Why Recast">
+      <span><strong>Private by default</strong><small>Browser tools run locally</small></span>
+      <span><strong>No signup</strong><small>Start using Recast immediately</small></span>
+      <span><strong>Free to start</strong><small>Upgrade when the workflow repeats</small></span>
+      <span><strong>Deploy &amp; automate</strong><small>Turn workflows into APIs or schedules</small></span>
     </div>
 
     <div class="batch-panel" id="batchPanel">

@@ -1,3 +1,12 @@
+## V28 homepage workbench layout
+- [x] Preserve latest Recast logo/header.
+- [x] Keep Copilot directly below left-aligned hero.
+- [x] Remove privacy/live-example panels.
+- [x] Remove italic strapline styling.
+- [x] Add Workbench heading and spacing before actual interactive workbench.
+- [x] Move concise proof points below Workbench.
+- [ ] After deployment, verify desktop and iPhone spacing and that all Workbench modes remain easy to reach.
+
 ## V27 Google Search Console follow-up
 After deployment, request indexing for:
 - https://tryrecast.app/tools/json-schema-generator.html
