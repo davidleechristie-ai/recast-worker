@@ -1,0 +1,63 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width,initial-scale=1.0">
+<title>Compare API Responses Online – Find JSON Changes | Recast</title>
+<meta name="description" content="Compare two API responses online and find added, removed and changed JSON fields. Use structural JSON diffing to review API changes without line-order noise.">
+<link rel="canonical" href="https://tryrecast.app/tools/compare-api-responses.html">
+<meta property="og:type" content="website">
+<meta property="og:title" content="Compare API Responses Online – Find JSON Changes | Recast">
+<meta property="og:description" content="Compare two API responses and find structural JSON changes in your browser.">
+<meta property="og:url" content="https://tryrecast.app/tools/compare-api-responses.html">
+<meta property="og:image" content="https://tryrecast.app/og-image.png">
+<link rel="stylesheet" href="../styles.css">
+<script type="application/ld+json">{"@context":"https://schema.org","@type":"WebApplication","name":"Compare API Responses","applicationCategory":"DeveloperApplication","operatingSystem":"Any","url":"https://tryrecast.app/tools/compare-api-responses.html","isPartOf":{"@type":"WebSite","name":"Recast","url":"https://tryrecast.app/"}}</script>
+<script type="application/ld+json">{"@context":"https://schema.org","@type":"FAQPage","mainEntity":[{"@type":"Question","name":"How do I compare two API responses?","acceptedAnswer":{"@type":"Answer","text":"Capture two JSON responses, compare them structurally, and review added, removed and changed fields rather than raw line differences."}},{"@type":"Question","name":"Can I ignore formatting differences in API JSON?","acceptedAnswer":{"@type":"Answer","text":"Yes. Structural JSON comparison parses the payloads first, so whitespace and formatting differences do not become data changes."}},{"@type":"Question","name":"What about reordered arrays?","acceptedAnswer":{"@type":"Answer","text":"If array items have stable ID-like fields, matching by identity can reduce noise caused by reordering. Only ignore order when order is not meaningful to the API."}}]}</script>
+<style>
+.intent-page{max-width:960px;margin:0 auto;padding:28px 22px 70px}
+.intent-nav{display:flex;justify-content:space-between;align-items:center;margin-bottom:70px}
+.intent-nav a{color:inherit;text-decoration:none}.intent-logo{font-weight:800;font-size:1.1rem}
+.intent-hero{max-width:780px}.intent-hero h1{font-size:clamp(2.5rem,6vw,5.1rem);line-height:.96;letter-spacing:-.055em;margin:12px 0 22px}
+.intent-lead{font-size:1rem;line-height:1.7;opacity:.68;max-width:720px}
+.intent-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:10px;margin:34px 0}
+.intent-grid div{padding:17px;border:1px solid rgba(148,163,184,.13);border-radius:12px}.intent-grid strong,.intent-grid span{display:block}
+.intent-grid span{font-size:.76rem;line-height:1.5;opacity:.55;margin-top:7px}.intent-cta{display:inline-flex;margin-top:8px}
+.intent-note{margin-top:55px;padding-top:22px;border-top:1px solid rgba(148,163,184,.1);font-size:.76rem;line-height:1.6;opacity:.55}
+.intent-example,.intent-faq,.intent-related{margin-top:42px;padding-top:26px;border-top:1px solid rgba(148,163,184,.12)}
+.intent-example h2,.intent-faq h2,.intent-related h2{font-size:1.35rem;margin:0 0 14px}
+.intent-example pre{white-space:pre-wrap;overflow:auto;padding:18px;border:1px solid rgba(148,163,184,.14);border-radius:10px;background:rgba(15,23,42,.42);line-height:1.55}
+.intent-faq details{padding:14px 0;border-bottom:1px solid rgba(148,163,184,.10)}.intent-faq summary{cursor:pointer;font-weight:700}
+.intent-faq p,.intent-related p,.intent-example p{font-size:.9rem;line-height:1.7;opacity:.72}.intent-related a{font-weight:700}
+@media(max-width:700px){.intent-nav{margin-bottom:45px}.intent-grid{grid-template-columns:1fr}}
+</style>
+</head>
+<body style="background:var(--bg);color:var(--text);margin:0;min-height:100vh">
+<main class="intent-page">
+<nav class="intent-nav"><a class="intent-logo" href="../index.html">Recast</a><a href="index.html">All tools →</a></nav>
+<section class="intent-hero">
+<p class="eyebrow">Free browser data tool</p>
+<h1>Compare API Responses</h1>
+<p class="intent-lead">Compare two JSON API responses structurally to find fields and values that were added, removed or changed. Recast helps separate real contract/data changes from formatting noise.</p>
+<div class="intent-grid">
+<div><strong>Paste two responses</strong><span>Use captured JSON from before and after an API change.</span></div>
+<div><strong>Compare structure</strong><span>Ignore whitespace and formatting differences that do not change the data.</span></div>
+<div><strong>Find real changes</strong><span>Review added, removed and changed paths before an integration breaks.</span></div>
+</div>
+<a class="btn btn-gold intent-cta" href="json-diff.html">Compare API JSON →</a>
+<section class="intent-example"><h2>Example: detect an API contract change</h2>
+<p>Suppose one response returns <code>"customer_id": 42</code> and a later version returns <code>"customerId": 42</code>. A structural comparison identifies the removed and added paths directly. It can also expose type changes such as a number becoming a string.</p>
+<pre>Before: {"customer_id":42,"status":"active"}
+After:  {"customerId":42,"status":"active","tier":"pro"}</pre>
+<p>The meaningful changes are the renamed identifier and the new <code>tier</code> field—not line positions or whitespace.</p></section>
+<section class="intent-faq"><h2>Compare API response questions</h2>
+<details><summary>How do I compare two API responses?</summary><p>Capture the two JSON payloads and compare them structurally. Review changed JSON paths rather than only line-level differences.</p></details>
+<details><summary>Can I ignore formatting differences?</summary><p>Yes. Structural comparison parses the JSON first, so indentation, whitespace and key formatting do not create false data changes.</p></details>
+<details><summary>What about reordered arrays?</summary><p>Where records have stable ID-like fields, identity-aware matching can reduce reorder noise. Keep order significant when the API semantics depend on sequence.</p></details>
+</section>
+<section class="intent-related"><h2>Related</h2><p><a href="json-diff.html">JSON Diff</a> · <a href="compare-json-arrays-by-id.html">Compare JSON arrays by ID</a> · <a href="validate-json-schema.html">Validate JSON against Schema</a></p></section>
+<p class="intent-note"><strong>Privacy:</strong> browser tools process the data you paste locally. If you explicitly use Recast's hosted API or Automation features, the input for that hosted execution is sent to Recast for processing.</p>
+</section>
+</main>
+</body>
+</html>

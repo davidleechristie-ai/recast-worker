@@ -1,15 +1,28 @@
-# Recast V32 — Homepage Structure Fix
+# Recast V35 — High-Intent SEO Authority
 
-Rebuilt the homepage DOM structure to eliminate layout conflicts.
+Built on V34 and explicitly incorporates the 30 August SEO visibility check.
 
-Order is now fixed as:
-1. Hero headline
-2. Feature-focused supporting copy
-3. Copilot request
-4. Four quick-action cards
-5. Workbench section
+## Priority gaps addressed
+1. API response to CSV
+2. Compare CSV files by ID
+3. Compare API responses
 
-No flex/grid parent can place the quick actions beside the hero.
-The Workbench heading icon is positioned independently and cannot overlap the text.
+## Changes
+- Strengthened API Response → CSV with a unique nested-response example, 3 FAQs, FAQ schema and related links.
+- Strengthened Compare CSV Files by ID with a key-column example, 3 FAQs, FAQ schema and related links.
+- Added a dedicated /tools/compare-api-responses.html intent page with:
+  - exact search-intent title/H1/description
+  - before/after API example
+  - structural comparison explanation
+  - 3 FAQs + FAQ schema
+  - links into JSON Diff, ID-aware JSON comparison and schema validation.
+- Added descriptive in-content authority links from:
+  - JSON → CSV → “Convert an API response to CSV”
+  - CSV Diff → “Compare CSV files by ID”
+  - JSON Diff → “Compare API responses”
+  - API docs → API Response to CSV + Compare API Responses
+  - Tools directory → all three narrow intent pages.
+- Added Compare API Responses to sitemap.
 
-All existing Recast functionality is preserved.
+## Preserved
+V34 authority guides, V33 Tools navigation, V32 homepage structure, V27 Search Console optimisations, Copilot hardening and all commercial/API functionality.

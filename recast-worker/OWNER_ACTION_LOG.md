@@ -1,3 +1,28 @@
+## V35 — Search Console / SEO check follow-up
+After deployment:
+- [ ] Request indexing: https://tryrecast.app/tools/api-response-to-csv.html
+- [ ] Request indexing: https://tryrecast.app/tools/compare-csv-files-by-id.html
+- [ ] Request indexing: https://tryrecast.app/tools/compare-api-responses.html
+- [ ] Request indexing: https://tryrecast.app/tools/json-to-csv.html
+- [ ] Request indexing: https://tryrecast.app/tools/csv-diff.html
+- [ ] Request indexing: https://tryrecast.app/tools/json-diff.html
+- [ ] Request indexing: https://tryrecast.app/api/index.html
+- [ ] Monitor the three priority intents for impressions/index coverage for 14 days before creating further near-duplicate pages.
+
+## V34 SEO authority cluster
+After deployment:
+- [ ] Request indexing for /blog/generate-json-schema-from-json.html
+- [ ] Request indexing for /blog/compare-json-files.html
+- [ ] Request indexing for /blog/compare-xml-files.html
+- [ ] Request indexing for /blog/flatten-nested-json.html
+- [ ] Re-request indexing for the four linked tool pages only if Google has not crawled them recently.
+- [ ] Monitor impressions by page/query for 14 days before creating near-duplicate pages.
+
+## V33 Tools navigation
+- [x] Replace homepage Tools menu group buttons with direct tool-page links.
+- [x] Verify every linked destination exists in /public/tools.
+- [ ] Smoke-test Tools dropdown on desktop and iPhone after deployment.
+
 ## V32 homepage structure fix
 - [x] Rebuild hero DOM from scratch.
 - [x] Force quick actions below Copilot.

@@ -77,4 +77,9 @@
   <url><loc>https://tryrecast.app/demo/workflows.html</loc><changefreq>monthly</changefreq><priority>0.7</priority></url>
   <url><loc>https://tryrecast.app/demo/api.html</loc><changefreq>monthly</changefreq><priority>0.7</priority></url>
   <url><loc>https://tryrecast.app/demo/automation.html</loc><changefreq>monthly</changefreq><priority>0.7</priority></url>
+  <url><loc>https://tryrecast.app/blog/generate-json-schema-from-json.html</loc><lastmod>2026-08-30</lastmod></url>
+  <url><loc>https://tryrecast.app/blog/compare-json-files.html</loc><lastmod>2026-08-30</lastmod></url>
+  <url><loc>https://tryrecast.app/blog/compare-xml-files.html</loc><lastmod>2026-08-30</lastmod></url>
+  <url><loc>https://tryrecast.app/blog/flatten-nested-json.html</loc><lastmod>2026-08-30</lastmod></url>
+  <url><loc>https://tryrecast.app/tools/compare-api-responses.html</loc><lastmod>2026-08-30</lastmod></url>
 </urlset>

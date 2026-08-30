@@ -325,6 +325,12 @@ body{background:#080b1a}
 }
 </style>
 
+<style id="v33-tools-menu-links">
+.nav-tools-links .nav-dropdown-item{display:flex!important;align-items:center;justify-content:space-between;gap:24px}
+.nav-tools-links .nav-dropdown-item span{font-size:.72rem;opacity:.58;white-space:nowrap}
+.nav-tools-links .nav-tools-all{margin-top:4px;border-top:1px solid rgba(255,255,255,.08);padding-top:11px}
+.nav-tools-links .nav-tools-all span{font-size:1rem;opacity:.9}
+</style>
 </head>
 
 <body class="landing-home" style="background:var(--bg);color:var(--text);margin:0;min-height:100vh;">
@@ -453,14 +459,14 @@ body{background:#080b1a}
     <nav class="tb-nav" id="primaryNav">
       <div class="nav-group" data-nav-group="tools">
         <button type="button" class="nav-group-btn" aria-expanded="false" aria-haspopup="true">Tools<svg class="ico nav-caret"><use href="#ico-chevron"/></svg></button>
-        <div class="nav-dropdown" role="menu">
-          <button type="button" class="nav-dropdown-item" data-nav-action="group" data-group="convert" role="menuitem">Convert</button>
-          <button type="button" class="nav-dropdown-item" data-nav-action="group" data-group="transform" role="menuitem">Transform</button>
-          <button type="button" class="nav-dropdown-item" data-nav-action="group" data-group="query" role="menuitem">Query</button>
-          <button type="button" class="nav-dropdown-item" data-nav-action="group" data-group="validate" role="menuitem">Validate</button>
-          <button type="button" class="nav-dropdown-item" data-nav-action="group" data-group="compare" role="menuitem">Compare</button>
-          <button type="button" class="nav-dropdown-item" data-nav-action="group" data-group="schema" role="menuitem">Inspect</button>
-          <a href="tools/index.html" class="nav-dropdown-item" role="menuitem">See all 23 tools &rarr;</a>
+        <div class="nav-dropdown nav-tools-links" role="menu">
+          <a href="/tools/json-to-csv.html" class="nav-dropdown-item" role="menuitem">Convert <span>JSON → CSV</span></a>
+          <a href="/tools/flatten-json.html" class="nav-dropdown-item" role="menuitem">Transform <span>Flatten JSON</span></a>
+          <a href="/tools/jsonpath-tester.html" class="nav-dropdown-item" role="menuitem">Query <span>JSONPath Tester</span></a>
+          <a href="/tools/json-validator.html" class="nav-dropdown-item" role="menuitem">Validate <span>JSON Validator</span></a>
+          <a href="/tools/json-diff.html" class="nav-dropdown-item" role="menuitem">Compare <span>JSON Diff</span></a>
+          <a href="/tools/json-schema-generator.html" class="nav-dropdown-item" role="menuitem">Inspect <span>JSON Schema</span></a>
+          <a href="/tools/index.html" class="nav-dropdown-item nav-tools-all" role="menuitem">See all tools <span>→</span></a>
         </div>
       </div>
       <div class="nav-group" data-nav-group="automate">
