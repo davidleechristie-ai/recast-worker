@@ -133,6 +133,7 @@
   ]
 }
 </script>
+<style id="v36-schema-authority">.seo-schema-cluster{max-width:1040px;margin:36px auto;padding:24px 0;border-top:1px solid rgba(148,163,184,.12)}.seo-schema-cluster h2{margin:0 0 8px;font-size:1.25rem}.seo-schema-cluster p{max-width:820px;line-height:1.7;color:var(--text-muted)}.seo-schema-cluster a{font-weight:700}</style>
 </head>
 <body style="background:var(--bg);color:var(--text);margin:0;min-height:100vh;">
 <svg style="display:none" aria-hidden="true">
@@ -266,15 +267,15 @@
     <nav class="tb-nav" id="primaryNav">
       <div class="nav-group" data-nav-group="tools">
         <button type="button" class="nav-group-btn" aria-expanded="false" aria-haspopup="true">Tools<svg class="ico nav-caret"><use href="#ico-chevron"/></svg></button>
-        <div class="nav-dropdown" role="menu">
-          <button type="button" class="nav-dropdown-item" data-nav-action="group" data-group="convert" role="menuitem">Convert</button>
-          <button type="button" class="nav-dropdown-item" data-nav-action="group" data-group="transform" role="menuitem">Transform</button>
-          <button type="button" class="nav-dropdown-item" data-nav-action="group" data-group="query" role="menuitem">Query</button>
-          <button type="button" class="nav-dropdown-item" data-nav-action="group" data-group="validate" role="menuitem">Validate</button>
-          <button type="button" class="nav-dropdown-item" data-nav-action="group" data-group="compare" role="menuitem">Compare</button>
-          <button type="button" class="nav-dropdown-item" data-nav-action="group" data-group="schema" role="menuitem">Inspect</button>
-          <a href="../tools/index.html" class="nav-dropdown-item" role="menuitem">See all 23 tools &rarr;</a>
-        </div>
+        <div class="nav-dropdown nav-tools-links" role="menu">
+<a href="/tools/json-to-csv.html" class="nav-dropdown-item" role="menuitem">Convert <span>JSON → CSV</span></a>
+<a href="/tools/flatten-json.html" class="nav-dropdown-item" role="menuitem">Transform <span>Flatten JSON</span></a>
+<a href="/tools/jsonpath-tester.html" class="nav-dropdown-item" role="menuitem">Query <span>JSONPath Tester</span></a>
+<a href="/tools/json-validator.html" class="nav-dropdown-item" role="menuitem">Validate <span>JSON Validator</span></a>
+<a href="/tools/json-diff.html" class="nav-dropdown-item" role="menuitem">Compare <span>JSON Diff</span></a>
+<a href="/tools/json-schema-generator.html" class="nav-dropdown-item" role="menuitem">Inspect <span>JSON Schema</span></a>
+<a href="/tools/index.html" class="nav-dropdown-item nav-tools-all" role="menuitem">See all tools <span>→</span></a>
+</div>
       </div>
       <div class="nav-group" data-nav-group="automate">
         <button type="button" class="nav-group-btn" aria-expanded="false" aria-haspopup="true">Automate<svg class="ico nav-caret"><use href="#ico-chevron"/></svg></button>
@@ -299,9 +300,9 @@
       <span></span><span></span><span></span>
     </button>
     <div class="header-actions">
-      <a href="../index.html#tool" class="icon-btn" title="View your conversion history — opens the tool"><svg class="ico"><use href="#ico-history"/></svg><span class="btn-label">History</span></a>
-      <a href="../index.html#tool" class="icon-btn" title="View your saved presets — opens the tool"><svg class="ico"><use href="#ico-settings"/></svg><span class="btn-label">Presets</span></a>
-      <a href="../index.html#tool" class="icon-btn" title="Share a conversion — opens the tool"><svg class="ico"><use href="#ico-link"/></svg><span class="btn-label">Share link</span></a>
+      <a href="/tools/index.html" class="icon-btn" title="View your conversion history — opens the tool"><svg class="ico"><use href="#ico-history"/></svg><span class="btn-label">History</span></a>
+      <a href="/tools/index.html" class="icon-btn" title="View your saved presets — opens the tool"><svg class="ico"><use href="#ico-settings"/></svg><span class="btn-label">Presets</span></a>
+      <a href="/tools/index.html" class="icon-btn" title="Share a conversion — opens the tool"><svg class="ico"><use href="#ico-link"/></svg><span class="btn-label">Share link</span></a>
       <button class="icon-btn" id="themeToggleBtn" title="Switch between dark and light theme"><svg class="ico"><use href="#ico-sun" id="themeIconUse"/></svg></button>
       <a href="../index.html#pricing" class="btn btn-gold" id="accountBtn">Upgrade to Pro</a>
     </div>
@@ -406,6 +407,12 @@ active   &rarr; boolean      <span class="tour-check-ok">&#10003;</span></pre>
   </div>
 </div>
 </article>
+
+
+<section class="seo-schema-cluster" aria-label="Schema generation workflow">
+<h2>Generate the schema first</h2>
+<p>If your starting point is an existing JSON payload rather than a schema, <a href="/tools/json-schema-generator.html">generate JSON Schema from JSON</a> first, then validate subsequent payloads against the reviewed contract.</p>
+</section>
 
 </main>
 

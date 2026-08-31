@@ -1,28 +1,11 @@
-# Recast V35 — High-Intent SEO Authority
+# Recast V37 — Site-wide Link Reconciliation
 
-Built on V34 and explicitly incorporates the 30 August SEO visibility check.
+Built from V36.
 
-## Priority gaps addressed
-1. API response to CSV
-2. Compare CSV files by ID
-3. Compare API responses
+A complete internal-link reconciliation was run after the homepage changes.
 
-## Changes
-- Strengthened API Response → CSV with a unique nested-response example, 3 FAQs, FAQ schema and related links.
-- Strengthened Compare CSV Files by ID with a key-column example, 3 FAQs, FAQ schema and related links.
-- Added a dedicated /tools/compare-api-responses.html intent page with:
-  - exact search-intent title/H1/description
-  - before/after API example
-  - structural comparison explanation
-  - 3 FAQs + FAQ schema
-  - links into JSON Diff, ID-aware JSON comparison and schema validation.
-- Added descriptive in-content authority links from:
-  - JSON → CSV → “Convert an API response to CSV”
-  - CSV Diff → “Compare CSV files by ID”
-  - JSON Diff → “Compare API responses”
-  - API docs → API Response to CSV + Compare API Responses
-  - Tools directory → all three narrow intent pages.
-- Added Compare API Responses to sitemap.
+Key change: the Tools dropdown is now consistent across the site. Convert, Transform, Query, Validate, Compare and Inspect link directly to dedicated tool pages instead of invoking or routing to the homepage workbench.
 
-## Preserved
-V34 authority guides, V33 Tools navigation, V32 homepage structure, V27 Search Console optimisations, Copilot hardening and all commercial/API functionality.
+The audit also remapped stale API/#tool links where dedicated destinations now exist.
+
+See LINK_RECONCILIATION_REPORT.md for the audit result.

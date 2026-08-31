@@ -275,15 +275,15 @@
     <nav class="tb-nav" id="primaryNav">
       <div class="nav-group" data-nav-group="tools">
         <button type="button" class="nav-group-btn" aria-expanded="false" aria-haspopup="true">Tools<svg class="ico nav-caret"><use href="#ico-chevron"/></svg></button>
-        <div class="nav-dropdown" role="menu">
-          <button type="button" class="nav-dropdown-item" data-nav-action="group" data-group="convert" role="menuitem">Convert</button>
-          <button type="button" class="nav-dropdown-item" data-nav-action="group" data-group="transform" role="menuitem">Transform</button>
-          <button type="button" class="nav-dropdown-item" data-nav-action="group" data-group="query" role="menuitem">Query</button>
-          <button type="button" class="nav-dropdown-item" data-nav-action="group" data-group="validate" role="menuitem">Validate</button>
-          <button type="button" class="nav-dropdown-item" data-nav-action="group" data-group="compare" role="menuitem">Compare</button>
-          <button type="button" class="nav-dropdown-item" data-nav-action="group" data-group="schema" role="menuitem">Inspect</button>
-          <a href="index.html" class="nav-dropdown-item" role="menuitem">See all 23 tools &rarr;</a>
-        </div>
+        <div class="nav-dropdown nav-tools-links" role="menu">
+<a href="/tools/json-to-csv.html" class="nav-dropdown-item" role="menuitem">Convert <span>JSON → CSV</span></a>
+<a href="/tools/flatten-json.html" class="nav-dropdown-item" role="menuitem">Transform <span>Flatten JSON</span></a>
+<a href="/tools/jsonpath-tester.html" class="nav-dropdown-item" role="menuitem">Query <span>JSONPath Tester</span></a>
+<a href="/tools/json-validator.html" class="nav-dropdown-item" role="menuitem">Validate <span>JSON Validator</span></a>
+<a href="/tools/json-diff.html" class="nav-dropdown-item" role="menuitem">Compare <span>JSON Diff</span></a>
+<a href="/tools/json-schema-generator.html" class="nav-dropdown-item" role="menuitem">Inspect <span>JSON Schema</span></a>
+<a href="/tools/index.html" class="nav-dropdown-item nav-tools-all" role="menuitem">See all tools <span>→</span></a>
+</div>
       </div>
       <div class="nav-group" data-nav-group="automate">
         <button type="button" class="nav-group-btn" aria-expanded="false" aria-haspopup="true">Automate<svg class="ico nav-caret"><use href="#ico-chevron"/></svg></button>
@@ -325,7 +325,7 @@
       </div>
       <button class="icon-btn" id="shareBtn" title="Copy a link that restores this input — data is compressed into the URL itself, nothing is uploaded"><svg class="ico"><use href="#ico-link"/></svg><span class="btn-label">Share link</span></button>
       <button class="icon-btn" id="themeToggleBtn" title="Switch between dark and light theme"><svg class="ico"><use href="#ico-sun" id="themeIconUse"/></svg></button>
-      <a href="#pricing" class="btn btn-gold" id="accountBtn">Upgrade to Pro</a>
+      <a href="/#pricing" class="btn btn-gold" id="accountBtn">Upgrade to Pro</a>
     </div>
   </div>
 </header>
@@ -337,7 +337,7 @@
   <p>If you're here because you searched "json to csv without python," you probably already know how to write the script — <code>import json, csv</code>, open the file, loop over the rows, handle the nested fields, remember to close the file. It's maybe fifteen minutes of work for a one-off conversion. This is the version that takes ten seconds instead.</p>
 
   <h2>The script way vs. the Recast way</h2>
-  <p>To be fair to the script: if you're converting the same shape of data on a schedule, or it's part of a larger pipeline, a script is genuinely the right tool — it's repeatable, version-controlled, and doesn't depend on a browser tab. <a href="../how-to/automate.html">Recast's Recipe automation</a> and <a href="../index.html#api">API</a> exist for exactly that case.</p>
+  <p>To be fair to the script: if you're converting the same shape of data on a schedule, or it's part of a larger pipeline, a script is genuinely the right tool — it's repeatable, version-controlled, and doesn't depend on a browser tab. <a href="../how-to/automate.html">Recast's Recipe automation</a> and <a href="../api/index.html">API</a> exist for exactly that case.</p>
   <p>But for a one-off — someone hands you a JSON export and you need a CSV in the next five minutes — writing and debugging a script (nested objects, arrays, encoding, do you even have Python installed on this machine right now?) is real friction for a single conversion. That's the case this page is for.</p>
 
   <h2 id="convert-visual">See it without the setup</h2>
@@ -376,7 +376,7 @@ Ada Lovelace<span class="tok-punct">,</span>Engineer<span class="tok-punct">,</s
     </details>
     <details class="faq-item">
       <summary>What if I actually do need this to run automatically, on a schedule?</summary>
-      <p>Then a script (or <a href="../how-to/automate.html">a saved Recipe</a>, or the <a href="../index.html#api">API</a>) is the right call, not this page. This is specifically for the one-off case.</p>
+      <p>Then a script (or <a href="../how-to/automate.html">a saved Recipe</a>, or the <a href="../api/index.html">API</a>) is the right call, not this page. This is specifically for the one-off case.</p>
     </details>
     <details class="faq-item">
       <summary>Does it handle nested objects and arrays?</summary>

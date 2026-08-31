@@ -107,6 +107,7 @@
 .seo-intent-block h2{margin:0 0 10px;font-size:1.45rem}.seo-intent-block h3{margin:22px 0 8px;font-size:1.05rem}
 .seo-intent-block p{max-width:820px;line-height:1.7;color:var(--muted,#aeb4c8)}.seo-intent-block a{text-decoration:underline;text-underline-offset:3px}
 </style>
+<style id="v36-schema-authority">.seo-schema-cluster{max-width:1040px;margin:36px auto;padding:24px 0;border-top:1px solid rgba(148,163,184,.12)}.seo-schema-cluster h2{margin:0 0 8px;font-size:1.25rem}.seo-schema-cluster p{max-width:820px;line-height:1.7;color:var(--text-muted)}.seo-schema-cluster a{font-weight:700}</style>
 </head>
 
 <body style="background:var(--bg);color:var(--text);margin:0;min-height:100vh;">
@@ -235,15 +236,15 @@
     <nav class="tb-nav" id="primaryNav">
       <div class="nav-group" data-nav-group="tools">
         <button type="button" class="nav-group-btn" aria-expanded="false" aria-haspopup="true">Tools<svg class="ico nav-caret"><use href="#ico-chevron"/></svg></button>
-        <div class="nav-dropdown" role="menu">
-          <button type="button" class="nav-dropdown-item" data-nav-action="group" data-group="convert" role="menuitem">Convert</button>
-          <button type="button" class="nav-dropdown-item" data-nav-action="group" data-group="transform" role="menuitem">Transform</button>
-          <button type="button" class="nav-dropdown-item" data-nav-action="group" data-group="query" role="menuitem">Query</button>
-          <button type="button" class="nav-dropdown-item" data-nav-action="group" data-group="validate" role="menuitem">Validate</button>
-          <button type="button" class="nav-dropdown-item" data-nav-action="group" data-group="compare" role="menuitem">Compare</button>
-          <button type="button" class="nav-dropdown-item" data-nav-action="group" data-group="schema" role="menuitem">Inspect</button>
-          <a href="index.html" class="nav-dropdown-item" role="menuitem">See all 23 tools &rarr;</a>
-        </div>
+        <div class="nav-dropdown nav-tools-links" role="menu">
+<a href="/tools/json-to-csv.html" class="nav-dropdown-item" role="menuitem">Convert <span>JSON → CSV</span></a>
+<a href="/tools/flatten-json.html" class="nav-dropdown-item" role="menuitem">Transform <span>Flatten JSON</span></a>
+<a href="/tools/jsonpath-tester.html" class="nav-dropdown-item" role="menuitem">Query <span>JSONPath Tester</span></a>
+<a href="/tools/json-validator.html" class="nav-dropdown-item" role="menuitem">Validate <span>JSON Validator</span></a>
+<a href="/tools/json-diff.html" class="nav-dropdown-item" role="menuitem">Compare <span>JSON Diff</span></a>
+<a href="/tools/json-schema-generator.html" class="nav-dropdown-item" role="menuitem">Inspect <span>JSON Schema</span></a>
+<a href="/tools/index.html" class="nav-dropdown-item nav-tools-all" role="menuitem">See all tools <span>→</span></a>
+</div>
       </div>
       <div class="nav-group" data-nav-group="automate">
         <button type="button" class="nav-group-btn" aria-expanded="false" aria-haspopup="true">Automate<svg class="ico nav-caret"><use href="#ico-chevron"/></svg></button>
@@ -823,6 +824,12 @@
       <div class="cmdk-results" id="cmdkResults"></div>
     </div>
   </div>
+
+<section class="seo-schema-cluster" aria-label="JSON Schema generation">
+<h2>Don't have a schema yet?</h2>
+<p>Start with a representative payload and use the <a href="/tools/json-schema-generator.html">JSON Schema Generator</a> to infer a baseline schema before validating real data against it.</p>
+</section>
+
 </main>
 
 <section class="seo-intent-block"><h2>Validate JSON against a JSON Schema</h2><p>Check whether JSON data conforms to the schema you expect. Recast helps surface incorrect value types, missing required fields and structural mismatches before the data reaches an API or pipeline.</p><h3>Need a schema first?</h3><p>Use the <a href="/tools/json-schema-generator.html">JSON Schema Generator</a> to generate one from example JSON. For syntax-only checks, use the <a href="/tools/json-validator.html">JSON Validator</a>.</p></section>

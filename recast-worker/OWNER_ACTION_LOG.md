@@ -1,3 +1,21 @@
+## V37 — Link reconciliation
+After deployment:
+- [ ] Desktop smoke test Tools dropdown from homepage, one /tools page, /blog, /how-to, /api and /demo.
+- [ ] iPhone/mobile smoke test the same dropdown and hamburger navigation.
+- [ ] Verify Cloudflare serves /tools/compare-api-responses.html and other V35/V36 SEO pages after deployment.
+No broken internal hrefs or fragment targets were found in the packaged build after reconciliation.
+
+## V36 — JSON Schema Search Console authority
+After deployment:
+- [ ] Request indexing for https://tryrecast.app/tools/json-schema-generator.html
+- [ ] Request indexing for https://tryrecast.app/blog/generate-json-schema-from-json.html
+- [ ] Request indexing for https://tryrecast.app/tools/json-validator.html
+- [ ] Request indexing for https://tryrecast.app/tools/json-formatter.html
+- [ ] Request indexing for https://tryrecast.app/tools/validate-json-schema.html
+- [ ] Request indexing for https://tryrecast.app/api/index.html when quota allows.
+- [ ] Monitor the JSON Schema query family for 14 days; prioritise movement in average position over CTR while rankings remain ~50–70.
+- [ ] Do not create another JSON Schema landing page during this observation window.
+
 ## V35 — Search Console / SEO check follow-up
 After deployment:
 - [ ] Request indexing: https://tryrecast.app/tools/api-response-to-csv.html

@@ -266,15 +266,15 @@
     <nav class="tb-nav" id="primaryNav">
       <div class="nav-group" data-nav-group="tools">
         <button type="button" class="nav-group-btn" aria-expanded="false" aria-haspopup="true">Tools<svg class="ico nav-caret"><use href="#ico-chevron"/></svg></button>
-        <div class="nav-dropdown" role="menu">
-          <button type="button" class="nav-dropdown-item" data-nav-action="group" data-group="convert" role="menuitem">Convert</button>
-          <button type="button" class="nav-dropdown-item" data-nav-action="group" data-group="transform" role="menuitem">Transform</button>
-          <button type="button" class="nav-dropdown-item" data-nav-action="group" data-group="query" role="menuitem">Query</button>
-          <button type="button" class="nav-dropdown-item" data-nav-action="group" data-group="validate" role="menuitem">Validate</button>
-          <button type="button" class="nav-dropdown-item" data-nav-action="group" data-group="compare" role="menuitem">Compare</button>
-          <button type="button" class="nav-dropdown-item" data-nav-action="group" data-group="schema" role="menuitem">Inspect</button>
-          <a href="../tools/index.html" class="nav-dropdown-item" role="menuitem">See all 23 tools &rarr;</a>
-        </div>
+        <div class="nav-dropdown nav-tools-links" role="menu">
+<a href="/tools/json-to-csv.html" class="nav-dropdown-item" role="menuitem">Convert <span>JSON → CSV</span></a>
+<a href="/tools/flatten-json.html" class="nav-dropdown-item" role="menuitem">Transform <span>Flatten JSON</span></a>
+<a href="/tools/jsonpath-tester.html" class="nav-dropdown-item" role="menuitem">Query <span>JSONPath Tester</span></a>
+<a href="/tools/json-validator.html" class="nav-dropdown-item" role="menuitem">Validate <span>JSON Validator</span></a>
+<a href="/tools/json-diff.html" class="nav-dropdown-item" role="menuitem">Compare <span>JSON Diff</span></a>
+<a href="/tools/json-schema-generator.html" class="nav-dropdown-item" role="menuitem">Inspect <span>JSON Schema</span></a>
+<a href="/tools/index.html" class="nav-dropdown-item nav-tools-all" role="menuitem">See all tools <span>→</span></a>
+</div>
       </div>
       <div class="nav-group" data-nav-group="automate">
         <button type="button" class="nav-group-btn" aria-expanded="false" aria-haspopup="true">Automate<svg class="ico nav-caret"><use href="#ico-chevron"/></svg></button>
@@ -299,9 +299,9 @@
       <span></span><span></span><span></span>
     </button>
     <div class="header-actions">
-      <a href="../index.html#tool" class="icon-btn" title="View your conversion history — opens the tool"><svg class="ico"><use href="#ico-history"/></svg><span class="btn-label">History</span></a>
-      <a href="../index.html#tool" class="icon-btn" title="View your saved presets — opens the tool"><svg class="ico"><use href="#ico-settings"/></svg><span class="btn-label">Presets</span></a>
-      <a href="../index.html#tool" class="icon-btn" title="Share a conversion — opens the tool"><svg class="ico"><use href="#ico-link"/></svg><span class="btn-label">Share link</span></a>
+      <a href="/tools/index.html" class="icon-btn" title="View your conversion history — opens the tool"><svg class="ico"><use href="#ico-history"/></svg><span class="btn-label">History</span></a>
+      <a href="/tools/index.html" class="icon-btn" title="View your saved presets — opens the tool"><svg class="ico"><use href="#ico-settings"/></svg><span class="btn-label">Presets</span></a>
+      <a href="/tools/index.html" class="icon-btn" title="Share a conversion — opens the tool"><svg class="ico"><use href="#ico-link"/></svg><span class="btn-label">Share link</span></a>
       <button class="icon-btn" id="themeToggleBtn" title="Switch between dark and light theme"><svg class="ico"><use href="#ico-sun" id="themeIconUse"/></svg></button>
       <a href="../index.html#pricing" class="btn btn-gold" id="accountBtn">Upgrade to Pro</a>
     </div>
@@ -359,7 +359,7 @@
   <p>If the response happens to be CSV or XML rather than JSON, the tools that need JSON convert it into a working copy automatically — your original response is never silently overwritten, and a small banner tells you when you're looking at that converted copy.</p>
 
   <div class="tour-hero-actions">
-    <a class="btn btn-gold" href="../index.html#api">Try API Workbench &rarr;</a>
+    <a class="btn btn-gold" href="../api/index.html">Try API Workbench &rarr;</a>
   </div>
 
   <details class="tour-dev-details">
@@ -378,7 +378,7 @@
       <li><code>POST /v1/diff</code> — <code>mode</code>: diffJson, diffXml, diffCsv (send <code>inputA</code>/<code>inputB</code> instead of <code>input</code>)</li>
       <li><code>POST /v1/schema</code> — infers a JSON Schema (draft-07) from a sample <code>input</code></li>
     </ul>
-    <p>10,000 calls per month, resets on the calendar month, usage tracked and returned with every response. This is a summary, not the full reference — request formats, authentication details, and code examples in several languages live in the <a href="../index.html#api">complete API documentation</a> on the main tool page.</p>
+    <p>10,000 calls per month, resets on the calendar month, usage tracked and returned with every response. This is a summary, not the full reference — request formats, authentication details, and code examples in several languages live in the <a href="../api/index.html">complete API documentation</a> on the main tool page.</p>
   </details>
 
   <h2 id="faq">Common questions</h2>
