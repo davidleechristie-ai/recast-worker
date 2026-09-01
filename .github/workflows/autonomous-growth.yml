@@ -63,6 +63,9 @@ jobs:
       - name: Enforce autonomous scope
         run: node recast-worker/guard-autonomous-diff.mjs
 
+      - name: Validate growth scoreboard
+        run: node -e "JSON.parse(require('fs').readFileSync('recast-worker/GROWTH_SCOREBOARD.json','utf8')); console.log('Growth scoreboard JSON valid')"
+
       - name: Test proposed changes
         working-directory: recast-worker
         run: npm test
@@ -79,7 +82,7 @@ jobs:
 
           git config user.name "recast-growth-bot"
           git config user.email "recast-growth-bot@users.noreply.github.com"
-          git add recast-worker/public recast-worker/AUTONOMOUS_GROWTH_LOG.md
+          git add recast-worker/public recast-worker/AUTONOMOUS_GROWTH_LOG.md recast-worker/GROWTH_SCOREBOARD.json
 
           if git diff --cached --quiet; then
             echo "changed=false" >> "$GITHUB_OUTPUT"
@@ -99,7 +102,7 @@ jobs:
       - name: Summary
         run: |
           if [ "${{ steps.commit.outputs.changed }}" = "true" ]; then
-            echo "Safe acquisition-facing change committed to main and production deployment explicitly dispatched."
+            echo "Safe metric-driven acquisition change committed to main and production deployment explicitly dispatched."
           else
-            echo "Agent completed with no production change."
+            echo "Agent completed with no production change; measurement records were reviewed."
           fi
