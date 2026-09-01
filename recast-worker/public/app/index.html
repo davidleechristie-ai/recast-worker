@@ -1,0 +1,1416 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<script>(function(){try{if(localStorage.getItem('recast_theme')==='light')document.documentElement.setAttribute('data-theme','light');}catch(e){}})();</script>
+<title>Recast — Fix, convert and compare data in your browser</title>
+<meta name="description" content="Turn messy JSON, CSV, XML, YAML and API data into exactly what you need. Convert, compare, validate and build reusable workflows privately in your browser.">
+<meta property="og:type" content="website">
+<meta property="og:title" content="Recast — Fix, convert and compare data in your browser">
+<meta property="og:description" content="Turn messy JSON, CSV, XML, YAML and API data into exactly what you need. Convert, compare, validate and build reusable workflows privately in your browser.">
+<meta property="og:url" content="https://tryrecast.app/">
+<meta property="og:image" content="https://tryrecast.app/og-image.png">
+<meta property="og:site_name" content="Recast">
+<meta name="twitter:card" content="summary_large_image">
+<meta name="twitter:title" content="Recast — Fix, convert and compare data in your browser">
+<meta name="twitter:description" content="Turn messy JSON, CSV, XML, YAML and API data into exactly what you need. Convert, compare, validate and build reusable workflows privately in your browser.">
+<meta name="twitter:image" content="https://tryrecast.app/og-image.png">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@400;500;600;700&family=IBM+Plex+Sans:wght@400;500;600&family=IBM+Plex+Mono:wght@400;500&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="styles.css">
+<link rel="canonical" href="https://tryrecast.app/">
+<link rel="manifest" href="/manifest.json">
+<meta name="theme-color" content="#0A0E1F">
+<link rel="apple-touch-icon" href="/icons/icon-192.png">
+<script type="application/ld+json">
+{
+  "@context": "https://schema.org",
+  "@type": "SoftwareApplication",
+  "name": "Recast",
+  "url": "https://tryrecast.app/",
+  "applicationCategory": "DeveloperApplication",
+  "operatingSystem": "Any (runs in browser)",
+  "description": "Your private data workbench for JSON, CSV, XML, YAML and Markdown. Inspect, transform, validate, and compare entirely in your browser — then save the workflow as a recipe you can automate or call through the API.",
+  "offers": [
+    { "@type": "Offer", "name": "Free", "price": "0", "priceCurrency": "GBP" },
+    { "@type": "Offer", "name": "Pro", "price": "9", "priceCurrency": "GBP" },
+    { "@type": "Offer", "name": "API", "price": "29", "priceCurrency": "GBP" }
+  ]
+}
+</script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/jszip/3.10.1/jszip.min.js"></script>
+<!-- Google tag (gtag.js) -->
+<script async src="https://www.googletagmanager.com/gtag/js?id=G-MW47YKCSLX"></script>
+<script>
+  window.dataLayer = window.dataLayer || [];
+  function gtag(){dataLayer.push(arguments);}
+  gtag('js', new Date());
+
+  gtag('config', 'G-MW47YKCSLX');
+</script>
+<!-- Upgrade-to-Pro click tracking — event delegation so it works
+     regardless of where this script sits relative to the button in the
+     page, and never depends on app.js (which only loads on index.html
+     and /tools/, not on blog/how-to/contact/demo pages that also have
+     this same button). -->
+<script>
+  document.addEventListener('click', function (e) {
+    var btn = e.target.closest && e.target.closest('#accountBtn');
+    if (!btn) return;
+    try { if (typeof gtag === 'function') gtag('event', 'upgrade_click', { page_path: location.pathname }); } catch (err) {}
+  });
+</script>
+<!-- Attribution capture — records this session's FIRST landing page and any
+     UTM params, once, in sessionStorage. Read later by app.js's
+     appendAttributionParams() when checkout starts, so a completed Stripe
+     payment can be traced back to the specific page or campaign that
+     actually brought the visitor in, not just "some visit happened." -->
+<script>
+  (function () {
+    try {
+      if (!sessionStorage.getItem('recast_landing_path')) {
+        var path = location.pathname.replace(/^\//, '').replace(/\.html$/, '') || 'home';
+        sessionStorage.setItem('recast_landing_path', path);
+        var params = new URLSearchParams(location.search);
+        var utm = {};
+        ['utm_source', 'utm_medium', 'utm_campaign', 'utm_term', 'utm_content'].forEach(function (key) {
+          if (params.get(key)) utm[key] = params.get(key);
+        });
+        sessionStorage.setItem('recast_landing_utm', JSON.stringify(utm));
+      }
+    } catch (e) {}
+  })();
+</script>
+<style id="v23-clean-home">
+.ai-request-feature{max-width:1120px;margin:28px auto 34px;padding:clamp(22px,4vw,38px);border:1px solid rgba(139,92,246,.22);border-radius:22px;background:linear-gradient(135deg,rgba(124,58,237,.10),rgba(37,99,235,.035));box-shadow:0 24px 70px rgba(0,0,0,.12)}
+.ai-request-intro{max-width:760px;margin-bottom:18px}.ai-request-intro h2{font-size:clamp(1.65rem,3.6vw,2.75rem);line-height:1.03;letter-spacing:-.045em;margin:7px 0 12px}.ai-request-intro>p:last-child{font-size:.82rem;line-height:1.65;opacity:.68;max-width:700px}
+.ai-request-feature .workflow-copilot{margin:0}.landing-home .hero-v19{padding-bottom:22px}.landing-home .hero-v19-actions{margin-top:24px}
+@media(max-width:760px){.ai-request-feature{margin:18px 12px 28px;padding:20px 15px;border-radius:16px}}
+</style>
+<style id="v25-ui-cleanup">
+.instant-demo .demo-intro{text-align:left!important;margin-left:0!important;margin-right:auto!important}
+.ai-request-feature .workflow-copilot{background:transparent!important;border:0!important;box-shadow:none!important;padding:0!important}
+.ai-request-feature .wc-head{display:none!important}
+.ai-request-feature .wc-input-row{margin-top:0!important}
+</style>
+<style id="v26-minimal-home">
+body{background:#080b1a}
+.minimal-home{min-height:calc(100vh - 72px);display:flex;align-items:center;padding:64px 24px 80px!important}
+.minimal-hero-inner{width:min(1120px,100%);margin:0 auto}
+.minimal-hero-copy{max-width:850px}
+.minimal-hero-copy h1{font-size:clamp(3.25rem,7vw,6.4rem);line-height:.94;letter-spacing:-.055em;margin:0 0 28px}
+.minimal-hero-copy h1 em{font-style:italic}
+.minimal-hero-copy .sub{max-width:780px;font-size:clamp(1.08rem,1.7vw,1.35rem);line-height:1.55;margin:0 0 38px;color:var(--muted)}
+.minimal-home .ai-request-feature{margin:0!important;padding:0!important;border:0!important;background:transparent!important}
+.minimal-home .workflow-copilot{padding:0!important;background:transparent!important;border:0!important;box-shadow:none!important}
+.minimal-home .wc-input-row{display:grid;grid-template-columns:minmax(0,1fr) auto;gap:10px;padding:7px;border:1px solid rgba(153,92,255,.65);border-radius:16px;background:rgba(13,18,42,.72);box-shadow:0 0 42px rgba(118,62,255,.09)}
+.minimal-home .wc-prompt{border:0!important;background:transparent!important;box-shadow:none!important;resize:none;min-height:68px;padding:18px 20px!important;font-size:1.05rem}
+.minimal-home .wc-build{min-width:180px;border-radius:11px}
+.minimal-home .wc-examples{margin-top:14px;gap:9px}
+.minimal-home .wc-examples button{background:transparent}
+.minimal-proof{display:grid;grid-template-columns:repeat(4,1fr);margin-top:46px;padding-top:30px;border-top:1px solid rgba(255,255,255,.09)}
+.minimal-proof span{display:flex;flex-direction:column;gap:5px;padding:0 24px;border-right:1px solid rgba(255,255,255,.09)}
+.minimal-proof span:first-child{padding-left:0}.minimal-proof span:last-child{border-right:0}
+.minimal-proof strong{font-size:.98rem}.minimal-proof small{color:var(--muted);font-size:.84rem;line-height:1.4}
+#instantDemo,#exploreRecast,#workflowTemplates,#workflowBuilder,#workflowLibrary,#workflowAutomation,#pricing,#faq,#api{display:none!important}
+@media(max-width:760px){
+ .minimal-home{padding:42px 18px 60px!important;align-items:flex-start}
+ .minimal-hero-copy h1{font-size:clamp(3rem,14vw,4.5rem)}
+ .minimal-home .wc-input-row{grid-template-columns:1fr}
+ .minimal-home .wc-build{min-height:52px}
+ .minimal-proof{grid-template-columns:1fr 1fr;gap:22px}
+ .minimal-proof span{padding:0;border:0}
+}
+</style>
+<style id="v26-1-prompt-heading">
+.minimal-request-heading{margin:0 0 16px;font-size:clamp(1.35rem,2.2vw,1.8rem);line-height:1.2;letter-spacing:-.025em;text-align:left}
+</style>
+<style id="v28-home-workbench">
+.minimal-hero-copy h1{text-align:left!important}
+.minimal-hero-copy h1 .hero-accent{font-style:normal!important}
+.minimal-home{min-height:auto!important;padding-bottom:54px!important}
+.home-workbench-section{width:min(1120px,calc(100% - 48px));margin:74px auto 0}
+.home-workbench-heading{display:flex;align-items:end;justify-content:space-between;gap:24px;margin:0 0 18px;padding-top:6px}
+.home-workbench-heading h2{margin:0;font-size:clamp(1.7rem,3vw,2.25rem);letter-spacing:-.035em}
+.home-workbench-heading p{max-width:560px;margin:0;color:var(--text-muted);font-size:.92rem;line-height:1.5;text-align:right}
+.home-workbench-section .mode-nav{margin-top:0}
+.minimal-proof{width:min(1120px,calc(100% - 48px));margin:38px auto 68px!important}
+@media(max-width:760px){
+  .home-workbench-section{width:calc(100% - 36px);margin-top:54px}
+  .home-workbench-heading{display:block}
+  .home-workbench-heading p{text-align:left;margin-top:8px}
+  .minimal-proof{width:calc(100% - 36px);margin-top:30px!important}
+}
+</style>
+
+<style id="v32-homepage-structure-fix">
+.minimal-home{
+  padding:64px 24px 48px!important;
+  min-height:auto!important;
+  background:
+    radial-gradient(circle at 18% 10%,rgba(127,82,246,.08),transparent 32%),
+    radial-gradient(circle at 85% 15%,rgba(55,115,255,.05),transparent 27%)!important;
+}
+.minimal-hero-inner{
+  width:min(1120px,100%)!important;
+  margin:0 auto!important;
+  display:block!important;
+}
+.minimal-hero-copy{
+  width:min(760px,100%)!important;
+  max-width:none!important;
+  margin:0!important;
+  text-align:left!important;
+}
+.minimal-hero-copy h1{
+  margin:0 0 26px!important;
+  font-size:clamp(4rem,7vw,6.6rem)!important;
+  line-height:.94!important;
+  letter-spacing:-.06em!important;
+  text-align:left!important;
+}
+.minimal-hero-copy h1 span{display:block!important}
+.hero-primary{color:#f7f8fc!important}
+.hero-accent{
+  margin-top:8px!important;
+  color:#8b5cf6!important;
+  background:linear-gradient(90deg,#9860ff,#7a58f1 75%,#6d50e4);
+  -webkit-background-clip:text;
+  background-clip:text;
+  -webkit-text-fill-color:transparent;
+}
+.minimal-hero-copy .sub{
+  width:min(700px,100%)!important;
+  margin:0 0 46px!important;
+  color:var(--text-muted)!important;
+  font-size:1.12rem!important;
+  line-height:1.65!important;
+}
+.ai-request-feature{
+  width:min(1040px,100%)!important;
+  margin:0!important;
+  padding:0!important;
+  display:block!important;
+  background:transparent!important;
+  border:0!important;
+}
+.minimal-request-heading{
+  margin:0 0 14px!important;
+  font-size:1.24rem!important;
+  line-height:1.25!important;
+  text-align:left!important;
+}
+.workflow-copilot{
+  width:100%!important;
+  margin:0!important;
+  padding:0!important;
+  display:block!important;
+  background:transparent!important;
+  border:0!important;
+  box-shadow:none!important;
+}
+.wc-input-row{
+  display:grid!important;
+  grid-template-columns:minmax(0,1fr) auto!important;
+  gap:10px!important;
+  width:100%!important;
+  padding:8px!important;
+  border:1px solid rgba(139,92,246,.62)!important;
+  border-radius:14px!important;
+  background:linear-gradient(180deg,rgba(10,15,33,.9),rgba(7,11,26,.88))!important;
+}
+.wc-prompt{
+  width:100%!important;
+  min-height:72px!important;
+  padding:20px!important;
+  border:0!important;
+  background:transparent!important;
+  resize:none!important;
+  box-shadow:none!important;
+}
+.wc-build{
+  min-width:196px!important;
+  min-height:72px!important;
+  border-radius:10px!important;
+  background:linear-gradient(135deg,#7340d8,#8f5cf6)!important;
+  font-weight:700!important;
+}
+.home-quick-actions{
+  width:min(1040px,100%)!important;
+  display:grid!important;
+  grid-template-columns:repeat(4,minmax(0,1fr))!important;
+  gap:14px!important;
+  margin:20px 0 0!important;
+}
+.home-quick-action{
+  display:flex!important;
+  align-items:center!important;
+  justify-content:flex-start!important;
+  gap:12px!important;
+  min-width:0!important;
+  min-height:86px!important;
+  padding:16px 18px!important;
+  color:#f5f7fb!important;
+  background:rgba(9,14,30,.68)!important;
+  border:1px solid rgba(255,255,255,.14)!important;
+  border-radius:12px!important;
+  font:inherit!important;
+  text-align:left!important;
+  cursor:pointer!important;
+}
+.home-quick-action .ico{
+  width:24px!important;
+  height:24px!important;
+  flex:0 0 auto!important;
+  color:#8b5cf6!important;
+}
+.home-quick-action span{
+  font-size:.96rem!important;
+  line-height:1.35!important;
+  font-weight:600!important;
+}
+.home-workbench-section{
+  width:min(1120px,calc(100% - 48px))!important;
+  margin:78px auto 84px!important;
+  padding:0!important;
+  border:0!important;
+}
+.home-workbench-heading{
+  display:block!important;
+  margin:0 0 22px!important;
+}
+.home-workbench-heading h2{
+  position:relative!important;
+  display:inline-block!important;
+  margin:0!important;
+  padding-left:54px!important;
+  color:#f5f7fb!important;
+  font-size:clamp(2rem,3vw,2.55rem)!important;
+  line-height:1.1!important;
+  letter-spacing:-.04em!important;
+}
+.home-workbench-heading h2::before{
+  content:""!important;
+  position:absolute!important;
+  left:0!important;
+  top:50%!important;
+  width:13px!important;
+  height:13px!important;
+  transform:translateY(-50%)!important;
+  border-radius:3px!important;
+  background:#8b5cf6!important;
+  box-shadow:18px 0 0 #8b5cf6,0 18px 0 #8b5cf6,18px 18px 0 #8b5cf6!important;
+}
+.home-workbench-section .mode-nav{display:none!important}
+.home-workbench-section .workbench{
+  overflow:hidden!important;
+  border:1px solid rgba(139,92,246,.54)!important;
+  border-radius:15px!important;
+  background:linear-gradient(180deg,rgba(8,14,29,.86),rgba(6,11,24,.88))!important;
+}
+.minimal-proof,.related-groups,.privacy-banner,.hero-preview,.quick-start{display:none!important}
+@media(max-width:900px){
+  .home-quick-actions{grid-template-columns:repeat(2,minmax(0,1fr))!important}
+}
+@media(max-width:700px){
+  .minimal-home{padding:46px 18px 30px!important}
+  .minimal-hero-copy h1{font-size:clamp(3.4rem,14vw,5rem)!important}
+  .wc-input-row{grid-template-columns:1fr!important}
+  .wc-build{min-width:0!important;min-height:54px!important}
+  .home-workbench-section{width:calc(100% - 36px)!important;margin-top:60px!important}
+}
+@media(max-width:520px){
+  .home-quick-actions{grid-template-columns:1fr!important}
+}
+</style>
+
+<style id="v33-tools-menu-links">
+.nav-tools-links .nav-dropdown-item{display:flex!important;align-items:center;justify-content:space-between;gap:24px}
+.nav-tools-links .nav-dropdown-item span{font-size:.72rem;opacity:.58;white-space:nowrap}
+.nav-tools-links .nav-tools-all{margin-top:4px;border-top:1px solid rgba(255,255,255,.08);padding-top:11px}
+.nav-tools-links .nav-tools-all span{font-size:1rem;opacity:.9}
+</style>
+<style id="v38-ai-copilot-ui">
+.copilot-ai-disclosure{margin:9px 2px 0;font-size:.72rem;line-height:1.45;color:var(--text-muted);opacity:.72}
+</style>
+<style id="v39-homepage-conversion">
+.hero-eyebrow{display:flex;align-items:center;gap:9px;margin:0 0 20px;color:#bda7ff;font:600 .72rem/1 'IBM Plex Mono',monospace;letter-spacing:.12em;text-transform:uppercase}.hero-eyebrow::before{content:"";width:7px;height:7px;border-radius:50%;background:#8b5cf6;box-shadow:0 0 0 5px rgba(139,92,246,.14)}
+.minimal-hero-copy{width:min(1040px,100%)!important}.minimal-hero-copy h1{max-width:1040px!important;font-size:clamp(3.5rem,5.8vw,5.35rem)!important}.hero-accent{display:inline!important;margin:0!important}.minimal-hero-copy .sub{max-width:760px!important;margin-bottom:22px!important;font-size:clamp(1.05rem,1.55vw,1.24rem)!important}.hero-trust{display:flex;flex-wrap:wrap;gap:8px 20px;margin:0 0 38px;color:var(--text-muted);font-size:.78rem}.hero-trust span{display:inline-flex;align-items:center;gap:7px}.hero-trust span::before{content:"✓";color:#9d72ff;font-weight:700}
+.minimal-request-heading{font-size:1.08rem!important;margin-bottom:11px!important}.minimal-request-heading span{color:var(--text-muted);font-weight:400}
+.prompt-starters{display:flex;align-items:center;flex-wrap:wrap;gap:8px;margin:12px 2px 0}.prompt-starters>span{margin-right:2px;color:var(--text-muted);font-size:.72rem}.prompt-starters button{padding:7px 10px;border:1px solid rgba(255,255,255,.12);border-radius:999px;background:rgba(255,255,255,.025);color:var(--text-muted);font:500 .7rem/1.2 'IBM Plex Mono',monospace;cursor:pointer;transition:.16s ease}.prompt-starters button:hover{color:#fff;border-color:rgba(139,92,246,.55);background:rgba(139,92,246,.1)}
+.quick-actions-label{width:min(1040px,100%);margin:26px 0 -6px;color:var(--text-muted);font:500 .7rem/1 'IBM Plex Mono',monospace;letter-spacing:.08em;text-transform:uppercase}.home-quick-action{position:relative;flex-direction:column!important;align-items:flex-start!important;gap:9px!important;min-height:112px!important;transition:transform .18s ease,border-color .18s ease,background .18s ease}.home-quick-action:hover{transform:translateY(-2px);border-color:rgba(139,92,246,.55)!important;background:rgba(139,92,246,.075)!important}.home-quick-action>span{font-size:.9rem!important}.home-quick-action small{color:var(--text-muted);font-size:.72rem;line-height:1.42}.home-quick-action::after{content:"→";position:absolute;right:16px;top:17px;color:#9870f8}
+.home-workbench-section{margin-top:58px!important}.home-workbench-heading{display:flex!important;align-items:end!important;justify-content:space-between!important;gap:32px!important}.home-workbench-heading p{max-width:520px;margin:0;color:var(--text-muted);font-size:.85rem;line-height:1.55;text-align:right}
+@media(max-width:700px){#accountBtn{display:none!important}.hero-eyebrow{margin-bottom:16px}.minimal-hero-copy h1{font-size:clamp(3rem,13vw,4.5rem)!important}.hero-trust{gap:8px 14px;margin-bottom:30px}.prompt-starters>span{width:100%}.home-workbench-heading{display:block!important}.home-workbench-heading p{text-align:left;margin:12px 0 0}.quick-actions-label{margin-top:22px}}
+</style>
+</head>
+
+<body class="landing-home" style="background:var(--bg);color:var(--text);margin:0;min-height:100vh;">
+<svg style="display:none" aria-hidden="true">
+  <symbol id="ico-json" viewBox="0 0 18 18" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round">
+    <path d="M6.5 2.5c-1.4 0-1.9.5-1.9 1.9v1.7c0 1-.5 1.5-1.4 1.5.9 0 1.4.5 1.4 1.5v1.7c0 1.4.5 1.9 1.9 1.9"/>
+    <path d="M11.5 2.5c1.4 0 1.9.5 1.9 1.9v1.7c0 1 .5 1.5 1.4 1.5-.9 0-1.4.5-1.4 1.5v1.7c0 1.4-.5 1.9-1.9 1.9"/>
+  </symbol>
+  <symbol id="ico-table" viewBox="0 0 18 18" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round">
+    <rect x="2.2" y="3" width="13.6" height="12" rx="1"/>
+    <line x1="2.2" y1="7.4" x2="15.8" y2="7.4"/>
+    <line x1="7.3" y1="3" x2="7.3" y2="15"/>
+    <line x1="11.7" y1="3" x2="11.7" y2="15"/>
+  </symbol>
+  <symbol id="ico-mdtable" viewBox="0 0 18 18" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round">
+    <rect x="2.2" y="3" width="13.6" height="12" rx="1"/>
+    <rect x="2.2" y="3" width="13.6" height="3.6" fill="currentColor" fill-opacity="0.22" stroke="none"/>
+    <line x1="2.2" y1="7.4" x2="15.8" y2="7.4"/>
+    <line x1="7.3" y1="3" x2="7.3" y2="15"/>
+    <line x1="11.7" y1="3" x2="11.7" y2="15"/>
+  </symbol>
+  <symbol id="ico-tag" viewBox="0 0 18 18" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round">
+    <polyline points="6,4 2,9 6,14"/>
+    <polyline points="12,4 16,9 12,14"/>
+    <line x1="9.6" y1="4" x2="9.6" y2="14"/>
+  </symbol>
+  <symbol id="ico-code" viewBox="0 0 18 18" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round">
+    <polyline points="6,4.5 2,9 6,13.5"/>
+    <polyline points="12,4.5 16,9 12,13.5"/>
+    <line x1="10.6" y1="3" x2="7.4" y2="15"/>
+  </symbol>
+  <symbol id="ico-yaml" viewBox="0 0 18 18" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round">
+    <circle cx="3" cy="5" r=".55" fill="currentColor" stroke="none"/>
+    <line x1="5" y1="5" x2="11" y2="5"/>
+    <circle cx="3" cy="9" r=".55" fill="currentColor" stroke="none"/>
+    <line x1="5" y1="9" x2="15" y2="9"/>
+    <circle cx="3" cy="13" r=".55" fill="currentColor" stroke="none"/>
+    <line x1="5" y1="13" x2="13" y2="13"/>
+  </symbol>
+  <symbol id="ico-schema" viewBox="0 0 18 18" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round">
+    <rect x="3" y="3" width="12" height="12" rx="1" stroke-dasharray="2.4 2.1"/>
+    <line x1="3" y1="9" x2="1.2" y2="9" stroke-dasharray="none"/>
+    <line x1="15" y1="9" x2="16.8" y2="9" stroke-dasharray="none"/>
+    <line x1="9" y1="3" x2="9" y2="1.2" stroke-dasharray="none"/>
+    <line x1="9" y1="15" x2="9" y2="16.8" stroke-dasharray="none"/>
+  </symbol>
+  <symbol id="ico-diff" viewBox="0 0 18 18" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round">
+    <rect x="2" y="2" width="9.5" height="9.5" rx="1"/>
+    <rect x="6.5" y="6.5" width="9.5" height="9.5" rx="1"/>
+  </symbol>
+  <symbol id="ico-path" viewBox="0 0 18 18" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round">
+    <rect x="2" y="2" width="14" height="14" rx="2.5"/>
+    <path d="M9 4.5v9"/>
+    <path d="M11.4 6.2c0-.85-1-1.5-2.4-1.5s-2.4.7-2.4 1.6c0 2.3 4.8 1 4.8 3.3 0 1-1.1 1.7-2.4 1.7s-2.4-.6-2.4-1.5"/>
+  </symbol>
+  <symbol id="ico-tree" viewBox="0 0 18 18" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round">
+    <circle cx="2.6" cy="4" r="1"/>
+    <circle cx="2.6" cy="9" r="1"/>
+    <circle cx="2.6" cy="14" r="1"/>
+    <circle cx="15.4" cy="9" r="1"/>
+    <path d="M3.6 4H8a2 2 0 012 2"/>
+    <path d="M3.6 9h10.8"/>
+    <path d="M3.6 14H8a2 2 0 002-2"/>
+  </symbol>
+  <symbol id="ico-check" viewBox="0 0 18 18" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round">
+    <circle cx="9" cy="9" r="7"/>
+    <polyline points="5.5,9.2 8,11.7 12.7,6.4"/>
+  </symbol>
+  <symbol id="ico-arrow" viewBox="0 0 18 18" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round">
+    <line x1="2" y1="9" x2="14.5" y2="9"/>
+    <polyline points="10.5,5 14.5,9 10.5,13"/>
+  </symbol>
+  <symbol id="ico-bolt" viewBox="0 0 18 18" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round">
+    <polygon points="9.5,2 4,10.5 8,10.5 7.2,16 14,7 9.6,7"/>
+  </symbol>
+  <symbol id="ico-star" viewBox="0 0 18 18" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round">
+    <polygon points="9,2.3 11.1,7 16,7.5 12.3,10.8 13.4,15.7 9,13.1 4.6,15.7 5.7,10.8 2,7.5 6.9,7"/>
+  </symbol>
+  <symbol id="ico-expand" viewBox="0 0 18 18" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round">
+    <polyline points="6.5,2.5 2.5,2.5 2.5,6.5"/>
+    <polyline points="11.5,2.5 15.5,2.5 15.5,6.5"/>
+    <polyline points="6.5,15.5 2.5,15.5 2.5,11.5"/>
+    <polyline points="11.5,15.5 15.5,15.5 15.5,11.5"/>
+  </symbol>
+  <symbol id="ico-collapse" viewBox="0 0 18 18" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round">
+    <polyline points="2.5,6.5 6.5,6.5 6.5,2.5"/>
+    <polyline points="15.5,6.5 11.5,6.5 11.5,2.5"/>
+    <polyline points="2.5,11.5 6.5,11.5 6.5,15.5"/>
+    <polyline points="15.5,11.5 11.5,11.5 11.5,15.5"/>
+  </symbol>
+  <symbol id="ico-popout" viewBox="0 0 18 18" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round">
+    <path d="M7 3H3.5a1 1 0 00-1 1v10a1 1 0 001 1h10a1 1 0 001-1V11"/>
+    <path d="M10 2.5h5.5V8"/>
+    <line x1="15.3" y1="2.7" x2="8.5" y2="9.5"/>
+  </symbol>
+  <symbol id="ico-history" viewBox="0 0 18 18" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round">
+    <path d="M3 9a6 6 0 1 0 1.8-4.3"/>
+    <polyline points="1.8,3 2,5.5 4.5,5.2"/>
+    <polyline points="9,5.5 9,9 11.5,10.5"/>
+  </symbol>
+  <symbol id="ico-settings" viewBox="0 0 18 18" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round">
+    <circle cx="9" cy="9" r="2.8"/>
+    <path d="M9 3v2.2M9 12.8V15M15 9h-2.2M5.2 9H3"/>
+  </symbol>
+  <symbol id="ico-link" viewBox="0 0 18 18" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round">
+    <path d="M7.5 10.5a3 3 0 0 0 4.3.2l2-2a3 3 0 0 0-4.2-4.2l-1.1 1.1"/>
+    <path d="M10.5 7.5a3 3 0 0 0-4.3-.2l-2 2a3 3 0 0 0 4.2 4.2l1.1-1.1"/>
+  </symbol>
+  <symbol id="ico-sun" viewBox="0 0 18 18" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round">
+    <circle cx="9" cy="9" r="3.2"/>
+    <path d="M9 1.8v2M9 14.2v2M16.2 9h-2M3.8 9h-2M14.2 3.8l-1.4 1.4M5.2 12.8l-1.4 1.4M14.2 14.2l-1.4-1.4M5.2 5.2L3.8 3.8"/>
+  </symbol>
+  <symbol id="ico-moon" viewBox="0 0 18 18" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round">
+    <path d="M15 10.2A6.2 6.2 0 0 1 7.8 3 6.5 6.5 0 1 0 15 10.2Z"/>
+  </symbol>
+  <symbol id="ico-chevron" viewBox="0 0 18 18" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round">
+    <polyline points="4.5,7 9,11.5 13.5,7"/>
+  </symbol>
+</svg>
+
+
+<header class="titleblock">
+  <div class="ruler" id="ruler"></div>
+  <div class="tb-row">
+    <a href="index.html" class="brand" style="text-decoration:none;color:inherit;"><svg class="mark" viewBox="0 0 32 32" fill="none" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><defs><linearGradient id="logoGradA" x1="0%" y1="0%" x2="100%" y2="100%"><stop offset="0%" stop-color="#BE6FF8"/><stop offset="100%" stop-color="#8B5CF6"/></linearGradient><linearGradient id="logoGradB" x1="0%" y1="0%" x2="100%" y2="100%"><stop offset="0%" stop-color="#6D8FF8"/><stop offset="100%" stop-color="#3AA2FC"/></linearGradient></defs><path d="M13 5 L4 16 L13 27" stroke="url(#logoGradA)" stroke-width="4.5"/><path d="M19 5 L28 16 L19 27" stroke="url(#logoGradB)" stroke-width="4.5"/></svg>RECAST</a>
+    <nav class="tb-nav" id="primaryNav">
+      <div class="nav-group" data-nav-group="tools">
+        <button type="button" class="nav-group-btn" aria-expanded="false" aria-haspopup="true">Tools<svg class="ico nav-caret"><use href="#ico-chevron"/></svg></button>
+        <div class="nav-dropdown nav-tools-links" role="menu">
+<a href="/tools/json-to-csv.html" class="nav-dropdown-item" role="menuitem">Convert <span>JSON → CSV</span></a>
+<a href="/tools/flatten-json.html" class="nav-dropdown-item" role="menuitem">Transform <span>Flatten JSON</span></a>
+<a href="/tools/jsonpath-tester.html" class="nav-dropdown-item" role="menuitem">Query <span>JSONPath Tester</span></a>
+<a href="/tools/json-validator.html" class="nav-dropdown-item" role="menuitem">Validate <span>JSON Validator</span></a>
+<a href="/tools/json-diff.html" class="nav-dropdown-item" role="menuitem">Compare <span>JSON Diff</span></a>
+<a href="/tools/json-schema-generator.html" class="nav-dropdown-item" role="menuitem">Inspect <span>JSON Schema</span></a>
+<a href="/tools/index.html" class="nav-dropdown-item nav-tools-all" role="menuitem">See all tools <span>→</span></a>
+</div>
+      </div>
+      <div class="nav-group" data-nav-group="automate">
+        <button type="button" class="nav-group-btn" aria-expanded="false" aria-haspopup="true">Automate<svg class="ico nav-caret"><use href="#ico-chevron"/></svg></button>
+        <div class="nav-dropdown" role="menu">
+          <button type="button" class="nav-dropdown-item" data-nav-action="recipes" role="menuitem">Recipes</button>
+          <a href="api/index.html" class="nav-dropdown-item" role="menuitem">API</a>
+          <a href="https://www.npmjs.com/package/recast-cli" class="nav-dropdown-item" role="menuitem">CLI</a>
+        </div>
+      </div>
+      <div class="nav-group" data-nav-group="resources">
+        <button type="button" class="nav-group-btn" aria-expanded="false" aria-haspopup="true">Resources<svg class="ico nav-caret"><use href="#ico-chevron"/></svg></button>
+        <div class="nav-dropdown" role="menu">
+          <a href="demo/index.html" class="nav-dropdown-item" role="menuitem">Demo</a>
+          <a href="blog/index.html" class="nav-dropdown-item" role="menuitem">Blog</a>
+          <a href="how-to/index.html" class="nav-dropdown-item" role="menuitem">How-to</a>
+          <a href="contact.html" class="nav-dropdown-item" role="menuitem">Contact</a>
+        </div>
+      </div>
+      <a href="#pricing" class="nav-plain-link">Pricing</a>
+    </nav>
+    <button type="button" class="nav-hamburger" id="navHamburger" aria-label="Open menu" aria-expanded="false" aria-controls="primaryNav">
+      <span></span><span></span><span></span>
+    </button>
+    <div class="header-actions">
+      <span class="worker-status" id="workerStatus"><span class="dot"></span>Processing…</span>
+      <button class="icon-btn" id="historyBtn" title="Recent conversions (stored only on this device)"><svg class="ico"><use href="#ico-history"/></svg><span class="btn-label">History</span></button>
+      <div class="history-panel" id="historyPanel">
+        <div class="history-head"><span>Recent (this device only)</span><button id="historyClearBtn">Clear</button></div>
+        <div id="historyList"></div>
+      </div>
+      <button class="icon-btn" id="presetsBtn" title="Saved option presets (Pro)"><svg class="ico"><use href="#ico-settings"/></svg><span class="btn-label">Presets</span></button>
+      <div class="history-panel" id="presetsPanel">
+        <div class="history-head"><span>Saved presets</span><button id="presetsCloseBtn">Close</button></div>
+        <div id="presetsList"></div>
+        <div style="padding:10px 14px; border-top:1px solid rgba(140,182,214,0.16); display:flex; gap:6px;">
+          <input type="text" id="presetNameInput" placeholder="Preset name" style="flex:1; min-width:0; background:var(--bg); border:1px solid rgba(var(--border-rgb),0.32); color:var(--text); padding:6px 8px; border-radius:2px; font-size:12px;">
+          <button class="icon-btn" id="presetSaveBtn">Save current</button>
+        </div>
+      </div>
+      <button class="icon-btn" id="shareBtn" title="Copy a link that restores this input — data is compressed into the URL itself, nothing is uploaded"><svg class="ico"><use href="#ico-link"/></svg><span class="btn-label">Share link</span></button>
+      <button class="icon-btn" id="themeToggleBtn" title="Switch between dark and light theme"><svg class="ico"><use href="#ico-sun" id="themeIconUse"/></svg></button>
+      <a href="#pricing" class="btn btn-gold" id="accountBtn">Upgrade to Pro</a>
+    </div>
+  </div>
+</header>
+
+<main>
+  
+<section class="hero minimal-home" id="tool">
+  <div class="minimal-hero-inner">
+    <div class="minimal-hero-copy">
+      <p class="hero-eyebrow">Private, browser-first data tools</p>
+      <h1>
+        <span class="hero-primary">Turn messy data into</span>
+        <span class="hero-accent">exactly what you need.</span>
+      </h1>
+      <p class="sub">Convert, compare, validate and reshape JSON, CSV, XML and API responses—without uploading your working files. Start with a tool or describe the result you want.</p>
+      <div class="hero-trust" aria-label="Product benefits"><span>No account required</span><span>Files stay in this tab</span><span>Free tools</span><span>Reusable workflows</span></div>
+    </div>
+
+    <div class="ai-request-feature" aria-labelledby="requestPromptHeading">
+      <h2 id="requestPromptHeading" class="minimal-request-heading">What do you need to do? <span>Describe it in plain English.</span></h2>
+
+      <div class="workflow-copilot" id="workflowCopilot">
+        <div class="wc-input-row">
+          <textarea id="wcPrompt" class="wc-prompt" rows="2" placeholder="e.g. compare two CSV files and show deletions only"></textarea>
+          <button class="btn btn-gold wc-build" id="wcBuildBtn">Show me how <span>→</span></button>
+        </div>
+
+        <div class="wc-result" id="wcResult" hidden>
+          <div class="wc-result-head">
+            <div><strong id="wcResultTitle">Workflow ready</strong><span id="wcResultMeta"></span></div>
+            <button class="icon-btn" id="wcEditPromptBtn" type="button">Edit request</button>
+          </div>
+          <div class="wc-pipeline" id="wcPipeline"></div>
+          <div class="wc-actions">
+            <button class="btn btn-gold" id="wcOpenBtn" type="button">Open in Workflow Builder →</button>
+            <button class="btn btn-ghost" id="wcRunBtn" type="button">Build &amp; run</button>
+            <button class="btn btn-ghost" id="wcSaveBtn" type="button">Save workflow</button>
+            <button class="btn btn-ghost" id="wcApiBtn" type="button">Deploy with API →</button>
+          </div>
+          <p class="wc-note" id="wcNote"></p>
+        </div>
+        <div class="prompt-starters" aria-label="Example requests"><span>Try an example:</span><button type="button" data-wc-example="Convert this JSON to CSV and flatten nested fields">JSON → clean CSV</button><button type="button" data-wc-example="Compare two CSV files and show deletions only">Find CSV deletions</button><button type="button" data-wc-example="Extract all customer email addresses with JSONPath">Extract email addresses</button></div>
+        <p id="copilotAiDisclosure" class="copilot-ai-disclosure">AI interprets the request text to build the workflow. Your working data stays in the browser unless you explicitly use hosted API or Automation features.</p>
+      </div>
+    </div>
+
+    <p class="quick-actions-label">Or jump straight into a popular tool</p>
+    <div class="home-quick-actions" aria-label="Popular Recast actions">
+      <button type="button" class="home-quick-action" data-home-mode="json2csv">
+        <svg class="ico"><use href="#ico-arrow"/></svg>
+        <span>Convert JSON to CSV</span><small>Flatten API responses into spreadsheet-ready rows.</small>
+      </button>
+      <button type="button" class="home-quick-action" data-home-mode="diffJson">
+        <svg class="ico"><use href="#ico-diff"/></svg>
+        <span>Compare two JSON files</span><small>See additions, removals and changed values.</small>
+      </button>
+      <button type="button" class="home-quick-action" data-home-mode="jsonPath">
+        <svg class="ico"><use href="#ico-code"/></svg>
+        <span>Extract with JSONPath</span><small>Pull the exact fields you need from large payloads.</small>
+      </button>
+      <button type="button" class="home-quick-action" data-home-mode="validateSchema">
+        <svg class="ico"><use href="#ico-check"/></svg>
+        <span>Validate a JSON schema</span><small>Find structural errors before they reach production.</small>
+      </button>
+    </div>
+  </div>
+</section>
+
+<section class="instant-demo" id="instantDemo">
+      <div class="demo-intro">
+        <h3>See a workflow finish before you build one.</h3>
+        <p>Choose a common data job. Recast shows the input, the workflow and the real transformed result — then opens the same workflow as a template.</p>
+      </div>
+      <div class="demo-shell">
+        <div class="demo-tabs" role="tablist">
+          <button class="active" data-demo="api-csv" type="button">API → CSV</button>
+          <button data-demo="clean-webhook" type="button">Clean → webhook</button>
+          <button data-demo="jsonpath" type="button">JSONPath → CSV</button>
+        </div>
+        <div class="demo-workspace">
+          <div class="demo-pane"><div class="demo-pane-head"><span>INPUT</span><b id="demoInputLabel">API response</b></div><pre id="demoInput"></pre></div>
+          <div class="demo-middle">
+            <div class="demo-flow-mini" id="demoFlow"></div>
+            <button class="demo-run" id="demoRun" type="button"><span>▶</span> Run demo</button>
+            <small id="demoStatus">Ready to run locally</small>
+          </div>
+          <div class="demo-pane"><div class="demo-pane-head"><span>RESULT</span><b id="demoOutputLabel">CSV</b></div><pre id="demoOutput"><span class="demo-placeholder">Run the workflow to see output</span></pre></div>
+        </div>
+        <div class="demo-footer"><div><strong id="demoResultTitle">No setup. No account.</strong><span id="demoResultMeta">This demo runs in your browser.</span></div><a class="btn btn-gold" id="demoTemplateCta" href="?template=api-json-csv#workflowTemplates">Use this workflow →</a></div>
+      </div>
+    </section>
+
+    <section class="home-depth" id="exploreRecast">
+      <div class="home-depth-head">
+        <div><h2>Choose what you want to do next.</h2></div>
+        <div class="depth-tabs" role="tablist" aria-label="Explore Recast">
+          <button type="button" class="active" data-depth-tab="templates">Templates</button>
+          <button type="button" data-depth-tab="builder" data-copilot-jump>Build</button>
+          <button type="button" data-depth-tab="library">Saved</button>
+          <button type="button" data-depth-tab="automation">Automation</button>
+        </div>
+      </div>
+      <div class="depth-panels">
+<section data-depth-panel="templates" class="workflow-templates" id="workflowTemplates">
+  <div class="wf-head">
+    <div><h3>Start with a workflow that already makes sense.</h3>
+      <p>Choose a common data job, preview the pipeline, then customise it in Recipe Builder. Templates stay local until you explicitly deploy or automate them.</p></div>
+    <span class="wf-count">6 launch templates</span>
+  </div>
+  <div class="template-grid" id="workflowTemplateGrid"></div>
+</section>
+
+    
+
+    <section data-depth-panel="library" class="workflow-library" id="workflowLibrary">
+      <div class="wf-head">
+        <div><h3>Build it once. Reuse it.</h3><p>Saved workflows turn one-off data jobs into repeatable assets. They stay local by default; API deployment and hosted automation are available on paid plans.</p></div>
+        <span class="wf-count" id="workflowLibraryCount">Nothing saved yet</span>
+      </div>
+      <div id="workflowLibraryList"></div>
+      <div class="wf-next"><strong>Next step: automation.</strong><span>Scheduled runs, hosted workflow execution and workflow-specific API endpoints are the natural paid layer.</span><a href="#pricing" class="btn btn-gold">Explore API access →</a></div>
+    </section>
+
+
+    <section data-depth-panel="automation" class="automation-hub" id="automationHub">
+      <div class="auto-head">
+        <div><h3>Make the workflow run without you.</h3><p>Deploy a saved workflow as an authenticated endpoint, run it on demand, or schedule it hourly, daily or weekly. Browser tools remain local; hosted automation only stores data you explicitly choose to deploy.</p></div>
+        <a class="btn btn-gold" href="#pricing">View Automation plan →</a>
+      </div>
+      <div class="plan-state" id="planStatePanel">
+        <div class="plan-state-main">
+          <span class="plan-state-dot"></span>
+          <div><small>YOUR RECAST ACCESS</small><strong id="planStateName">Free</strong><span id="planStateDetail">Local browser tools · no hosted execution</span></div>
+        </div>
+        <div class="plan-state-capabilities" id="planStateCapabilities">
+          <span data-cap="local">✓ Local tools</span><span data-cap="pro">○ Pro limits</span><span data-cap="api">○ API deploy</span><span data-cap="automation">○ Scheduling</span>
+        </div>
+        <a href="#pricing" class="btn btn-ghost plan-state-action" id="planStateAction">Compare plans</a>
+      </div>
+      <div class="launch-health" id="launchHealth" hidden>
+        <div class="launch-health-head"><div><small>SYSTEM READINESS</small><strong>Automation diagnostics</strong></div><button class="icon-btn" id="healthRefresh" type="button">Run checks</button></div>
+        <div class="launch-health-grid" id="launchHealthGrid"></div>
+        <p id="launchHealthNote">Checks your entitlement and server-side Automation configuration without exposing secrets.</p>
+      </div>
+      <div class="automation-metrics" id="automationMetrics">
+        <div><strong id="metricActive">—</strong><span>Active</span></div>
+        <div><strong id="metricRuns">—</strong><span>Runs this month</span></div>
+        <div><strong id="metricApi">—</strong><span>API calls</span></div>
+        <div><strong id="metricFailures">—</strong><span>Recent failures</span></div>
+      </div>
+      <div id="automationWorkflowList"></div>
+      <div class="automation-history" id="automationHistory"><div class="auto-empty">Run history will appear here when you select History on a deployed workflow.</div></div>
+    </section>
+
+
+      </div>
+    </section>
+
+    
+<section class="home-workbench-section" aria-labelledby="homeWorkbenchHeading">
+  <div class="home-workbench-heading">
+    <h2 id="homeWorkbenchHeading">Workbench</h2>
+    <p>Paste data or drop a file. Everything runs locally in your browser, and you can download the result immediately.</p>
+  </div>
+<div class="diff-fullscreen-wrap" id="diffFullscreenWrap">
+    <div class="workbench" id="workbench">
+      <div class="path-row" id="pathRow">
+        <span style="font-family:'IBM Plex Mono', monospace;font-size:12px;color:var(--text-muted);">JSONPath</span>
+        <input type="text" id="jsonPathInput" placeholder="e.g. $.users[*].name  or  address.city" spellcheck="false">
+      </div>
+      <div class="jsonpath-working-banner" id="jsonPathWorkingBanner">
+        <span id="jsonPathWorkingBannerText"></span>
+        <button class="icon-btn" id="jsonPathUseOriginalBtn">Use original input instead</button>
+      </div>
+      <div class="wb-grid">
+        <div class="panel" id="inputPanel">
+          <div class="drop-zone" id="dropZone">Drop 1 file to load — or several to batch convert</div>
+          <div class="panel-head">
+            <div class="fmt-count"><span class="fmt" id="inFmt">JSON</span><span id="inCount">0 chars</span></div>
+            <div class="head-actions">
+              <button class="win-btn" id="inputTableBtn" title="Toggle table view"><svg class="ico"><use href="#ico-table"/></svg></button>
+              <button class="win-btn" id="inputGraphBtn" title="Toggle graph view"><svg class="ico"><use href="#ico-tree"/></svg></button>
+              <button class="win-btn" id="inputPopoutBtn" title="Pop out into a separate window"><svg class="ico"><use href="#ico-popout"/></svg></button>
+              <button class="win-btn" id="inputExpandBtn" title="Expand to full screen"><svg class="ico"><use href="#ico-expand"/></svg></button>
+            </div>
+          </div>
+          <div class="ta-wrap single-input" id="singleInputWrap">
+            <pre class="hl-layer" id="hlInput" aria-hidden="true"></pre>
+            <textarea id="input" spellcheck="false" placeholder="Paste data here, drop a file, or click Load sample."></textarea>
+            <div class="csv-table-wrap" id="inputTableWrap"></div>
+            <div class="graph-wrap" id="inputGraphWrap"></div>
+          </div>
+          <div class="dual-input" id="dualInput">
+            <div class="ta-wrap" style="min-height:160px;">
+              <pre class="hl-layer" id="hlInputA" aria-hidden="true"></pre>
+              <textarea id="inputA" spellcheck="false" placeholder="Original / left side…" style="min-height:160px;"></textarea>
+              <div class="drop-zone" id="dropZoneA">Drop file for original / left side</div>
+            </div>
+            <div class="ta-wrap" style="min-height:160px;">
+              <pre class="hl-layer" id="hlInputB" aria-hidden="true"></pre>
+              <textarea id="inputB" spellcheck="false" placeholder="Modified / right side…" style="min-height:160px;"></textarea>
+              <div class="drop-zone" id="dropZoneB">Drop file for modified / right side</div>
+            </div>
+          </div>
+          <div class="opts-row">
+            <button class="try-sample" id="loadSample">Load sample</button>
+            <button class="icon-btn" id="clearInputBtn" title="Clear input">Clear</button>
+            <label class="icon-btn" style="cursor:pointer;margin:0;">
+              Upload
+              <input type="file" id="fileInput" accept=".json,.csv,.xml,.txt,application/json,text/csv,text/xml,text/plain" hidden>
+            </label>
+            <button class="icon-btn" id="batchToggleBtn" title="Convert many files at once">Batch</button>
+            <button class="icon-btn" id="recipeToggleBtn" title="Chain several operations into a saved pipeline">Recipe</button>
+            <button class="icon-btn" id="transformBuilderToggleBtn" title="Build a multi-step transformation visually, with a live preview">Transform Builder</button>
+            <button class="icon-btn" id="recipeBuilder2ToggleBtn" title="Build a full multi-step recipe visually — Input through Output">Recipe Builder 2.0</button>
+            <button class="icon-btn" id="dataInspectorToggleBtn" title="Profile the current dataset — field types, nulls, quality warnings">Data Inspector</button>
+            <button class="icon-btn" id="structuralAnalysisToggleBtn" title="Classify JSON differences as breaking, non-breaking, uncertain, or value changes">Structural Analysis</button>
+            <span class="kb-hint" title="Keyboard shortcut">⌘/Ctrl + Enter</span>
+          </div>
+        </div>
+
+        <div class="wb-mid">
+          <button class="swap-btn" id="swapBtn" title="Swap direction">⇄</button>
+          <button class="convert-btn" id="convertBtn">Convert</button>
+          <button class="win-btn" id="workbenchExpandBtn" title="Expand workbench to full screen"><svg class="ico"><use href="#ico-expand"/></svg></button>
+          <span class="live-validate-badge" id="liveValidateBadge" style="display:none;"></span>
+        </div>
+
+        <div class="panel" id="outputPanel">
+          <div class="panel-head">
+            <div class="fmt-count"><span class="fmt" id="outFmt">CSV</span><span id="outCount">0 chars</span></div>
+            <div class="head-actions">
+              <button class="win-btn" id="outputTableBtn" title="Toggle table view"><svg class="ico"><use href="#ico-table"/></svg></button>
+              <button class="win-btn" id="outputGraphBtn" title="Toggle graph view"><svg class="ico"><use href="#ico-tree"/></svg></button>
+              <button class="win-btn" id="outputPopoutBtn" title="Pop out into a separate window"><svg class="ico"><use href="#ico-popout"/></svg></button>
+              <button class="win-btn" id="outputExpandBtn" title="Expand to full screen"><svg class="ico"><use href="#ico-expand"/></svg></button>
+            </div>
+          </div>
+          <div class="ta-wrap">
+            <pre class="hl-layer" id="hlOutput" aria-hidden="true"></pre>
+            <textarea id="output" spellcheck="false" placeholder="Output appears here." readonly></textarea>
+            <div class="csv-table-wrap" id="outputTableWrap"></div>
+            <div class="graph-wrap" id="outputGraphWrap"></div>
+          </div>
+          <div class="opts-row" id="outOpts">
+            <label id="prettyLabel"><input type="checkbox" id="prettyPrint" checked> Pretty</label>
+            <label id="bomLabel" style="display:none"><input type="checkbox" id="excelBom"> Excel BOM</label>
+            <label id="inferLabel" style="display:none"><input type="checkbox" id="inferTypes" checked> Infer types</label>
+            <label id="rootNameLabel" style="display:none">
+              Type name
+              <input type="text" id="schemaRootName" value="Root" style="width:90px;">
+            </label>
+            <label id="mockCountLabel" style="display:none">
+              Records
+              <input type="number" id="mockCount" value="3" min="1" max="50" style="width:60px;">
+            </label>
+            <label id="delimLabel" style="display:none">
+              Delimiter
+              <select id="csvDelimiter">
+                <option value=",">Comma</option>
+                <option value=";">Semicolon</option>
+                <option value="\t">Tab</option>
+                <option value="|">Pipe</option>
+              </select>
+            </label>
+          </div>
+          <div class="panel-foot">
+            <div class="cap-bar"><div class="cap-fill" id="capFill"></div></div>
+            <span class="cap-label" id="capLabel">0 / 3 MB free limit</span>
+            <button class="icon-btn" id="copyBtn">Copy</button>
+            <button class="icon-btn" id="downloadBtn">Download</button>
+            <button class="icon-btn" id="clearOutputBtn" title="Clear output">Clear</button>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <div class="diff-panel" id="diffPanel">
+      <div class="diff-summary" id="diffSummary"></div>
+      <div class="diff-key-note" id="diffKeyNote" style="display:none;"></div>
+      <div class="diff-rows" id="diffRows"></div>
+    </div>
+
+    <div class="diff-panel" id="comparePanel">
+      <div class="diff-summary" id="compareSummary"></div>
+      <div class="compare-toolbar">
+        <div class="compare-filter-group" id="compareFilterGroup">
+          <button class="compare-filter-btn active" data-filter="all">All <span class="n" id="cntAll"></span></button>
+          <button class="compare-filter-btn" data-filter="added">Added <span class="n" id="cntAdded"></span></button>
+          <button class="compare-filter-btn" data-filter="removed">Removed <span class="n" id="cntRemoved"></span></button>
+          <button class="compare-filter-btn" data-filter="changed">Changed <span class="n" id="cntChanged"></span></button>
+          <button class="compare-filter-btn" data-filter="unchanged">Unchanged <span class="n" id="cntUnchanged"></span></button>
+        </div>
+        <input type="text" class="compare-search" id="compareSearch" placeholder="Search key or any cell value…">
+        <label class="compare-ws-toggle"><input type="checkbox" id="compareIgnoreWs"> Ignore whitespace</label>
+        <div class="compare-nav">
+          <button class="icon-btn" id="compareDiffPrev" title="Previous difference (P)">↑ Prev diff</button>
+          <button class="icon-btn" id="compareDiffNext" title="Next difference (N)">↓ Next diff</button>
+          <span class="compare-nav-pos" id="compareDiffPos"></span>
+        </div>
+        <div class="compare-downloads">
+          <button class="icon-btn" id="compareDownloadCsv">Download CSV report</button>
+          <button class="icon-btn" id="compareDownloadHtml">Download HTML report</button>
+        </div>
+      </div>
+      <div id="compareTableWrap"></div>
+    </div>
+    </div>
+</section>
+
+<div class="batch-panel" id="batchPanel">
+      <div class="batch-head" id="batchHeadSingle">
+        <span class="title" id="batchModeLabel">Batch: JSON → CSV</span>
+        <label class="icon-btn" style="cursor:pointer;margin:0;">
+          Add files
+          <input type="file" id="batchFileInput" multiple hidden accept=".json,.csv,.xml,.txt">
+        </label>
+        <button class="icon-btn" id="batchRunBtn">Run batch</button>
+        <button class="icon-btn" id="batchDownloadBtn" style="display:none;">Download .zip</button>
+        <button class="icon-btn" id="batchClearBtn">Clear</button>
+      </div>
+      <div class="batch-head" id="batchHeadDual" style="display:none;">
+        <span class="title" id="batchModeLabelDual">Batch diff</span>
+        <label class="icon-btn" style="cursor:pointer;margin:0;">
+          Add original files
+          <input type="file" id="batchFileInputA" multiple hidden accept=".json,.csv,.xml,.txt">
+        </label>
+        <label class="icon-btn" style="cursor:pointer;margin:0;">
+          Add modified files
+          <input type="file" id="batchFileInputB" multiple hidden accept=".json,.csv,.xml,.txt">
+        </label>
+        <button class="icon-btn" id="batchRunDiffBtn">Run batch</button>
+        <button class="icon-btn" id="batchDownloadBtn2" style="display:none;">Download .zip</button>
+        <button class="icon-btn" id="batchClearBtn2">Clear</button>
+      </div>
+      <p class="batch-diff-hint" id="batchDiffHint" style="display:none;">Files are paired by matching name (after sorting) — upload the "before" set as originals and the "after" set as modified. Unmatched files are listed but not compared.</p>
+      <div class="batch-file-list" id="batchFileList"></div>
+      <div class="batch-summary" id="batchSummary" style="display:none;"></div>
+      <div class="drop-zone" id="batchDropZone">Drop files to add to the batch</div>
+    </div>
+
+    <div class="batch-panel" id="recipePanel">
+      <div class="batch-head">
+        <span class="title">Recipe — chain steps, run them in order</span>
+        <select id="recipeAddStep" class="playground-select" style="width:auto;">
+          <option value="">+ Add step…</option>
+        </select>
+        <button class="icon-btn" id="recipeRunBtn">Run recipe</button>
+        <button class="icon-btn" id="recipeSaveBtn">Save…</button>
+        <button class="icon-btn" id="recipeClearBtn">Clear</button>
+      </div>
+      <div class="batch-file-list" id="recipeStepList"></div>
+      <div class="batch-summary" id="recipeSummary" style="display:none;"></div>
+      <div id="recipeSavedWrap" style="display:none;">
+        <div class="batch-summary" style="border-top:1px solid rgba(140,182,214,0.16);">Saved recipes</div>
+        <div class="batch-file-list" id="recipeSavedList"></div>
+      </div>
+    </div>
+
+    <div class="tb-builder" id="transformBuilderPanel">
+      <div class="tb-builder-head">
+        <span class="title">Transform Builder — build a multi-step transformation visually</span>
+        <span class="tb-counts" id="tbCounts">0 in → 0 out</span>
+        <button class="icon-btn" id="tbUndoBtn" title="Undo" disabled>Undo</button>
+        <button class="icon-btn" id="tbRedoBtn" title="Redo" disabled>Redo</button>
+        <button class="icon-btn" id="tbResetBtn" title="Clear all steps">Reset</button>
+        <button class="icon-btn" id="tbRunBtn" title="Re-run the pipeline against the current input">Run</button>
+        <button class="icon-btn" id="tbSaveRecipeBtn" title="Save these steps as a recipe">Save as Recipe…</button>
+        <button class="icon-btn" id="tbCloseBtn" title="Close and return to the normal workbench view">✕ Close</button>
+      </div>
+      <div class="tb-working-banner" id="tbWorkingBanner" style="display:none;">
+        <span id="tbWorkingBannerText"></span>
+        <button class="icon-btn" id="tbUseOriginalBtn">Use original input instead</button>
+      </div>
+
+      <div class="tb-builder-body">
+        <div class="tb-col tb-col-source">
+          <div class="tb-col-head">Source fields <span class="tb-hint">click to add to the open step</span></div>
+          <div class="tb-field-tree" id="tbFieldTree"></div>
+        </div>
+
+        <div class="tb-col tb-col-steps">
+          <div class="tb-col-head">
+            Transform steps
+            <select id="tbAddStep" class="playground-select" style="width:auto;">
+              <option value="">+ Add step…</option>
+              <option value="select">Select fields</option>
+              <option value="remove">Remove fields</option>
+              <option value="rename">Rename field</option>
+              <option value="filter">Filter records</option>
+              <option value="sort">Sort records</option>
+              <option value="convertType">Convert type</option>
+              <option value="addField">Add / default field</option>
+              <option value="combine">Combine fields</option>
+              <option value="flatten">Flatten nested objects</option>
+              <option value="unflatten">Unflatten fields</option>
+              <option value="sortKeys">Sort keys (existing)</option>
+            </select>
+          </div>
+          <div class="tb-step-form" id="tbStepForm" style="display:none;"></div>
+          <div class="batch-file-list" id="tbStepList"></div>
+        </div>
+
+        <div class="tb-col tb-col-output">
+          <div class="tb-col-head">Output preview</div>
+          <textarea class="tb-output" id="tbOutput" readonly spellcheck="false" placeholder="Add a step to see a live preview here."></textarea>
+          <div class="tb-errors" id="tbErrors" style="display:none;"></div>
+        </div>
+      </div>
+    </div>
+
+    <div class="rb2" id="recipeBuilder2Panel">
+      <div class="rb2-head">
+        <span class="title">Recipe Builder 2.0 — a full Input → Output workflow, visually</span>
+        <input type="text" id="rb2NameInput" placeholder="Recipe name" style="width:160px;">
+        <button class="icon-btn" id="rb2RunBtn" title="Run the whole recipe">Run recipe</button>
+        <button class="icon-btn rb2-commercial-cta" id="rb2AutomateBtn" title="Save this workflow and continue to hosted Automation">Automate →</button>
+        <button class="icon-btn" id="rb2SaveBtn" title="Save this recipe">Save</button>
+        <button class="icon-btn" id="rb2DuplicateBtn" title="Duplicate this recipe under a new name">Duplicate</button>
+        <button class="icon-btn" id="rb2ResetBtn" title="Clear all steps">Reset</button>
+        <button class="icon-btn" id="rb2CloseBtn" title="Close and return to the normal workbench view">✕ Close</button>
+      </div>
+
+      <div class="rb2-body">
+        <div class="rb2-flow" id="rb2Flow">
+          <div class="rb2-node rb2-node-endpoint" id="rb2InputNode">
+            <div class="rb2-node-label">INPUT</div>
+            <div class="rb2-node-summary" id="rb2InputSummary">0 records</div>
+          </div>
+          <div class="rb2-arrow">&#8595;</div>
+
+          <div id="rb2StepNodes"></div>
+
+          <div class="rb2-add-step-row">
+            <select id="rb2AddStep" class="playground-select" style="width:auto;">
+              <option value="">+ Add step…</option>
+            </select>
+          </div>
+
+          <div class="rb2-arrow">&#8595;</div>
+          <div class="rb2-node rb2-node-endpoint" id="rb2OutputNode">
+            <div class="rb2-node-label">OUTPUT</div>
+            <div class="rb2-node-summary" id="rb2OutputSummary">0 records</div>
+          </div>
+        </div>
+
+        <div class="rb2-side">
+          <div class="rb2-side-head" id="rb2SideHead">Select a step to configure it, or click Run to see the full result.</div>
+          <div class="rb2-config" id="rb2Config"></div>
+          <div class="rb2-preview-head">Preview <span id="rb2PreviewLabel"></span></div>
+          <textarea class="tb-output" id="rb2Preview" readonly spellcheck="false" placeholder="Output preview appears here."></textarea>
+          <div class="tb-errors" id="rb2Errors" style="display:none;"></div>
+        </div>
+      </div>
+
+      <div class="rb2-saved" id="rb2SavedWrap" style="display:none;">
+        <div class="batch-summary" style="border-top:1px solid rgba(var(--border-rgb),0.16);">Saved recipes</div>
+        <div class="batch-file-list" id="rb2SavedList"></div>
+      </div>
+    </div>
+
+    <div class="di-panel" id="dataInspectorPanel">
+      <div class="di-head">
+        <span class="title">Data Inspector — a profile of your current dataset</span>
+        <button class="icon-btn" id="diRefreshBtn" title="Re-profile the current input">Refresh</button>
+        <button class="icon-btn" id="diCloseBtn" title="Close and return to the normal workbench view">✕ Close</button>
+      </div>
+
+      <div class="di-summary" id="diSummary"></div>
+
+      <div class="di-warnings" id="diWarnings"></div>
+
+      <div class="di-fields-wrap">
+        <table class="di-fields-table" id="diFieldsTable">
+          <thead>
+            <tr>
+              <th>Field</th><th>Type</th><th>Nulls</th><th>Unique</th><th>Sample values</th><th>Range</th><th></th>
+            </tr>
+          </thead>
+          <tbody id="diFieldsBody"></tbody>
+        </table>
+      </div>
+    </div>
+
+    <div class="sa-panel" id="structuralAnalysisPanel">
+      <div class="sa-head">
+        <span class="title">Structural Analysis — breaking, non-breaking, uncertain, and value changes</span>
+        <button class="icon-btn" id="saRefreshBtn" title="Re-analyze the current A / B comparison">Analyze</button>
+        <button class="icon-btn" id="saCloseBtn" title="Close and return to the normal workbench view">✕ Close</button>
+      </div>
+
+      <div id="saBody">
+        <div class="sa-summary" id="saSummary"></div>
+
+        <div class="sa-filters" id="saFilters">
+          <button class="sa-filter active" data-filter="all">All</button>
+          <button class="sa-filter" data-filter="breaking">Breaking</button>
+          <button class="sa-filter" data-filter="nonBreaking">Non-breaking</button>
+          <button class="sa-filter" data-filter="uncertain">Uncertain</button>
+          <button class="sa-filter" data-filter="value">Value</button>
+        </div>
+
+        <div class="sa-list" id="saList"></div>
+      </div>
+    </div>
+
+    <div class="status-line" id="status"></div>
+    <div class="upgrade-nudge" id="upgradeNudge">
+      <span>Free limit reached or nearly full. Pro unlocks 25 MB files, batch convert, and saved presets.</span>
+      <a href="#pricing">Upgrade to Pro →</a>
+    </div>
+    <div class="paywall-escalation" id="paywallEscalation" style="display:none;">
+      <span id="paywallEscalationText"></span>
+      <a href="#pricing" class="btn btn-gold" style="padding:5px 12px;font-size:12.5px;">Upgrade to Pro — £9/mo</a>
+      <button id="paywallEscalationClose" title="Dismiss">✕</button>
+    </div>
+
+    </section>
+
+  <section id="pricing">
+    <div class="section-head">
+      <h2>Start free. Upgrade when Recast becomes part of your workflow.</h2>
+      <p>Use the browser tools free. Pro removes limits. Automation runs workflows for you. API is for programmatic execution.</p>
+    </div>
+    <div class="plans plans-commercial">
+      <div class="plan">
+        <div class="plan-icon"><svg class="ico"><use href="#ico-bolt"/></svg></div>
+        <h3>Free</h3>
+        <div class="price"><sup>£</sup>0<span class="period">/forever</span></div>
+        <p class="desc">For occasional, one-off conversions.</p>
+        <ul>
+          <li>Convert, validate, format, diff, JSONPath, schema generate + validate</li>
+          <li>CSV compare up to 50 rows per file</li>
+          <li>Files up to 3 MB</li>
+          <li>One file at a time</li>
+          <li>Runs entirely in-browser</li>
+        </ul>
+        <a href="#tool" class="btn btn-ghost">Use for free</a>
+      </div>
+      <div class="plan featured">
+        <div class="plan-icon"><svg class="ico"><use href="#ico-star"/></svg></div>
+        <h3>Pro</h3>
+        <div class="price"><sup>£</sup>9<span class="period">/month</span></div>
+        <p class="desc">For daily conversions, CI use, and larger files.</p>
+        <ul>
+          <li>Everything in Free</li>
+          <li>Unlimited rows for CSV compare</li>
+          <li>Files up to 25 MB</li>
+          <li>Batch convert — up to 100 files at once, download as .zip</li>
+          <li>Saved presets — reusable delimiter/format settings</li>
+          <li>No ads</li>
+          <li>No account or password — access is tied to this browser</li>
+          <li>Priority support</li>
+        </ul>
+        <a href="#" class="btn btn-gold" id="btnProMonthly" data-plan="pro_monthly">Start Pro – £9/mo</a>
+        <a href="#" class="btn btn-ghost" id="btnProYearly" data-plan="pro_yearly" style="margin-top:8px;text-align:center;">Pro yearly – £90</a>
+      </div>
+      <div class="plan automation-plan">
+        <div class="plan-icon"><svg class="ico"><use href="#ico-bolt"/></svg></div>
+        <h3>Automation</h3>
+        <div class="price"><sup>£</sup>29<span class="period">/month</span></div>
+        <p class="desc">For recurring data jobs that should run without you.</p>
+        <ul>
+          <li>Hosted workflow scheduling</li><li>1,000 automated runs / month</li><li>Up to 10 active automations</li>
+          <li>Live HTTPS inputs + webhooks</li><li>Encrypted API credentials</li><li>Run history, retries + failure alerts</li>
+        </ul>
+        <a href="#" class="btn btn-gold" id="btnAutomationMonthly" onclick="startCheckout('automation_monthly');return false;">Start Automation – £29/mo</a>
+        <a href="#" class="btn btn-ghost" id="btnAutomationYearly" onclick="startCheckout('automation_yearly');return false;" style="margin-top:8px;text-align:center;">Automation yearly – £290</a>
+        <small class="checkout-pending-note">Checkout activates when the Automation Stripe links are configured.</small>
+      </div>
+      <div class="plan">
+        <div class="plan-icon"><svg class="ico"><use href="#ico-code"/></svg></div>
+        <h3>API</h3>
+        <div class="price"><sup>£</sup>29<span class="period">/month</span></div>
+        <p class="desc">For scripts, pipelines and internal tools.</p>
+        <ul>
+          <li>Everything in Pro</li>
+          <li>REST API with your own key</li>
+          <li>10,000 conversions / month</li>
+          <li>Webhook + CLI available</li>
+          <li>Team seats (add-on)</li>
+        </ul>
+        <a href="#" class="btn btn-ghost" id="btnApiMonthly" data-plan="api_monthly">Get API – £29/mo</a>
+        <a href="#" class="btn btn-ghost" id="btnApiYearly" data-plan="api_yearly" style="margin-top:8px;text-align:center;">API yearly – £290</a>
+      </div>
+    </div>
+
+    <div class="day-pass-note">
+      <span>Only need it once? </span>
+      <a href="#" onclick="startCheckout('day_pass');return false;">Get a 24-hour Pro pass for £2.99</a>
+      <span> — no subscription, unlocks everything in Pro for a day.</span>
+    </div>
+
+    <div class="notify-me-box">
+      <div class="notify-me-text">
+        <strong>Not ready yet?</strong> Leave your email and we'll let you know when there's something worth coming back for — new features, nothing else. No spam, unsubscribe any time.
+      </div>
+      <form id="notifyMeForm" class="notify-me-form" novalidate>
+        <div style="position:absolute;left:-9999px;" aria-hidden="true">
+          <label for="notifyMeWebsite">Website</label>
+          <input type="text" id="notifyMeWebsite" name="website" tabindex="-1" autocomplete="off">
+        </div>
+        <input type="email" id="notifyMeEmail" name="email" placeholder="you@example.com" required autocomplete="email">
+        <button type="submit" class="btn btn-ghost" id="notifyMeSubmit">Notify me</button>
+      </form>
+      <div class="notify-me-status" id="notifyMeStatus" role="status" aria-live="polite"></div>
+    </div>
+  </section>
+
+  <section id="faq">
+    <div class="section-head">
+      <h2>A few things worth knowing.</h2>
+    </div>
+    <div class="faq-list">
+      <details class="faq-item">
+        <summary>Do I need to create an account?</summary>
+        <p>No — Recast doesn't use logins, emails, or passwords. When you pay, your browser is automatically given secure access. This means access is tied to the specific browser you paid in, not to an identity we track. If you switch devices, use a different browser, or clear your browser's storage, click <b>Manage subscription</b> from the original browser to pick it back up, or get in touch and we'll sort it out.</p>
+      </details>
+      <details class="faq-item">
+        <summary>Is my data ever uploaded anywhere?</summary>
+        <p>No. Every conversion, diff, and validation runs entirely inside your browser tab. Nothing you paste into the tool is ever sent to a server — the only exception is the checkout process itself, which is handled directly by Stripe.</p>
+      </details>
+      <details class="faq-item">
+        <summary>What happens if I cancel?</summary>
+        <p>Cancel any time from <b>Manage subscription</b>. Your access reverts to the Free tier automatically — usually within moments, always by your next page load — no need to email anyone.</p>
+      </details>
+      <details class="faq-item">
+        <summary>Can I use Recast in a script or CI pipeline?</summary>
+        <p>Yes — the same engine that powers the browser tool is available as <a href="https://www.npmjs.com/package/recast-cli" style="color:#A855F7;">recast-cli</a>, an npm package with no network dependency, plus a REST API on the API plan.</p>
+      </details>
+    </div>
+  </section>
+
+  <section id="api">
+    <div class="section-head">
+      <h2>Convert from your scripts and pipelines.</h2>
+      <p>Same conversions as the browser tool, available over a simple REST API. Ideal for backends, CLIs, and internal tools. Prefer zero network dependency? The <a href="https://www.npmjs.com/package/recast-cli" style="color:#A855F7;">recast-cli</a> npm package runs the identical engine locally.</p>
+    </div>
+
+    <div class="api-card">
+      <h3>Recast API</h3>
+      <p>
+        Your access token — the same one issued when you subscribe — doubles as your API key.
+        10,000 calls per month, resets on the calendar month, tracked and returned with every response.
+      </p>
+
+      <pre>curl https://tryrecast.app/v1/convert \
+  -H "Authorization: Bearer rk_live_••••••••" \
+  -H "Content-Type: application/json" \
+  -d '{
+    "mode": "json2csv",
+    "input": "[{\"id\":1,\"name\":\"Ada\"}]"
+  }'
+
+# -&gt; {"output":"id,name\n1,Ada","usage":{"calls_this_month":1,"limit":10000}}</pre>
+
+      <p style="margin-bottom:6px;font-size:13.5px;color:var(--text-muted);line-height:1.7;">
+        <code style="color:#3AA2FC;">POST /v1/convert</code> — <code>mode</code>: json2csv, csv2json, json2xml, xml2json, flatten, unflatten, json2yaml, yaml2json, json2markdown, markdown2json<br>
+        <code style="color:#3AA2FC;">POST /v1/diff</code> — <code>mode</code>: diffJson, diffXml, diffCsv (send <code>inputA</code>/<code>inputB</code> instead of <code>input</code>)<br>
+        <code style="color:#3AA2FC;">POST /v1/schema</code> — infers a JSON Schema (draft-07) from a sample <code>input</code>
+      </p>
+      <p style="font-size:13.5px;"><a href="api/index.html" style="color:#A855F7;">Full API reference &rarr;</a></p>
+
+      <div id="apiKeyBox" class="api-key-box" style="display:none;">
+        <span class="api-key-label">Your API key</span>
+        <code id="apiKeyValue"></code>
+        <button class="icon-btn" id="apiKeyCopyBtn">Copy</button>
+      </div>
+    </div>
+
+    <div class="api-playground" id="apiPlayground">
+      <div class="playground-row">
+        <div class="playground-col">
+          <div class="playground-label-row">
+            <label class="playground-label">Request</label>
+            <span class="playground-live-tag">Live preview — runs in your browser, same engine as the API</span>
+            <div class="head-actions">
+              <button class="win-btn" id="playgroundPopoutBtn" title="Pop out into a separate window"><svg class="ico"><use href="#ico-popout"/></svg></button>
+              <button class="win-btn" id="playgroundExpandBtn" title="Expand to full screen"><svg class="ico"><use href="#ico-expand"/></svg></button>
+            </div>
+          </div>
+          <select id="playgroundMode" class="playground-select">
+            <option value="json2csv">json2csv</option>
+            <option value="csv2json">csv2json</option>
+            <option value="json2xml">json2xml</option>
+            <option value="xml2json">xml2json</option>
+            <option value="flatten">flatten</option>
+            <option value="unflatten">unflatten</option>
+            <option value="json2yaml">json2yaml</option>
+            <option value="yaml2json">yaml2json</option>
+            <option value="json2markdown">json2markdown</option>
+            <option value="markdown2json">markdown2json</option>
+          </select>
+          <textarea id="playgroundInput" class="playground-textarea" spellcheck="false">[{"id":1,"name":"Ada","city":"London"}]</textarea>
+          <div class="drop-zone" id="playgroundDropZone">Drop a demo file here</div>
+          <button class="btn btn-gold" id="playgroundRunBtn" style="margin-top:10px;">Run</button>
+          <button class="icon-btn" id="playgroundSaveRequestBtn" style="margin-top:6px;" title="Save this request's shape as a recipe you can build on — no need to run it first">Save request as recipe</button>
+        </div>
+        <div class="playground-col">
+          <div class="playground-label-row">
+            <label class="playground-label">Response</label>
+            <div class="head-actions">
+              <button class="win-btn" id="playgroundOutputPopoutBtn" title="Pop out into a separate window"><svg class="ico"><use href="#ico-popout"/></svg></button>
+            </div>
+          </div>
+          <pre class="playground-output" id="playgroundOutput">// click Run to see the output</pre>
+          <div class="playground-response-actions" id="playgroundResponseActions" style="display:none;">
+            <span class="pra-label">Use response in:</span>
+            <button class="icon-btn" data-response-action="inspect">Inspect Response</button>
+            <button class="icon-btn" data-response-action="transform">Transform Response</button>
+            <button class="icon-btn" data-response-action="query">Query Response</button>
+            <button class="icon-btn" data-response-action="validate">Validate Response</button>
+            <button class="icon-btn" data-response-action="compare">Compare Response</button>
+            <button class="icon-btn" data-response-action="recipe">Create Recipe</button>
+          </div>
+        </div>
+      </div>
+      <div class="playground-snippets">
+        <div class="playground-snippet-tabs">
+          <button class="playground-snippet-tab active" data-lang="curl">cURL</button>
+          <button class="playground-snippet-tab" data-lang="js">JavaScript</button>
+          <button class="playground-snippet-tab" data-lang="python">Python</button>
+          <button class="icon-btn playground-copy-btn" id="playgroundCopyBtn">Copy</button>
+        </div>
+        <pre class="playground-code" id="playgroundCode"></pre>
+      </div>
+    </div>
+
+    <div class="api-actions" id="apiActionsCTA">
+      <a href="#pricing" class="btn btn-gold">Get API access – £29/mo</a>
+      <a href="#pricing" class="btn btn-ghost">See API pricing →</a>
+    </div>
+  </section>
+  <div class="cmdk-overlay" id="cmdkOverlay">
+    <div class="cmdk-box">
+      <div class="cmdk-input-row">
+        <svg class="ico"><use href="#ico-path"/></svg>
+        <input type="text" id="cmdkInput" placeholder="Jump to a tool…" autocomplete="off" spellcheck="false">
+        <kbd class="cmdk-esc">Esc</kbd>
+      </div>
+      <div class="cmdk-results" id="cmdkResults"></div>
+    </div>
+  </div>
+</main>
+
+<footer>
+  <div class="tb-row foot-row" style="max-width:1180px;margin:0 auto;padding:0 24px;">
+    <span>© 2026 Recast · tryrecast.app · Built with care, no tracking scripts.</span>
+    <span class="priv">→ your data never leaves this tab. your workflow can.</span>
+  </div>
+</footer>
+
+<div class="share-toast" id="shareToast"></div>
+
+<!-- Shared, tested engine + feature modules (also power the recast-cli npm package and worker) -->
+<script src="lib/engine.js"></script>
+<script src="lib/working-dataset.js"></script>
+<script src="lib/highlight.js"></script>
+<script src="lib/history.js"></script>
+<script src="lib/share.js"></script>
+<script src="lib/worker-client.js"></script>
+<script src="lib/transform-builder.js"></script>
+<script src="lib/pipeline-field-resolver.js"></script>
+<script src="lib/batch.js"></script>
+<script src="lib/graph.js"></script>
+<script src="lib/recipes.js"></script>
+<script src="lib/theme.js"></script>
+<script src="lib/nav.js"></script>
+<script src="lib/transform-ui.js"></script>
+<script src="lib/recipe-builder-2.js"></script>
+<script src="lib/data-profiler.js"></script>
+<script src="lib/data-inspector-ui.js"></script>
+<script src="lib/structural-analysis.js"></script>
+<script src="lib/structural-analysis-ui.js"></script>
+<script>
+  if ('serviceWorker' in navigator) {
+    window.addEventListener('load', () => {
+      navigator.serviceWorker.register('/sw.js', { scope: '/' }).catch(() => { /* offline mode just won't be available — the tool still works online */ });
+    });
+  }
+</script>
+<script src="lib/presets.js"></script>
+<script src="lib/csv-compare.js"></script>
+<script src="lib/workflow-copilot.js"></script>
+<script src="lib/home-depth.js"></script>
+  <script src="lib/instant-demo.js"></script>
+  <script src="lib/workflow-templates.js"></script>
+  <script src="lib/workflow-library.js"></script>
+<script src="lib/workflow-automation.js"></script>
+<script src="app.js"></script>
+<!-- Cloudflare Web Analytics --><script type='module' src='https://static.cloudflareinsights.com/beacon.min.js' data-cf-beacon='{"token": "13426e11249049dba542ef0b69a55823"}'></script><!-- End Cloudflare Web Analytics -->
+
+
+<div class="modal-overlay" id="hostedDeployModal" hidden>
+  <div class="modal hosted-deploy-modal" role="dialog" aria-modal="true" aria-labelledby="hostedDeployTitle">
+    <button class="modal-close" id="hostedDeployClose" type="button" aria-label="Close">×</button>
+    <h2 id="hostedDeployTitle">Deploy this workflow?</h2>
+    <p class="hosted-deploy-lead">Your browser tools stay private. Deploying creates a hosted copy of the <strong>workflow definition</strong> so it can run through an authenticated endpoint.</p>
+
+    <div class="hosted-boundary">
+      <div class="hosted-boundary-side local"><small>STAYS LOCAL</small><strong>Your current browser input</strong><span>Nothing in the editor is uploaded just because you deploy the workflow.</span></div>
+      <div class="hosted-boundary-arrow">→</div>
+      <div class="hosted-boundary-side hosted"><small>HOSTED</small><strong>Workflow definition</strong><span>Step configuration is stored so Recast can execute it server-side.</span></div>
+    </div>
+
+    <div class="hosted-when-data">
+      <strong>When does data leave the browser?</strong>
+      <span><b>Run now / API:</b> the input sent to that hosted run is processed server-side.</span>
+      <span><b>Automation:</b> fixed input, URLs, webhook configuration and encrypted credentials are stored only when you explicitly configure them.</span>
+    </div>
+
+    <div class="hosted-plan-choice">
+      <div><small>API ACCESS</small><strong>Run when you call it</strong><span>Authenticated workflow endpoint · manual hosted runs · API usage allowance.</span></div>
+      <div class="featured"><small>AUTOMATION</small><strong>Run without you</strong><span>Everything needed for hosted workflows plus schedules, encrypted credentials, retries and run history.</span></div>
+    </div>
+
+    <div class="hosted-current-plan" id="hostedCurrentPlan">Checking your plan…</div>
+    <div class="modal-actions">
+      <button class="btn secondary" id="hostedDeployCancel" type="button">Keep it local</button>
+      <a class="btn secondary" id="hostedDeployPlans" href="#pricing">Compare plans</a>
+      <button class="btn primary" id="hostedDeployConfirm" type="button">Deploy workflow →</button>
+    </div>
+  </div>
+</div>
+
+<div class="modal-overlay" id="automationSetupModal" hidden>
+  <div class="modal automation-setup-modal" role="dialog" aria-modal="true" aria-labelledby="automationSetupTitle">
+    <button class="modal-close" id="automationSetupClose" type="button" aria-label="Close">×</button>
+    <h2 id="automationSetupTitle">Automate this workflow</h2>
+    <p class="muted">Run a deployed workflow while your browser is closed. Hosted scheduling is an Automation-plan feature.</p>
+    <div class="automation-form-grid">
+      <label>Frequency<select id="autoCadence"><option value="hourly">Hourly</option><option value="daily" selected>Daily</option><option value="weekly">Weekly</option></select></label>
+      <label>Local hour<input id="autoHour" type="number" min="0" max="23" value="8"></label>
+      <label>Timezone<input id="autoTimezone" type="text" value="UTC"></label>
+      <label>Weekly day<select id="autoWeekday"><option>Mon</option><option>Tue</option><option>Wed</option><option>Thu</option><option>Fri</option><option>Sat</option><option>Sun</option></select></label>
+    </div>
+    <fieldset><legend>Input</legend>
+      <label><input type="radio" name="autoInputMode" value="fixed" checked> Store the current Recast input</label>
+      <label><input type="radio" name="autoInputMode" value="http"> Fetch a public HTTPS URL each run</label>
+      <input id="autoInputUrl" type="url" placeholder="https://api.example.com/data.json">
+      <label>Input credential <span class="muted">(optional)</span><select id="autoInputCredential"><option value="">No authentication</option></select></label>
+    </fieldset>
+    <label>Output webhook <span class="muted">(optional)</span><input id="autoWebhook" type="url" placeholder="https://example.com/recast-hook"></label>
+    <label>Webhook credential <span class="muted">(optional)</span><select id="autoOutputCredential"><option value="">No authentication</option></select></label>
+    <label>Failure alert email <span class="muted">(optional)</span><input id="autoAlertEmail" type="email" placeholder="you@company.com"></label>
+    <button class="btn secondary" id="manageCredentialsBtn" type="button">Manage API credentials</button>
+    <div class="automation-security-note">Credentials are encrypted with AES-GCM before storage and are never returned by the API after creation.</div>
+    <div class="modal-actions"><button class="btn secondary" id="automationSetupCancel" type="button">Cancel</button><button class="btn primary" id="automationSetupSave" type="button">Enable automation</button></div>
+  </div>
+</div>
+
+
+<div class="modal-overlay" id="credentialVaultModal" hidden>
+ <div class="modal automation-setup-modal" role="dialog" aria-modal="true" aria-labelledby="credentialVaultTitle">
+  <button class="modal-close" id="credentialVaultClose" type="button" aria-label="Close">×</button><h2 id="credentialVaultTitle">API credentials</h2>
+  <p class="muted">Store a Bearer token or API key for authenticated workflow inputs and webhooks. Secret values are encrypted before they are written to hosted storage and cannot be viewed again.</p>
+  <div class="automation-form-grid"><label>Name<input id="credName" placeholder="Production CRM"></label><label>Type<select id="credType"><option value="bearer">Bearer token</option><option value="api_key">API key header</option></select></label></div>
+  <label id="credHeaderWrap">Header name<input id="credHeader" value="X-API-Key"></label>
+  <label>Secret value<input id="credValue" type="password" autocomplete="new-password" placeholder="Paste secret"></label>
+  <div class="modal-actions"><button class="btn primary" id="credSave" type="button">Encrypt & save</button></div>
+  <div id="credentialVaultList" class="automation-vault-list"></div>
+ </div>
+</div>
+
+<script id="v23-clean-home-script">
+document.addEventListener('click', function(e){
+  const b=e.target.closest('[data-copilot-jump]');
+  if(!b) return;
+  e.preventDefault();
+  document.getElementById('workflowCopilot')?.scrollIntoView({behavior:'smooth',block:'center'});
+});
+</script>
+
+<script id="v32-home-quick-actions">
+document.addEventListener('click',function(e){
+  const btn=e.target.closest('[data-home-mode]');
+  if(!btn)return;
+  const mode=btn.getAttribute('data-home-mode');
+  try{
+    if(typeof window.setMode==='function')window.setMode(mode);
+    else{
+      const target=document.querySelector('[data-mode="'+mode+'"]');
+      if(target)target.click();
+    }
+  }catch(_){}
+  document.getElementById('homeWorkbenchHeading')?.scrollIntoView({behavior:'smooth',block:'start'});
+});
+</script>
+
+</body>
+</html>
+
