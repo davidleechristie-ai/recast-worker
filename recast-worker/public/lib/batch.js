@@ -74,10 +74,14 @@
     // in a scripted/API context anyway.
     compareStep: { outExt: 'txt', run: (text, opts) => {
       const format = opts.format || 'json';
-      if (format === 'csv') return flatTextFromCsvDiff(E.csvDiff(opts.reference || '', text, opts));
-      const a = format === 'xml' ? E.xmlToJson(opts.reference || '{}') : JSON.parse(opts.reference || '{}');
-      const b = format === 'xml' ? E.xmlToJson(text) : JSON.parse(text);
-      return flatTextFromChanges(E.deepDiff(a, b));
+      let flat;
+      if (format === 'csv') flat = flatTextFromCsvDiff(E.csvDiff(opts.reference || '', text, opts));
+      else {
+        const a = format === 'xml' ? E.xmlToJson(opts.reference || '{}') : JSON.parse(opts.reference || '{}');
+        const b = format === 'xml' ? E.xmlToJson(text) : JSON.parse(text);
+        flat = flatTextFromChanges(E.deepDiff(a, b));
+      }
+      return formatComparisonOutput(flat, opts.outputFormat || 'text');
     }},
     // Represents "this is how the recipe's data arrived" — an API request
     // description, not a transform. Making a real network call from here
@@ -99,6 +103,18 @@
       if (c.type === 'removed') return '- DEL ' + c.path + ' (was ' + JSON.stringify(c.oldVal) + ')';
       return '~ CHG ' + c.path + ': ' + JSON.stringify(c.oldVal) + ' -> ' + JSON.stringify(c.newVal);
     }).join('\n');
+  }
+
+  function formatComparisonOutput(text, format) {
+    if (format === 'text') return text;
+    const lines = String(text).split('\n').filter(Boolean);
+    if (format === 'json') return JSON.stringify({ differences: lines }, null, 2);
+    if (format === 'csv') return 'difference\n' + lines.map(line => '"' + line.replace(/"/g, '""') + '"').join('\n');
+    if (format === 'xml') {
+      const xmlEscape = value => String(value).replace(/[&<>"']/g, c => ({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&apos;'}[c]));
+      return '<differences>\n' + lines.map(line => '  <difference>' + xmlEscape(line) + '</difference>').join('\n') + '\n</differences>';
+    }
+    return text;
   }
   function flatTextFromCsvDiff(cd) {
     const lines = ['Key column: ' + cd.keyColumn, cd.added.length + ' added, ' + cd.removed.length + ' removed, ' + cd.changed.length + ' changed'];
@@ -183,3 +199,4 @@
   if (typeof module !== 'undefined' && module.exports) module.exports = api;
   root.RecastBatch = api;
 })(typeof window !== 'undefined' ? window : (typeof global !== 'undefined' ? global : this));
+
