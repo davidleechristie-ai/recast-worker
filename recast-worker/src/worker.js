@@ -901,6 +901,13 @@ async function handleCopilotInterpret(request, env, deps) {
     });
     return json({ definition, model: env.OPENAI_MODEL || 'gpt-5.6-luna' });
   } catch (e) {
+    // The browser has a proven deterministic interpreter for provider
+    // outages. Return a successful fallback signal so quota exhaustion is not
+    // exposed as a failed Copilot request; the client will build locally when
+    // definition is absent.
+    if (e?.code === 'ai_unavailable') {
+      return json({ fallback:true, code:'ai_unavailable' });
+    }
     return json({ error:e.message || 'AI interpretation failed', code:e.code || 'ai_error' }, e.status || 500);
   }
 }
@@ -983,3 +990,4 @@ export default {
 };
 
 export { route, handleCopilotInterpret, handleVerifySession, handleVerifyToken, handleWebhook, handlePortal, handleContactForm, handleNotifyMe, handleApiConvert, handleApiDiff, handleApiSchema, handleWorkflowCreate, handleWorkflowList, handleWorkflowHealth, handleWorkflowGet, handleWorkflowDelete, handleWorkflowRun, handleWorkflowAutomation, handleWorkflowHistory, handleCredentialCreate, handleCredentialList, handleCredentialDelete, runDueAutomations, authenticateApiToken, checkAndIncrementUsage, planFromPriceId, defaultDeps, DIRECTORY_INDEX_PATHS };
+
