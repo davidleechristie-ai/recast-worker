@@ -1,6 +1,6 @@
 import { execSync } from 'node:child_process';
 
-const changed = execSync('git diff --name-only', { encoding: 'utf8' })
+const changed = execSync('git ls-files --modified --deleted --others --exclude-standard', { encoding: 'utf8' })
   .split('\n')
   .map((line) => line.trim())
   .filter(Boolean);
