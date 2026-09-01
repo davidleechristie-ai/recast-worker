@@ -967,6 +967,8 @@ const DIRECTORY_INDEX_PATHS = {
   '/tools/': '/tools/index.html',
   '/api': '/api/index.html',
   '/api/': '/api/index.html',
+  '/automation': '/automation/index.html',
+  '/automation/': '/automation/index.html',
 };
 
 export default {
