@@ -1,9 +1,15 @@
 import { execSync } from 'node:child_process';
 
+const ciGeneratedPatterns = [
+  /^recast-worker\/node_modules(?:\/|$)/,
+  /^recast-worker\/package-lock\.json$/,
+];
+
 const changed = execSync('git ls-files --modified --deleted --others --exclude-standard', { encoding: 'utf8' })
   .split('\n')
   .map((line) => line.trim())
-  .filter(Boolean);
+  .filter(Boolean)
+  .filter((path) => !ciGeneratedPatterns.some((pattern) => pattern.test(path)));
 
 if (changed.length === 0) {
   console.log('No autonomous changes detected.');
