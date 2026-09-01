@@ -1,3 +1,12 @@
+## V38 — Real AI Copilot
+P0 before enabling AI in production:
+- [ ] Add OPENAI_API_KEY to the Cloudflare Worker as a secret / Secrets Store binding. Do not put the value in wrangler.jsonc or GitHub.
+- [ ] Deploy V38 and test POST /api/copilot/interpret.
+- [ ] Smoke-test semantic prompts that deliberately avoid Recast's old keywords.
+- [ ] Confirm Network panel shows only request text being sent by Copilot; editor/workbench data must not be included.
+- [ ] Confirm local fallback still produces a useful route/workflow when the AI secret is absent or the provider is unavailable.
+- [ ] Review OpenAI usage/cost after real traffic; current public guardrail is 30 requests/IP/hour.
+
 ## V37 — Link reconciliation
 After deployment:
 - [ ] Desktop smoke test Tools dropdown from homepage, one /tools page, /blog, /how-to, /api and /demo.

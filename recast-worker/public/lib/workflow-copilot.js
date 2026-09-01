@@ -1,8 +1,9 @@
 /*!
  * Recast Workflow Copilot
- * Local natural-language intent layer for Recast. Prompts and pasted data do
- * not leave the browser. Supported requests are translated into Recipe Builder
- * definitions or routed to the closest dedicated Recast tool.
+ * AI-first natural-language intent layer for Recast. The request text is sent
+ * to Recast's AI interpretation endpoint; working dataset/input remains local
+ * unless the user explicitly uses a hosted API or Automation feature. The
+ * deterministic parser remains as a resilient fallback.
  */
 (function () {
   'use strict';
@@ -187,6 +188,23 @@
     return {name,steps:unique,notes,requiresConfiguration,automation,directAction,matched:unique.length>0 || !!directAction};
   }
 
+
+  async function buildWithAi(prompt) {
+    const response = await fetch('/api/copilot/interpret', {
+      method:'POST',
+      headers:{'Content-Type':'application/json'},
+      body:JSON.stringify({prompt:String(prompt||'').trim()})
+    });
+    let data={};
+    try { data=await response.json(); } catch (_) {}
+    if (!response.ok || !data.definition) {
+      const err=new Error(data.error || 'AI interpretation unavailable');
+      err.code=data.code || 'ai_unavailable';
+      throw err;
+    }
+    return data.definition;
+  }
+
   function render(def) {
     const wrap = $('wcPipeline');
     if (!wrap) return;
@@ -218,13 +236,39 @@
       if ($('wcSaveBtn')) $('wcSaveBtn').disabled=!!direct || !!def.requiresConfiguration;
       if ($('wcApiBtn')) $('wcApiBtn').style.display=direct?'none':'';
     }
-    function buildNow() {
-      const prompt=$('wcPrompt').value.trim(); if(!prompt){$('wcPrompt').focus();return;}
-      definition=build(prompt); render(definition); setButtonState(definition);
+    async function buildNow() {
+      const prompt=$('wcPrompt').value.trim();
+      if(!prompt){$('wcPrompt').focus();return;}
+      const button=$('wcBuildBtn');
+      const previous=button?.innerHTML;
+      if(button){button.disabled=true;button.textContent='Thinking…';}
+      $('wcResult') && ($('wcResult').hidden=true);
+
+      let usedFallback=false;
+      try {
+        definition=await buildWithAi(prompt);
+      } catch (e) {
+        // Availability must never become a dead end: the proven local parser
+        // remains the fallback if the hosted model is unavailable/rate-limited.
+        definition=build(prompt);
+        usedFallback=true;
+        definition.source='local-fallback';
+        definition.notes=definition.notes||[];
+        definition.notes.unshift('AI interpretation was unavailable, so Recast used its local intent fallback for this request.');
+      } finally {
+        if(button){button.disabled=false;button.innerHTML=previous||'Build workflow <span>→</span>';}
+      }
+
+      render(definition);
+      setButtonState(definition);
       $('wcResultTitle').textContent=definition.directAction?(definition.directAction.fallback?'I can route that safely':'Request understood — use the dedicated tool'):(definition.requiresConfiguration?'Request understood — one detail to configure':'Workflow ready');
-      $('wcResultMeta').textContent=definition.steps.length?definition.steps.length+' step'+(definition.steps.length===1?'':'s'):'direct tool';
-      $('wcNote').textContent=definition.notes.join(' ') || 'Nothing leaves this browser. Review the pipeline before saving it.';
-      $('wcResult').hidden=false; $('wcResult').scrollIntoView({behavior:'smooth',block:'nearest'});
+      $('wcResultMeta').textContent=(definition.steps.length?definition.steps.length+' step'+(definition.steps.length===1?'':'s'):'direct tool')+(definition.source==='ai'?' · AI':'');
+      const privacy = definition.source==='ai'
+        ? 'AI interpreted this request. Your working data has not been uploaded.'
+        : '';
+      $('wcNote').textContent=[...(definition.notes||[]),privacy].filter(Boolean).join(' ') || 'Review the pipeline before saving it.';
+      $('wcResult').hidden=false;
+      $('wcResult').scrollIntoView({behavior:'smooth',block:'nearest'});
     }
     $('wcBuildBtn').addEventListener('click',buildNow);
     $('wcPrompt').addEventListener('keydown',e=>{if((e.metaKey||e.ctrlKey)&&e.key==='Enter')buildNow();});
@@ -240,5 +284,5 @@
     $('wcRunBtn').addEventListener('click',()=>{if(!definition||!definition.steps.length||definition.directAction||!window.RecastRecipeBuilder2)return;window.RecastRecipeBuilder2.openWithDefinition(definition);const run=$('rb2RunBtn');if(run)setTimeout(()=>run.click(),100);});
   }
   if(document.readyState==='loading')document.addEventListener('DOMContentLoaded',init);else init();
-  window.RecastWorkflowCopilot={build};
+  window.RecastWorkflowCopilot={build,buildWithAi};
 })();

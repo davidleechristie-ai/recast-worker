@@ -27,6 +27,7 @@ import { verifyStripeSignature } from './stripe-verify.js';
 import { issueToken, lookupToken, setCustomerStatus, isEntitled } from './entitlements.js';
 import * as Engine from './engine.js';
 import { validateWorkflowDefinition, executeWorkflow, MAX_WORKFLOW_INPUT_BYTES } from './workflow-executor.js';
+import { interpretWithAi, rateLimit as checkCopilotRateLimit } from './copilot-ai.js';
 
 const STRIPE_API = 'https://api.stripe.com/v1';
 const DAY_PASS_DURATION_MS = 24 * 60 * 60 * 1000; // one-time pass window: 24 hours
@@ -878,6 +879,32 @@ const defaultDeps = {
   fetchImpl: undefined,
 };
 
+
+async function handleCopilotInterpret(request, env, deps) {
+  let body;
+  try { body = await request.json(); } catch (_) { return json({ error:'invalid JSON body' },400); }
+  const prompt = String(body?.prompt || '').trim();
+  if (!prompt) return json({ error:'prompt is required' },400);
+
+  const limit = await checkCopilotRateLimit(request, env);
+  if (!limit.ok) {
+    return new Response(JSON.stringify({ error:'AI Copilot rate limit reached. Try again later.', code:'rate_limited' }), {
+      status:429,
+      headers:{'Content-Type':'application/json','Retry-After':String(limit.retryAfter || 3600)}
+    });
+  }
+
+  try {
+    const definition = await interpretWithAi(prompt, env, {
+      resolveSecret,
+      fetch: deps?.fetch || fetch
+    });
+    return json({ definition, model: env.OPENAI_MODEL || 'gpt-5.6-luna' });
+  } catch (e) {
+    return json({ error:e.message || 'AI interpretation failed', code:e.code || 'ai_error' }, e.status || 500);
+  }
+}
+
 async function route(request, env, deps) {
   const url = new URL(request.url);
   if (url.pathname === '/api/verify-session' && request.method === 'GET') return handleVerifySession(request, env, deps);
@@ -886,6 +913,7 @@ async function route(request, env, deps) {
   if (url.pathname === '/api/portal' && request.method === 'POST') return handlePortal(request, env, deps);
   if (url.pathname === '/api/contact' && request.method === 'POST') return handleContactForm(request, env, deps);
   if (url.pathname === '/api/notify-me' && request.method === 'POST') return handleNotifyMe(request, env, deps);
+  if (url.pathname === '/api/copilot/interpret' && request.method === 'POST') return handleCopilotInterpret(request, env, deps);
   if (url.pathname === '/v1/convert' && request.method === 'POST') return handleApiConvert(request, env, deps);
   if (url.pathname === '/v1/diff' && request.method === 'POST') return handleApiDiff(request, env, deps);
   if (url.pathname === '/v1/schema' && request.method === 'POST') return handleApiSchema(request, env, deps);
@@ -954,4 +982,4 @@ export default {
   },
 };
 
-export { route, handleVerifySession, handleVerifyToken, handleWebhook, handlePortal, handleContactForm, handleNotifyMe, handleApiConvert, handleApiDiff, handleApiSchema, handleWorkflowCreate, handleWorkflowList, handleWorkflowHealth, handleWorkflowGet, handleWorkflowDelete, handleWorkflowRun, handleWorkflowAutomation, handleWorkflowHistory, handleCredentialCreate, handleCredentialList, handleCredentialDelete, runDueAutomations, authenticateApiToken, checkAndIncrementUsage, planFromPriceId, defaultDeps, DIRECTORY_INDEX_PATHS };
+export { route, handleCopilotInterpret, handleVerifySession, handleVerifyToken, handleWebhook, handlePortal, handleContactForm, handleNotifyMe, handleApiConvert, handleApiDiff, handleApiSchema, handleWorkflowCreate, handleWorkflowList, handleWorkflowHealth, handleWorkflowGet, handleWorkflowDelete, handleWorkflowRun, handleWorkflowAutomation, handleWorkflowHistory, handleCredentialCreate, handleCredentialList, handleCredentialDelete, runDueAutomations, authenticateApiToken, checkAndIncrementUsage, planFromPriceId, defaultDeps, DIRECTORY_INDEX_PATHS };
