@@ -1,0 +1,38 @@
+{
+  "objective": {
+    "north_star": "monthly_recurring_revenue_gbp",
+    "target": 1000,
+    "current": null,
+    "evidence_date": null
+  },
+  "funnel": {
+    "search_impressions": null,
+    "organic_clicks": null,
+    "organic_ctr": null,
+    "indexed_target_pages": null,
+    "successful_tool_uses": null,
+    "workflow_starts": null,
+    "workflow_completions": null,
+    "returning_users": null,
+    "upgrade_visits": null,
+    "pro_customers": null,
+    "api_automation_customers": null
+  },
+  "diagnosis": {
+    "current_bottleneck": "acquisition",
+    "confidence": "provisional",
+    "reason": "Launch-stage evidence indicates near-zero traffic and subscriptions; replace this with measured evidence as instrumentation becomes available."
+  },
+  "experiments": [],
+  "missing_instrumentation": [
+    "Authoritative Google Search Console impressions/clicks/CTR/indexation feed",
+    "Product analytics for successful tool use and workflow funnel events",
+    "Authoritative subscription/customer/MRR feed"
+  ],
+  "last_updated": "2026-09-01",
+  "measurement_rules": {
+    "unknown_values": "Keep unavailable measurements as null; never estimate them as facts.",
+    "follow_up_windows_days": [7, 14, 28],
+    "experiment_statuses": ["pending", "improving", "flat", "declining", "insufficient"]
+  }
+}
