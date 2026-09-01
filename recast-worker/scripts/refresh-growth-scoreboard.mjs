@@ -94,6 +94,7 @@ async function fetchGa4(token) {
   if (!token || !property) return null;
   const endpoint = `https://analyticsdata.googleapis.com/v1beta/properties/${encodeURIComponent(property)}:runReport`;
   const authHeaders = { authorization: `Bearer ${token}`, 'content-type': 'application/json' };
+  const organicFilter = { filter: { fieldName: 'sessionDefaultChannelGroup', stringFilter: { matchType: 'EXACT', value: 'Organic Search' } } };
 
   const eventRes = await fetch(endpoint, {
     method: 'POST', headers: authHeaders,
@@ -113,16 +114,33 @@ async function fetchGa4(token) {
     body: JSON.stringify({
       dateRanges: [{ startDate: '28daysAgo', endDate: 'yesterday' }],
       metrics: [{ name: 'sessions' }, { name: 'activeUsers' }, { name: 'newUsers' }],
-      dimensionFilter: { filter: { fieldName: 'sessionDefaultChannelGroup', stringFilter: { matchType: 'EXACT', value: 'Organic Search' } } },
+      dimensionFilter: organicFilter,
     }),
   });
   if (!organicRes.ok) throw new Error(`GA4 organic report failed: ${organicRes.status} ${await organicRes.text()}`);
-  const row = (await organicRes.json()).rows?.[0];
+  const organicRow = (await organicRes.json()).rows?.[0];
+
+  const returningRes = await fetch(endpoint, {
+    method: 'POST', headers: authHeaders,
+    body: JSON.stringify({
+      dateRanges: [{ startDate: '28daysAgo', endDate: 'yesterday' }],
+      dimensions: [{ name: 'newVsReturning' }],
+      metrics: [{ name: 'activeUsers' }],
+      dimensionFilter: organicFilter,
+    }),
+  });
+  if (!returningRes.ok) throw new Error(`GA4 returning-user report failed: ${returningRes.status} ${await returningRes.text()}`);
+  const returningData = await returningRes.json();
+  const returningUsers = (returningData.rows || [])
+    .filter((r) => r.dimensionValues?.[0]?.value === 'returning')
+    .reduce((sum, r) => sum + Number(r.metricValues?.[0]?.value || 0), 0);
+
   return {
     period_days: 28,
-    organic_sessions: Number(row?.metricValues?.[0]?.value || 0),
-    organic_active_users: Number(row?.metricValues?.[1]?.value || 0),
-    organic_new_users: Number(row?.metricValues?.[2]?.value || 0),
+    organic_sessions: Number(organicRow?.metricValues?.[0]?.value || 0),
+    organic_active_users: Number(organicRow?.metricValues?.[1]?.value || 0),
+    organic_new_users: Number(organicRow?.metricValues?.[2]?.value || 0),
+    organic_returning_users: returningUsers,
     successful_tool_uses: events.successful_tool_use ?? 0,
     workflow_starts: events.workflow_start ?? 0,
     workflow_completions: events.workflow_complete ?? 0,
@@ -203,6 +221,7 @@ if (ga4) {
   board.funnel.workflow_starts = ga4.workflow_starts;
   board.funnel.workflow_completions = ga4.workflow_completions;
   board.funnel.upgrade_visits = ga4.upgrade_clicks;
+  board.funnel.returning_users = ga4.organic_returning_users;
 }
 if (stripe) {
   board.objective.current = stripe.mrr_gbp;
