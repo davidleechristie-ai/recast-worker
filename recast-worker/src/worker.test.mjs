@@ -601,9 +601,9 @@ const env = {
     assert('automation directory resolves to its index asset', W.DIRECTORY_INDEX_PATHS['/automation/'] === '/automation/index.html', W.DIRECTORY_INDEX_PATHS['/automation/']);
     const appPath = path.join(path.dirname(fileURLToPath(import.meta.url)), '..', 'public', 'app', 'index.html');
     const appHtml = readFileSync(appPath, 'utf8');
-    const relativeAssetRefs = [...appHtml.matchAll(/(?:src|href)=["']((?:styles\\.css|app\\.js|lib\\/)[^"']*)["']/g)].map((match) => match[1]);
+    const relativeAssetRefs = ['href="styles.css"', 'src="app.js"', 'src="lib/'].filter((ref) => appHtml.includes(ref));
     assert('/app assets are root-absolute so both /app and /app/ work', relativeAssetRefs.length === 0, relativeAssetRefs);
-    const brokenNavRefs = [...appHtml.matchAll(/href=["']((?:api|blog|demo|how-to)\\/index\\.html|contact\\.html)["']/g)].map((match) => match[1]);
+    const brokenNavRefs = ['href="api/index.html"', 'href="blog/index.html"', 'href="demo/index.html"', 'href="how-to/index.html"', 'href="contact.html"'].filter((ref) => appHtml.includes(ref));
     assert('/app navigation destinations are root-absolute', brokenNavRefs.length === 0, brokenNavRefs);
   }
 
