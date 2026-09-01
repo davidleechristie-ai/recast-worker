@@ -47,3 +47,15 @@ Purpose: retain evidence, hypotheses, changes and follow-up windows so the agent
 - Files changed: `recast-worker/GROWTH_SCOREBOARD.json`, `recast-worker/AUTONOMOUS_GROWTH_LOG.md`.
 - Metrics that should move: this records newly available measurement and does not itself predict movement. The active experiment remains accountable to target-page/query position, clicks, and CTR on its existing 7/14/28-day schedule.
 - Public inspection limitation: the live site and Google results could not be fetched because external DNS resolution was unavailable; local crawl directives, sitemap, target page, current repository, and authoritative measurement snapshot were inspected instead.
+
+## 2026-09-01 — Genuine-revenue baseline correction; no product change
+
+- Evidence/opportunity: the refreshed Stripe measurement reports 0 genuine recurring-revenue customers and £0 MRR, excluding 9 subscriptions that do not meet the paid, succeeded, non-refunded latest-invoice rule. Search Console remains at 1,351 impressions, 11 clicks, 0.81% CTR, and average position 66.69; GA4 still reports zero successful tool uses, workflow starts/completions, and upgrade clicks.
+- Bottleneck interpretation: search visibility remains the earliest measured constraint. The corrected commercial baseline confirms that paid acquisition is the north-star gap, but does not displace the earlier funnel constraint or supply evidence for another page change.
+- Follow-up reviewed: the JSON Schema Generator experiment began today; no follow-up is due before 2026-09-08, so its evidence is still insufficient.
+- Change made: no acquisition-facing product change. Preserved the stricter revenue definition and corrected customer/MRR values in the scoreboard; did not launch an overlapping same-day experiment.
+- Target page/query/funnel stage: no new target; genuine customer/MRR measurement and search visibility diagnosis.
+- Hypothesis and baseline: no new growth hypothesis was launched. The measured commercial baseline is 0 genuine customers and £0 MRR; the active JSON Schema Generator experiment retains its recorded search baseline and 7/14/28-day windows.
+- Files changed: `recast-worker/GROWTH_SCOREBOARD.json`, `recast-worker/AUTONOMOUS_GROWTH_LOG.md`.
+- Metrics that should move: this correction does not itself predict growth. The active experiment remains accountable to target-page/query position, clicks, and CTR; genuine customers and MRR remain the downstream north-star measures.
+- Public inspection limitation: the live site and public search results could not be fetched because external DNS resolution was unavailable. Local inspection confirmed the target page remains in the sitemap and has a title, description, canonical, one H1, and crawlable supporting links.

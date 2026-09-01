@@ -2,8 +2,9 @@
   "objective": {
     "north_star": "monthly_recurring_revenue_gbp",
     "target": 1000,
-    "current": 87,
-    "evidence_date": "2026-09-01"
+    "current": 0,
+    "evidence_date": "2026-09-01",
+    "revenue_definition": "Genuine recurring revenue only: current subscription plus paid succeeded latest invoice charge, excluding fully refunded and inactive/cancelled subscriptions."
   },
   "funnel": {
     "search_impressions": 1351,
@@ -16,7 +17,7 @@
     "returning_users": 4,
     "upgrade_visits": 0,
     "pro_customers": 0,
-    "api_automation_customers": 3
+    "api_automation_customers": 0
   },
   "diagnosis": {
     "current_bottleneck": "search_visibility",
@@ -2269,11 +2270,11 @@
       "evidence_date": "2026-09-01"
     },
     "stripe": {
-      "active_subscription_customers": 3,
-      "mrr_gbp": 87,
-      "plan_counts": {
-        "api_monthly": 3
-      },
+      "active_subscription_customers": 0,
+      "mrr_gbp": 0,
+      "plan_counts": {},
+      "excluded_non_genuine_subscriptions": 9,
+      "measurement_rule": "Counts only active/trialing subscriptions backed by a paid, succeeded latest invoice charge that has not been fully refunded.",
       "evidence_date": "2026-09-01"
     }
   },
