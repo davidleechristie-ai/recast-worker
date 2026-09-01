@@ -1,5 +1,6 @@
 name: Recast autonomous daily growth
 
+# Updating this workflow intentionally triggers a self-test run on main.
 on:
   push:
     branches:
