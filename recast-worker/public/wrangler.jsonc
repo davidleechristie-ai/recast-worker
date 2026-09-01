@@ -1,0 +1,72 @@
+{
+"secrets_store_secrets": [
+  {
+    "binding": "STRIPE_SECRET_KEY",
+    "store_id": "8fea47bd0f6e47b1b19663d50cf64181",
+    "secret_name": "STRIPE_SECRET_KEY"
+  },
+  {
+    "binding": "STRIPE_WEBHOOK_SECRET",
+    "store_id": "8fea47bd0f6e47b1b19663d50cf64181",
+    "secret_name": "STRIPE_WEBHOOK_SECRET"
+  },
+  {
+    "binding": "RESEND_API_KEY",
+    "store_id": "8fea47bd0f6e47b1b19663d50cf64181",
+    "secret_name": "RESEND_API_KEY"
+  }
+],
+  "name": "falling-cloud-0deb",
+  "main": "src/worker.js",
+  "compatibility_date": "2026-08-13",
+
+  "assets": {
+    "directory": "./public",
+    "binding": "ASSETS",
+    "run_worker_first": ["/api/*", "/", "/blog", "/blog/", "/how-to", "/how-to/", "/demo", "/demo/", "/tools", "/tools/"],
+    "html_handling": "none"
+  },
+
+  "kv_namespaces": [
+    {
+      "binding": "ENTITLEMENTS",
+      "id": "e4c46dd48933470982a82158aedab4ad"
+    }
+  ],
+
+  "vars": {
+    "SITE_URL": "https://tryrecast.app/",
+    "OPENAI_MODEL": "gpt-5.6-luna",
+    "PRICE_MAP": "{\"price_1U41Bw07vRRG7JsXH0iAKy7g\":\"pro_monthly\",\"price_1U41Bx07vRRG7JsXlwnms0uo\":\"pro_yearly\",\"price_1U41Bs07vRRG7JsXnYpcoHh1\":\"api_monthly\",\"price_1U41Br07vRRG7JsXV1vskFmE\":\"api_yearly\",\"price_1U4Kub07vRRG7JsXtMatleol\":\"day_pass\"}"
+  },
+
+
+  "triggers": { "crons": ["0 * * * *"] },
+
+    "observability": {
+      "enabled": true,
+      "head_sampling_rate": 1,
+      "logs": {
+        "enabled": true,
+        "head_sampling_rate": 1,
+        "persist": true,
+        "invocation_logs": true
+      },
+      "traces": {
+        "enabled": true,
+        "persist": true,
+        "head_sampling_rate": 1
+      }
+    }
+
+    // V38 AI Copilot requires OPENAI_API_KEY as a Cloudflare Worker secret or Secrets Store binding.
+    // Never place the key in source control. OPENAI_MODEL is configurable in vars above.
+    // V7 authenticated connectors also require CREDENTIAL_ENCRYPTION_KEY.
+    // Add it as a Cloudflare Worker secret/secrets-store binding before enabling the vault.
+    // Use a long random value (32+ characters) and do not put the value in this file.
+    // STRIPE_SECRET_KEY and STRIPE_WEBHOOK_SECRET are bound above via
+    // secrets_store_secrets...
+
+
+
+}
