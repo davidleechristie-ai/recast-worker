@@ -1,0 +1,93 @@
+name: Recast autonomous daily growth
+
+on:
+  schedule:
+    - cron: '20 6 * * *'
+  workflow_dispatch:
+
+permissions:
+  contents: write
+
+concurrency:
+  group: recast-autonomous-growth
+  cancel-in-progress: false
+
+jobs:
+  improve:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Check out main
+        uses: actions/checkout@v5
+        with:
+          ref: main
+          fetch-depth: 20
+
+      - name: Set up Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: 20
+
+      - name: Install dependencies
+        working-directory: recast-worker
+        run: npm install
+
+      - name: Baseline test suite
+        working-directory: recast-worker
+        run: npm test
+
+      - name: Require OpenAI API key
+        env:
+          OPENAI_API_KEY: ${{ secrets.OPENAI_API_KEY }}
+        run: |
+          if [ -z "$OPENAI_API_KEY" ]; then
+            echo "OPENAI_API_KEY repository secret is required for the autonomous growth agent."
+            exit 1
+          fi
+
+      - name: Run Recast growth agent
+        uses: openai/codex-action@v1
+        with:
+          openai-api-key: ${{ secrets.OPENAI_API_KEY }}
+          permission-profile: ':workspace'
+          prompt-file: '.github/recast-daily-growth.md'
+          codex-args: '["--search"]'
+          safety-strategy: 'drop-sudo'
+          allow-bots: 'true'
+
+      - name: Enforce autonomous scope
+        run: node recast-worker/guard-autonomous-diff.mjs
+
+      - name: Test proposed changes
+        working-directory: recast-worker
+        run: npm test
+
+      - name: Commit safe change
+        id: commit
+        shell: bash
+        run: |
+          if [ -z "$(git status --porcelain)" ]; then
+            echo "changed=false" >> "$GITHUB_OUTPUT"
+            echo "No justified change today."
+            exit 0
+          fi
+
+          git config user.name "recast-growth-bot"
+          git config user.email "recast-growth-bot@users.noreply.github.com"
+          git add recast-worker/public recast-worker/AUTONOMOUS_GROWTH_LOG.md
+
+          if git diff --cached --quiet; then
+            echo "changed=false" >> "$GITHUB_OUTPUT"
+            exit 0
+          fi
+
+          git commit -m "Automated daily Recast growth improvement"
+          git push origin HEAD:main
+          echo "changed=true" >> "$GITHUB_OUTPUT"
+
+      - name: Summary
+        run: |
+          if [ "${{ steps.commit.outputs.changed }}" = "true" ]; then
+            echo "Safe acquisition-facing change committed to main. Production deployment will run through the existing tested deploy workflow."
+          else
+            echo "Agent completed with no production change."
+          fi
