@@ -41,6 +41,16 @@ jobs:
         working-directory: recast-worker
         run: npm test
 
+      - name: Refresh authoritative growth scoreboard
+        working-directory: recast-worker
+        env:
+          GOOGLE_SERVICE_ACCOUNT_JSON: ${{ secrets.GOOGLE_SERVICE_ACCOUNT_JSON }}
+          GSC_SITE_URL: ${{ vars.GSC_SITE_URL }}
+          GA4_PROPERTY_ID: ${{ secrets.GA4_PROPERTY_ID }}
+          STRIPE_SECRET_KEY: ${{ secrets.STRIPE_SECRET_KEY }}
+          PRICE_MAP: '{"price_1U41Bw07vRRG7JsXH0iAKy7g":"pro_monthly","price_1U41Bx07vRRG7JsXlwnms0uo":"pro_yearly","price_1U41Bs07vRRG7JsXnYpcoHh1":"api_monthly","price_1U41Br07vRRG7JsXV1vskFmE":"api_yearly","price_1U4Kub07vRRG7JsXtMatleol":"day_pass"}'
+        run: node scripts/refresh-growth-scoreboard.mjs
+
       - name: Require OpenAI API key
         env:
           OPENAI_API_KEY: ${{ secrets.OPENAI_API_KEY }}
@@ -102,7 +112,7 @@ jobs:
       - name: Summary
         run: |
           if [ "${{ steps.commit.outputs.changed }}" = "true" ]; then
-            echo "Safe metric-driven acquisition change committed to main and production deployment explicitly dispatched."
+            echo "Authoritative metrics refreshed; safe metric-driven acquisition change committed to main and production deployment explicitly dispatched."
           else
-            echo "Agent completed with no production change; measurement records were reviewed."
+            echo "Authoritative metrics refreshed; agent completed with no production change."
           fi
