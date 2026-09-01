@@ -33,6 +33,28 @@ const env = {
 };
 
 (async () => {
+  // ---------------- /api/copilot/interpret ----------------
+  {
+    const quotaFetch = async () => ({
+      ok:false,
+      status:400,
+      json:async () => ({ error:{ message:'You have no credits remaining. Add credits to continue using the API.' } })
+    });
+    const res = await W.handleCopilotInterpret(
+      mockRequest('https://tryrecast.app/api/copilot/interpret', {
+        method:'POST',
+        headers:{'Content-Type':'application/json'},
+        body:JSON.stringify({prompt:'Turn JSON into CSV'})
+      }),
+      Object.assign({}, env, { OPENAI_API_KEY:'test-key' }),
+      { fetch:quotaFetch }
+    );
+    const body = await res.json();
+    assert('Copilot quota exhaustion returns HTTP 200 for local fallback', res.status === 200, res.status);
+    assert('Copilot quota exhaustion signals local fallback', body.fallback === true && body.code === 'ai_unavailable', body);
+    assert('Copilot quota exhaustion does not expose a provider error', !body.error, body);
+  }
+
   // ---------------- /api/verify-session ----------------
   {
     const kv = makeMockKV();
@@ -576,3 +598,4 @@ const env = {
   console.log(`\n${pass} passed, ${fail} failed`);
   process.exit(fail ? 1 : 0);
 })();
+
