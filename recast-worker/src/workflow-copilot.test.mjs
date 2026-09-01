@@ -104,6 +104,11 @@ assert.equal(xmlComparison.steps[0].params.format,'csv');
 assert.equal(xmlComparison.steps[0].params.outputFormat,'xml');
 passed++;
 
+const deletionsOnly=build('compare two csv files and output deletions only');
+assert.equal(deletionsOnly.steps[0].params.format,'csv');
+assert.equal(deletionsOnly.steps[0].params.resultFilter,'removed');
+passed++;
+
 console.log(`\n${passed} natural-language Copilot cases passed, 0 failed`);
 
 // Phrase-variation matrix: test intent families, not just hand-picked sentences.
