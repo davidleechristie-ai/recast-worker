@@ -2,37 +2,77 @@
   "objective": {
     "north_star": "monthly_recurring_revenue_gbp",
     "target": 1000,
-    "current": null,
-    "evidence_date": null
+    "current": 87,
+    "evidence_date": "2026-09-01"
   },
   "funnel": {
-    "search_impressions": null,
-    "organic_clicks": null,
-    "organic_ctr": null,
+    "search_impressions": 1351,
+    "organic_clicks": 11,
+    "organic_ctr": 0.008142116950407105,
     "indexed_target_pages": null,
-    "successful_tool_uses": null,
-    "workflow_starts": null,
-    "workflow_completions": null,
+    "successful_tool_uses": 0,
+    "workflow_starts": 0,
+    "workflow_completions": 0,
     "returning_users": null,
-    "upgrade_visits": null,
-    "pro_customers": null,
-    "api_automation_customers": null
+    "upgrade_visits": 0,
+    "pro_customers": 0,
+    "api_automation_customers": 3
   },
   "diagnosis": {
-    "current_bottleneck": "acquisition",
-    "confidence": "provisional",
-    "reason": "Launch-stage evidence indicates near-zero traffic and subscriptions; replace this with measured evidence as instrumentation becomes available."
+    "current_bottleneck": "search_visibility",
+    "confidence": "measured_aggregate",
+    "reason": "The 28-day Search Console aggregate shows 1,351 impressions, 11 clicks and average position 66.69. Low average visibility is the earliest measured funnel constraint; page- and query-level data are still required to select a landing-page change responsibly."
   },
   "experiments": [],
   "missing_instrumentation": [
-    "Authoritative Google Search Console impressions/clicks/CTR/indexation feed",
-    "Product analytics for successful tool use and workflow funnel events",
-    "Authoritative subscription/customer/MRR feed"
+    "Search Console page- and query-level reporting is not captured, so impressions, clicks, CTR and position cannot be attributed to a target page or query.",
+    "Indexed target-page count or URL Inspection/index coverage evidence is unavailable.",
+    "GA4 returning-user measurement is unavailable in the current aggregate refresh."
   ],
   "last_updated": "2026-09-01",
   "measurement_rules": {
     "unknown_values": "Keep unavailable measurements as null; never estimate them as facts.",
-    "follow_up_windows_days": [7, 14, 28],
-    "experiment_statuses": ["pending", "improving", "flat", "declining", "insufficient"]
-  }
+    "follow_up_windows_days": [
+      7,
+      14,
+      28
+    ],
+    "experiment_statuses": [
+      "pending",
+      "improving",
+      "flat",
+      "declining",
+      "insufficient"
+    ]
+  },
+  "sources": {
+    "search_console": {
+      "period_days": 28,
+      "clicks": 11,
+      "impressions": 1351,
+      "ctr": 0.008142116950407105,
+      "average_position": 66.6898593634345,
+      "evidence_date": "2026-09-01"
+    },
+    "ga4": {
+      "period_days": 28,
+      "organic_sessions": 39,
+      "organic_active_users": 4,
+      "organic_new_users": 1,
+      "successful_tool_uses": 0,
+      "workflow_starts": 0,
+      "workflow_completions": 0,
+      "upgrade_clicks": 0,
+      "evidence_date": "2026-09-01"
+    },
+    "stripe": {
+      "active_subscription_customers": 3,
+      "mrr_gbp": 87,
+      "plan_counts": {
+        "api_monthly": 3
+      },
+      "evidence_date": "2026-09-01"
+    }
+  },
+  "refresh_warnings": []
 }
