@@ -117,7 +117,28 @@ function schema() {
         type:'object',additionalProperties:false,required:['mode','params'],
         properties:{
           mode:{type:'string',enum:[...WORKFLOW_MODES]},
-          params:{type:'object',additionalProperties:true}
+          params:{
+            type:'object',
+            additionalProperties:false,
+            required:['method','url','paths','from','to','field','condition','value','direction','type','template','newField','path','format','differencesOnly'],
+            properties:{
+              method:{anyOf:[{type:'string'},{type:'null'}]},
+              url:{anyOf:[{type:'string'},{type:'null'}]},
+              paths:{anyOf:[{type:'array',items:{type:'string'}},{type:'null'}]},
+              from:{anyOf:[{type:'string'},{type:'null'}]},
+              to:{anyOf:[{type:'string'},{type:'null'}]},
+              field:{anyOf:[{type:'string'},{type:'null'}]},
+              condition:{anyOf:[{type:'string'},{type:'null'}]},
+              value:{anyOf:[{type:'string'},{type:'number'},{type:'boolean'},{type:'null'}]},
+              direction:{anyOf:[{type:'string'},{type:'null'}]},
+              type:{anyOf:[{type:'string'},{type:'null'}]},
+              template:{anyOf:[{type:'string'},{type:'null'}]},
+              newField:{anyOf:[{type:'string'},{type:'null'}]},
+              path:{anyOf:[{type:'string'},{type:'null'}]},
+              format:{anyOf:[{type:'string'},{type:'null'}]},
+              differencesOnly:{anyOf:[{type:'boolean'},{type:'null'}]}
+            }
+          }
         }
       }},
       notes:{type:'array',maxItems:5,items:{type:'string'}},
@@ -192,20 +213,38 @@ async function interpretWithAi(prompt, env, deps={}) {
   const timer = setTimeout(()=>controller.abort(), AI_TIMEOUT_MS);
   const fetchImpl = deps.fetch || fetch;
   try {
-    const response = await fetchImpl(OPENAI_RESPONSES_URL,{
-      method:'POST',
-      signal:controller.signal,
-      headers:{'Authorization':'Bearer '+key,'Content-Type':'application/json'},
-      body:JSON.stringify({
+    const baseRequest = {
         model: env.OPENAI_MODEL || DEFAULT_MODEL,
         instructions:SYSTEM_INSTRUCTIONS,
         input:prompt,
         max_output_tokens:1200,
-        reasoning:{effort:'low'},
-        text:{format:{type:'json_schema',name:'recast_workflow_intent',strict:true,schema:schema()}}
-      })
+        reasoning:{effort:'low'}
+    };
+    const send = async format => {
+      const response = await fetchImpl(OPENAI_RESPONSES_URL,{
+        method:'POST',
+        signal:controller.signal,
+        headers:{'Authorization':'Bearer '+key,'Content-Type':'application/json'},
+        body:JSON.stringify({...baseRequest,text:{format}})
+      });
+      return { response, data:await response.json().catch(()=>({})) };
+    };
+
+    let { response, data } = await send({
+      type:'json_schema',name:'recast_workflow_intent',strict:true,schema:schema()
     });
-    const data = await response.json().catch(()=>({}));
+
+    // A schema-validation rejection is a request-contract problem, not an
+    // unavailable Copilot. Fall back to JSON mode and keep enforcing the same
+    // server-side allow-list and normalisation below. Do not retry auth, quota,
+    // rate-limit, or other provider failures.
+    const providerMessage = String(data?.error?.message || '');
+    const schemaRejected = response.status === 400 &&
+      /json.?schema|structured.?output|text\.format|response.?format|schema/i.test(providerMessage);
+    if (schemaRejected) {
+      ({ response, data } = await send({type:'json_object'}));
+    }
+
     if (!response.ok) {
       const message = data?.error?.message || `AI provider returned ${response.status}`;
       throw Object.assign(new Error(message),{status:502,code:'ai_provider_error'});
@@ -227,3 +266,4 @@ export {
   DEFAULT_MODEL, MAX_PROMPT_CHARS, RATE_LIMIT_PER_HOUR, WORKFLOW_MODES, DIRECT_TOOLS,
   normaliseAiDefinition, interpretWithAi, rateLimit, extractOutputText, schema
 };
+
