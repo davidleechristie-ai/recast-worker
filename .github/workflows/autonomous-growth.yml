@@ -7,6 +7,7 @@ on:
 
 permissions:
   contents: write
+  actions: write
 
 concurrency:
   group: recast-autonomous-growth
@@ -84,10 +85,16 @@ jobs:
           git push origin HEAD:main
           echo "changed=true" >> "$GITHUB_OUTPUT"
 
+      - name: Dispatch production deployment
+        if: steps.commit.outputs.changed == 'true'
+        env:
+          GH_TOKEN: ${{ github.token }}
+        run: gh workflow run deploy-exact-release.yml --ref main
+
       - name: Summary
         run: |
           if [ "${{ steps.commit.outputs.changed }}" = "true" ]; then
-            echo "Safe acquisition-facing change committed to main. Production deployment will run through the existing tested deploy workflow."
+            echo "Safe acquisition-facing change committed to main and production deployment explicitly dispatched."
           else
             echo "Agent completed with no production change."
           fi
