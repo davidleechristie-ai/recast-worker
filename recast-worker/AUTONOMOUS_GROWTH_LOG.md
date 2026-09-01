@@ -22,3 +22,16 @@ Purpose: retain evidence, hypotheses, changes and follow-up windows so the agent
 - Files changed: `recast-worker/GROWTH_SCOREBOARD.json`, `recast-worker/AUTONOMOUS_GROWTH_LOG.md`.
 - Metric that should move: this records the decision constraint and does not itself predict a growth-metric change. A future page experiment should set its own page/query impressions, position, clicks, and CTR targets with 7/14/28-day dates.
 - Public inspection limitation: the live site and public search results could not be fetched because external DNS/network access was unavailable in this run; local robots, sitemap, canonical metadata, headings, and internal links were inspected instead.
+
+## 2026-09-01 — JSON Schema Generator content consolidation
+
+- Evidence/opportunity: refreshed Search Console detail identifies `/tools/json-schema-generator.html` as the largest measured page opportunity: 404 impressions, 0 clicks, 0% CTR, and average position 68.64 over 28 days. Its “json schema generator” query has 49 impressions, 0 clicks, and average position 63.24. Local inspection found two adjacent support sections repeating the same generate-from-JSON explanation and links.
+- Bottleneck interpretation: rankings/search visibility remains the earliest measured constraint. Page/query evidence now supports a focused improvement to this existing high-intent tool page; successful tool uses remain measured at zero, but the page has not yet earned an organic click in the reporting window.
+- Follow-up reviewed: no prior experiments exist, so no 7/14/28-day review is due.
+- Change made: removed the redundant second search-intent section and its unused CSS while retaining the more useful section that explains inference limitations and links to the schema guide and validator. No URL, canonical, H1, tool behaviour, pricing, or primary metadata changed.
+- Target page/query/funnel stage: `/tools/json-schema-generator.html`; “json schema generator,” “json to json schema generator,” and “schema generator from json”; rankings/visibility → organic clicks/CTR.
+- Hypothesis and baseline: reducing repetitive copy will improve human usefulness and page quality for generator intent. Baseline is 404 page impressions, 0 clicks, 0% CTR, and average position 68.64; query baselines are stored in the scoreboard. This is a hypothesis, not a claimed result.
+- Files changed: `recast-worker/public/tools/json-schema-generator.html`, `recast-worker/GROWTH_SCOREBOARD.json`, `recast-worker/AUTONOMOUS_GROWTH_LOG.md`.
+- Metrics that should move if successful: target-page and target-query average position first, followed by page clicks and CTR. Classify evidence as improving, flat, declining, or insufficient without claiming causation from weak evidence.
+- Follow-up dates: 7-day 2026-09-08; 14-day 2026-09-15; 28-day 2026-09-29.
+- Public inspection limitation: the live site and public search results could not be fetched because external DNS resolution was unavailable; the authoritative Search Console export and local page were inspected instead.

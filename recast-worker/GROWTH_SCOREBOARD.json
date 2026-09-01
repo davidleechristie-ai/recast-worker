@@ -20,12 +20,64 @@
   },
   "diagnosis": {
     "current_bottleneck": "search_visibility",
-    "confidence": "measured_aggregate",
-    "reason": "The 28-day Search Console aggregate shows 1,351 impressions, 11 clicks and average position 66.69. Low average visibility is the earliest measured funnel constraint; page- and query-level data are still required to select a landing-page change responsibly."
+    "confidence": "measured_page_and_query",
+    "reason": "The 28-day Search Console aggregate shows 1,351 impressions, 11 clicks and average position 66.69. The JSON Schema Generator is the largest measured page opportunity at 404 impressions, 0 clicks and average position 68.64; low search visibility remains the earliest measured funnel constraint."
   },
-  "experiments": [],
+  "experiments": [
+    {
+      "id": "2026-09-01-json-schema-generator-content-consolidation",
+      "status": "active",
+      "hypothesis": "Removing the repeated search-intent section will make the JSON Schema Generator page less repetitive and strengthen its usefulness and relevance for people seeking a generator from sample JSON.",
+      "target_page": "https://tryrecast.app/tools/json-schema-generator.html",
+      "target_queries": [
+        "json schema generator",
+        "json to json schema generator",
+        "schema generator from json"
+      ],
+      "funnel_stage": "rankings_visibility_to_organic_clicks",
+      "baseline": {
+        "period_days": 28,
+        "evidence_date": "2026-09-01",
+        "page_impressions": 404,
+        "page_clicks": 0,
+        "page_ctr": 0,
+        "page_average_position": 68.63613861386139,
+        "query_baselines": {
+          "json schema generator": {
+            "impressions": 49,
+            "clicks": 0,
+            "ctr": 0,
+            "average_position": 63.244897959183675
+          },
+          "json to json schema generator": {
+            "impressions": 8,
+            "clicks": 0,
+            "ctr": 0,
+            "average_position": 57.625
+          },
+          "schema generator from json": {
+            "impressions": 15,
+            "clicks": 0,
+            "ctr": 0,
+            "average_position": 63.4
+          }
+        }
+      },
+      "target_metrics": [
+        "target page average position",
+        "target page organic clicks",
+        "target page organic CTR",
+        "target query average position"
+      ],
+      "implementation_date": "2026-09-01",
+      "follow_ups": {
+        "7_day": { "due": "2026-09-08", "status": "pending", "classification": null },
+        "14_day": { "due": "2026-09-15", "status": "pending", "classification": null },
+        "28_day": { "due": "2026-09-29", "status": "pending", "classification": null }
+      }
+    }
+  ],
   "missing_instrumentation": [
-    "Search Console page- and query-level reporting is not captured, so impressions, clicks, CTR and position cannot be attributed to a target page or query.",
     "Indexed target-page count or URL Inspection/index coverage evidence is unavailable.",
     "GA4 returning-user measurement is unavailable in the current aggregate refresh."
   ],
@@ -52,6 +104,2145 @@
       "impressions": 1351,
       "ctr": 0.008142116950407105,
       "average_position": 66.6898593634345,
+      "top_pages": [
+        {
+          "clicks": 7,
+          "impressions": 45,
+          "ctr": 0.15555555555555556,
+          "average_position": 34.111111111111114,
+          "page": "https://tryrecast.app/"
+        },
+        {
+          "clicks": 2,
+          "impressions": 2,
+          "ctr": 1,
+          "average_position": 2,
+          "page": "http://tryrecast.app/"
+        },
+        {
+          "clicks": 1,
+          "impressions": 10,
+          "ctr": 0.1,
+          "average_position": 10.9,
+          "page": "https://tryrecast.app/blog/index.html"
+        },
+        {
+          "clicks": 1,
+          "impressions": 231,
+          "ctr": 0.004329004329004329,
+          "average_position": 66.19913419913419,
+          "page": "https://tryrecast.app/tools/xml-diff.html"
+        },
+        {
+          "clicks": 0,
+          "impressions": 2,
+          "ctr": 0,
+          "average_position": 5,
+          "page": "https://tryrecast.app/blog/csv-diff-explained.html"
+        },
+        {
+          "clicks": 0,
+          "impressions": 49,
+          "ctr": 0,
+          "average_position": 72.61224489795919,
+          "page": "https://tryrecast.app/blog/json-schema-validation-guide"
+        },
+        {
+          "clicks": 0,
+          "impressions": 33,
+          "ctr": 0,
+          "average_position": 68.60606060606061,
+          "page": "https://tryrecast.app/blog/json-schema-validation-guide.html"
+        },
+        {
+          "clicks": 0,
+          "impressions": 2,
+          "ctr": 0,
+          "average_position": 5.5,
+          "page": "https://tryrecast.app/blog/json-to-csv-guide.html"
+        },
+        {
+          "clicks": 0,
+          "impressions": 1,
+          "ctr": 0,
+          "average_position": 68,
+          "page": "https://tryrecast.app/tools/api-response-to-csv.html"
+        },
+        {
+          "clicks": 0,
+          "impressions": 1,
+          "ctr": 0,
+          "average_position": 10,
+          "page": "https://tryrecast.app/tools/compare-csv-files-by-id.html"
+        },
+        {
+          "clicks": 0,
+          "impressions": 39,
+          "ctr": 0,
+          "average_position": 64.6923076923077,
+          "page": "https://tryrecast.app/tools/csv-diff.html"
+        },
+        {
+          "clicks": 0,
+          "impressions": 7,
+          "ctr": 0,
+          "average_position": 67.28571428571429,
+          "page": "https://tryrecast.app/tools/csv-to-json.html"
+        },
+        {
+          "clicks": 0,
+          "impressions": 169,
+          "ctr": 0,
+          "average_position": 62.781065088757394,
+          "page": "https://tryrecast.app/tools/flatten-json.html"
+        },
+        {
+          "clicks": 0,
+          "impressions": 147,
+          "ctr": 0,
+          "average_position": 68.62585034013605,
+          "page": "https://tryrecast.app/tools/json-diff.html"
+        },
+        {
+          "clicks": 0,
+          "impressions": 4,
+          "ctr": 0,
+          "average_position": 24.25,
+          "page": "https://tryrecast.app/tools/json-formatter.html"
+        },
+        {
+          "clicks": 0,
+          "impressions": 404,
+          "ctr": 0,
+          "average_position": 68.63613861386139,
+          "page": "https://tryrecast.app/tools/json-schema-generator.html"
+        },
+        {
+          "clicks": 0,
+          "impressions": 2,
+          "ctr": 0,
+          "average_position": 39.5,
+          "page": "https://tryrecast.app/tools/json-to-csv.html"
+        },
+        {
+          "clicks": 0,
+          "impressions": 68,
+          "ctr": 0,
+          "average_position": 71.20588235294117,
+          "page": "https://tryrecast.app/tools/json-to-xml.html"
+        },
+        {
+          "clicks": 0,
+          "impressions": 31,
+          "ctr": 0,
+          "average_position": 63,
+          "page": "https://tryrecast.app/tools/json-validator.html"
+        },
+        {
+          "clicks": 0,
+          "impressions": 11,
+          "ctr": 0,
+          "average_position": 59.81818181818182,
+          "page": "https://tryrecast.app/tools/jsonpath-tester.html"
+        },
+        {
+          "clicks": 0,
+          "impressions": 12,
+          "ctr": 0,
+          "average_position": 60.583333333333336,
+          "page": "https://tryrecast.app/tools/unflatten-json.html"
+        },
+        {
+          "clicks": 0,
+          "impressions": 92,
+          "ctr": 0,
+          "average_position": 67.79347826086956,
+          "page": "https://tryrecast.app/tools/validate-json-schema.html"
+        },
+        {
+          "clicks": 0,
+          "impressions": 20,
+          "ctr": 0,
+          "average_position": 75.85,
+          "page": "https://tryrecast.app/tools/xml-to-json.html"
+        }
+      ],
+      "top_queries": [
+        {
+          "clicks": 0,
+          "impressions": 1,
+          "ctr": 0,
+          "average_position": 70,
+          "query": "compare 2 xml files"
+        },
+        {
+          "clicks": 0,
+          "impressions": 1,
+          "ctr": 0,
+          "average_position": 64,
+          "query": "compare 2 xml files for differences"
+        },
+        {
+          "clicks": 0,
+          "impressions": 3,
+          "ctr": 0,
+          "average_position": 68,
+          "query": "compare 2 xml files online"
+        },
+        {
+          "clicks": 0,
+          "impressions": 1,
+          "ctr": 0,
+          "average_position": 57,
+          "query": "compare 2 xml online"
+        },
+        {
+          "clicks": 0,
+          "impressions": 2,
+          "ctr": 0,
+          "average_position": 74,
+          "query": "compare 2 xmls"
+        },
+        {
+          "clicks": 0,
+          "impressions": 1,
+          "ctr": 0,
+          "average_position": 61,
+          "query": "compare online xml"
+        },
+        {
+          "clicks": 0,
+          "impressions": 1,
+          "ctr": 0,
+          "average_position": 65,
+          "query": "compare two csv files"
+        },
+        {
+          "clicks": 0,
+          "impressions": 1,
+          "ctr": 0,
+          "average_position": 65,
+          "query": "compare two csv files for differences"
+        },
+        {
+          "clicks": 0,
+          "impressions": 1,
+          "ctr": 0,
+          "average_position": 77,
+          "query": "compare two json file"
+        },
+        {
+          "clicks": 0,
+          "impressions": 1,
+          "ctr": 0,
+          "average_position": 59,
+          "query": "compare two json file online"
+        },
+        {
+          "clicks": 0,
+          "impressions": 1,
+          "ctr": 0,
+          "average_position": 58,
+          "query": "compare two json lists"
+        },
+        {
+          "clicks": 0,
+          "impressions": 1,
+          "ctr": 0,
+          "average_position": 63,
+          "query": "compare two xml"
+        },
+        {
+          "clicks": 0,
+          "impressions": 1,
+          "ctr": 0,
+          "average_position": 62,
+          "query": "compare two xml files for differences"
+        },
+        {
+          "clicks": 0,
+          "impressions": 1,
+          "ctr": 0,
+          "average_position": 66,
+          "query": "compare two xml files online"
+        },
+        {
+          "clicks": 0,
+          "impressions": 1,
+          "ctr": 0,
+          "average_position": 68,
+          "query": "compare two xml online"
+        },
+        {
+          "clicks": 0,
+          "impressions": 4,
+          "ctr": 0,
+          "average_position": 64.5,
+          "query": "compare two xmls"
+        },
+        {
+          "clicks": 0,
+          "impressions": 1,
+          "ctr": 0,
+          "average_position": 79,
+          "query": "compare wsdl"
+        },
+        {
+          "clicks": 0,
+          "impressions": 2,
+          "ctr": 0,
+          "average_position": 69,
+          "query": "compare xml"
+        },
+        {
+          "clicks": 0,
+          "impressions": 3,
+          "ctr": 0,
+          "average_position": 65,
+          "query": "compare xml file"
+        },
+        {
+          "clicks": 0,
+          "impressions": 1,
+          "ctr": 0,
+          "average_position": 53,
+          "query": "compare xml file online"
+        },
+        {
+          "clicks": 0,
+          "impressions": 1,
+          "ctr": 0,
+          "average_position": 70,
+          "query": "compare xml files"
+        },
+        {
+          "clicks": 0,
+          "impressions": 2,
+          "ctr": 0,
+          "average_position": 61,
+          "query": "compare xml files online"
+        },
+        {
+          "clicks": 0,
+          "impressions": 1,
+          "ctr": 0,
+          "average_position": 71,
+          "query": "compare xml online"
+        },
+        {
+          "clicks": 0,
+          "impressions": 1,
+          "ctr": 0,
+          "average_position": 80,
+          "query": "comparing two json files"
+        },
+        {
+          "clicks": 0,
+          "impressions": 1,
+          "ctr": 0,
+          "average_position": 59,
+          "query": "comparing xml files online"
+        },
+        {
+          "clicks": 0,
+          "impressions": 2,
+          "ctr": 0,
+          "average_position": 82,
+          "query": "content vs schema validation tool"
+        },
+        {
+          "clicks": 0,
+          "impressions": 2,
+          "ctr": 0,
+          "average_position": 63.5,
+          "query": "convert from json to xml"
+        },
+        {
+          "clicks": 0,
+          "impressions": 1,
+          "ctr": 0,
+          "average_position": 61,
+          "query": "convert json to json schema"
+        },
+        {
+          "clicks": 0,
+          "impressions": 1,
+          "ctr": 0,
+          "average_position": 82,
+          "query": "convert json to xml"
+        },
+        {
+          "clicks": 0,
+          "impressions": 2,
+          "ctr": 0,
+          "average_position": 62,
+          "query": "convert to json schema"
+        },
+        {
+          "clicks": 0,
+          "impressions": 1,
+          "ctr": 0,
+          "average_position": 60,
+          "query": "converter json to xml"
+        },
+        {
+          "clicks": 0,
+          "impressions": 2,
+          "ctr": 0,
+          "average_position": 79,
+          "query": "create json from schema"
+        },
+        {
+          "clicks": 0,
+          "impressions": 2,
+          "ctr": 0,
+          "average_position": 72,
+          "query": "create schema from json"
+        },
+        {
+          "clicks": 0,
+          "impressions": 1,
+          "ctr": 0,
+          "average_position": 71,
+          "query": "csv compare"
+        },
+        {
+          "clicks": 0,
+          "impressions": 1,
+          "ctr": 0,
+          "average_position": 59,
+          "query": "csv compare tool"
+        },
+        {
+          "clicks": 0,
+          "impressions": 3,
+          "ctr": 0,
+          "average_position": 65.33333333333333,
+          "query": "diff json"
+        },
+        {
+          "clicks": 0,
+          "impressions": 1,
+          "ctr": 0,
+          "average_position": 76,
+          "query": "diff online json"
+        },
+        {
+          "clicks": 0,
+          "impressions": 1,
+          "ctr": 0,
+          "average_position": 64,
+          "query": "diff two json files"
+        },
+        {
+          "clicks": 0,
+          "impressions": 1,
+          "ctr": 0,
+          "average_position": 71,
+          "query": "diff two xml files"
+        },
+        {
+          "clicks": 0,
+          "impressions": 3,
+          "ctr": 0,
+          "average_position": 67.66666666666667,
+          "query": "diff xml"
+        },
+        {
+          "clicks": 0,
+          "impressions": 1,
+          "ctr": 0,
+          "average_position": 54,
+          "query": "diff xml online"
+        },
+        {
+          "clicks": 0,
+          "impressions": 3,
+          "ctr": 0,
+          "average_position": 39.333333333333336,
+          "query": "diffxml"
+        },
+        {
+          "clicks": 0,
+          "impressions": 1,
+          "ctr": 0,
+          "average_position": 74,
+          "query": "extract schema from json"
+        },
+        {
+          "clicks": 0,
+          "impressions": 3,
+          "ctr": 0,
+          "average_position": 68.33333333333333,
+          "query": "flatten json"
+        },
+        {
+          "clicks": 0,
+          "impressions": 2,
+          "ctr": 0,
+          "average_position": 63,
+          "query": "flatten json file"
+        },
+        {
+          "clicks": 0,
+          "impressions": 1,
+          "ctr": 0,
+          "average_position": 64,
+          "query": "flatten json meaning"
+        },
+        {
+          "clicks": 0,
+          "impressions": 2,
+          "ctr": 0,
+          "average_position": 58,
+          "query": "flatten json online"
+        },
+        {
+          "clicks": 0,
+          "impressions": 2,
+          "ctr": 0,
+          "average_position": 72.5,
+          "query": "flatten nested json"
+        },
+        {
+          "clicks": 0,
+          "impressions": 2,
+          "ctr": 0,
+          "average_position": 77,
+          "query": "flattening json"
+        },
+        {
+          "clicks": 0,
+          "impressions": 2,
+          "ctr": 0,
+          "average_position": 66.5,
+          "query": "flattening json files"
+        },
+        {
+          "clicks": 0,
+          "impressions": 1,
+          "ctr": 0,
+          "average_position": 47,
+          "query": "generate json from schema"
+        },
+        {
+          "clicks": 0,
+          "impressions": 4,
+          "ctr": 0,
+          "average_position": 67.5,
+          "query": "generate json schema"
+        },
+        {
+          "clicks": 0,
+          "impressions": 1,
+          "ctr": 0,
+          "average_position": 76,
+          "query": "generate json schema from data"
+        },
+        {
+          "clicks": 0,
+          "impressions": 4,
+          "ctr": 0,
+          "average_position": 62,
+          "query": "generate json schema from json"
+        },
+        {
+          "clicks": 0,
+          "impressions": 1,
+          "ctr": 0,
+          "average_position": 71,
+          "query": "generate json schema from json object"
+        },
+        {
+          "clicks": 0,
+          "impressions": 1,
+          "ctr": 0,
+          "average_position": 64,
+          "query": "generate sample json from schema"
+        },
+        {
+          "clicks": 0,
+          "impressions": 1,
+          "ctr": 0,
+          "average_position": 77,
+          "query": "generating json schema"
+        },
+        {
+          "clicks": 0,
+          "impressions": 2,
+          "ctr": 0,
+          "average_position": 61,
+          "query": "generating json schema from json"
+        },
+        {
+          "clicks": 0,
+          "impressions": 1,
+          "ctr": 0,
+          "average_position": 75,
+          "query": "get json schema"
+        },
+        {
+          "clicks": 0,
+          "impressions": 3,
+          "ctr": 0,
+          "average_position": 65,
+          "query": "how to compare two csv files"
+        },
+        {
+          "clicks": 0,
+          "impressions": 1,
+          "ctr": 0,
+          "average_position": 77,
+          "query": "how to validate json schema in javascript"
+        },
+        {
+          "clicks": 0,
+          "impressions": 1,
+          "ctr": 0,
+          "average_position": 62,
+          "query": "jackson json diff"
+        },
+        {
+          "clicks": 0,
+          "impressions": 2,
+          "ctr": 0,
+          "average_position": 59,
+          "query": "java json diff"
+        },
+        {
+          "clicks": 0,
+          "impressions": 2,
+          "ctr": 0,
+          "average_position": 82.5,
+          "query": "json compare diff"
+        },
+        {
+          "clicks": 0,
+          "impressions": 2,
+          "ctr": 0,
+          "average_position": 65.5,
+          "query": "json compare files"
+        },
+        {
+          "clicks": 0,
+          "impressions": 1,
+          "ctr": 0,
+          "average_position": 72,
+          "query": "json compare java"
+        },
+        {
+          "clicks": 0,
+          "impressions": 1,
+          "ctr": 0,
+          "average_position": 63,
+          "query": "json compare two files"
+        },
+        {
+          "clicks": 0,
+          "impressions": 1,
+          "ctr": 0,
+          "average_position": 55,
+          "query": "json converter to xml"
+        },
+        {
+          "clicks": 0,
+          "impressions": 2,
+          "ctr": 0,
+          "average_position": 72.5,
+          "query": "json diff"
+        },
+        {
+          "clicks": 0,
+          "impressions": 1,
+          "ctr": 0,
+          "average_position": 82,
+          "query": "json diff check"
+        },
+        {
+          "clicks": 0,
+          "impressions": 4,
+          "ctr": 0,
+          "average_position": 67.75,
+          "query": "json diff java"
+        },
+        {
+          "clicks": 0,
+          "impressions": 1,
+          "ctr": 0,
+          "average_position": 64,
+          "query": "json example to schema"
+        },
+        {
+          "clicks": 0,
+          "impressions": 1,
+          "ctr": 0,
+          "average_position": 64,
+          "query": "json file comparison online"
+        },
+        {
+          "clicks": 0,
+          "impressions": 1,
+          "ctr": 0,
+          "average_position": 67,
+          "query": "json file difference checker"
+        },
+        {
+          "clicks": 0,
+          "impressions": 2,
+          "ctr": 0,
+          "average_position": 70.5,
+          "query": "json flatten"
+        },
+        {
+          "clicks": 0,
+          "impressions": 4,
+          "ctr": 0,
+          "average_position": 72.75,
+          "query": "json flattener"
+        },
+        {
+          "clicks": 0,
+          "impressions": 4,
+          "ctr": 0,
+          "average_position": 59.5,
+          "query": "json flattener online"
+        },
+        {
+          "clicks": 0,
+          "impressions": 3,
+          "ctr": 0,
+          "average_position": 70.33333333333333,
+          "query": "json generate schema"
+        },
+        {
+          "clicks": 0,
+          "impressions": 4,
+          "ctr": 0,
+          "average_position": 50,
+          "query": "json generator from schema"
+        },
+        {
+          "clicks": 0,
+          "impressions": 6,
+          "ctr": 0,
+          "average_position": 60.666666666666664,
+          "query": "json generator schema"
+        },
+        {
+          "clicks": 0,
+          "impressions": 7,
+          "ctr": 0,
+          "average_position": 65.14285714285714,
+          "query": "json schema converter"
+        },
+        {
+          "clicks": 0,
+          "impressions": 1,
+          "ctr": 0,
+          "average_position": 56,
+          "query": "json schema create"
+        },
+        {
+          "clicks": 0,
+          "impressions": 3,
+          "ctr": 0,
+          "average_position": 70.66666666666667,
+          "query": "json schema creator"
+        },
+        {
+          "clicks": 0,
+          "impressions": 1,
+          "ctr": 0,
+          "average_position": 53,
+          "query": "json schema diff"
+        },
+        {
+          "clicks": 0,
+          "impressions": 3,
+          "ctr": 0,
+          "average_position": 72.66666666666667,
+          "query": "json schema extraction"
+        },
+        {
+          "clicks": 0,
+          "impressions": 1,
+          "ctr": 0,
+          "average_position": 78,
+          "query": "json schema from example"
+        },
+        {
+          "clicks": 0,
+          "impressions": 9,
+          "ctr": 0,
+          "average_position": 68.11111111111111,
+          "query": "json schema from json"
+        },
+        {
+          "clicks": 0,
+          "impressions": 2,
+          "ctr": 0,
+          "average_position": 71,
+          "query": "json schema generate"
+        },
+        {
+          "clicks": 0,
+          "impressions": 16,
+          "ctr": 0,
+          "average_position": 73.3125,
+          "query": "json schema generation"
+        },
+        {
+          "clicks": 0,
+          "impressions": 49,
+          "ctr": 0,
+          "average_position": 63.244897959183675,
+          "query": "json schema generator"
+        },
+        {
+          "clicks": 0,
+          "impressions": 2,
+          "ctr": 0,
+          "average_position": 48.5,
+          "query": "json schema generator from json"
+        },
+        {
+          "clicks": 0,
+          "impressions": 1,
+          "ctr": 0,
+          "average_position": 68,
+          "query": "json schema generator java"
+        },
+        {
+          "clicks": 0,
+          "impressions": 2,
+          "ctr": 0,
+          "average_position": 80.5,
+          "query": "json schema validation"
+        },
+        {
+          "clicks": 0,
+          "impressions": 1,
+          "ctr": 0,
+          "average_position": 63,
+          "query": "json schema validator command line"
+        },
+        {
+          "clicks": 0,
+          "impressions": 1,
+          "ctr": 0,
+          "average_position": 72,
+          "query": "json schema validator rest assured"
+        },
+        {
+          "clicks": 0,
+          "impressions": 5,
+          "ctr": 0,
+          "average_position": 70.8,
+          "query": "json to json schema"
+        },
+        {
+          "clicks": 0,
+          "impressions": 8,
+          "ctr": 0,
+          "average_position": 57.625,
+          "query": "json to json schema generator"
+        },
+        {
+          "clicks": 0,
+          "impressions": 3,
+          "ctr": 0,
+          "average_position": 73,
+          "query": "json to schema"
+        },
+        {
+          "clicks": 0,
+          "impressions": 2,
+          "ctr": 0,
+          "average_position": 71,
+          "query": "json to schema convert"
+        },
+        {
+          "clicks": 0,
+          "impressions": 1,
+          "ctr": 0,
+          "average_position": 77,
+          "query": "json to schema converter"
+        }
+      ],
+      "top_page_queries": [
+        {
+          "clicks": 0,
+          "impressions": 1,
+          "ctr": 0,
+          "average_position": 5,
+          "page": "https://tryrecast.app/",
+          "query": "recast api"
+        },
+        {
+          "clicks": 0,
+          "impressions": 2,
+          "ctr": 0,
+          "average_position": 4.5,
+          "page": "https://tryrecast.app/",
+          "query": "recast npm"
+        },
+        {
+          "clicks": 0,
+          "impressions": 2,
+          "ctr": 0,
+          "average_position": 89.5,
+          "page": "https://tryrecast.app/blog/json-schema-validation-guide",
+          "query": "validation json schema"
+        },
+        {
+          "clicks": 0,
+          "impressions": 2,
+          "ctr": 0,
+          "average_position": 83.5,
+          "page": "https://tryrecast.app/blog/json-schema-validation-guide",
+          "query": "what is json schema validation"
+        },
+        {
+          "clicks": 0,
+          "impressions": 1,
+          "ctr": 0,
+          "average_position": 77,
+          "page": "https://tryrecast.app/blog/json-schema-validation-guide.html",
+          "query": "how to validate json schema in javascript"
+        },
+        {
+          "clicks": 0,
+          "impressions": 2,
+          "ctr": 0,
+          "average_position": 80.5,
+          "page": "https://tryrecast.app/blog/json-schema-validation-guide.html",
+          "query": "json schema validation"
+        },
+        {
+          "clicks": 0,
+          "impressions": 1,
+          "ctr": 0,
+          "average_position": 78,
+          "page": "https://tryrecast.app/blog/json-schema-validation-guide.html",
+          "query": "json validate schema"
+        },
+        {
+          "clicks": 0,
+          "impressions": 1,
+          "ctr": 0,
+          "average_position": 65,
+          "page": "https://tryrecast.app/tools/csv-diff.html",
+          "query": "compare two csv files"
+        },
+        {
+          "clicks": 0,
+          "impressions": 1,
+          "ctr": 0,
+          "average_position": 65,
+          "page": "https://tryrecast.app/tools/csv-diff.html",
+          "query": "compare two csv files for differences"
+        },
+        {
+          "clicks": 0,
+          "impressions": 1,
+          "ctr": 0,
+          "average_position": 71,
+          "page": "https://tryrecast.app/tools/csv-diff.html",
+          "query": "csv compare"
+        },
+        {
+          "clicks": 0,
+          "impressions": 1,
+          "ctr": 0,
+          "average_position": 59,
+          "page": "https://tryrecast.app/tools/csv-diff.html",
+          "query": "csv compare tool"
+        },
+        {
+          "clicks": 0,
+          "impressions": 3,
+          "ctr": 0,
+          "average_position": 65,
+          "page": "https://tryrecast.app/tools/csv-diff.html",
+          "query": "how to compare two csv files"
+        },
+        {
+          "clicks": 0,
+          "impressions": 3,
+          "ctr": 0,
+          "average_position": 68.33333333333333,
+          "page": "https://tryrecast.app/tools/flatten-json.html",
+          "query": "flatten json"
+        },
+        {
+          "clicks": 0,
+          "impressions": 2,
+          "ctr": 0,
+          "average_position": 63,
+          "page": "https://tryrecast.app/tools/flatten-json.html",
+          "query": "flatten json file"
+        },
+        {
+          "clicks": 0,
+          "impressions": 1,
+          "ctr": 0,
+          "average_position": 64,
+          "page": "https://tryrecast.app/tools/flatten-json.html",
+          "query": "flatten json meaning"
+        },
+        {
+          "clicks": 0,
+          "impressions": 2,
+          "ctr": 0,
+          "average_position": 58,
+          "page": "https://tryrecast.app/tools/flatten-json.html",
+          "query": "flatten json online"
+        },
+        {
+          "clicks": 0,
+          "impressions": 2,
+          "ctr": 0,
+          "average_position": 72.5,
+          "page": "https://tryrecast.app/tools/flatten-json.html",
+          "query": "flatten nested json"
+        },
+        {
+          "clicks": 0,
+          "impressions": 2,
+          "ctr": 0,
+          "average_position": 77,
+          "page": "https://tryrecast.app/tools/flatten-json.html",
+          "query": "flattening json"
+        },
+        {
+          "clicks": 0,
+          "impressions": 2,
+          "ctr": 0,
+          "average_position": 66.5,
+          "page": "https://tryrecast.app/tools/flatten-json.html",
+          "query": "flattening json files"
+        },
+        {
+          "clicks": 0,
+          "impressions": 2,
+          "ctr": 0,
+          "average_position": 70.5,
+          "page": "https://tryrecast.app/tools/flatten-json.html",
+          "query": "json flatten"
+        },
+        {
+          "clicks": 0,
+          "impressions": 4,
+          "ctr": 0,
+          "average_position": 72.75,
+          "page": "https://tryrecast.app/tools/flatten-json.html",
+          "query": "json flattener"
+        },
+        {
+          "clicks": 0,
+          "impressions": 4,
+          "ctr": 0,
+          "average_position": 59.5,
+          "page": "https://tryrecast.app/tools/flatten-json.html",
+          "query": "json flattener online"
+        },
+        {
+          "clicks": 0,
+          "impressions": 1,
+          "ctr": 0,
+          "average_position": 77,
+          "page": "https://tryrecast.app/tools/json-diff.html",
+          "query": "compare two json file"
+        },
+        {
+          "clicks": 0,
+          "impressions": 1,
+          "ctr": 0,
+          "average_position": 59,
+          "page": "https://tryrecast.app/tools/json-diff.html",
+          "query": "compare two json file online"
+        },
+        {
+          "clicks": 0,
+          "impressions": 1,
+          "ctr": 0,
+          "average_position": 58,
+          "page": "https://tryrecast.app/tools/json-diff.html",
+          "query": "compare two json lists"
+        },
+        {
+          "clicks": 0,
+          "impressions": 1,
+          "ctr": 0,
+          "average_position": 80,
+          "page": "https://tryrecast.app/tools/json-diff.html",
+          "query": "comparing two json files"
+        },
+        {
+          "clicks": 0,
+          "impressions": 3,
+          "ctr": 0,
+          "average_position": 65.33333333333333,
+          "page": "https://tryrecast.app/tools/json-diff.html",
+          "query": "diff json"
+        },
+        {
+          "clicks": 0,
+          "impressions": 1,
+          "ctr": 0,
+          "average_position": 76,
+          "page": "https://tryrecast.app/tools/json-diff.html",
+          "query": "diff online json"
+        },
+        {
+          "clicks": 0,
+          "impressions": 1,
+          "ctr": 0,
+          "average_position": 64,
+          "page": "https://tryrecast.app/tools/json-diff.html",
+          "query": "diff two json files"
+        },
+        {
+          "clicks": 0,
+          "impressions": 1,
+          "ctr": 0,
+          "average_position": 62,
+          "page": "https://tryrecast.app/tools/json-diff.html",
+          "query": "jackson json diff"
+        },
+        {
+          "clicks": 0,
+          "impressions": 2,
+          "ctr": 0,
+          "average_position": 59,
+          "page": "https://tryrecast.app/tools/json-diff.html",
+          "query": "java json diff"
+        },
+        {
+          "clicks": 0,
+          "impressions": 2,
+          "ctr": 0,
+          "average_position": 82.5,
+          "page": "https://tryrecast.app/tools/json-diff.html",
+          "query": "json compare diff"
+        },
+        {
+          "clicks": 0,
+          "impressions": 2,
+          "ctr": 0,
+          "average_position": 65.5,
+          "page": "https://tryrecast.app/tools/json-diff.html",
+          "query": "json compare files"
+        },
+        {
+          "clicks": 0,
+          "impressions": 1,
+          "ctr": 0,
+          "average_position": 72,
+          "page": "https://tryrecast.app/tools/json-diff.html",
+          "query": "json compare java"
+        },
+        {
+          "clicks": 0,
+          "impressions": 1,
+          "ctr": 0,
+          "average_position": 63,
+          "page": "https://tryrecast.app/tools/json-diff.html",
+          "query": "json compare two files"
+        },
+        {
+          "clicks": 0,
+          "impressions": 2,
+          "ctr": 0,
+          "average_position": 72.5,
+          "page": "https://tryrecast.app/tools/json-diff.html",
+          "query": "json diff"
+        },
+        {
+          "clicks": 0,
+          "impressions": 1,
+          "ctr": 0,
+          "average_position": 82,
+          "page": "https://tryrecast.app/tools/json-diff.html",
+          "query": "json diff check"
+        },
+        {
+          "clicks": 0,
+          "impressions": 4,
+          "ctr": 0,
+          "average_position": 67.75,
+          "page": "https://tryrecast.app/tools/json-diff.html",
+          "query": "json diff java"
+        },
+        {
+          "clicks": 0,
+          "impressions": 1,
+          "ctr": 0,
+          "average_position": 64,
+          "page": "https://tryrecast.app/tools/json-diff.html",
+          "query": "json file comparison online"
+        },
+        {
+          "clicks": 0,
+          "impressions": 1,
+          "ctr": 0,
+          "average_position": 67,
+          "page": "https://tryrecast.app/tools/json-diff.html",
+          "query": "json file difference checker"
+        },
+        {
+          "clicks": 0,
+          "impressions": 1,
+          "ctr": 0,
+          "average_position": 53,
+          "page": "https://tryrecast.app/tools/json-diff.html",
+          "query": "json schema diff"
+        },
+        {
+          "clicks": 0,
+          "impressions": 1,
+          "ctr": 0,
+          "average_position": 61,
+          "page": "https://tryrecast.app/tools/json-schema-generator.html",
+          "query": "convert json to json schema"
+        },
+        {
+          "clicks": 0,
+          "impressions": 2,
+          "ctr": 0,
+          "average_position": 62,
+          "page": "https://tryrecast.app/tools/json-schema-generator.html",
+          "query": "convert to json schema"
+        },
+        {
+          "clicks": 0,
+          "impressions": 2,
+          "ctr": 0,
+          "average_position": 79,
+          "page": "https://tryrecast.app/tools/json-schema-generator.html",
+          "query": "create json from schema"
+        },
+        {
+          "clicks": 0,
+          "impressions": 2,
+          "ctr": 0,
+          "average_position": 72,
+          "page": "https://tryrecast.app/tools/json-schema-generator.html",
+          "query": "create schema from json"
+        },
+        {
+          "clicks": 0,
+          "impressions": 1,
+          "ctr": 0,
+          "average_position": 74,
+          "page": "https://tryrecast.app/tools/json-schema-generator.html",
+          "query": "extract schema from json"
+        },
+        {
+          "clicks": 0,
+          "impressions": 1,
+          "ctr": 0,
+          "average_position": 47,
+          "page": "https://tryrecast.app/tools/json-schema-generator.html",
+          "query": "generate json from schema"
+        },
+        {
+          "clicks": 0,
+          "impressions": 4,
+          "ctr": 0,
+          "average_position": 67.5,
+          "page": "https://tryrecast.app/tools/json-schema-generator.html",
+          "query": "generate json schema"
+        },
+        {
+          "clicks": 0,
+          "impressions": 1,
+          "ctr": 0,
+          "average_position": 76,
+          "page": "https://tryrecast.app/tools/json-schema-generator.html",
+          "query": "generate json schema from data"
+        },
+        {
+          "clicks": 0,
+          "impressions": 4,
+          "ctr": 0,
+          "average_position": 62,
+          "page": "https://tryrecast.app/tools/json-schema-generator.html",
+          "query": "generate json schema from json"
+        },
+        {
+          "clicks": 0,
+          "impressions": 1,
+          "ctr": 0,
+          "average_position": 71,
+          "page": "https://tryrecast.app/tools/json-schema-generator.html",
+          "query": "generate json schema from json object"
+        },
+        {
+          "clicks": 0,
+          "impressions": 1,
+          "ctr": 0,
+          "average_position": 64,
+          "page": "https://tryrecast.app/tools/json-schema-generator.html",
+          "query": "generate sample json from schema"
+        },
+        {
+          "clicks": 0,
+          "impressions": 1,
+          "ctr": 0,
+          "average_position": 77,
+          "page": "https://tryrecast.app/tools/json-schema-generator.html",
+          "query": "generating json schema"
+        },
+        {
+          "clicks": 0,
+          "impressions": 2,
+          "ctr": 0,
+          "average_position": 61,
+          "page": "https://tryrecast.app/tools/json-schema-generator.html",
+          "query": "generating json schema from json"
+        },
+        {
+          "clicks": 0,
+          "impressions": 1,
+          "ctr": 0,
+          "average_position": 75,
+          "page": "https://tryrecast.app/tools/json-schema-generator.html",
+          "query": "get json schema"
+        },
+        {
+          "clicks": 0,
+          "impressions": 1,
+          "ctr": 0,
+          "average_position": 64,
+          "page": "https://tryrecast.app/tools/json-schema-generator.html",
+          "query": "json example to schema"
+        },
+        {
+          "clicks": 0,
+          "impressions": 3,
+          "ctr": 0,
+          "average_position": 70.33333333333333,
+          "page": "https://tryrecast.app/tools/json-schema-generator.html",
+          "query": "json generate schema"
+        },
+        {
+          "clicks": 0,
+          "impressions": 4,
+          "ctr": 0,
+          "average_position": 50,
+          "page": "https://tryrecast.app/tools/json-schema-generator.html",
+          "query": "json generator from schema"
+        },
+        {
+          "clicks": 0,
+          "impressions": 6,
+          "ctr": 0,
+          "average_position": 60.666666666666664,
+          "page": "https://tryrecast.app/tools/json-schema-generator.html",
+          "query": "json generator schema"
+        },
+        {
+          "clicks": 0,
+          "impressions": 7,
+          "ctr": 0,
+          "average_position": 65.14285714285714,
+          "page": "https://tryrecast.app/tools/json-schema-generator.html",
+          "query": "json schema converter"
+        },
+        {
+          "clicks": 0,
+          "impressions": 1,
+          "ctr": 0,
+          "average_position": 56,
+          "page": "https://tryrecast.app/tools/json-schema-generator.html",
+          "query": "json schema create"
+        },
+        {
+          "clicks": 0,
+          "impressions": 3,
+          "ctr": 0,
+          "average_position": 70.66666666666667,
+          "page": "https://tryrecast.app/tools/json-schema-generator.html",
+          "query": "json schema creator"
+        },
+        {
+          "clicks": 0,
+          "impressions": 3,
+          "ctr": 0,
+          "average_position": 72.66666666666667,
+          "page": "https://tryrecast.app/tools/json-schema-generator.html",
+          "query": "json schema extraction"
+        },
+        {
+          "clicks": 0,
+          "impressions": 1,
+          "ctr": 0,
+          "average_position": 78,
+          "page": "https://tryrecast.app/tools/json-schema-generator.html",
+          "query": "json schema from example"
+        },
+        {
+          "clicks": 0,
+          "impressions": 9,
+          "ctr": 0,
+          "average_position": 68.11111111111111,
+          "page": "https://tryrecast.app/tools/json-schema-generator.html",
+          "query": "json schema from json"
+        },
+        {
+          "clicks": 0,
+          "impressions": 2,
+          "ctr": 0,
+          "average_position": 71,
+          "page": "https://tryrecast.app/tools/json-schema-generator.html",
+          "query": "json schema generate"
+        },
+        {
+          "clicks": 0,
+          "impressions": 16,
+          "ctr": 0,
+          "average_position": 73.3125,
+          "page": "https://tryrecast.app/tools/json-schema-generator.html",
+          "query": "json schema generation"
+        },
+        {
+          "clicks": 0,
+          "impressions": 49,
+          "ctr": 0,
+          "average_position": 63.244897959183675,
+          "page": "https://tryrecast.app/tools/json-schema-generator.html",
+          "query": "json schema generator"
+        },
+        {
+          "clicks": 0,
+          "impressions": 2,
+          "ctr": 0,
+          "average_position": 48.5,
+          "page": "https://tryrecast.app/tools/json-schema-generator.html",
+          "query": "json schema generator from json"
+        },
+        {
+          "clicks": 0,
+          "impressions": 1,
+          "ctr": 0,
+          "average_position": 68,
+          "page": "https://tryrecast.app/tools/json-schema-generator.html",
+          "query": "json schema generator java"
+        },
+        {
+          "clicks": 0,
+          "impressions": 5,
+          "ctr": 0,
+          "average_position": 70.8,
+          "page": "https://tryrecast.app/tools/json-schema-generator.html",
+          "query": "json to json schema"
+        },
+        {
+          "clicks": 0,
+          "impressions": 8,
+          "ctr": 0,
+          "average_position": 57.625,
+          "page": "https://tryrecast.app/tools/json-schema-generator.html",
+          "query": "json to json schema generator"
+        },
+        {
+          "clicks": 0,
+          "impressions": 3,
+          "ctr": 0,
+          "average_position": 73,
+          "page": "https://tryrecast.app/tools/json-schema-generator.html",
+          "query": "json to schema"
+        },
+        {
+          "clicks": 0,
+          "impressions": 2,
+          "ctr": 0,
+          "average_position": 71,
+          "page": "https://tryrecast.app/tools/json-schema-generator.html",
+          "query": "json to schema convert"
+        },
+        {
+          "clicks": 0,
+          "impressions": 1,
+          "ctr": 0,
+          "average_position": 77,
+          "page": "https://tryrecast.app/tools/json-schema-generator.html",
+          "query": "json to schema converter"
+        },
+        {
+          "clicks": 0,
+          "impressions": 3,
+          "ctr": 0,
+          "average_position": 59,
+          "page": "https://tryrecast.app/tools/json-schema-generator.html",
+          "query": "json to schema generator"
+        },
+        {
+          "clicks": 0,
+          "impressions": 18,
+          "ctr": 0,
+          "average_position": 65.44444444444444,
+          "page": "https://tryrecast.app/tools/json-schema-generator.html",
+          "query": "json-schema-generator"
+        },
+        {
+          "clicks": 0,
+          "impressions": 1,
+          "ctr": 0,
+          "average_position": 68,
+          "page": "https://tryrecast.app/tools/json-schema-generator.html",
+          "query": "online json schema creator"
+        },
+        {
+          "clicks": 0,
+          "impressions": 2,
+          "ctr": 0,
+          "average_position": 60,
+          "page": "https://tryrecast.app/tools/json-schema-generator.html",
+          "query": "schema converter"
+        },
+        {
+          "clicks": 0,
+          "impressions": 1,
+          "ctr": 0,
+          "average_position": 78,
+          "page": "https://tryrecast.app/tools/json-schema-generator.html",
+          "query": "schema from json"
+        },
+        {
+          "clicks": 0,
+          "impressions": 15,
+          "ctr": 0,
+          "average_position": 63.4,
+          "page": "https://tryrecast.app/tools/json-schema-generator.html",
+          "query": "schema generator from json"
+        },
+        {
+          "clicks": 0,
+          "impressions": 18,
+          "ctr": 0,
+          "average_position": 67.77777777777777,
+          "page": "https://tryrecast.app/tools/json-schema-generator.html",
+          "query": "schema generator json"
+        },
+        {
+          "clicks": 0,
+          "impressions": 6,
+          "ctr": 0,
+          "average_position": 62.5,
+          "page": "https://tryrecast.app/tools/json-schema-generator.html",
+          "query": "schema json generator"
+        },
+        {
+          "clicks": 0,
+          "impressions": 1,
+          "ctr": 0,
+          "average_position": 70,
+          "page": "https://tryrecast.app/tools/json-schema-generator.html",
+          "query": "schema to json"
+        },
+        {
+          "clicks": 0,
+          "impressions": 1,
+          "ctr": 0,
+          "average_position": 58,
+          "page": "https://tryrecast.app/tools/json-schema-generator.html",
+          "query": "use sample payload to generate schema"
+        },
+        {
+          "clicks": 0,
+          "impressions": 2,
+          "ctr": 0,
+          "average_position": 63.5,
+          "page": "https://tryrecast.app/tools/json-to-xml.html",
+          "query": "convert from json to xml"
+        },
+        {
+          "clicks": 0,
+          "impressions": 1,
+          "ctr": 0,
+          "average_position": 82,
+          "page": "https://tryrecast.app/tools/json-to-xml.html",
+          "query": "convert json to xml"
+        },
+        {
+          "clicks": 0,
+          "impressions": 1,
+          "ctr": 0,
+          "average_position": 60,
+          "page": "https://tryrecast.app/tools/json-to-xml.html",
+          "query": "converter json to xml"
+        },
+        {
+          "clicks": 0,
+          "impressions": 1,
+          "ctr": 0,
+          "average_position": 55,
+          "page": "https://tryrecast.app/tools/json-to-xml.html",
+          "query": "json converter to xml"
+        },
+        {
+          "clicks": 0,
+          "impressions": 1,
+          "ctr": 0,
+          "average_position": 83,
+          "page": "https://tryrecast.app/tools/json-to-xml.html",
+          "query": "json to xml"
+        },
+        {
+          "clicks": 0,
+          "impressions": 3,
+          "ctr": 0,
+          "average_position": 74.66666666666667,
+          "page": "https://tryrecast.app/tools/json-to-xml.html",
+          "query": "json to xml converter"
+        },
+        {
+          "clicks": 0,
+          "impressions": 2,
+          "ctr": 0,
+          "average_position": 67,
+          "page": "https://tryrecast.app/tools/json-to-xml.html",
+          "query": "json to xml converter java"
+        },
+        {
+          "clicks": 0,
+          "impressions": 1,
+          "ctr": 0,
+          "average_position": 65,
+          "page": "https://tryrecast.app/tools/json-to-xml.html",
+          "query": "json to xml online"
+        },
+        {
+          "clicks": 0,
+          "impressions": 2,
+          "ctr": 0,
+          "average_position": 75,
+          "page": "https://tryrecast.app/tools/json-to-xml.html",
+          "query": "json to xml online conversion"
+        },
+        {
+          "clicks": 0,
+          "impressions": 1,
+          "ctr": 0,
+          "average_position": 76,
+          "page": "https://tryrecast.app/tools/json-to-xml.html",
+          "query": "json to xsd converter"
+        },
+        {
+          "clicks": 0,
+          "impressions": 1,
+          "ctr": 0,
+          "average_position": 66,
+          "page": "https://tryrecast.app/tools/json-to-xml.html",
+          "query": "json to xsd converter online"
+        },
+        {
+          "clicks": 0,
+          "impressions": 3,
+          "ctr": 0,
+          "average_position": 76.66666666666667,
+          "page": "https://tryrecast.app/tools/json-to-xml.html",
+          "query": "json xml converter"
+        },
+        {
+          "clicks": 0,
+          "impressions": 1,
+          "ctr": 0,
+          "average_position": 69,
+          "page": "https://tryrecast.app/tools/json-to-xml.html",
+          "query": "online json to xml converter"
+        },
+        {
+          "clicks": 0,
+          "impressions": 1,
+          "ctr": 0,
+          "average_position": 80,
+          "page": "https://tryrecast.app/tools/json-to-xml.html",
+          "query": "transform json to xml"
+        },
+        {
+          "clicks": 0,
+          "impressions": 1,
+          "ctr": 0,
+          "average_position": 86,
+          "page": "https://tryrecast.app/tools/json-to-xml.html",
+          "query": "translate json to xml"
+        },
+        {
+          "clicks": 0,
+          "impressions": 1,
+          "ctr": 0,
+          "average_position": 69,
+          "page": "https://tryrecast.app/tools/jsonpath-tester.html",
+          "query": "jsonpath expression tester"
+        },
+        {
+          "clicks": 0,
+          "impressions": 2,
+          "ctr": 0,
+          "average_position": 82,
+          "page": "https://tryrecast.app/tools/validate-json-schema.html",
+          "query": "content vs schema validation tool"
+        },
+        {
+          "clicks": 0,
+          "impressions": 1,
+          "ctr": 0,
+          "average_position": 63,
+          "page": "https://tryrecast.app/tools/validate-json-schema.html",
+          "query": "json schema validator command line"
+        },
+        {
+          "clicks": 0,
+          "impressions": 1,
+          "ctr": 0,
+          "average_position": 72,
+          "page": "https://tryrecast.app/tools/validate-json-schema.html",
+          "query": "json schema validator rest assured"
+        },
+        {
+          "clicks": 0,
+          "impressions": 1,
+          "ctr": 0,
+          "average_position": 68,
+          "page": "https://tryrecast.app/tools/validate-json-schema.html",
+          "query": "matchesjsonschemainclasspath"
+        },
+        {
+          "clicks": 0,
+          "impressions": 1,
+          "ctr": 0,
+          "average_position": 71,
+          "page": "https://tryrecast.app/tools/validate-json-schema.html",
+          "query": "rest assured json schema validator"
+        },
+        {
+          "clicks": 0,
+          "impressions": 1,
+          "ctr": 0,
+          "average_position": 70,
+          "page": "https://tryrecast.app/tools/xml-diff.html",
+          "query": "compare 2 xml files"
+        },
+        {
+          "clicks": 0,
+          "impressions": 1,
+          "ctr": 0,
+          "average_position": 64,
+          "page": "https://tryrecast.app/tools/xml-diff.html",
+          "query": "compare 2 xml files for differences"
+        },
+        {
+          "clicks": 0,
+          "impressions": 3,
+          "ctr": 0,
+          "average_position": 68,
+          "page": "https://tryrecast.app/tools/xml-diff.html",
+          "query": "compare 2 xml files online"
+        },
+        {
+          "clicks": 0,
+          "impressions": 1,
+          "ctr": 0,
+          "average_position": 57,
+          "page": "https://tryrecast.app/tools/xml-diff.html",
+          "query": "compare 2 xml online"
+        },
+        {
+          "clicks": 0,
+          "impressions": 2,
+          "ctr": 0,
+          "average_position": 74,
+          "page": "https://tryrecast.app/tools/xml-diff.html",
+          "query": "compare 2 xmls"
+        },
+        {
+          "clicks": 0,
+          "impressions": 1,
+          "ctr": 0,
+          "average_position": 61,
+          "page": "https://tryrecast.app/tools/xml-diff.html",
+          "query": "compare online xml"
+        },
+        {
+          "clicks": 0,
+          "impressions": 1,
+          "ctr": 0,
+          "average_position": 63,
+          "page": "https://tryrecast.app/tools/xml-diff.html",
+          "query": "compare two xml"
+        },
+        {
+          "clicks": 0,
+          "impressions": 1,
+          "ctr": 0,
+          "average_position": 62,
+          "page": "https://tryrecast.app/tools/xml-diff.html",
+          "query": "compare two xml files for differences"
+        },
+        {
+          "clicks": 0,
+          "impressions": 1,
+          "ctr": 0,
+          "average_position": 66,
+          "page": "https://tryrecast.app/tools/xml-diff.html",
+          "query": "compare two xml files online"
+        },
+        {
+          "clicks": 0,
+          "impressions": 1,
+          "ctr": 0,
+          "average_position": 68,
+          "page": "https://tryrecast.app/tools/xml-diff.html",
+          "query": "compare two xml online"
+        },
+        {
+          "clicks": 0,
+          "impressions": 4,
+          "ctr": 0,
+          "average_position": 64.5,
+          "page": "https://tryrecast.app/tools/xml-diff.html",
+          "query": "compare two xmls"
+        },
+        {
+          "clicks": 0,
+          "impressions": 1,
+          "ctr": 0,
+          "average_position": 79,
+          "page": "https://tryrecast.app/tools/xml-diff.html",
+          "query": "compare wsdl"
+        },
+        {
+          "clicks": 0,
+          "impressions": 2,
+          "ctr": 0,
+          "average_position": 69,
+          "page": "https://tryrecast.app/tools/xml-diff.html",
+          "query": "compare xml"
+        },
+        {
+          "clicks": 0,
+          "impressions": 3,
+          "ctr": 0,
+          "average_position": 65,
+          "page": "https://tryrecast.app/tools/xml-diff.html",
+          "query": "compare xml file"
+        },
+        {
+          "clicks": 0,
+          "impressions": 1,
+          "ctr": 0,
+          "average_position": 53,
+          "page": "https://tryrecast.app/tools/xml-diff.html",
+          "query": "compare xml file online"
+        },
+        {
+          "clicks": 0,
+          "impressions": 1,
+          "ctr": 0,
+          "average_position": 70,
+          "page": "https://tryrecast.app/tools/xml-diff.html",
+          "query": "compare xml files"
+        },
+        {
+          "clicks": 0,
+          "impressions": 2,
+          "ctr": 0,
+          "average_position": 61,
+          "page": "https://tryrecast.app/tools/xml-diff.html",
+          "query": "compare xml files online"
+        },
+        {
+          "clicks": 0,
+          "impressions": 1,
+          "ctr": 0,
+          "average_position": 71,
+          "page": "https://tryrecast.app/tools/xml-diff.html",
+          "query": "compare xml online"
+        },
+        {
+          "clicks": 0,
+          "impressions": 1,
+          "ctr": 0,
+          "average_position": 59,
+          "page": "https://tryrecast.app/tools/xml-diff.html",
+          "query": "comparing xml files online"
+        },
+        {
+          "clicks": 0,
+          "impressions": 1,
+          "ctr": 0,
+          "average_position": 71,
+          "page": "https://tryrecast.app/tools/xml-diff.html",
+          "query": "diff two xml files"
+        },
+        {
+          "clicks": 0,
+          "impressions": 3,
+          "ctr": 0,
+          "average_position": 67.66666666666667,
+          "page": "https://tryrecast.app/tools/xml-diff.html",
+          "query": "diff xml"
+        },
+        {
+          "clicks": 0,
+          "impressions": 1,
+          "ctr": 0,
+          "average_position": 54,
+          "page": "https://tryrecast.app/tools/xml-diff.html",
+          "query": "diff xml online"
+        },
+        {
+          "clicks": 0,
+          "impressions": 3,
+          "ctr": 0,
+          "average_position": 39.333333333333336,
+          "page": "https://tryrecast.app/tools/xml-diff.html",
+          "query": "diffxml"
+        },
+        {
+          "clicks": 0,
+          "impressions": 1,
+          "ctr": 0,
+          "average_position": 61,
+          "page": "https://tryrecast.app/tools/xml-diff.html",
+          "query": "microsoft xml diff"
+        },
+        {
+          "clicks": 0,
+          "impressions": 1,
+          "ctr": 0,
+          "average_position": 51,
+          "page": "https://tryrecast.app/tools/xml-diff.html",
+          "query": "online xml comparator"
+        },
+        {
+          "clicks": 0,
+          "impressions": 1,
+          "ctr": 0,
+          "average_position": 55,
+          "page": "https://tryrecast.app/tools/xml-diff.html",
+          "query": "online xml comparison tool"
+        },
+        {
+          "clicks": 0,
+          "impressions": 1,
+          "ctr": 0,
+          "average_position": 51,
+          "page": "https://tryrecast.app/tools/xml-diff.html",
+          "query": "online xml file compare"
+        },
+        {
+          "clicks": 0,
+          "impressions": 1,
+          "ctr": 0,
+          "average_position": 52,
+          "page": "https://tryrecast.app/tools/xml-diff.html",
+          "query": "two xml compare online"
+        },
+        {
+          "clicks": 0,
+          "impressions": 2,
+          "ctr": 0,
+          "average_position": 79.5,
+          "page": "https://tryrecast.app/tools/xml-diff.html",
+          "query": "xml code compare"
+        },
+        {
+          "clicks": 0,
+          "impressions": 1,
+          "ctr": 0,
+          "average_position": 51,
+          "page": "https://tryrecast.app/tools/xml-diff.html",
+          "query": "xml comparator online"
+        },
+        {
+          "clicks": 0,
+          "impressions": 1,
+          "ctr": 0,
+          "average_position": 70,
+          "page": "https://tryrecast.app/tools/xml-diff.html",
+          "query": "xml compare"
+        },
+        {
+          "clicks": 0,
+          "impressions": 1,
+          "ctr": 0,
+          "average_position": 59,
+          "page": "https://tryrecast.app/tools/xml-diff.html",
+          "query": "xml compare online"
+        },
+        {
+          "clicks": 0,
+          "impressions": 2,
+          "ctr": 0,
+          "average_position": 60.5,
+          "page": "https://tryrecast.app/tools/xml-diff.html",
+          "query": "xml compare tool"
+        },
+        {
+          "clicks": 0,
+          "impressions": 2,
+          "ctr": 0,
+          "average_position": 67,
+          "page": "https://tryrecast.app/tools/xml-diff.html",
+          "query": "xml compare tool online"
+        },
+        {
+          "clicks": 0,
+          "impressions": 1,
+          "ctr": 0,
+          "average_position": 74,
+          "page": "https://tryrecast.app/tools/xml-diff.html",
+          "query": "xml comparer"
+        },
+        {
+          "clicks": 0,
+          "impressions": 1,
+          "ctr": 0,
+          "average_position": 73,
+          "page": "https://tryrecast.app/tools/xml-diff.html",
+          "query": "xml comparison tool"
+        },
+        {
+          "clicks": 0,
+          "impressions": 1,
+          "ctr": 0,
+          "average_position": 69,
+          "page": "https://tryrecast.app/tools/xml-diff.html",
+          "query": "xml dif"
+        },
+        {
+          "clicks": 0,
+          "impressions": 8,
+          "ctr": 0,
+          "average_position": 71.75,
+          "page": "https://tryrecast.app/tools/xml-diff.html",
+          "query": "xml diff"
+        },
+        {
+          "clicks": 0,
+          "impressions": 2,
+          "ctr": 0,
+          "average_position": 71.5,
+          "page": "https://tryrecast.app/tools/xml-diff.html",
+          "query": "xml diff checker"
+        },
+        {
+          "clicks": 0,
+          "impressions": 1,
+          "ctr": 0,
+          "average_position": 66,
+          "page": "https://tryrecast.app/tools/xml-diff.html",
+          "query": "xml diff online"
+        },
+        {
+          "clicks": 0,
+          "impressions": 1,
+          "ctr": 0,
+          "average_position": 67,
+          "page": "https://tryrecast.app/tools/xml-diff.html",
+          "query": "xml diff tool"
+        },
+        {
+          "clicks": 0,
+          "impressions": 1,
+          "ctr": 0,
+          "average_position": 66,
+          "page": "https://tryrecast.app/tools/xml-diff.html",
+          "query": "xml diff tools"
+        },
+        {
+          "clicks": 0,
+          "impressions": 1,
+          "ctr": 0,
+          "average_position": 57,
+          "page": "https://tryrecast.app/tools/xml-diff.html",
+          "query": "xml difference online"
+        },
+        {
+          "clicks": 0,
+          "impressions": 4,
+          "ctr": 0,
+          "average_position": 66.75,
+          "page": "https://tryrecast.app/tools/xml-diff.html",
+          "query": "xml file compare"
+        },
+        {
+          "clicks": 0,
+          "impressions": 1,
+          "ctr": 0,
+          "average_position": 66,
+          "page": "https://tryrecast.app/tools/xml-diff.html",
+          "query": "xml file difference"
+        },
+        {
+          "clicks": 0,
+          "impressions": 1,
+          "ctr": 0,
+          "average_position": 64,
+          "page": "https://tryrecast.app/tools/xml-diff.html",
+          "query": "xml files compare"
+        },
+        {
+          "clicks": 0,
+          "impressions": 1,
+          "ctr": 0,
+          "average_position": 79,
+          "page": "https://tryrecast.app/tools/xml-diff.html",
+          "query": "xml formatter compare"
+        },
+        {
+          "clicks": 0,
+          "impressions": 1,
+          "ctr": 0,
+          "average_position": 53,
+          "page": "https://tryrecast.app/tools/xml-diff.html",
+          "query": "xml online compare"
+        },
+        {
+          "clicks": 0,
+          "impressions": 1,
+          "ctr": 0,
+          "average_position": 80,
+          "page": "https://tryrecast.app/tools/xml-diff.html",
+          "query": "xsd compare"
+        },
+        {
+          "clicks": 0,
+          "impressions": 1,
+          "ctr": 0,
+          "average_position": 76,
+          "page": "https://tryrecast.app/tools/xml-diff.html",
+          "query": "xsd diff"
+        },
+        {
+          "clicks": 0,
+          "impressions": 1,
+          "ctr": 0,
+          "average_position": 66,
+          "page": "https://tryrecast.app/tools/xml-to-json.html",
+          "query": "soap xml to json"
+        },
+        {
+          "clicks": 0,
+          "impressions": 2,
+          "ctr": 0,
+          "average_position": 80.5,
+          "page": "https://tryrecast.app/tools/xml-to-json.html",
+          "query": "xsd to json converter"
+        },
+        {
+          "clicks": 0,
+          "impressions": 1,
+          "ctr": 0,
+          "average_position": 77,
+          "page": "https://tryrecast.app/tools/xml-to-json.html",
+          "query": "xsd to json converter online"
+        }
+      ],
       "evidence_date": "2026-09-01"
     },
     "ga4": {
