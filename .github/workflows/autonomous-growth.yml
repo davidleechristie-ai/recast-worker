@@ -1,7 +1,7 @@
 name: Recast autonomous daily growth
 
 # Updating this workflow intentionally triggers a self-test run on main.
-# Self-test marker: page/query attribution and returning-user measurement enabled.
+# Self-test marker: genuine Stripe revenue filtering enabled.
 on:
   push:
     branches:
@@ -29,20 +29,16 @@ jobs:
         with:
           ref: main
           fetch-depth: 20
-
       - name: Set up Node.js
         uses: actions/setup-node@v4
         with:
           node-version: 20
-
       - name: Install dependencies
         working-directory: recast-worker
         run: npm install --no-package-lock
-
       - name: Baseline test suite
         working-directory: recast-worker
         run: npm test
-
       - name: Refresh authoritative growth scoreboard
         working-directory: recast-worker
         env:
@@ -52,16 +48,11 @@ jobs:
           STRIPE_SECRET_KEY: ${{ secrets.STRIPE_SECRET_KEY }}
           PRICE_MAP: '{"price_1U41Bw07vRRG7JsXH0iAKy7g":"pro_monthly","price_1U41Bx07vRRG7JsXlwnms0uo":"pro_yearly","price_1U41Bs07vRRG7JsXnYpcoHh1":"api_monthly","price_1U41Br07vRRG7JsXV1vskFmE":"api_yearly","price_1U4Kub07vRRG7JsXtMatleol":"day_pass"}'
         run: node scripts/refresh-growth-scoreboard.mjs
-
       - name: Require OpenAI API key
         env:
           OPENAI_API_KEY: ${{ secrets.OPENAI_API_KEY }}
         run: |
-          if [ -z "$OPENAI_API_KEY" ]; then
-            echo "OPENAI_API_KEY repository secret is required for the autonomous growth agent."
-            exit 1
-          fi
-
+          if [ -z "$OPENAI_API_KEY" ]; then echo "OPENAI_API_KEY repository secret is required for the autonomous growth agent."; exit 1; fi
       - name: Run Recast growth agent
         uses: openai/codex-action@v1
         with:
@@ -71,50 +62,30 @@ jobs:
           codex-args: '["--config","web_search=\"live\""]'
           safety-strategy: 'drop-sudo'
           allow-bots: 'true'
-
       - name: Enforce autonomous scope
         run: node recast-worker/guard-autonomous-diff.mjs
-
       - name: Validate growth scoreboard
         run: node -e "JSON.parse(require('fs').readFileSync('recast-worker/GROWTH_SCOREBOARD.json','utf8')); console.log('Growth scoreboard JSON valid')"
-
       - name: Test proposed changes
         working-directory: recast-worker
         run: npm test
-
       - name: Commit safe change
         id: commit
         shell: bash
         run: |
-          if [ -z "$(git status --porcelain)" ]; then
-            echo "changed=false" >> "$GITHUB_OUTPUT"
-            echo "No justified change today."
-            exit 0
-          fi
-
+          if [ -z "$(git status --porcelain)" ]; then echo "changed=false" >> "$GITHUB_OUTPUT"; echo "No justified change today."; exit 0; fi
           git config user.name "recast-growth-bot"
           git config user.email "recast-growth-bot@users.noreply.github.com"
           git add recast-worker/public recast-worker/AUTONOMOUS_GROWTH_LOG.md recast-worker/GROWTH_SCOREBOARD.json
-
-          if git diff --cached --quiet; then
-            echo "changed=false" >> "$GITHUB_OUTPUT"
-            exit 0
-          fi
-
+          if git diff --cached --quiet; then echo "changed=false" >> "$GITHUB_OUTPUT"; exit 0; fi
           git commit -m "Automated daily Recast growth improvement"
           git push origin HEAD:main
           echo "changed=true" >> "$GITHUB_OUTPUT"
-
       - name: Dispatch production deployment
         if: steps.commit.outputs.changed == 'true'
         env:
           GH_TOKEN: ${{ github.token }}
         run: gh workflow run deploy-exact-release.yml --ref main
-
       - name: Summary
         run: |
-          if [ "${{ steps.commit.outputs.changed }}" = "true" ]; then
-            echo "Authoritative metrics refreshed; safe metric-driven acquisition change committed to main and production deployment explicitly dispatched."
-          else
-            echo "Authoritative metrics refreshed; agent completed with no production change."
-          fi
+          if [ "${{ steps.commit.outputs.changed }}" = "true" ]; then echo "Authoritative metrics refreshed; safe metric-driven acquisition change committed to main and production deployment explicitly dispatched."; else echo "Authoritative metrics refreshed; agent completed with no production change."; fi
