@@ -142,6 +142,25 @@ let passed=0;
   passed++;
 }
 
+{
+  for (const failure of [
+    {status:429,message:'Rate limit reached'},
+    {status:400,message:'You have no credits remaining. Add credits to continue using the API.'},
+    {status:429,message:'You exceeded your current quota'}
+  ]) {
+    const mockFetch=async ()=>({
+      ok:false,status:failure.status,
+      async json(){return {error:{message:failure.message}};}
+    });
+    await assert.rejects(
+      interpretWithAi('convert JSON to CSV',{OPENAI_API_KEY:'x'},{fetch:mockFetch,resolveSecret:async x=>x}),
+      e=>e.code==='ai_unavailable' && e.status===503 &&
+        e.message==='AI interpretation is temporarily unavailable'
+    );
+  }
+  passed++;
+}
+
 
 {
   const { schema } = await import('./copilot-ai.js');
