@@ -1,6 +1,11 @@
 name: Recast autonomous daily growth
 
 on:
+  push:
+    branches:
+      - main
+    paths:
+      - '.github/workflows/autonomous-growth.yml'
   schedule:
     - cron: '20 6 * * *'
   workflow_dispatch:
