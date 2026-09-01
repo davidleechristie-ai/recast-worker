@@ -21,6 +21,14 @@ let passed=0;
   const def=applyExplicitComparisonOutput(normaliseAiDefinition({
     name:'Compare',steps:[{mode:'compareStep',params:{format:'csv'}}],notes:[],
     requiresConfiguration:true,automation:false,directTool:null
+  }),'compare two CSV files and output deletions only');
+  assert.equal(def.steps[0].params.resultFilter,'removed');
+  passed++;
+}
+{
+  const def=applyExplicitComparisonOutput(normaliseAiDefinition({
+    name:'Compare',steps:[{mode:'compareStep',params:{format:'csv'}}],notes:[],
+    requiresConfiguration:true,automation:false,directTool:null
   }),'compare two CSV files and output differences in XML');
   assert.equal(def.steps[0].params.outputFormat,'xml');
   passed++;
