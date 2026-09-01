@@ -1,11 +1,6 @@
 name: Deploy exact Recast release
 
 on:
-  push:
-    branches:
-      - main
-    paths:
-      - '.github/workflows/deploy-exact-release.yml'
   workflow_dispatch:
 
 permissions:
@@ -38,6 +33,11 @@ jobs:
       - name: Run tests
         working-directory: recast-worker
         run: npm test
+
+      - name: Remove redundant Wrangler route entries
+        working-directory: recast-worker
+        run: |
+          node -e "const fs=require('fs');const p='wrangler.jsonc';let s=fs.readFileSync(p,'utf8');s=s.replace(', \"/tools/\", \"/tools/*\"', ', \"/tools/*\"').replace(', \"/app\", \"/app/\", \"/app/*\"', ', \"/app\", \"/app/*\"');fs.writeFileSync(p,s)"
 
       - name: Deploy falling-cloud-0deb
         working-directory: recast-worker
