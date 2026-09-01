@@ -58,7 +58,7 @@ const STEP_PARAM_RULES = {
   transformAddField: p => ({ field: safeField(p.field), value: primitive(p.value) }),
   transformCombine: p => ({ template: String(p.template||'').slice(0,300), newField: safeField(p.newField) }),
   jsonPath: p => ({ path: String(p.path||'$').slice(0,500) }),
-  compareStep: p => ({ format: safeEnum(p.format,['json','csv','xml'],'json'), outputFormat: safeEnum(p.outputFormat,['text','json','csv','xml'],'text'), differencesOnly: p.differencesOnly !== false })
+  compareStep: p => ({ format: safeEnum(p.format,['json','csv','xml'],'json'), outputFormat: safeEnum(p.outputFormat,['text','json','csv','xml'],'text'), resultFilter: safeEnum(p.resultFilter,['all','added','removed','changed','unchanged'],'all'), differencesOnly: p.differencesOnly !== false })
 };
 
 function safeStrings(v,max){ return Array.isArray(v) ? v.map(x=>String(x).trim().slice(0,120)).filter(Boolean).slice(0,max) : []; }
@@ -109,9 +109,11 @@ function normaliseAiDefinition(raw) {
 function applyExplicitComparisonOutput(definition, prompt) {
   const text=String(prompt||'').toLowerCase();
   const match=text.match(/\b(?:output|export|return|save|produce)(?:\s+(?:the\s+)?differences?)?\s+(?:in|as|to)\s+(json|csv|xml|text)\b/);
-  if (!match) return definition;
+  const filter=/\b(?:deletions?|deleted|removed|removals?)\s+only\b/.test(text)?'removed'
+    :/\b(?:additions?|added|new)\s+only\b/.test(text)?'added'
+    :/\b(?:changes?|changed|modified)\s+only\b/.test(text)?'changed':'all';
   definition.steps=definition.steps.map(step => step.mode === 'compareStep'
-    ? {mode:step.mode,params:Object.assign({},step.params,{outputFormat:match[1]})}
+    ? {mode:step.mode,params:Object.assign({},step.params,match?{outputFormat:match[1],resultFilter:filter}:{resultFilter:filter})}
     : step);
   return definition;
 }
@@ -130,7 +132,7 @@ function schema() {
           params:{
             type:'object',
             additionalProperties:false,
-            required:['method','url','paths','from','to','field','condition','value','direction','type','template','newField','path','format','differencesOnly','outputFormat'],
+            required:['method','url','paths','from','to','field','condition','value','direction','type','template','newField','path','format','differencesOnly','outputFormat','resultFilter'],
             properties:{
               method:{anyOf:[{type:'string'},{type:'null'}]},
               url:{anyOf:[{type:'string'},{type:'null'}]},
@@ -148,6 +150,7 @@ function schema() {
               format:{anyOf:[{type:'string'},{type:'null'}]},
               differencesOnly:{anyOf:[{type:'boolean'},{type:'null'}]},
               outputFormat:{anyOf:[{type:'string'},{type:'null'}]}
+              ,resultFilter:{anyOf:[{type:'string'},{type:'null'}]}
             }
           }
         }
@@ -176,7 +179,7 @@ Rules:
 - Never invent unsupported operations.
 - Prefer workflow steps when Recast can execute the operation as a repeatable pipeline.
 - Use directTool when the request is better served by a dedicated tool page, especially schema/code generation.
-- For comparisons, use compareStep and set format to the two input files' format (json/csv/xml). Set outputFormat to text/json/csv/xml when the user requests a result format. Mark requiresConfiguration true because a second/reference input is needed.
+- For comparisons, use compareStep and set format to the two input files' format (json/csv/xml). Set outputFormat to text/json/csv/xml when requested. Set resultFilter to removed for deletions/removals only, added for additions only, changed for modifications only, otherwise all. Mark requiresConfiguration true because two inputs are needed.
 - For API responses described as JSON, treat them as JSON unless the user says otherwise.
 - For scheduled/recurring language, set automation true; only add steps for the data operation itself.
 - If a requested field/path/value is not stated, do not fabricate it. Mark requiresConfiguration true and explain the missing detail in notes.
@@ -186,7 +189,7 @@ Rules:
   flatten {}; unflatten {}; transformRemove {paths}; transformRename {from,to}; transformSelect {paths};
   transformFilter {field,condition,value}; transformSort {field,direction}; transformConvertType {field,type};
   transformAddField {field,value}; transformCombine {template,newField}; jsonPath {path};
-  validateJsonStep {}; validateXmlStep {}; formatJson {}; sortJson {}; compareStep {format,outputFormat,differencesOnly}.
+  validateJsonStep {}; validateXmlStep {}; formatJson {}; sortJson {}; compareStep {format,outputFormat,resultFilter,differencesOnly}.
 - Direct-tool slugs are limited to those in the response schema.
 - Return only the structured response.
 `;
