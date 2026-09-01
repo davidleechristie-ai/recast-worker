@@ -26,7 +26,7 @@ async function googleAccessToken() {
   const res = await fetch(sa.token_uri || 'https://oauth2.googleapis.com/token', {
     method: 'POST',
     headers: { 'content-type': 'application/x-www-form-urlencoded' },
-    body: new URLSearchParams({ grant_type: 'urn:ietf:params:oauth:grant-type:jwt-bearer', assertion }),
+    body: new URLSearchParams({ grant_type: 'urn:ietf:params:oauth-type:jwt-bearer', assertion }),
   });
   if (!res.ok) throw new Error(`Google OAuth failed: ${res.status} ${await res.text()}`);
   return (await res.json()).access_token;
@@ -38,29 +38,53 @@ function dateDaysAgo(days) {
   return d.toISOString().slice(0, 10);
 }
 
-async function fetchGsc(token) {
-  const site = process.env.GSC_SITE_URL || 'sc-domain:tryrecast.app';
-  if (!token) return null;
-  const body = {
-    startDate: dateDaysAgo(28),
-    endDate: dateDaysAgo(1),
-    dimensions: [],
-    rowLimit: 1,
+function gscRow(row, dimensions) {
+  const result = {
+    clicks: row.clicks ?? 0,
+    impressions: row.impressions ?? 0,
+    ctr: row.ctr ?? 0,
+    average_position: row.position ?? null,
   };
+  for (let i = 0; i < dimensions.length; i += 1) result[dimensions[i]] = row.keys?.[i] ?? null;
+  return result;
+}
+
+async function gscQuery(token, site, dimensions, rowLimit) {
   const res = await fetch(`https://searchconsole.googleapis.com/webmasters/v3/sites/${encodeURIComponent(site)}/searchAnalytics/query`, {
     method: 'POST',
     headers: { authorization: `Bearer ${token}`, 'content-type': 'application/json' },
-    body: JSON.stringify(body),
+    body: JSON.stringify({
+      startDate: dateDaysAgo(28),
+      endDate: dateDaysAgo(1),
+      dimensions,
+      rowLimit,
+    }),
   });
-  if (!res.ok) throw new Error(`Search Console query failed: ${res.status} ${await res.text()}`);
-  const data = await res.json();
-  const row = data.rows?.[0] || {};
+  if (!res.ok) throw new Error(`Search Console ${dimensions.join('+') || 'aggregate'} query failed: ${res.status} ${await res.text()}`);
+  return (await res.json()).rows || [];
+}
+
+async function fetchGsc(token) {
+  const site = process.env.GSC_SITE_URL || 'sc-domain:tryrecast.app';
+  if (!token) return null;
+
+  const [aggregateRows, pageRows, queryRows, pageQueryRows] = await Promise.all([
+    gscQuery(token, site, [], 1),
+    gscQuery(token, site, ['page'], 50),
+    gscQuery(token, site, ['query'], 100),
+    gscQuery(token, site, ['page', 'query'], 250),
+  ]);
+  const row = aggregateRows[0] || {};
+
   return {
     period_days: 28,
     clicks: row.clicks ?? 0,
     impressions: row.impressions ?? 0,
     ctr: row.ctr ?? 0,
     average_position: row.position ?? null,
+    top_pages: pageRows.map((r) => gscRow(r, ['page'])),
+    top_queries: queryRows.map((r) => gscRow(r, ['query'])),
+    top_page_queries: pageQueryRows.map((r) => gscRow(r, ['page', 'query'])),
     evidence_date: today,
   };
 }
@@ -191,6 +215,7 @@ board.missing_instrumentation = [];
 if (!gsc) board.missing_instrumentation.push('Google Search Console feed unavailable: add GOOGLE_SERVICE_ACCOUNT_JSON and grant Search Console access.');
 if (!ga4) board.missing_instrumentation.push('GA4 feed unavailable: add GA4_PROPERTY_ID and grant the Google service account Viewer access.');
 if (!stripe) board.missing_instrumentation.push('Stripe feed unavailable: add STRIPE_SECRET_KEY to GitHub Actions secrets.');
+if (gsc && gsc.top_page_queries.length === 0) board.missing_instrumentation.push('Search Console returned no page/query rows for the current 28-day period.');
 board.last_updated = today;
 board.refresh_warnings = warnings;
 
