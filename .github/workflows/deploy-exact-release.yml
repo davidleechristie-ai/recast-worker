@@ -48,7 +48,8 @@ jobs:
             "https://tryrecast.app/"
             "https://tryrecast.app/tools/json-to-csv"
             "https://tryrecast.app/tools/csv-to-json"
-            "https://tryrecast.app/pricing"
+            "https://tryrecast.app/automation/"
+            "https://tryrecast.app/api/"
           )
 
           for url in "${urls[@]}"; do
@@ -68,5 +69,11 @@ jobs:
               exit 1
             fi
           done
+
+          home=$(curl -L -sS --max-time 20 "https://tryrecast.app/")
+          if ! grep -q 'id="pricing"' <<< "$home"; then
+            echo "Production verification failed: homepage pricing section not found"
+            exit 1
+          fi
 
           echo "Production verification passed."
