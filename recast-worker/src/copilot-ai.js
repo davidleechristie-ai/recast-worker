@@ -58,7 +58,7 @@ const STEP_PARAM_RULES = {
   transformAddField: p => ({ field: safeField(p.field), value: primitive(p.value) }),
   transformCombine: p => ({ template: String(p.template||'').slice(0,300), newField: safeField(p.newField) }),
   jsonPath: p => ({ path: String(p.path||'$').slice(0,500) }),
-  compareStep: p => ({ format: safeEnum(p.format,['json','csv','xml'],'json'), differencesOnly: p.differencesOnly !== false })
+  compareStep: p => ({ format: safeEnum(p.format,['json','csv','xml'],'json'), outputFormat: safeEnum(p.outputFormat,['text','json','csv','xml'],'text'), differencesOnly: p.differencesOnly !== false })
 };
 
 function safeStrings(v,max){ return Array.isArray(v) ? v.map(x=>String(x).trim().slice(0,120)).filter(Boolean).slice(0,max) : []; }
@@ -106,6 +106,16 @@ function normaliseAiDefinition(raw) {
   };
 }
 
+function applyExplicitComparisonOutput(definition, prompt) {
+  const text=String(prompt||'').toLowerCase();
+  const match=text.match(/\b(?:output|export|return|save|produce)(?:\s+(?:the\s+)?differences?)?\s+(?:in|as|to)\s+(json|csv|xml|text)\b/);
+  if (!match) return definition;
+  definition.steps=definition.steps.map(step => step.mode === 'compareStep'
+    ? {mode:step.mode,params:Object.assign({},step.params,{outputFormat:match[1]})}
+    : step);
+  return definition;
+}
+
 function schema() {
   return {
     type:'object',
@@ -120,7 +130,7 @@ function schema() {
           params:{
             type:'object',
             additionalProperties:false,
-            required:['method','url','paths','from','to','field','condition','value','direction','type','template','newField','path','format','differencesOnly'],
+            required:['method','url','paths','from','to','field','condition','value','direction','type','template','newField','path','format','differencesOnly','outputFormat'],
             properties:{
               method:{anyOf:[{type:'string'},{type:'null'}]},
               url:{anyOf:[{type:'string'},{type:'null'}]},
@@ -136,7 +146,8 @@ function schema() {
               newField:{anyOf:[{type:'string'},{type:'null'}]},
               path:{anyOf:[{type:'string'},{type:'null'}]},
               format:{anyOf:[{type:'string'},{type:'null'}]},
-              differencesOnly:{anyOf:[{type:'boolean'},{type:'null'}]}
+              differencesOnly:{anyOf:[{type:'boolean'},{type:'null'}]},
+              outputFormat:{anyOf:[{type:'string'},{type:'null'}]}
             }
           }
         }
@@ -165,7 +176,7 @@ Rules:
 - Never invent unsupported operations.
 - Prefer workflow steps when Recast can execute the operation as a repeatable pipeline.
 - Use directTool when the request is better served by a dedicated tool page, especially schema/code generation.
-- For comparisons, use compareStep and set format to json/csv/xml. Mark requiresConfiguration true because a second/reference input is needed.
+- For comparisons, use compareStep and set format to the two input files' format (json/csv/xml). Set outputFormat to text/json/csv/xml when the user requests a result format. Mark requiresConfiguration true because a second/reference input is needed.
 - For API responses described as JSON, treat them as JSON unless the user says otherwise.
 - For scheduled/recurring language, set automation true; only add steps for the data operation itself.
 - If a requested field/path/value is not stated, do not fabricate it. Mark requiresConfiguration true and explain the missing detail in notes.
@@ -175,7 +186,7 @@ Rules:
   flatten {}; unflatten {}; transformRemove {paths}; transformRename {from,to}; transformSelect {paths};
   transformFilter {field,condition,value}; transformSort {field,direction}; transformConvertType {field,type};
   transformAddField {field,value}; transformCombine {template,newField}; jsonPath {path};
-  validateJsonStep {}; validateXmlStep {}; formatJson {}; sortJson {}; compareStep {format,differencesOnly}.
+  validateJsonStep {}; validateXmlStep {}; formatJson {}; sortJson {}; compareStep {format,outputFormat,differencesOnly}.
 - Direct-tool slugs are limited to those in the response schema.
 - Return only the structured response.
 `;
@@ -261,7 +272,7 @@ async function interpretWithAi(prompt, env, deps={}) {
     if (!text) throw Object.assign(new Error('AI returned an empty response'),{status:502,code:'ai_empty'});
     let parsed;
     try { parsed=JSON.parse(text); } catch (_) { throw Object.assign(new Error('AI returned invalid structured output'),{status:502,code:'ai_invalid_json'}); }
-    return normaliseAiDefinition(parsed);
+    return applyExplicitComparisonOutput(normaliseAiDefinition(parsed), prompt);
   } catch (e) {
     if (e?.name === 'AbortError') throw Object.assign(new Error('AI request timed out'),{status:504,code:'ai_timeout'});
     throw e;
@@ -272,6 +283,6 @@ async function interpretWithAi(prompt, env, deps={}) {
 
 export {
   DEFAULT_MODEL, MAX_PROMPT_CHARS, RATE_LIMIT_PER_HOUR, WORKFLOW_MODES, DIRECT_TOOLS,
-  normaliseAiDefinition, interpretWithAi, rateLimit, extractOutputText, schema
+  normaliseAiDefinition, applyExplicitComparisonOutput, interpretWithAi, rateLimit, extractOutputText, schema
 };
 
