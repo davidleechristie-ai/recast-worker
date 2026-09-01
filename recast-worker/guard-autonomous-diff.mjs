@@ -10,7 +10,7 @@ if (changed.length === 0) {
   process.exit(0);
 }
 
-const maxChangedFiles = 7; // normally <= 6 product files plus the growth log
+const maxChangedFiles = 8; // normally <= 6 product files plus growth log and scoreboard
 if (changed.length > maxChangedFiles) {
   console.error(`Autonomous change rejected: ${changed.length} files changed (max ${maxChangedFiles}).`);
   console.error(changed.join('\n'));
@@ -19,6 +19,7 @@ if (changed.length > maxChangedFiles) {
 
 const allowedExact = new Set([
   'recast-worker/AUTONOMOUS_GROWTH_LOG.md',
+  'recast-worker/GROWTH_SCOREBOARD.json',
 ]);
 
 const blockedPublicPatterns = [
