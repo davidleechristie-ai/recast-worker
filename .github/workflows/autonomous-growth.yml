@@ -1,7 +1,7 @@
 name: Recast autonomous daily growth
 
 # Updating this workflow intentionally triggers a self-test run on main.
-# Self-test marker: page/query Search Console attribution enabled.
+# Self-test marker: page/query attribution and returning-user measurement enabled.
 on:
   push:
     branches:
