@@ -56,7 +56,8 @@
     else if (/\bxml\b/.test(t)) format = 'xml';
     else if (/\bjson\b|\bapi\s+(?:response|responses|payload|payloads)\b/.test(t)) format = 'json';
     if (!format) return null;
-    return {format,label:{csv:'CSV comparison',json:'JSON comparison',xml:'XML comparison'}[format]};
+    const outputMatch=t.match(/\b(?:output|export|return|save|produce)(?:\s+(?:the\s+)?differences?)?\s+(?:in|as|to)\s+(json|csv|xml|text)\b/);
+    return {format,outputFormat:outputMatch?outputMatch[1]:'text',label:{csv:'CSV comparison',json:'JSON comparison',xml:'XML comparison'}[format]};
   }
 
   function parseFields(t, verbs) {
@@ -163,8 +164,8 @@
     if (/\b(?:format|pretty[- ]?print|beautify|indent)\b/.test(t) && /\bjson\b/.test(t) && !conversion) steps.push({mode:'formatJson',params:{}});
 
     if (comparison) {
-      steps.push({mode:'compareStep',params:{format:comparison.format,reference:''}});
-      notes.push(`Understood as ${comparison.label.toLowerCase()}. Recast returns added, removed and changed differences. Set the first ${comparison.format.toUpperCase()} as the reference; the second is the current input.`);
+      steps.push({mode:'compareStep',params:{format:comparison.format,outputFormat:comparison.outputFormat,reference:''}});
+      notes.push(`Understood as ${comparison.label.toLowerCase()}. Recast returns added, removed and changed differences as ${comparison.outputFormat.toUpperCase()}. Add the first ${comparison.format.toUpperCase()} as the reference in the builder; the workbench input is the second file.`);
       requiresConfiguration = true;
     }
 
@@ -218,7 +219,7 @@
         flatten:'Flatten nested objects',unflatten:'Unflatten fields',transformRemove:'Remove fields',transformRename:'Rename field',transformSelect:'Select fields',transformFilter:'Filter records',transformSort:'Sort records',sortJson:'Sort object keys',transformConvertType:'Convert field type',transformAddField:'Add / default field',transformCombine:'Combine fields',jsonPath:'Extract with JSONPath',validateJsonStep:'Validate JSON',validateXmlStep:'Validate XML',formatJson:'Format JSON',compareStep:'Compare files → differences'
       };
       const p=s.params||{};
-      const detail = p.paths ? p.paths.join(', ') : p.from ? `${p.from} → ${p.to}` : p.path ? p.path : s.mode==='transformFilter'?`${p.field} ${p.condition} ${p.value??''}`:s.mode==='transformSort'?`${p.field||'choose field'} (${p.direction||'asc'})`:s.mode==='transformConvertType'?`${p.field} → ${p.type}`:s.mode==='transformAddField'?`${p.field} = ${p.value}`:s.mode==='transformCombine'?`${p.template} → ${p.newField}`:s.mode==='compareStep'?`${(p.format||'json').toUpperCase()} · reference required`:s.mode==='apiRequestStep'?`${p.method} ${p.url}`:'';
+      const detail = p.paths ? p.paths.join(', ') : p.from ? `${p.from} → ${p.to}` : p.path ? p.path : s.mode==='transformFilter'?`${p.field} ${p.condition} ${p.value??''}`:s.mode==='transformSort'?`${p.field||'choose field'} (${p.direction||'asc'})`:s.mode==='transformConvertType'?`${p.field} → ${p.type}`:s.mode==='transformAddField'?`${p.field} = ${p.value}`:s.mode==='transformCombine'?`${p.template} → ${p.newField}`:s.mode==='compareStep'?`${(p.format||'json').toUpperCase()} inputs → ${(p.outputFormat||'text').toUpperCase()} differences · reference required`:s.mode==='apiRequestStep'?`${p.method} ${p.url}`:'';
       return `<div class="wc-step"><span class="wc-step-num">${i+1}</span><div><strong>${esc(labels[s.mode]||s.mode)}</strong>${detail?`<small>${esc(detail)}</small>`:''}</div></div>`;
     }).join('<span class="wc-arrow">↓</span>');
   }
@@ -232,8 +233,8 @@
         $('wcOpenBtn').disabled=false;
         $('wcOpenBtn').textContent=direct ? `Open ${direct.label} →` : 'Open in Workflow Builder →';
       }
-      if ($('wcRunBtn')) $('wcRunBtn').disabled=!!direct || !!def.requiresConfiguration;
-      if ($('wcSaveBtn')) $('wcSaveBtn').disabled=!!direct || !!def.requiresConfiguration;
+      if ($('wcRunBtn')) $('wcRunBtn').disabled=!!direct;
+      if ($('wcSaveBtn')) $('wcSaveBtn').disabled=!!direct;
       if ($('wcApiBtn')) $('wcApiBtn').style.display=direct?'none':'';
     }
     async function buildNow() {
@@ -261,7 +262,7 @@
 
       render(definition);
       setButtonState(definition);
-      $('wcResultTitle').textContent=definition.directAction?(definition.directAction.fallback?'I can route that safely':'Request understood — use the dedicated tool'):(definition.requiresConfiguration?'Request understood — one detail to configure':'Workflow ready');
+      $('wcResultTitle').textContent=definition.directAction?(definition.directAction.fallback?'Choose the closest supported tool':'Ready to open the dedicated tool'):(definition.requiresConfiguration?'Workflow built — add the highlighted input':'Workflow ready to run');
       $('wcResultMeta').textContent=(definition.steps.length?definition.steps.length+' step'+(definition.steps.length===1?'':'s'):'direct tool')+(definition.source==='ai'?' · AI':'');
       const privacy = definition.source==='ai'
         ? 'AI interpreted this request. Your working data has not been uploaded.'
@@ -274,15 +275,17 @@
     $('wcPrompt').addEventListener('keydown',e=>{if((e.metaKey||e.ctrlKey)&&e.key==='Enter')buildNow();});
     document.querySelectorAll('[data-wc-example]').forEach(b=>b.addEventListener('click',()=>{$('wcPrompt').value=b.getAttribute('data-wc-example');buildNow();}));
     $('wcEditPromptBtn').addEventListener('click',()=>{$('wcResult').hidden=true;$('wcPrompt').focus();});
-    $('wcSaveBtn')?.addEventListener('click',()=>{if(!definition||!definition.steps.length||definition.directAction)return;if(window.RecastWorkflowLibrary){const saved=window.RecastWorkflowLibrary.save(definition);if(window.showToastSafe)window.showToastSafe(`Saved workflow "${saved.name}"`);}});
+    $('wcSaveBtn')?.addEventListener('click',()=>{if(!definition||!definition.steps.length||definition.directAction)return;if(window.RecastWorkflowLibrary){const saved=window.RecastWorkflowLibrary.save(definition);window.showToastSafe?.(`Saved "${saved.name}" to Workflow Library${definition.requiresConfiguration?' — finish its highlighted setup before running.':''}`);window.RecastHomeDepth?.activate('library',true);}});
     $('wcOpenBtn').addEventListener('click',()=>{
       if(!definition)return;
       if(definition.directAction){window.location.href=definition.directAction.href;return;}
       if(!definition.steps.length)return;
       if(window.RecastRecipeBuilder2?.openWithDefinition){window.RecastRecipeBuilder2.openWithDefinition(definition);const panel=$('recipeBuilder2Panel');if(panel)panel.scrollIntoView({behavior:'smooth',block:'start'});}
     });
-    $('wcRunBtn').addEventListener('click',()=>{if(!definition||!definition.steps.length||definition.directAction||!window.RecastRecipeBuilder2)return;window.RecastRecipeBuilder2.openWithDefinition(definition);const run=$('rb2RunBtn');if(run)setTimeout(()=>run.click(),100);});
+    $('wcRunBtn').addEventListener('click',()=>{if(!definition||!definition.steps.length||definition.directAction||!window.RecastRecipeBuilder2)return;window.RecastRecipeBuilder2.openWithDefinition(definition);const panel=$('recipeBuilder2Panel');panel?.scrollIntoView({behavior:'smooth',block:'start'});if(definition.requiresConfiguration){window.showToastSafe?.('Workflow opened — add the required reference or field, then choose Run recipe.');return;}const run=$('rb2RunBtn');if(run)setTimeout(()=>run.click(),100);});
+    $('wcApiBtn')?.addEventListener('click',e=>{e.preventDefault();if(!definition||!definition.steps.length)return;const saved=window.RecastWorkflowLibrary?.save(definition);if(!saved){window.showToastSafe?.('Save the workflow before deploying it.');return;}if(definition.requiresConfiguration){window.RecastRecipeBuilder2?.openWithDefinition(definition);$('recipeBuilder2Panel')?.scrollIntoView({behavior:'smooth',block:'start'});window.showToastSafe?.('Finish the highlighted workflow setup before API deployment.');return;}if(window.RecastWorkflowAutomation?.deploy)window.RecastWorkflowAutomation.deploy(saved);else{window.showToastSafe?.('Workflow saved. Open Deploy & automate to publish its API.');window.RecastHomeDepth?.activate('automation',true);}});
   }
   if(document.readyState==='loading')document.addEventListener('DOMContentLoaded',init);else init();
   window.RecastWorkflowCopilot={build,buildWithAi};
 })();
+
