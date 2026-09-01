@@ -65,7 +65,7 @@ jobs:
         id: commit
         shell: bash
         run: |
-          if git diff --quiet; then
+          if [ -z "$(git status --porcelain)" ]; then
             echo "changed=false" >> "$GITHUB_OUTPUT"
             echo "No justified change today."
             exit 0
