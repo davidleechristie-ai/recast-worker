@@ -23,7 +23,7 @@
   "assets": {
     "directory": "./public",
     "binding": "ASSETS",
-    "run_worker_first": ["/api/*", "/", "/blog", "/blog/", "/how-to", "/how-to/", "/demo", "/demo/", "/tools", "/tools/", "/tools/*", "/app", "/app/", "/app/*"],
+    "run_worker_first": ["/api/*", "/", "/blog", "/blog/", "/how-to", "/how-to/", "/demo", "/demo/", "/tools", "/tools/*", "/app", "/app/*", "/automation/*"],
     "html_handling": "none"
   },
 

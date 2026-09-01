@@ -595,6 +595,18 @@ const env = {
     }
   }
 
+
+  // ---------------- production directory + /app path integrity ----------------
+  {
+    assert('automation directory resolves to its index asset', W.DIRECTORY_INDEX_PATHS['/automation/'] === '/automation/index.html', W.DIRECTORY_INDEX_PATHS['/automation/']);
+    const appPath = path.join(path.dirname(fileURLToPath(import.meta.url)), '..', 'public', 'app', 'index.html');
+    const appHtml = readFileSync(appPath, 'utf8');
+    const relativeAssetRefs = [...appHtml.matchAll(/(?:src|href)=["']((?:styles\\.css|app\\.js|lib\\/)[^"']*)["']/g)].map((match) => match[1]);
+    assert('/app assets are root-absolute so both /app and /app/ work', relativeAssetRefs.length === 0, relativeAssetRefs);
+    const brokenNavRefs = [...appHtml.matchAll(/href=["']((?:api|blog|demo|how-to)\\/index\\.html|contact\\.html)["']/g)].map((match) => match[1]);
+    assert('/app navigation destinations are root-absolute', brokenNavRefs.length === 0, brokenNavRefs);
+  }
+
   console.log(`\n${pass} passed, ${fail} failed`);
   process.exit(fail ? 1 : 0);
 })();
