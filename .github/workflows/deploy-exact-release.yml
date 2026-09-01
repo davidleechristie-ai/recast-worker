@@ -1,0 +1,47 @@
+name: Deploy exact Recast release
+
+on:
+  push:
+    branches:
+      - main
+    paths:
+      - '.github/workflows/deploy-exact-release.yml'
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+concurrency:
+  group: cloudflare-production
+  cancel-in-progress: false
+
+jobs:
+  deploy:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Check out requested release
+        uses: actions/checkout@v4
+        with:
+          ref: 2e592a5f70c8bad1936600d438990439194b306f
+
+      - name: Set up Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: 20
+          cache: npm
+          cache-dependency-path: recast-worker/package-lock.json
+
+      - name: Install dependencies
+        working-directory: recast-worker
+        run: npm ci
+
+      - name: Run tests
+        working-directory: recast-worker
+        run: npm test
+
+      - name: Deploy falling-cloud-0deb
+        working-directory: recast-worker
+        run: npx wrangler deploy
+        env:
+          CLOUDFLARE_API_TOKEN: ${{ secrets.CLOUDFLARE_API_TOKEN }}
+          CLOUDFLARE_ACCOUNT_ID: ${{ secrets.CLOUDFLARE_ACCOUNT_ID }}
