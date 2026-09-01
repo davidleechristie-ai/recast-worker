@@ -36,7 +36,7 @@ jobs:
 
       - name: Install dependencies
         working-directory: recast-worker
-        run: npm install
+        run: npm install --no-package-lock
 
       - name: Baseline test suite
         working-directory: recast-worker
