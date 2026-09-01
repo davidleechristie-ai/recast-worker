@@ -57,7 +57,8 @@
     else if (/\bjson\b|\bapi\s+(?:response|responses|payload|payloads)\b/.test(t)) format = 'json';
     if (!format) return null;
     const outputMatch=t.match(/\b(?:output|export|return|save|produce)(?:\s+(?:the\s+)?differences?)?\s+(?:in|as|to)\s+(json|csv|xml|text)\b/);
-    return {format,outputFormat:outputMatch?outputMatch[1]:'text',label:{csv:'CSV comparison',json:'JSON comparison',xml:'XML comparison'}[format]};
+    const resultFilter=/\b(?:deletions?|deleted|removed|removals?)\s+only\b/.test(t)?'removed':/\b(?:additions?|added|new)\s+only\b/.test(t)?'added':/\b(?:changes?|changed|modified)\s+only\b/.test(t)?'changed':'all';
+    return {format,outputFormat:outputMatch?outputMatch[1]:'text',resultFilter,label:{csv:'CSV comparison',json:'JSON comparison',xml:'XML comparison'}[format]};
   }
 
   function parseFields(t, verbs) {
@@ -164,7 +165,7 @@
     if (/\b(?:format|pretty[- ]?print|beautify|indent)\b/.test(t) && /\bjson\b/.test(t) && !conversion) steps.push({mode:'formatJson',params:{}});
 
     if (comparison) {
-      steps.push({mode:'compareStep',params:{format:comparison.format,outputFormat:comparison.outputFormat,reference:''}});
+      steps.push({mode:'compareStep',params:{format:comparison.format,outputFormat:comparison.outputFormat,resultFilter:comparison.resultFilter,reference:''}});
       notes.push(`Understood as ${comparison.label.toLowerCase()}. Recast returns added, removed and changed differences as ${comparison.outputFormat.toUpperCase()}. Add the first ${comparison.format.toUpperCase()} as the reference in the builder; the workbench input is the second file.`);
       requiresConfiguration = true;
     }
@@ -227,11 +228,19 @@
   function init() {
     if (!$('wcBuildBtn')) return;
     let definition = null;
+    const comparisonStep=def=>def?.steps?.length===1&&def.steps[0].mode==='compareStep'?def.steps[0]:null;
+    function openComparisonWorkbench(def) {
+      const step=comparisonStep(def); if(!step)return false;
+      const p=step.params||{};
+      if(window.RecastWorkbench?.openComparison){window.RecastWorkbench.openComparison({format:p.format||'json',filter:p.resultFilter||'all'});return true;}
+      return false;
+    }
     function setButtonState(def) {
       const direct=def.directAction;
       if ($('wcOpenBtn')) {
         $('wcOpenBtn').disabled=false;
-        $('wcOpenBtn').textContent=direct ? `Open ${direct.label} →` : 'Open in Workflow Builder →';
+        const compare=comparisonStep(def);
+        $('wcOpenBtn').textContent=direct ? `Open ${direct.label} →` : compare ? `Open ${(compare.params?.format||'json').toUpperCase()} Compare →` : 'Open in Workflow Builder →';
       }
       if ($('wcRunBtn')) $('wcRunBtn').disabled=!!direct;
       if ($('wcSaveBtn')) $('wcSaveBtn').disabled=!!direct;
@@ -280,9 +289,10 @@
       if(!definition)return;
       if(definition.directAction){window.location.href=definition.directAction.href;return;}
       if(!definition.steps.length)return;
+      if(openComparisonWorkbench(definition))return;
       if(window.RecastRecipeBuilder2?.openWithDefinition){window.RecastRecipeBuilder2.openWithDefinition(definition);const panel=$('recipeBuilder2Panel');if(panel)panel.scrollIntoView({behavior:'smooth',block:'start'});}
     });
-    $('wcRunBtn').addEventListener('click',()=>{if(!definition||!definition.steps.length||definition.directAction||!window.RecastRecipeBuilder2)return;window.RecastRecipeBuilder2.openWithDefinition(definition);const panel=$('recipeBuilder2Panel');panel?.scrollIntoView({behavior:'smooth',block:'start'});if(definition.requiresConfiguration){window.showToastSafe?.('Workflow opened — add the required reference or field, then choose Run recipe.');return;}const run=$('rb2RunBtn');if(run)setTimeout(()=>run.click(),100);});
+    $('wcRunBtn').addEventListener('click',()=>{if(!definition||!definition.steps.length||definition.directAction)return;if(openComparisonWorkbench(definition)){window.showToastSafe?.('Add the original and modified files, then choose Compare.');return;}if(!window.RecastRecipeBuilder2)return;window.RecastRecipeBuilder2.openWithDefinition(definition);const panel=$('recipeBuilder2Panel');panel?.scrollIntoView({behavior:'smooth',block:'start'});if(definition.requiresConfiguration){window.showToastSafe?.('Workflow opened — add the required reference or field, then choose Run recipe.');return;}const run=$('rb2RunBtn');if(run)setTimeout(()=>run.click(),100);});
     $('wcApiBtn')?.addEventListener('click',e=>{e.preventDefault();if(!definition||!definition.steps.length)return;const saved=window.RecastWorkflowLibrary?.save(definition);if(!saved){window.showToastSafe?.('Save the workflow before deploying it.');return;}if(definition.requiresConfiguration){window.RecastRecipeBuilder2?.openWithDefinition(definition);$('recipeBuilder2Panel')?.scrollIntoView({behavior:'smooth',block:'start'});window.showToastSafe?.('Finish the highlighted workflow setup before API deployment.');return;}if(window.RecastWorkflowAutomation?.deploy)window.RecastWorkflowAutomation.deploy(saved);else{window.showToastSafe?.('Workflow saved. Open Deploy & automate to publish its API.');window.RecastHomeDepth?.activate('automation',true);}});
   }
   if(document.readyState==='loading')document.addEventListener('DOMContentLoaded',init);else init();
