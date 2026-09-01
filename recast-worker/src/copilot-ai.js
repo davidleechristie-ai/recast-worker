@@ -246,8 +246,16 @@ async function interpretWithAi(prompt, env, deps={}) {
     }
 
     if (!response.ok) {
-      const message = data?.error?.message || `AI provider returned ${response.status}`;
-      throw Object.assign(new Error(message),{status:502,code:'ai_provider_error'});
+      const providerMessage = String(data?.error?.message || '');
+      const unavailable = response.status === 429 ||
+        /no credits|insufficient.?quota|quota exceeded|billing|credit balance/i.test(providerMessage);
+      const message = unavailable
+        ? 'AI interpretation is temporarily unavailable'
+        : (providerMessage || `AI provider returned ${response.status}`);
+      throw Object.assign(new Error(message),{
+        status:unavailable ? 503 : 502,
+        code:unavailable ? 'ai_unavailable' : 'ai_provider_error'
+      });
     }
     const text = extractOutputText(data);
     if (!text) throw Object.assign(new Error('AI returned an empty response'),{status:502,code:'ai_empty'});
