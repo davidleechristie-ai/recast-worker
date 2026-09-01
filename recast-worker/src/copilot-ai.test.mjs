@@ -1,19 +1,28 @@
 
 import assert from 'node:assert/strict';
-import { normaliseAiDefinition, interpretWithAi, extractOutputText } from './copilot-ai.js';
+import { normaliseAiDefinition, applyExplicitComparisonOutput, interpretWithAi, extractOutputText } from './copilot-ai.js';
 
 let passed=0;
 
 {
   const def=normaliseAiDefinition({
     name:'CSV comparison',
-    steps:[{mode:'compareStep',params:{format:'csv',differencesOnly:true}}],
+    steps:[{mode:'compareStep',params:{format:'csv',outputFormat:'xml',differencesOnly:true}}],
     notes:['Compare by reference input.'],
     requiresConfiguration:true,automation:false,directTool:null
   });
   assert.equal(def.steps[0].mode,'compareStep');
   assert.equal(def.steps[0].params.format,'csv');
+  assert.equal(def.steps[0].params.outputFormat,'xml');
   assert.equal(def.source,'ai');
+  passed++;
+}
+{
+  const def=applyExplicitComparisonOutput(normaliseAiDefinition({
+    name:'Compare',steps:[{mode:'compareStep',params:{format:'csv'}}],notes:[],
+    requiresConfiguration:true,automation:false,directTool:null
+  }),'compare two CSV files and output differences in XML');
+  assert.equal(def.steps[0].params.outputFormat,'xml');
   passed++;
 }
 {
