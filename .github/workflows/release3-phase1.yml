@@ -1,0 +1,86 @@
+name: Recast Release 3 Phase 1
+
+on:
+  push:
+    branches:
+      - release-3-commercial-funnel-phase1-final
+    paths:
+      - '.github/release3-phase1.md'
+      - '.github/workflows/release3-phase1.yml'
+  workflow_dispatch:
+
+permissions:
+  contents: write
+
+concurrency:
+  group: recast-release3-phase1
+  cancel-in-progress: false
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Check out phase branch
+        uses: actions/checkout@v5
+        with:
+          ref: release-3-commercial-funnel-phase1-final
+          fetch-depth: 20
+
+      - name: Set up Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: 20
+
+      - name: Install dependencies
+        working-directory: recast-worker
+        run: npm install --no-package-lock
+
+      - name: Baseline tests
+        working-directory: recast-worker
+        run: npm test
+
+      - name: Require OpenAI API key
+        env:
+          OPENAI_API_KEY: ${{ secrets.OPENAI_API_KEY }}
+        run: |
+          if [ -z "$OPENAI_API_KEY" ]; then
+            echo "OPENAI_API_KEY repository secret is required."
+            exit 1
+          fi
+
+      - name: Implement Release 3 Phase 1
+        uses: openai/codex-action@v1
+        with:
+          openai-api-key: ${{ secrets.OPENAI_API_KEY }}
+          permission-profile: ':workspace'
+          prompt-file: '.github/release3-phase1.md'
+          safety-strategy: 'drop-sudo'
+          allow-bots: 'true'
+
+      - name: Test Release 3 Phase 1
+        working-directory: recast-worker
+        run: npm test
+
+      - name: Verify no workflow/config drift
+        shell: bash
+        run: |
+          if git diff --name-only | grep -E '^\.github/|^recast-worker/wrangler|^recast-worker/package(-lock)?\.json$' | grep -v '^\.github/release3-phase1.md$' | grep -v '^\.github/workflows/release3-phase1.yml$'; then
+            echo "Agent modified protected workflow/config files."
+            exit 1
+          fi
+
+      - name: Commit Phase 1 implementation
+        shell: bash
+        run: |
+          git config user.name "recast-release-bot"
+          git config user.email "recast-release-bot@users.noreply.github.com"
+          git add recast-worker
+          if git diff --cached --quiet; then
+            echo "No implementation changes were produced."
+            exit 1
+          fi
+          git commit -m "Release 3: connect tools to workflows, automation and API"
+          git push origin HEAD:release-3-commercial-funnel-phase1-final
+
+      - name: Summary
+        run: echo "Release 3 Phase 1 implemented and tested on branch only. No deployment or merge performed."
