@@ -105,4 +105,61 @@ let passed=0;
   passed++;
 }
 
+{
+  const bodies=[];
+  let calls=0;
+  const mockFetch=async (url,opts)=>{
+    bodies.push(JSON.parse(opts.body));
+    calls++;
+    if (calls === 1) return {
+      ok:false,status:400,
+      async json(){return {error:{message:'Invalid schema for response_format: text.format schema is not valid'}};}
+    };
+    return {ok:true,status:200,async json(){return {output_text:JSON.stringify({
+      name:'CSV export',steps:[{mode:'json2csv',params:{}}],notes:[],
+      requiresConfiguration:false,automation:false,directTool:null
+    })};}};
+  };
+  const def=await interpretWithAi('convert JSON to CSV',{OPENAI_API_KEY:'x'},{fetch:mockFetch,resolveSecret:async x=>x});
+  assert.equal(calls,2);
+  assert.equal(bodies[0].text.format.type,'json_schema');
+  assert.equal(bodies[1].text.format.type,'json_object');
+  assert.equal(def.steps[0].mode,'json2csv');
+  passed++;
+}
+
+{
+  let calls=0;
+  const mockFetch=async ()=>{
+    calls++;
+    return {ok:false,status:401,async json(){return {error:{message:'invalid API key'}};}};
+  };
+  await assert.rejects(
+    interpretWithAi('convert JSON to CSV',{OPENAI_API_KEY:'bad'},{fetch:mockFetch,resolveSecret:async x=>x}),
+    e=>e.code==='ai_provider_error' && e.status===502
+  );
+  assert.equal(calls,1); // authentication failures must not be retried
+  passed++;
+}
+
+
+{
+  const { schema } = await import('./copilot-ai.js');
+  function assertClosed(node, path='root') {
+    if (!node || typeof node !== 'object') return;
+    if (node.type === 'object') {
+      assert.equal(node.additionalProperties,false,`${path}: object schema must set additionalProperties:false`);
+      const props=node.properties||{};
+      assert.deepEqual(new Set(node.required||[]),new Set(Object.keys(props)),`${path}: strict object must require every property`);
+    }
+    for (const [k,v] of Object.entries(node)) {
+      if (Array.isArray(v)) v.forEach((x,i)=>assertClosed(x,`${path}.${k}[${i}]`));
+      else if (v && typeof v === 'object') assertClosed(v,`${path}.${k}`);
+    }
+  }
+  assertClosed(schema());
+  passed++;
+}
+
 console.log(`\n${passed} AI Copilot tests passed, 0 failed`);
+
