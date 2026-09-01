@@ -18,7 +18,7 @@
 <meta name="twitter:image" content="https://tryrecast.app/og-image.png">
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@400;500;600;700&family=IBM+Plex+Sans:wght@400;500;600&family=IBM+Plex+Mono:wght@400;500&display=swap" rel="stylesheet">
-<link rel="stylesheet" href="styles.css">
+<link rel="stylesheet" href="/styles.css">
 <link rel="canonical" href="https://tryrecast.app/">
 <link rel="manifest" href="/manifest.json">
 <meta name="theme-color" content="#0A0E1F">
@@ -485,17 +485,17 @@ body{background:#080b1a}
         <button type="button" class="nav-group-btn" aria-expanded="false" aria-haspopup="true">Automate<svg class="ico nav-caret"><use href="#ico-chevron"/></svg></button>
         <div class="nav-dropdown" role="menu">
           <button type="button" class="nav-dropdown-item" data-nav-action="recipes" role="menuitem">Recipes</button>
-          <a href="api/index.html" class="nav-dropdown-item" role="menuitem">API</a>
+          <a href="/api/index.html" class="nav-dropdown-item" role="menuitem">API</a>
           <a href="https://www.npmjs.com/package/recast-cli" class="nav-dropdown-item" role="menuitem">CLI</a>
         </div>
       </div>
       <div class="nav-group" data-nav-group="resources">
         <button type="button" class="nav-group-btn" aria-expanded="false" aria-haspopup="true">Resources<svg class="ico nav-caret"><use href="#ico-chevron"/></svg></button>
         <div class="nav-dropdown" role="menu">
-          <a href="demo/index.html" class="nav-dropdown-item" role="menuitem">Demo</a>
-          <a href="blog/index.html" class="nav-dropdown-item" role="menuitem">Blog</a>
-          <a href="how-to/index.html" class="nav-dropdown-item" role="menuitem">How-to</a>
-          <a href="contact.html" class="nav-dropdown-item" role="menuitem">Contact</a>
+          <a href="/demo/index.html" class="nav-dropdown-item" role="menuitem">Demo</a>
+          <a href="/blog/index.html" class="nav-dropdown-item" role="menuitem">Blog</a>
+          <a href="/how-to/index.html" class="nav-dropdown-item" role="menuitem">How-to</a>
+          <a href="/contact.html" class="nav-dropdown-item" role="menuitem">Contact</a>
         </div>
       </div>
       <a href="#pricing" class="nav-plain-link">Pricing</a>
@@ -1183,7 +1183,7 @@ body{background:#080b1a}
         <code style="color:#3AA2FC;">POST /v1/diff</code> — <code>mode</code>: diffJson, diffXml, diffCsv (send <code>inputA</code>/<code>inputB</code> instead of <code>input</code>)<br>
         <code style="color:#3AA2FC;">POST /v1/schema</code> — infers a JSON Schema (draft-07) from a sample <code>input</code>
       </p>
-      <p style="font-size:13.5px;"><a href="api/index.html" style="color:#A855F7;">Full API reference &rarr;</a></p>
+      <p style="font-size:13.5px;"><a href="/api/index.html" style="color:#A855F7;">Full API reference &rarr;</a></p>
 
       <div id="apiKeyBox" class="api-key-box" style="display:none;">
         <span class="api-key-label">Your API key</span>
@@ -1277,25 +1277,25 @@ body{background:#080b1a}
 <div class="share-toast" id="shareToast"></div>
 
 <!-- Shared, tested engine + feature modules (also power the recast-cli npm package and worker) -->
-<script src="lib/engine.js"></script>
-<script src="lib/working-dataset.js"></script>
-<script src="lib/highlight.js"></script>
-<script src="lib/history.js"></script>
-<script src="lib/share.js"></script>
-<script src="lib/worker-client.js"></script>
-<script src="lib/transform-builder.js"></script>
-<script src="lib/pipeline-field-resolver.js"></script>
-<script src="lib/batch.js"></script>
-<script src="lib/graph.js"></script>
-<script src="lib/recipes.js"></script>
-<script src="lib/theme.js"></script>
-<script src="lib/nav.js"></script>
-<script src="lib/transform-ui.js"></script>
-<script src="lib/recipe-builder-2.js"></script>
-<script src="lib/data-profiler.js"></script>
-<script src="lib/data-inspector-ui.js"></script>
-<script src="lib/structural-analysis.js"></script>
-<script src="lib/structural-analysis-ui.js"></script>
+<script src="/lib/engine.js"></script>
+<script src="/lib/working-dataset.js"></script>
+<script src="/lib/highlight.js"></script>
+<script src="/lib/history.js"></script>
+<script src="/lib/share.js"></script>
+<script src="/lib/worker-client.js"></script>
+<script src="/lib/transform-builder.js"></script>
+<script src="/lib/pipeline-field-resolver.js"></script>
+<script src="/lib/batch.js"></script>
+<script src="/lib/graph.js"></script>
+<script src="/lib/recipes.js"></script>
+<script src="/lib/theme.js"></script>
+<script src="/lib/nav.js"></script>
+<script src="/lib/transform-ui.js"></script>
+<script src="/lib/recipe-builder-2.js"></script>
+<script src="/lib/data-profiler.js"></script>
+<script src="/lib/data-inspector-ui.js"></script>
+<script src="/lib/structural-analysis.js"></script>
+<script src="/lib/structural-analysis-ui.js"></script>
 <script>
   if ('serviceWorker' in navigator) {
     window.addEventListener('load', () => {
@@ -1303,15 +1303,15 @@ body{background:#080b1a}
     });
   }
 </script>
-<script src="lib/presets.js"></script>
-<script src="lib/csv-compare.js"></script>
-<script src="lib/workflow-copilot.js"></script>
-<script src="lib/home-depth.js"></script>
-  <script src="lib/instant-demo.js"></script>
-  <script src="lib/workflow-templates.js"></script>
-  <script src="lib/workflow-library.js"></script>
-<script src="lib/workflow-automation.js"></script>
-<script src="app.js"></script>
+<script src="/lib/presets.js"></script>
+<script src="/lib/csv-compare.js"></script>
+<script src="/lib/workflow-copilot.js"></script>
+<script src="/lib/home-depth.js"></script>
+  <script src="/lib/instant-demo.js"></script>
+  <script src="/lib/workflow-templates.js"></script>
+  <script src="/lib/workflow-library.js"></script>
+<script src="/lib/workflow-automation.js"></script>
+<script src="/app.js"></script>
 <!-- Cloudflare Web Analytics --><script type='module' src='https://static.cloudflareinsights.com/beacon.min.js' data-cf-beacon='{"token": "13426e11249049dba542ef0b69a55823"}'></script><!-- End Cloudflare Web Analytics -->
 
 
