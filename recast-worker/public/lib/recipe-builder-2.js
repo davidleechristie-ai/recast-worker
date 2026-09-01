@@ -83,7 +83,7 @@
       case 'transformAddField': return `${p.field} = ${p.value}`;
       case 'transformCombine': return `${p.template} \u2192 ${p.newField}`;
       case 'jsonPath': return p.path || '';
-      case 'compareStep': return `vs. reference (${p.format || 'json'})`;
+      case 'compareStep': return `vs. reference (${p.format || 'json'}) → ${p.outputFormat || 'text'}`;
       case 'validateJsonStep': case 'validateXmlStep': return 'must pass to continue';
       case 'apiRequestStep': return `${p.method || 'POST'} ${p.url || ''}`;
       default: return MODE_LABELS[step.mode] || step.mode;
@@ -147,7 +147,8 @@
     } else if (step.type === 'jsonPath') {
       html += `<label>Path</label><input type="text" id="rb2Path" value="${escapeHtml(p.path || '')}" placeholder="e.g. users[*].name">`;
     } else if (step.type === 'compare') {
-      html += `<label>Format</label><select id="rb2Format"><option value="json" ${(!p.format || p.format === 'json') ? 'selected' : ''}>JSON</option><option value="xml" ${p.format === 'xml' ? 'selected' : ''}>XML</option><option value="csv" ${p.format === 'csv' ? 'selected' : ''}>CSV</option></select>
+      html += `<label>Input format</label><select id="rb2Format"><option value="json" ${(!p.format || p.format === 'json') ? 'selected' : ''}>JSON</option><option value="xml" ${p.format === 'xml' ? 'selected' : ''}>XML</option><option value="csv" ${p.format === 'csv' ? 'selected' : ''}>CSV</option></select>
+        <label>Differences output</label><select id="rb2OutputFormat"><option value="text" ${(!p.outputFormat || p.outputFormat === 'text') ? 'selected' : ''}>Plain text</option><option value="json" ${p.outputFormat === 'json' ? 'selected' : ''}>JSON</option><option value="csv" ${p.outputFormat === 'csv' ? 'selected' : ''}>CSV</option><option value="xml" ${p.outputFormat === 'xml' ? 'selected' : ''}>XML</option></select>
         <label>Reference (paste the "before" version)</label><input type="text" id="rb2Reference" value="${escapeHtml(p.reference ? '(reference set \u2014 re-type to change)' : '')}" placeholder="Paste reference data">`;
     } else if (step.type === 'apiRequest') {
       html += `<label>Method</label><select id="rb2Method">${['GET','POST','PUT','PATCH','DELETE'].map((m) => `<option value="${m}" ${m === (p.method || 'POST') ? 'selected' : ''}>${m}</option>`).join('')}</select>
@@ -184,6 +185,7 @@
       params.path = $('rb2Path').value;
     } else if (step.type === 'compare') {
       params.format = $('rb2Format').value;
+      params.outputFormat = $('rb2OutputFormat').value;
       const refInput = $('rb2Reference').value;
       params.reference = (refInput && !refInput.startsWith('(reference set')) ? refInput : (step.params.reference || '');
     } else if (step.type === 'apiRequest') {
@@ -518,3 +520,4 @@
     openWithDefinition: openWithDefinition
   };
 })();
+
