@@ -98,6 +98,12 @@ const regression=build('compare two csv then output differences only');
 assert.equal(regression.steps[0].mode,'compareStep'); assert.equal(regression.steps[0].params.format,'csv');
 passed++;
 
+const xmlComparison=build('compare two csv files and output differences in xml');
+assert.equal(xmlComparison.steps[0].mode,'compareStep');
+assert.equal(xmlComparison.steps[0].params.format,'csv');
+assert.equal(xmlComparison.steps[0].params.outputFormat,'xml');
+passed++;
+
 console.log(`\n${passed} natural-language Copilot cases passed, 0 failed`);
 
 // Phrase-variation matrix: test intent families, not just hand-picked sentences.
@@ -141,3 +147,4 @@ for (const prompt of ['please sort by id','can you flatten this json','i need js
 }
 console.log(`${matrixPassed} phrase-variation matrix cases passed, 0 failed`);
 console.log(`${passed + matrixPassed} total Copilot requests covered, 0 failed`);
+
