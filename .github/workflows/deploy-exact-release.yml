@@ -1,6 +1,9 @@
-name: Deploy exact Recast release
+name: Deploy Recast production
 
 on:
+  push:
+    branches:
+      - main
   workflow_dispatch:
 
 permissions:
@@ -14,10 +17,8 @@ jobs:
   deploy:
     runs-on: ubuntu-latest
     steps:
-      - name: Check out requested release
+      - name: Check out release
         uses: actions/checkout@v4
-        with:
-          ref: 2e592a5f70c8bad1936600d438990439194b306f
 
       - name: Set up Node.js
         uses: actions/setup-node@v4
@@ -31,11 +32,6 @@ jobs:
       - name: Run tests
         working-directory: recast-worker
         run: npm test
-
-      - name: Remove redundant Wrangler route entries
-        working-directory: recast-worker
-        run: |
-          node -e "const fs=require('fs');const p='wrangler.jsonc';let s=fs.readFileSync(p,'utf8');s=s.replace(', \"/tools/\", \"/tools/*\"', ', \"/tools/*\"').replace(', \"/app\", \"/app/\", \"/app/*\"', ', \"/app\", \"/app/*\"');fs.writeFileSync(p,s)"
 
       - name: Deploy falling-cloud-0deb
         working-directory: recast-worker
