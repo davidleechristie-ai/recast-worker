@@ -13,7 +13,7 @@
     "successful_tool_uses": 0,
     "workflow_starts": 0,
     "workflow_completions": 0,
-    "returning_users": null,
+    "returning_users": 4,
     "upgrade_visits": 0,
     "pro_customers": 0,
     "api_automation_customers": 3
@@ -71,15 +71,26 @@
       ],
       "implementation_date": "2026-09-01",
       "follow_ups": {
-        "7_day": { "due": "2026-09-08", "status": "pending", "classification": null },
-        "14_day": { "due": "2026-09-15", "status": "pending", "classification": null },
-        "28_day": { "due": "2026-09-29", "status": "pending", "classification": null }
+        "7_day": {
+          "due": "2026-09-08",
+          "status": "pending",
+          "classification": null
+        },
+        "14_day": {
+          "due": "2026-09-15",
+          "status": "pending",
+          "classification": null
+        },
+        "28_day": {
+          "due": "2026-09-29",
+          "status": "pending",
+          "classification": null
+        }
       }
     }
   ],
   "missing_instrumentation": [
-    "Indexed target-page count or URL Inspection/index coverage evidence is unavailable.",
-    "GA4 returning-user measurement is unavailable in the current aggregate refresh."
+    "Indexed target-page count or URL Inspection/index coverage evidence is unavailable."
   ],
   "last_updated": "2026-09-01",
   "measurement_rules": {
@@ -2250,6 +2261,7 @@
       "organic_sessions": 39,
       "organic_active_users": 4,
       "organic_new_users": 1,
+      "organic_returning_users": 4,
       "successful_tool_uses": 0,
       "workflow_starts": 0,
       "workflow_completions": 0,
