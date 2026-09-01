@@ -17,13 +17,13 @@
   }
 ],
   "name": "falling-cloud-0deb",
-  "main": "src/worker.js",
+  "main": "src/worker-seo.js",
   "compatibility_date": "2026-08-13",
 
   "assets": {
     "directory": "./public",
     "binding": "ASSETS",
-    "run_worker_first": ["/api/*", "/", "/blog", "/blog/", "/how-to", "/how-to/", "/demo", "/demo/", "/tools", "/tools/"],
+    "run_worker_first": ["/api/*", "/", "/blog", "/blog/", "/how-to", "/how-to/", "/demo", "/demo/", "/tools", "/tools/", "/tools/*", "/app", "/app/", "/app/*"],
     "html_handling": "none"
   },
 
@@ -39,7 +39,6 @@
     "OPENAI_MODEL": "gpt-5.6-luna",
     "PRICE_MAP": "{\"price_1U41Bw07vRRG7JsXH0iAKy7g\":\"pro_monthly\",\"price_1U41Bx07vRRG7JsXlwnms0uo\":\"pro_yearly\",\"price_1U41Bs07vRRG7JsXnYpcoHh1\":\"api_monthly\",\"price_1U41Br07vRRG7JsXV1vskFmE\":\"api_yearly\",\"price_1U4Kub07vRRG7JsXtMatleol\":\"day_pass\"}"
   },
-
 
   "triggers": { "crons": ["0 * * * *"] },
 
