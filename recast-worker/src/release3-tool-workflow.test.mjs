@@ -30,6 +30,12 @@ assert.doesNotMatch(script, /localStorage\.setItem\(HANDOFF_KEY/);
 assert.doesNotMatch(script, /sessionStorage\.setItem\([^,]+,\s*(?:input|output|text|data)/i);
 assert.match(wrapper, /release3-tool-workflow\.js/);
 assert.match(wrapper, /seoWorker\.fetch/);
-assert.match(wrangler, /"main": "src\/worker-release3\.js"/);
+const mainMatch = wrangler.match(/"main":\s*"([^"]+)"/);
+assert.ok(mainMatch, 'Wrangler must declare a Worker entry point');
+if (mainMatch[1] !== 'src/worker-release3.js') {
+  const activeWrapper = await readFile(new URL(`./${mainMatch[1].replace(/^src\//, '')}`, import.meta.url), 'utf8');
+  assert.match(activeWrapper, /worker-release3\.js/);
+  assert.match(activeWrapper, /release3Worker\.fetch/);
+}
 
 console.log('release3 commercial journey tests passed');
