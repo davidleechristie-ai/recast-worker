@@ -33,4 +33,7 @@ assert.match(wrapper, /ui-consistency\.css\?v=2/);
 assert.match(wrapper, /ui-consistency\.js\?v=2/);
 assert.match(wrapper, /release4Worker\.fetch/);
 assert.match(wrangler, /"main": "src\/worker-ui\.js"/);
+for (const route of ['/blog/*','/how-to/*','/demo/*','/tools/*','/automation/*','/use-cases/*','/contact.html','/index.html']) {
+  assert.ok(wrangler.includes(`"${route}"`), `Worker UI wrapper must cover ${route}`);
+}
 console.log('site-wide UI consistency tests passed');
