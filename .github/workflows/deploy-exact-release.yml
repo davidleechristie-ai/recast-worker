@@ -51,8 +51,8 @@ jobs:
             "https://tryrecast.app/automation/"
             "https://tryrecast.app/api/"
             "https://tryrecast.app/seo/"
-            "https://tryrecast.app/seo/convert-json-to-csv-online/"
-            "https://tryrecast.app/seo/automate-json-to-csv/"
+            "https://tryrecast.app/seo/json-api-to-csv.html"
+            "https://tryrecast.app/seo/automate-json-csv-conversion.html"
             "https://tryrecast.app/sitemap-seo.xml"
           )
 
@@ -80,7 +80,7 @@ jobs:
             exit 1
           fi
 
-          seo_page=$(curl -L -sS --max-time 20 "https://tryrecast.app/seo/convert-json-to-csv-online/")
+          seo_page=$(curl -L -sS --max-time 20 "https://tryrecast.app/seo/json-api-to-csv.html")
           if ! grep -qi '<link rel="canonical"' <<< "$seo_page"; then
             echo "Production verification failed: SEO page canonical not found"
             exit 1
