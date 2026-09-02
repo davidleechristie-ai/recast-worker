@@ -1,7 +1,7 @@
 import release4Worker from './worker-release4.js';
 
-const UI_STYLE = '<link rel="stylesheet" href="/ui-consistency.css?v=1">';
-const UI_SCRIPT = '<script src="/ui-consistency.js?v=1" defer></script>';
+const UI_STYLE = '<link rel="stylesheet" href="/ui-consistency.css?v=2">';
+const UI_SCRIPT = '<script src="/ui-consistency.js?v=2" defer></script>';
 
 function applyUi(response) {
   const type = response.headers.get('content-type') || '';
