@@ -54,31 +54,18 @@ jobs:
       - name: Install dependencies
         working-directory: recast-worker
         run: npm install --no-package-lock
-      - name: Implement tool to workflow journey
-        uses: openai/codex-action@v1
-        with:
-          openai-api-key: ${{ secrets.OPENAI_API_KEY }}
-          permission-profile: ':workspace'
-          prompt-file: '.github/release3-phase1-tool-workflow.md'
-          safety-strategy: 'drop-sudo'
-          allow-bots: 'true'
-      - name: Reject workflow/config drift
-        run: |
-          if git diff --name-only | grep -E '^\.github/|^recast-worker/wrangler|^recast-worker/package(-lock)?\.json$'; then
-            echo "Protected workflow/config files changed."
-            exit 1
-          fi
-      - name: Test implementation
+      - name: Validate deterministic tool to workflow journey
+        working-directory: recast-worker
+        run: node src/release3-tool-workflow.test.mjs
+      - name: Full regression tests
         working-directory: recast-worker
         run: npm test
-      - name: Commit phase 1A
+      - name: Verify Phase 1A files are committed
         run: |
-          git config user.name "recast-release-bot"
-          git config user.email "recast-release-bot@users.noreply.github.com"
-          git add recast-worker
-          test -n "$(git diff --cached --name-only)" || { echo "No Phase 1A changes produced."; exit 1; }
-          git commit -m "Release 3: connect successful tools to workflows"
-          git push origin HEAD:release-3-commercial-funnel-phase1-final
+          test -f recast-worker/public/release3-tool-workflow.js
+          test -f recast-worker/src/worker-release3.js
+          grep -q 'src/worker-release3.js' recast-worker/wrangler.jsonc
+          test -z "$(git status --porcelain recast-worker)" || { git status --short; exit 1; }
 
   workflow_automation:
     needs: tool_workflow
