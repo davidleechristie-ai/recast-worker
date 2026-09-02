@@ -1,5 +1,6 @@
 import assert from 'node:assert/strict';
 import { readFile } from 'node:fs/promises';
+import { inflateSync } from 'node:zlib';
 
 const css = await readFile(new URL('../public/ui-consistency.css', import.meta.url), 'utf8');
 const js = await readFile(new URL('../public/ui-consistency.js', import.meta.url), 'utf8');
@@ -8,6 +9,8 @@ const wrangler = await readFile(new URL('../wrangler.jsonc', import.meta.url), '
 
 for (const label of ['Tools','Workflows','Automation','API','Guides','Pricing']) assert.ok(js.includes(`'${label}'`) || js.includes(`>${label}<`), `missing shared nav label ${label}`);
 assert.match(js, /normalizeBranding/);
+assert.match(js, /\/assets\/brand\/recast-logo\.png/);
+assert.match(js, /recast-brand-logo/);
 assert.match(js, /normalizeUseCaseNav/);
 assert.match(js, /normalizeTechnicalNav/);
 assert.match(js, /ensureGlobalShell/);
@@ -29,8 +32,9 @@ assert.match(css, /@media\(max-width:640px\)/);
 assert.match(wrapper, /worker-release4\.js/);
 assert.match(wrapper, /ui-consistency\.css/);
 assert.match(wrapper, /ui-consistency\.js/);
-assert.match(wrapper, /ui-consistency\.css\?v=2/);
-assert.match(wrapper, /ui-consistency\.js\?v=2/);
+assert.match(wrapper, /ui-consistency\.css\?v=3/);
+assert.match(wrapper, /ui-consistency\.js\?v=3/);
+assert.match(wrapper, /recast-favicon-64\.png/);
 assert.match(wrapper, /app\.js\?v=87/);
 assert.match(wrapper, /release4Worker\.fetch/);
 assert.match(wrangler, /"main": "src\/worker-ui\.js"/);
@@ -38,5 +42,23 @@ for (const route of ['/blog/*','/how-to/*','/demo/*','/tools/*','/automation/*',
   assert.ok(wrangler.includes(`"${route}"`), `Worker UI wrapper must cover ${route}`);
 }
 const serviceWorker = await readFile(new URL('../public/sw.js', import.meta.url), 'utf8');
-assert.match(serviceWorker, /CACHE_VERSION = 'recast-v87'/);
+assert.match(serviceWorker, /CACHE_VERSION = 'recast-v88'/);
+assert.match(serviceWorker, /assets\/brand\/recast-logo\.png/);
+
+const logo = await readFile(new URL('../public/assets/brand/recast-logo.png', import.meta.url));
+assert.equal(logo.toString('ascii', 1, 4), 'PNG');
+const width = logo.readUInt32BE(16);
+const height = logo.readUInt32BE(20);
+assert.equal(width, height, 'canonical logo must remain square');
+assert.equal(logo[25], 6, 'canonical logo must be RGBA PNG');
+let offset = 8;
+const idat = [];
+while (offset < logo.length) {
+  const length = logo.readUInt32BE(offset);
+  const type = logo.toString('ascii', offset + 4, offset + 8);
+  if (type === 'IDAT') idat.push(logo.subarray(offset + 8, offset + 8 + length));
+  offset += 12 + length;
+}
+const pixels = inflateSync(Buffer.concat(idat));
+assert.equal(pixels[4], 0, 'canonical logo top-left pixel must be transparent');
 console.log('site-wide UI consistency tests passed');
