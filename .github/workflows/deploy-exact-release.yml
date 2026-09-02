@@ -50,6 +50,10 @@ jobs:
             "https://tryrecast.app/tools/csv-to-json"
             "https://tryrecast.app/automation/"
             "https://tryrecast.app/api/"
+            "https://tryrecast.app/seo/"
+            "https://tryrecast.app/seo/convert-json-to-csv-online/"
+            "https://tryrecast.app/seo/automate-json-to-csv/"
+            "https://tryrecast.app/sitemap-seo.xml"
           )
 
           for url in "${urls[@]}"; do
@@ -73,6 +77,18 @@ jobs:
           home=$(curl -L -sS --max-time 20 "https://tryrecast.app/")
           if ! grep -q 'id="pricing"' <<< "$home"; then
             echo "Production verification failed: homepage pricing section not found"
+            exit 1
+          fi
+
+          seo_page=$(curl -L -sS --max-time 20 "https://tryrecast.app/seo/convert-json-to-csv-online/")
+          if ! grep -qi '<link rel="canonical"' <<< "$seo_page"; then
+            echo "Production verification failed: SEO page canonical not found"
+            exit 1
+          fi
+
+          seo_sitemap=$(curl -L -sS --max-time 20 "https://tryrecast.app/sitemap-seo.xml")
+          if ! grep -q 'https://tryrecast.app/seo/' <<< "$seo_sitemap"; then
+            echo "Production verification failed: SEO sitemap has no SEO URLs"
             exit 1
           fi
 
