@@ -31,9 +31,12 @@ assert.match(wrapper, /ui-consistency\.css/);
 assert.match(wrapper, /ui-consistency\.js/);
 assert.match(wrapper, /ui-consistency\.css\?v=2/);
 assert.match(wrapper, /ui-consistency\.js\?v=2/);
+assert.match(wrapper, /app\.js\?v=87/);
 assert.match(wrapper, /release4Worker\.fetch/);
 assert.match(wrangler, /"main": "src\/worker-ui\.js"/);
 for (const route of ['/blog/*','/how-to/*','/demo/*','/tools/*','/automation/*','/use-cases/*','/contact.html','/index.html']) {
   assert.ok(wrangler.includes(`"${route}"`), `Worker UI wrapper must cover ${route}`);
 }
+const serviceWorker = await readFile(new URL('../public/sw.js', import.meta.url), 'utf8');
+assert.match(serviceWorker, /CACHE_VERSION = 'recast-v87'/);
 console.log('site-wide UI consistency tests passed');

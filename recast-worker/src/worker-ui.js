@@ -8,6 +8,10 @@ function applyUi(response) {
   if (!type.includes('text/html') || !response.body) return response;
   return new HTMLRewriter()
     .on('head', { element(element) { element.append(UI_STYLE, { html: true }); } })
+    .on('script[src]', { element(element) {
+      const src = element.getAttribute('src') || '';
+      if (src === 'app.js' || src.endsWith('/app.js')) element.setAttribute('src', '/app.js?v=87');
+    } })
     .on('body', { element(element) { element.append(UI_SCRIPT, { html: true }); } })
     .transform(response);
 }
