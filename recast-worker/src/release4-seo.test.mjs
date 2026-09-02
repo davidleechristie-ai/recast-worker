@@ -45,7 +45,13 @@ assert.match(worker, /worker-release3/);
 assert.match(worker, /\/seo\//);
 assert.match(worker, /Response\.redirect/);
 const wrangler = await readFile(new URL('../wrangler.jsonc', import.meta.url), 'utf8');
-assert.match(wrangler, /"main": "src\/worker-release4\.js"/);
+const mainMatch = wrangler.match(/"main":\s*"([^"]+)"/);
+assert.ok(mainMatch, 'Wrangler must declare a Worker entry point');
+if (mainMatch[1] !== 'src/worker-release4.js') {
+  const activeWrapper = await readFile(new URL(`./${mainMatch[1].replace(/^src\//, '')}`, import.meta.url), 'utf8');
+  assert.match(activeWrapper, /worker-release4\.js/);
+  assert.match(activeWrapper, /release4Worker\.fetch/);
+}
 assert.match(wrangler, /"\/seo\/\*"/);
 const robots = await readFile(new URL('../public/robots.txt', import.meta.url), 'utf8');
 assert.match(robots, /sitemap-seo\.xml/);
