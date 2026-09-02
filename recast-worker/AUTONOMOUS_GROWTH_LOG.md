@@ -59,3 +59,15 @@ Purpose: retain evidence, hypotheses, changes and follow-up windows so the agent
 - Files changed: `recast-worker/GROWTH_SCOREBOARD.json`, `recast-worker/AUTONOMOUS_GROWTH_LOG.md`.
 - Metrics that should move: this correction does not itself predict growth. The active experiment remains accountable to target-page/query position, clicks, and CTR; genuine customers and MRR remain the downstream north-star measures.
 - Public inspection limitation: the live site and public search results could not be fetched because external DNS resolution was unavailable. Local inspection confirmed the target page remains in the sitemap and has a title, description, canonical, one H1, and crawlable supporting links.
+
+## 2026-09-02 — Measurement refresh; no product change
+
+- Evidence/opportunity: the refreshed 28-day GA4 snapshot reports 44 organic sessions, up from the previously recorded 39, while organic active users remain 4, returning users remain 4, and successful tool uses, workflow starts/completions, and upgrade clicks remain 0. Search Console remains at 1,351 impressions, 11 clicks, 0.81% CTR, and average position 66.69. Genuine recurring-revenue customers and MRR remain 0. These are measured values; the session change alone is not evidence that the active experiment caused improvement.
+- Bottleneck interpretation: search visibility remains the earliest measured constraint. Average position is still 66.69, and the highest-impression target page still has 0 clicks; downstream activation and revenue are also zero but cannot precede traffic acquisition at useful volume.
+- Follow-up reviewed: the JSON Schema Generator experiment was implemented 2026-09-01. No review is due today; the first review is due 2026-09-08, so evidence is currently insufficient.
+- Change made: no acquisition-facing product change. Preserved the refreshed scoreboard values and avoided launching an overlapping experiment one day after the existing page change. Local inspection found the target page remains allowed by `robots.txt`, listed in the sitemap, canonicalised to its HTTPS URL, and has one H1.
+- Target page/query/funnel stage: no new target; ongoing `/tools/json-schema-generator.html` experiment at rankings/visibility → organic clicks/CTR.
+- Hypothesis and baseline: no new hypothesis was launched. The active experiment retains its baseline of 404 page impressions, 0 clicks, 0% CTR, and average position 68.64, with query-level baselines in the scoreboard.
+- Files changed: `recast-worker/GROWTH_SCOREBOARD.json`, `recast-worker/AUTONOMOUS_GROWTH_LOG.md` (measurement records only).
+- Metrics that should move: this measurement-only update predicts no change. The active experiment remains accountable to target-page/query average position, clicks, and CTR on 2026-09-08, 2026-09-15, and 2026-09-29.
+- Public inspection limitation: the live site and public search results could not be fetched because external DNS resolution was unavailable; no live availability or SERP claim is made.

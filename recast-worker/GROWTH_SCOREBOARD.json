@@ -3,7 +3,7 @@
     "north_star": "monthly_recurring_revenue_gbp",
     "target": 1000,
     "current": 0,
-    "evidence_date": "2026-09-01",
+    "evidence_date": "2026-09-02",
     "revenue_definition": "Genuine recurring revenue only: current subscription plus paid succeeded latest invoice charge, excluding fully refunded and inactive/cancelled subscriptions."
   },
   "funnel": {
@@ -93,7 +93,7 @@
   "missing_instrumentation": [
     "Indexed target-page count or URL Inspection/index coverage evidence is unavailable."
   ],
-  "last_updated": "2026-09-01",
+  "last_updated": "2026-09-02",
   "measurement_rules": {
     "unknown_values": "Keep unavailable measurements as null; never estimate them as facts.",
     "follow_up_windows_days": [
@@ -2255,11 +2255,11 @@
           "query": "xsd to json converter online"
         }
       ],
-      "evidence_date": "2026-09-01"
+      "evidence_date": "2026-09-02"
     },
     "ga4": {
       "period_days": 28,
-      "organic_sessions": 39,
+      "organic_sessions": 44,
       "organic_active_users": 4,
       "organic_new_users": 1,
       "organic_returning_users": 4,
@@ -2267,7 +2267,7 @@
       "workflow_starts": 0,
       "workflow_completions": 0,
       "upgrade_clicks": 0,
-      "evidence_date": "2026-09-01"
+      "evidence_date": "2026-09-02"
     },
     "stripe": {
       "active_subscription_customers": 0,
@@ -2275,7 +2275,7 @@
       "plan_counts": {},
       "excluded_non_genuine_subscriptions": 9,
       "measurement_rule": "Counts only active/trialing subscriptions backed by a paid, succeeded latest invoice charge that has not been fully refunded.",
-      "evidence_date": "2026-09-01"
+      "evidence_date": "2026-09-02"
     }
   },
   "refresh_warnings": []
