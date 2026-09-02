@@ -5,7 +5,10 @@ on:
     branches:
       - release-3-commercial-funnel-phase1-final
     paths:
-      - '.github/release3-phase1.md'
+      - '.github/release3-phase1-tool-workflow.md'
+      - '.github/release3-phase1-workflow-automation.md'
+      - '.github/release3-phase1-api.md'
+      - '.github/release3-phase1-context-upgrades.md'
       - '.github/workflows/release3-phase1.yml'
   workflow_dispatch:
 
@@ -14,73 +17,208 @@ permissions:
 
 concurrency:
   group: recast-release3-phase1
-  cancel-in-progress: false
+  cancel-in-progress: true
 
 jobs:
-  build:
+  baseline:
     runs-on: ubuntu-latest
     steps:
-      - name: Check out phase branch
-        uses: actions/checkout@v5
+      - uses: actions/checkout@v5
         with:
           ref: release-3-commercial-funnel-phase1-final
-          fetch-depth: 20
-
-      - name: Set up Node.js
-        uses: actions/setup-node@v4
+      - uses: actions/setup-node@v4
         with:
           node-version: 20
-
       - name: Install dependencies
         working-directory: recast-worker
         run: npm install --no-package-lock
-
-      - name: Baseline tests
+      - name: Full baseline tests
         working-directory: recast-worker
         run: npm test
-
       - name: Require OpenAI API key
         env:
           OPENAI_API_KEY: ${{ secrets.OPENAI_API_KEY }}
-        run: |
-          if [ -z "$OPENAI_API_KEY" ]; then
-            echo "OPENAI_API_KEY repository secret is required."
-            exit 1
-          fi
+        run: test -n "$OPENAI_API_KEY"
 
-      - name: Implement Release 3 Phase 1
+  tool_workflow:
+    needs: baseline
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v5
+        with:
+          ref: release-3-commercial-funnel-phase1-final
+          fetch-depth: 20
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 20
+      - name: Install dependencies
+        working-directory: recast-worker
+        run: npm install --no-package-lock
+      - name: Implement tool to workflow journey
         uses: openai/codex-action@v1
         with:
           openai-api-key: ${{ secrets.OPENAI_API_KEY }}
           permission-profile: ':workspace'
-          prompt-file: '.github/release3-phase1.md'
+          prompt-file: '.github/release3-phase1-tool-workflow.md'
           safety-strategy: 'drop-sudo'
           allow-bots: 'true'
-
-      - name: Test Release 3 Phase 1
-        working-directory: recast-worker
-        run: npm test
-
-      - name: Verify no workflow/config drift
-        shell: bash
+      - name: Reject workflow/config drift
         run: |
-          if git diff --name-only | grep -E '^\.github/|^recast-worker/wrangler|^recast-worker/package(-lock)?\.json$' | grep -v '^\.github/release3-phase1.md$' | grep -v '^\.github/workflows/release3-phase1.yml$'; then
-            echo "Agent modified protected workflow/config files."
+          if git diff --name-only | grep -E '^\.github/|^recast-worker/wrangler|^recast-worker/package(-lock)?\.json$'; then
+            echo "Protected workflow/config files changed."
             exit 1
           fi
-
-      - name: Commit Phase 1 implementation
-        shell: bash
+      - name: Test implementation
+        working-directory: recast-worker
+        run: npm test
+      - name: Commit phase 1A
         run: |
           git config user.name "recast-release-bot"
           git config user.email "recast-release-bot@users.noreply.github.com"
           git add recast-worker
-          if git diff --cached --quiet; then
-            echo "No implementation changes were produced."
-            exit 1
-          fi
-          git commit -m "Release 3: connect tools to workflows, automation and API"
+          test -n "$(git diff --cached --name-only)" || { echo "No Phase 1A changes produced."; exit 1; }
+          git commit -m "Release 3: connect successful tools to workflows"
           git push origin HEAD:release-3-commercial-funnel-phase1-final
 
+  workflow_automation:
+    needs: tool_workflow
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v5
+        with:
+          ref: release-3-commercial-funnel-phase1-final
+          fetch-depth: 20
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 20
+      - name: Install dependencies
+        working-directory: recast-worker
+        run: npm install --no-package-lock
+      - name: Implement workflow to Automation journey
+        uses: openai/codex-action@v1
+        with:
+          openai-api-key: ${{ secrets.OPENAI_API_KEY }}
+          permission-profile: ':workspace'
+          prompt-file: '.github/release3-phase1-workflow-automation.md'
+          safety-strategy: 'drop-sudo'
+          allow-bots: 'true'
+      - name: Reject workflow/config drift
+        run: |
+          if git diff --name-only | grep -E '^\.github/|^recast-worker/wrangler|^recast-worker/package(-lock)?\.json$'; then
+            echo "Protected workflow/config files changed."
+            exit 1
+          fi
+      - name: Test implementation
+        working-directory: recast-worker
+        run: npm test
+      - name: Commit phase 1B
+        run: |
+          git config user.name "recast-release-bot"
+          git config user.email "recast-release-bot@users.noreply.github.com"
+          git add recast-worker
+          test -n "$(git diff --cached --name-only)" || { echo "No Phase 1B changes produced."; exit 1; }
+          git commit -m "Release 3: connect workflows to Automation"
+          git push origin HEAD:release-3-commercial-funnel-phase1-final
+
+  developer_api:
+    needs: workflow_automation
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v5
+        with:
+          ref: release-3-commercial-funnel-phase1-final
+          fetch-depth: 20
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 20
+      - name: Install dependencies
+        working-directory: recast-worker
+        run: npm install --no-package-lock
+      - name: Implement developer to API journey
+        uses: openai/codex-action@v1
+        with:
+          openai-api-key: ${{ secrets.OPENAI_API_KEY }}
+          permission-profile: ':workspace'
+          prompt-file: '.github/release3-phase1-api.md'
+          safety-strategy: 'drop-sudo'
+          allow-bots: 'true'
+      - name: Reject workflow/config drift
+        run: |
+          if git diff --name-only | grep -E '^\.github/|^recast-worker/wrangler|^recast-worker/package(-lock)?\.json$'; then
+            echo "Protected workflow/config files changed."
+            exit 1
+          fi
+      - name: Test implementation
+        working-directory: recast-worker
+        run: npm test
+      - name: Commit phase 1C
+        run: |
+          git config user.name "recast-release-bot"
+          git config user.email "recast-release-bot@users.noreply.github.com"
+          git add recast-worker
+          test -n "$(git diff --cached --name-only)" || { echo "No Phase 1C changes produced."; exit 1; }
+          git commit -m "Release 3: add contextual API conversion journeys"
+          git push origin HEAD:release-3-commercial-funnel-phase1-final
+
+  contextual_upgrades:
+    needs: developer_api
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v5
+        with:
+          ref: release-3-commercial-funnel-phase1-final
+          fetch-depth: 20
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 20
+      - name: Install dependencies
+        working-directory: recast-worker
+        run: npm install --no-package-lock
+      - name: Implement contextual upgrade journeys
+        uses: openai/codex-action@v1
+        with:
+          openai-api-key: ${{ secrets.OPENAI_API_KEY }}
+          permission-profile: ':workspace'
+          prompt-file: '.github/release3-phase1-context-upgrades.md'
+          safety-strategy: 'drop-sudo'
+          allow-bots: 'true'
+      - name: Reject workflow/config drift
+        run: |
+          if git diff --name-only | grep -E '^\.github/|^recast-worker/wrangler|^recast-worker/package(-lock)?\.json$'; then
+            echo "Protected workflow/config files changed."
+            exit 1
+          fi
+      - name: Test implementation
+        working-directory: recast-worker
+        run: npm test
+      - name: Commit phase 1D
+        run: |
+          git config user.name "recast-release-bot"
+          git config user.email "recast-release-bot@users.noreply.github.com"
+          git add recast-worker
+          test -n "$(git diff --cached --name-only)" || { echo "No Phase 1D changes produced."; exit 1; }
+          git commit -m "Release 3: add contextual post-value upgrade journeys"
+          git push origin HEAD:release-3-commercial-funnel-phase1-final
+
+  final_quality_gate:
+    needs: contextual_upgrades
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v5
+        with:
+          ref: release-3-commercial-funnel-phase1-final
+          fetch-depth: 20
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 20
+      - name: Install dependencies
+        working-directory: recast-worker
+        run: npm install --no-package-lock
+      - name: Full Release 3 Phase 1 tests
+        working-directory: recast-worker
+        run: npm test
+      - name: Verify clean working tree
+        run: |
+          test -z "$(git status --porcelain recast-worker)" || { git status --short; exit 1; }
       - name: Summary
-        run: echo "Release 3 Phase 1 implemented and tested on branch only. No deployment or merge performed."
+        run: echo "Release 3 Phase 1 built and tested on the release branch only. No merge or deployment performed."
