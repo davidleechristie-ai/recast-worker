@@ -4,18 +4,27 @@ function isHtml(response) {
   return (response.headers.get('content-type') || '').toLowerCase().includes('text/html');
 }
 
-function shouldInject(pathname) {
+function needsToolJourney(pathname) {
   return /^\/tools\/[^/]+\.html$/.test(pathname) || pathname === '/app' || pathname === '/app/' || pathname === '/app/index.html';
 }
 
-function injectRelease3Journey(response) {
-  return new HTMLRewriter()
-    .on('body', {
+function injectRelease3(response, pathname) {
+  let rewriter = new HTMLRewriter()
+    .on('head', {
       element(el) {
-        el.append('<script src="/release3-tool-workflow.js?v=1"></script>', { html: true });
+        el.append('<script src="/release3-analytics.js?v=1"></script>', { html: true });
       }
-    })
-    .transform(response);
+    });
+
+  if (needsToolJourney(pathname)) {
+    rewriter = rewriter.on('body', {
+      element(el) {
+        el.append('<script src="/release3-tool-workflow.js?v=2"></script>', { html: true });
+      }
+    });
+  }
+
+  return rewriter.transform(response);
 }
 
 export default {
@@ -27,7 +36,6 @@ export default {
     const response = await seoWorker.fetch(request, env, ctx);
     if (!isHtml(response)) return response;
     const pathname = new URL(request.url).pathname;
-    if (!shouldInject(pathname)) return response;
-    return injectRelease3Journey(response);
+    return injectRelease3(response, pathname);
   }
 };
