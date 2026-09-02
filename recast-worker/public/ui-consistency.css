@@ -23,3 +23,11 @@ a:focus-visible,button:focus-visible,input:focus-visible,textarea:focus-visible,
 @media(max-width:900px){.recast-global-header{grid-template-columns:1fr auto;min-height:64px;padding:0 16px}.recast-menu-toggle{display:block}.recast-global-cta{display:none}.recast-global-nav{position:absolute;top:calc(100% + 1px);left:12px;right:12px;display:none;align-items:stretch;flex-direction:column;gap:4px;padding:10px;background:rgba(14,18,36,.98);border:1px solid var(--recast-line);border-radius:var(--recast-radius);box-shadow:var(--recast-shadow)}.recast-global-nav[data-open="true"]{display:flex}.recast-global-nav a{display:flex;align-items:center;min-height:44px;padding:0 12px;border-radius:8px}.recast-global-nav a:hover,.recast-global-nav a[aria-current="page"]{background:rgba(145,100,255,.11)}.recast-global-footer-inner{width:calc(100% - 32px);min-height:0;padding:32px 0;align-items:flex-start;flex-direction:column}.recast-global-footer nav{gap:14px 18px}}
 @media(max-width:640px){.recast-ui-consistent .intent-page{width:calc(100% - 32px)}.recast-ui-consistent .intent-hero h1,.recast-ui-consistent .hero h1{overflow-wrap:anywhere}.recast-ui-consistent .cta-row>*{width:100%;justify-content:center}}
 @media(prefers-reduced-motion:reduce){*,*::before,*::after{scroll-behavior:auto!important;transition-duration:.01ms!important;animation-duration:.01ms!important;animation-iteration-count:1!important}}
+
+/* Canonical Recast brand mark. The image dimensions and object-fit prevent distortion. */
+.brand,.uc-brand,.recast-global-brand,.recast-global-footer-brand{display:inline-flex!important;align-items:center!important;gap:10px!important;text-decoration:none!important}
+.brand-mark,.recast-global-mark,.uc-brand::before,.brand>.mark{display:none!important;content:none!important}
+.recast-brand-logo{display:block!important;width:32px!important;height:32px!important;max-width:none!important;aspect-ratio:1/1!important;object-fit:contain!important;flex:0 0 32px!important}
+.recast-brand-wordmark{display:inline-block!important;color:inherit!important;font:inherit!important}
+.recast-global-footer-brand .recast-brand-logo{width:26px!important;height:26px!important;flex-basis:26px!important}
+@media(max-width:640px){.recast-brand-logo{width:30px!important;height:30px!important;flex-basis:30px!important}}

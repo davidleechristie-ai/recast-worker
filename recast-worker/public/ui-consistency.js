@@ -21,11 +21,14 @@
     return globalNavItems.map(([label, href]) => `<a href="${href}"${isCurrentSection(href) ? ' aria-current="page"' : ''}>${label}</a>`).join('');
   }
 
+  const canonicalLogo = '/assets/brand/recast-logo.png';
+  const brandMarkup = '<img class="recast-brand-logo" src="' + canonicalLogo + '" alt="" width="32" height="32"><span class="recast-brand-wordmark">Recast</span>';
+
   function buildGlobalHeader() {
     const header = document.createElement('header');
     header.className = 'recast-global-header';
     header.dataset.recastShell = 'header';
-    header.innerHTML = `<a class="recast-global-brand" href="/" aria-label="Recast home"><span class="recast-global-mark" aria-hidden="true">R</span><span>Recast</span></a><button class="recast-menu-toggle" type="button" aria-expanded="false" aria-controls="recast-global-nav" aria-label="Open navigation"><span></span></button><nav class="recast-global-nav" id="recast-global-nav" aria-label="Primary navigation">${globalNavLinks()}</nav><a class="recast-global-cta" href="/app/">Open Recast</a>`;
+    header.innerHTML = `<a class="recast-global-brand" href="/" aria-label="Recast home">${brandMarkup}</a><button class="recast-menu-toggle" type="button" aria-expanded="false" aria-controls="recast-global-nav" aria-label="Open navigation"><span></span></button><nav class="recast-global-nav" id="recast-global-nav" aria-label="Primary navigation">${globalNavLinks()}</nav><a class="recast-global-cta" href="/app/">Open Recast</a>`;
     return header;
   }
 
@@ -33,7 +36,7 @@
     const footer = document.createElement('footer');
     footer.className = 'recast-global-footer';
     footer.dataset.recastShell = 'footer';
-    footer.innerHTML = `<div class="recast-global-footer-inner"><div><span class="recast-global-footer-brand"><span class="recast-global-mark" aria-hidden="true">R</span>Recast</span><small>Private browser tools. Repeatable workflows.</small></div><nav aria-label="Footer navigation"><a href="/tools/">Tools</a><a href="/automation/">Automation</a><a href="/api/">API</a><a href="/how-to/">Guides</a><a href="/contact.html">Contact</a></nav><small>© 2026 Recast</small></div>`;
+    footer.innerHTML = `<div class="recast-global-footer-inner"><div><a class="recast-global-footer-brand" href="/" aria-label="Recast home">${brandMarkup}</a><small>Private browser tools. Repeatable workflows.</small></div><nav aria-label="Footer navigation"><a href="/tools/">Tools</a><a href="/automation/">Automation</a><a href="/api/">API</a><a href="/how-to/">Guides</a><a href="/contact.html">Contact</a></nav><small>© 2026 Recast</small></div>`;
     return footer;
   }
 
@@ -78,15 +81,12 @@
   }
 
   function normalizeBranding() {
-    document.querySelectorAll('.site-header .brand').forEach(brand => {
-      const text = brand.querySelector('span:last-child');
-      if (text && text.textContent.trim().toLowerCase() === 'recast') text.textContent = 'Recast';
-    });
-    document.querySelectorAll('.uc-brand').forEach(brand => { brand.textContent = 'Recast'; });
-    document.querySelectorAll('.titleblock .brand').forEach(brand => {
-      [...brand.childNodes].forEach(node => {
-        if (node.nodeType === Node.TEXT_NODE && node.textContent.trim().toUpperCase() === 'RECAST') node.textContent = 'Recast';
-      });
+    document.querySelectorAll('.brand,.uc-brand,.recast-global-brand,.recast-global-footer-brand').forEach(brand => {
+      if (brand.tagName === 'A') {
+        brand.href = '/';
+        brand.setAttribute('aria-label', 'Recast home');
+      }
+      brand.innerHTML = brandMarkup;
     });
   }
 
