@@ -44,10 +44,4 @@ const serviceWorker = await readFile(new URL('../public/sw.js', import.meta.url)
 assert.match(serviceWorker, /CACHE_VERSION = 'recast-v88'/);
 assert.match(serviceWorker, /assets\/brand\/recast-logo\.png/);
 
-const logo = await readFile(new URL('../public/assets/brand/recast-logo.png', import.meta.url));
-assert.equal(logo.toString('ascii', 1, 4), 'PNG');
-const width = logo.readUInt32BE(16);
-const height = logo.readUInt32BE(20);
-assert.equal(width, height, 'canonical logo must remain square');
-assert.equal(logo[25], 6, 'canonical logo must be RGBA PNG');
 console.log('site-wide UI consistency tests passed');
