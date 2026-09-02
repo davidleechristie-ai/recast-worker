@@ -41,7 +41,13 @@ pre,code,.code-block{max-width:100%;overflow-wrap:normal}
 pre,.code-block{overflow-x:auto!important}
 
 /* The technical header needs its compact navigation before controls collide. */
-@media(max-width:1180px){
+@media(min-width:1101px){
+  .titleblock .tb-row{display:flex!important;max-width:min(1360px,100%)!important}
+  .titleblock .tb-row>.brand{flex:0 0 auto!important}
+  .titleblock .tb-row>nav.tb-nav{flex:0 1 auto!important;margin-left:auto!important}
+  .titleblock .tb-row>.header-actions{flex:0 0 auto!important;margin-left:0!important}
+}
+@media(max-width:1100px){
   .titleblock .tb-row{display:flex!important;flex-wrap:wrap!important;gap:10px 16px!important;padding:10px 16px!important;position:relative!important}
   .titleblock .nav-hamburger{display:flex!important;order:2!important;margin-left:auto!important;width:44px!important;height:44px!important}
   .titleblock nav.tb-nav{order:3!important;width:100%!important;max-height:0!important;overflow:hidden!important;display:flex!important;flex-direction:column!important;align-items:stretch!important;gap:2px!important;margin:0!important;transition:max-height .2s ease!important}
