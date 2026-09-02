@@ -31,8 +31,8 @@ assert.match(css, /@media\(max-width:640px\)/);
 assert.match(wrapper, /worker-release4\.js/);
 assert.match(wrapper, /ui-consistency\.css/);
 assert.match(wrapper, /ui-consistency\.js/);
-assert.match(wrapper, /ui-consistency\.css\?v=11/);
-assert.match(wrapper, /ui-consistency\.js\?v=11/);
+assert.match(wrapper, /ui-consistency\.css\?v=12/);
+assert.match(wrapper, /ui-consistency\.js\?v=12/);
 assert.match(wrapper, /localStorage\.getItem\("recast_theme"\)/);
 assert.match(wrapper, /recast-favicon-64\.png/);
 assert.match(wrapper, /app\.js\?v=87/);
@@ -42,13 +42,17 @@ for (const route of ['/blog/*','/how-to/*','/demo/*','/tools/*','/automation/*',
   assert.ok(wrangler.includes(`"${route}"`), `Worker UI wrapper must cover ${route}`);
 }
 const serviceWorker = await readFile(new URL('../public/sw.js', import.meta.url), 'utf8');
-assert.match(serviceWorker, /CACHE_VERSION = 'recast-v96'/);
+assert.match(serviceWorker, /CACHE_VERSION = 'recast-v97'/);
 assert.match(css, /:root:not\(\[data-theme="light"\]\)\{--bg:var\(--recast-bg\)/,
   'all page families must share the canonical dark background unless the user explicitly selects light mode');
 assert.match(css, /--recast-header-max:1360px/);
 assert.match(css, /\.uc-nav,\.recast-global-header\{display:flex!important\}/,
   'marketing, technical and generated shells must share left-grouped desktop navigation geometry');
 assert.match(js, /normalizeThemeDefault/);
+assert.match(js, /removeLiveExamplePanels/);
+assert.match(js, /querySelectorAll\('\.hero-preview'\)/);
+assert.match(css, /\.hero-preview\{display:none!important\}/,
+  'live-example panels must be hidden before the shared script removes them from the DOM');
 assert.match(css, /@media\(min-width:1101px\)\{\s*\.site-header\{display:flex!important\}/,
   'wide acquisition header must use a left-grouped flex layout rather than the legacy centred grid');
 assert.match(css, /\.site-header nav,\.tb-nav,\.recast-global-nav,\.nav-group-btn,\.nav-plain-link,\.nav-dropdown-item\{text-align:left!important\}/,

@@ -34,6 +34,10 @@
     }
   }
 
+  function removeLiveExamplePanels() {
+    document.querySelectorAll('.hero-preview').forEach(panel => panel.remove());
+  }
+
   function buildGlobalHeader() {
     const header = document.createElement('header');
     header.className = 'recast-global-header';
@@ -162,6 +166,7 @@
 
   function run() {
     normalizeThemeDefault();
+    removeLiveExamplePanels();
     document.body.classList.add('recast-ui-consistent');
     ensureGlobalShell();
     normalizeBranding();
