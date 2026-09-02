@@ -3,3 +3,4 @@ Allow: /
 
 Sitemap: https://tryrecast.app/sitemap.xml
 Sitemap: https://tryrecast.app/sitemap-use-cases.xml
+Sitemap: https://tryrecast.app/sitemap-seo.xml
