@@ -1,0 +1,25 @@
+import assert from 'node:assert/strict';
+import { readFile, stat } from 'node:fs/promises';
+
+const root = new URL('../public/', import.meta.url);
+const manifest = JSON.parse(await readFile(new URL('manifest.json', root), 'utf8'));
+assert.equal(manifest.display, 'standalone');
+assert.equal(manifest.start_url, '/pwa/?source=installed');
+assert.equal(manifest.share_target.method, 'POST');
+assert.ok(manifest.file_handlers[0].accept['application/json'].includes('.json'));
+assert.ok(manifest.icons.some(icon => icon.purpose === 'maskable'));
+for (const path of ['pwa/index.html', 'pwa.js', 'pwa-hub.js', 'pwa.css', 'sw.js']) assert.ok((await stat(new URL(path, root))).size > 0, `${path} must exist`);
+const sw = await readFile(new URL('sw.js', root), 'utf8');
+assert.match(sw, /recast-v100/);
+assert.match(sw, /\/pwa\/share-target/);
+assert.match(sw, /indexedDB\.open\('recast-pwa'/);
+const manager = await readFile(new URL('pwa.js', root), 'utf8');
+assert.match(manager, /beforeinstallprompt/);
+assert.match(manager, /taskCount\(\)>=2/);
+assert.match(manager, /pwa_installed/);
+assert.match(manager, /pwa_standalone_opened/);
+assert.match(manager, /pwa_file_loaded_to_workbench/);
+const workerUi = await readFile(new URL('worker-ui.js', import.meta.url), 'utf8');
+assert.match(workerUi, /rel="manifest" href="\/manifest\.json"/);
+assert.match(workerUi, /pwa\.js\?v=1/);
+console.log('PWA phase 1 tests passed');

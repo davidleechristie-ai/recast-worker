@@ -1,7 +1,7 @@
 import release4Worker from './worker-release4.js';
 
-const UI_STYLE = '<script>(function(){try{var t=localStorage.getItem("recast_theme");if(t==="light")document.documentElement.setAttribute("data-theme","light");else document.documentElement.removeAttribute("data-theme")}catch(e){document.documentElement.removeAttribute("data-theme")}})();</script><link rel="icon" type="image/png" sizes="64x64" href="/assets/brand/recast-favicon-64.png"><link rel="apple-touch-icon" href="/icons/icon-192.png"><link rel="stylesheet" href="/ui-consistency.css?v=14">';
-const UI_SCRIPT = '<script src="/ui-consistency.js?v=14" defer></script>';
+const UI_STYLE = '<script>(function(){try{var t=localStorage.getItem("recast_theme");if(t==="light")document.documentElement.setAttribute("data-theme","light");else document.documentElement.removeAttribute("data-theme")}catch(e){document.documentElement.removeAttribute("data-theme")}})();</script><link rel="icon" type="image/png" sizes="64x64" href="/assets/brand/recast-favicon-64.png"><link rel="apple-touch-icon" href="/icons/icon-192.png"><link rel="manifest" href="/manifest.json"><meta name="theme-color" content="#0A0E1F"><meta name="apple-mobile-web-app-capable" content="yes"><meta name="apple-mobile-web-app-status-bar-style" content="black-translucent"><link rel="stylesheet" href="/ui-consistency.css?v=14"><link rel="stylesheet" href="/pwa.css?v=1">';
+const UI_SCRIPT = '<script src="/ui-consistency.js?v=14" defer></script><script src="/pwa.js?v=1" defer></script>';
 
 function applyUi(response) {
   const type = response.headers.get('content-type') || '';

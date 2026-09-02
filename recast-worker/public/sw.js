@@ -22,13 +22,17 @@
 // expiry. This bit someone on the "Demo" page launch: the nav link update
 // never reached anyone with the SW already active, because this file was
 // otherwise unchanged.
-const CACHE_VERSION = 'recast-v99';
+const CACHE_VERSION = 'recast-v100';
 const CORE_ASSETS = [
   '/',
   '/index.html',
   '/styles.css',
   '/app.js',
   '/manifest.json',
+  '/pwa/',
+  '/pwa/index.html',
+  '/pwa.js',
+  '/pwa.css',
   '/lib/engine.js',
   '/lib/worker.js',
   '/lib/highlight.js',
@@ -77,8 +81,30 @@ self.addEventListener('activate', (event) => {
 
 self.addEventListener('fetch', (event) => {
   const req = event.request;
-  if (req.method !== 'GET') return; // never intercept POST (e.g. /v1/convert API calls)
   const url = new URL(req.url);
+  if (req.method === 'POST' && url.pathname === '/pwa/share-target') {
+    event.respondWith((async () => {
+      try {
+        const form = await req.formData();
+        const files = form.getAll('files').filter((item) => item instanceof File);
+        const db = await new Promise((resolve, reject) => {
+          const open = indexedDB.open('recast-pwa', 1);
+          open.onupgradeneeded = () => open.result.createObjectStore('shared');
+          open.onsuccess = () => resolve(open.result);
+          open.onerror = () => reject(open.error);
+        });
+        await new Promise((resolve, reject) => {
+          const tx = db.transaction('shared', 'readwrite');
+          tx.objectStore('shared').put({ files, title: form.get('title') || '', text: form.get('text') || '', receivedAt: Date.now() }, 'pending');
+          tx.oncomplete = resolve;
+          tx.onerror = () => reject(tx.error);
+        });
+      } catch (_) {}
+      return Response.redirect('/pwa/?source=share-target', 303);
+    })());
+    return;
+  }
+  if (req.method !== 'GET') return; // never intercept other POST requests
   if (url.origin !== self.location.origin) return; // let cross-origin (fonts, GA, Stripe, cdnjs) pass straight through
 
   event.respondWith(

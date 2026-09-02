@@ -1,0 +1,26 @@
+(function(){
+  'use strict';
+  var TASK_KEY='recast_pwa_success_count_v1', DISMISSED_KEY='recast_pwa_install_dismissed_v1';
+  function track(name,params){try{if(typeof window.gtag==='function')window.gtag('event',name,params||{});}catch(_){}}
+  function standalone(){return matchMedia('(display-mode: standalone)').matches||navigator.standalone===true;}
+  if('serviceWorker' in navigator) addEventListener('load',function(){navigator.serviceWorker.register('/sw.js',{scope:'/'}).catch(function(){});});
+  function networkState(){
+    var el=document.getElementById('recastOfflineIndicator');
+    if(navigator.onLine){if(el)el.remove();return;}
+    if(!el){el=document.createElement('div');el.id='recastOfflineIndicator';el.className='recast-offline-indicator';el.setAttribute('role','status');el.textContent='Offline — local tools remain available';document.body.appendChild(el);track('pwa_offline_seen',{path:location.pathname});}
+  }
+  addEventListener('online',networkState);addEventListener('offline',networkState);if(document.readyState==='loading')document.addEventListener('DOMContentLoaded',networkState);else networkState();
+  var deferredPrompt=null;
+  addEventListener('beforeinstallprompt',function(e){e.preventDefault();deferredPrompt=e;maybePrompt();});
+  addEventListener('appinstalled',function(){track('pwa_installed',{path:location.pathname,successful_tasks:taskCount()});var card=document.getElementById('recastInstallCard');if(card)card.remove();});
+  function taskCount(){try{return Number(localStorage.getItem(TASK_KEY)||0);}catch(_){return 0;}}
+  function eligible(){try{return taskCount()>=2&&!localStorage.getItem(DISMISSED_KEY)&&!standalone();}catch(_){return false;}}
+  function maybePrompt(){if(!deferredPrompt||!eligible()||document.getElementById('recastInstallCard'))return;var card=document.createElement('aside');card.id='recastInstallCard';card.className='recast-install-card';card.setAttribute('aria-label','Install Recast');card.innerHTML='<strong>Keep Recast one click away</strong><p>Install the local toolkit for faster return visits and offline access.</p><div class="recast-install-actions"><button class="primary" type="button" data-install>Install Recast</button><button type="button" data-later>Not now</button></div>';document.body.appendChild(card);track('pwa_install_prompt_shown',{successful_tasks:taskCount(),path:location.pathname});card.querySelector('[data-install]').onclick=async function(){track('pwa_install_clicked',{successful_tasks:taskCount()});deferredPrompt.prompt();var choice=await deferredPrompt.userChoice;track('pwa_install_prompt_result',{outcome:choice.outcome});deferredPrompt=null;card.remove();};card.querySelector('[data-later]').onclick=function(){try{localStorage.setItem(DISMISSED_KEY,String(Date.now()));}catch(_){}track('pwa_install_dismissed',{});card.remove();};}
+  function recordSuccess(kind){try{var n=Math.min(99,taskCount()+1);localStorage.setItem(TASK_KEY,String(n));track('pwa_successful_task',{task_kind:kind||'tool',successful_tasks:n});maybePrompt();}catch(_){}}
+  document.addEventListener('recast:task-success',function(e){recordSuccess(e.detail&&e.detail.kind);});
+  document.addEventListener('click',function(e){var a=e.target&&e.target.closest?e.target.closest('a[href^="/tools/"]'):null;if(!a)return;try{var label=(a.textContent||a.getAttribute('href')).trim().replace(/\s+/g,' ').slice(0,60),href=new URL(a.href,location.origin).pathname,items=JSON.parse(localStorage.getItem('recast_pwa_recent_tools_v1')||'[]').filter(function(x){return x[1]!==href;});items.unshift([label,href]);localStorage.setItem('recast_pwa_recent_tools_v1',JSON.stringify(items.slice(0,5)));}catch(_){}});
+  if(/^\/tools\//.test(location.pathname)){var armed=false;document.addEventListener('click',function(e){if(e.target&&e.target.closest&&e.target.closest('#convertBtn'))armed=true;},true);var start=function(){var status=document.getElementById('status');if(!status)return;new MutationObserver(function(){if(armed&&status.querySelector('.status-ok')){armed=false;recordSuccess('tool');}}).observe(status,{childList:true,subtree:true,characterData:true});};if(document.readyState==='loading')document.addEventListener('DOMContentLoaded',start);else start();}
+  if(standalone()){track('pwa_standalone_opened',{path:location.pathname,source:new URLSearchParams(location.search).get('source')||'direct'});}
+  function consumeOpenedFile(){if(!(location.pathname==='/app/'||location.pathname==='/app'||location.pathname==='/app/index.html'))return;var raw;try{raw=sessionStorage.getItem('recast_pwa_open_file_v1');}catch(_){return;}if(!raw)return;try{var data=JSON.parse(raw),input=document.getElementById('input');if(!input)return;input.value=data.text||'';input.dispatchEvent(new Event('input',{bubbles:true}));var ext=(data.name.split('.').pop()||'').toLowerCase(),mode={csv:'csv2json',xml:'xml2json',yaml:'yaml2json',yml:'yaml2json'}[ext];if(mode){var chip=document.querySelector('.mode-chip[data-mode="'+mode+'"]');if(chip)chip.click();}sessionStorage.removeItem('recast_pwa_open_file_v1');track('pwa_file_loaded_to_workbench',{extension:ext,file_count:data.count||1});}catch(_){}}
+  if(document.readyState==='loading')document.addEventListener('DOMContentLoaded',consumeOpenedFile);else consumeOpenedFile();
+})();

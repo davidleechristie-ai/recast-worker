@@ -2,12 +2,28 @@
   "name": "Recast — Data Format Toolkit",
   "short_name": "Recast",
   "description": "Convert, validate, format, diff and generate schemas for JSON, CSV, XML, YAML and Markdown — entirely offline once installed.",
-  "start_url": "/?source=pwa",
+  "id": "/app/",
+  "start_url": "/pwa/?source=installed",
   "scope": "/",
   "display": "standalone",
   "background_color": "#0A0E1F",
   "theme_color": "#0A0E1F",
   "orientation": "any",
+  "categories": ["developer", "productivity", "utilities"],
+  "shortcuts": [
+    { "name": "Open Workbench", "short_name": "Workbench", "url": "/app/?source=pwa-shortcut", "icons": [{ "src": "/icons/icon-192.png", "sizes": "192x192", "type": "image/png" }] },
+    { "name": "JSON to CSV", "short_name": "JSON → CSV", "url": "/tools/json-to-csv.html?source=pwa-shortcut", "icons": [{ "src": "/icons/icon-192.png", "sizes": "192x192", "type": "image/png" }] },
+    { "name": "Compare files", "short_name": "Compare", "url": "/tools/csv-diff.html?source=pwa-shortcut", "icons": [{ "src": "/icons/icon-192.png", "sizes": "192x192", "type": "image/png" }] }
+  ],
+  "share_target": {
+    "action": "/pwa/share-target",
+    "method": "POST",
+    "enctype": "multipart/form-data",
+    "params": { "title": "title", "text": "text", "url": "url", "files": [{ "name": "files", "accept": ["application/json", "text/csv", "text/xml", "application/xml", "application/yaml", "text/yaml", ".json", ".csv", ".xml", ".yaml", ".yml"] }] }
+  },
+  "file_handlers": [
+    { "action": "/pwa/?source=file-handler", "accept": { "application/json": [".json"], "text/csv": [".csv"], "application/xml": [".xml"], "text/xml": [".xml"], "application/yaml": [".yaml", ".yml"] } }
+  ],
   "icons": [
     { "src": "/icons/icon-192.png", "sizes": "192x192", "type": "image/png", "purpose": "any" },
     { "src": "/icons/icon-512.png", "sizes": "512x512", "type": "image/png", "purpose": "any" },
