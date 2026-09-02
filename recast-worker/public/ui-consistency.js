@@ -24,6 +24,16 @@
   const canonicalLogo = '/assets/brand/recast-logo.png';
   const brandMarkup = '<img class="recast-brand-logo" src="' + canonicalLogo + '" alt="" width="32" height="32"><span class="recast-brand-wordmark">Recast</span>';
 
+  function normalizeThemeDefault() {
+    try {
+      const savedTheme = localStorage.getItem('recast_theme');
+      if (savedTheme === 'light') document.documentElement.setAttribute('data-theme', 'light');
+      else document.documentElement.removeAttribute('data-theme');
+    } catch (_) {
+      document.documentElement.removeAttribute('data-theme');
+    }
+  }
+
   function buildGlobalHeader() {
     const header = document.createElement('header');
     header.className = 'recast-global-header';
@@ -151,6 +161,7 @@
   }
 
   function run() {
+    normalizeThemeDefault();
     document.body.classList.add('recast-ui-consistent');
     ensureGlobalShell();
     normalizeBranding();

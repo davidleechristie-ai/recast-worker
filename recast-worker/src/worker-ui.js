@@ -1,7 +1,7 @@
 import release4Worker from './worker-release4.js';
 
-const UI_STYLE = '<link rel="icon" type="image/png" sizes="64x64" href="/assets/brand/recast-favicon-64.png"><link rel="apple-touch-icon" href="/icons/icon-192.png"><link rel="stylesheet" href="/ui-consistency.css?v=10">';
-const UI_SCRIPT = '<script src="/ui-consistency.js?v=10" defer></script>';
+const UI_STYLE = '<script>(function(){try{var t=localStorage.getItem("recast_theme");if(t==="light")document.documentElement.setAttribute("data-theme","light");else document.documentElement.removeAttribute("data-theme")}catch(e){document.documentElement.removeAttribute("data-theme")}})();</script><link rel="icon" type="image/png" sizes="64x64" href="/assets/brand/recast-favicon-64.png"><link rel="apple-touch-icon" href="/icons/icon-192.png"><link rel="stylesheet" href="/ui-consistency.css?v=11">';
+const UI_SCRIPT = '<script src="/ui-consistency.js?v=11" defer></script>';
 
 function applyUi(response) {
   const type = response.headers.get('content-type') || '';
