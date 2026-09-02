@@ -31,3 +31,31 @@ a:focus-visible,button:focus-visible,input:focus-visible,textarea:focus-visible,
 .recast-brand-wordmark{display:inline-block!important;color:inherit!important;font:inherit!important}
 .recast-global-footer-brand .recast-brand-logo{width:26px!important;height:26px!important;flex-basis:26px!important}
 @media(max-width:640px){.recast-brand-logo{width:30px!important;height:30px!important;flex-basis:30px!important}}
+
+/* Rendered regression fixes: keep the acquisition hero and Copilot inside the viewport. */
+.minimal-home,.minimal-hero-inner,.minimal-hero-copy,.ai-request-feature,.workflow-copilot,.wc-input-row,.home-quick-actions,.pathway-strip,.pathway-card{min-width:0!important;max-width:100%!important;box-sizing:border-box!important}
+.minimal-hero-copy h1{max-width:100%!important;font-size:clamp(3rem,5.15vw,4.65rem)!important;overflow-wrap:normal!important;text-wrap:balance}
+.minimal-hero-copy .sub,.copilot-ai-disclosure{max-width:100%!important;overflow-wrap:anywhere}
+.wc-prompt{min-width:0!important;max-width:100%!important}
+pre,code,.code-block{max-width:100%;overflow-wrap:normal}
+pre,.code-block{overflow-x:auto!important}
+
+/* The technical header needs its compact navigation before controls collide. */
+@media(max-width:1180px){
+  .titleblock .tb-row{display:flex!important;flex-wrap:wrap!important;gap:10px 16px!important;padding:10px 16px!important;position:relative!important}
+  .titleblock .nav-hamburger{display:flex!important;order:2!important;margin-left:auto!important;width:44px!important;height:44px!important}
+  .titleblock nav.tb-nav{order:3!important;width:100%!important;max-height:0!important;overflow:hidden!important;display:flex!important;flex-direction:column!important;align-items:stretch!important;gap:2px!important;margin:0!important;transition:max-height .2s ease!important}
+  .titleblock nav.tb-nav.nav-open{max-height:640px!important;padding-top:8px!important;border-top:1px solid rgba(255,255,255,.1)!important}
+  .titleblock nav.tb-nav .nav-group,.titleblock nav.tb-nav .nav-group-btn{width:100%!important}
+  .titleblock nav.tb-nav .nav-group-btn{justify-content:space-between!important;min-height:44px!important;padding:9px 4px!important}
+  .titleblock nav.tb-nav .nav-dropdown{position:static!important;min-width:0!important;box-shadow:none!important}
+  .titleblock .header-actions{order:4!important;width:100%!important;display:flex!important;flex-wrap:wrap!important;gap:6px!important;margin:0!important}
+  .titleblock .header-actions .btn-label,.titleblock .worker-status{display:none!important}
+}
+@media(max-width:700px){
+  .minimal-home{padding-left:16px!important;padding-right:16px!important}
+  .minimal-hero-copy h1{font-size:clamp(2.7rem,12.5vw,4rem)!important;overflow-wrap:anywhere!important}
+  .wc-input-row{grid-template-columns:minmax(0,1fr)!important}
+  .wc-build{width:100%!important;min-width:0!important}
+  .home-quick-actions{grid-template-columns:1fr!important}
+}
