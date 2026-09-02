@@ -12,6 +12,15 @@ assert.match(js, /\/assets\/brand\/recast-logo\.png/);
 assert.match(js, /recast-brand-logo/);
 assert.match(js, /normalizeUseCaseNav/);
 assert.match(js, /normalizeTechnicalNav/);
+assert.match(js, /normalizeMarketingNav/);
+assert.match(js, /marketingNavMarkup/);
+assert.match(js, /bindMarketingSubmenus/);
+assert.match(js, /recast-nav-chevron/);
+assert.match(js, /aria-controls="recast-nav-\$\{key\}"/,
+  'first-load marketing navigation groups must expose accessible submenu controls');
+for (const group of ['Tools', 'Automation', 'Guides']) {
+  assert.match(js, new RegExp(`marketingNavGroup\\('${group}'`), `${group} must be expandable on the initial navigation`);
+}
 assert.match(js, /ensureGlobalShell/);
 assert.match(js, /buildGlobalHeader/);
 assert.match(js, /buildGlobalFooter/);
@@ -25,14 +34,18 @@ assert.match(css, /\.site-header,.titleblock,.uc-nav/);
 assert.match(css, /\.recast-global-header/);
 assert.match(css, /\.recast-global-footer/);
 assert.match(css, /\.recast-global-nav\[data-open="true"\]/);
+assert.match(css, /\.site-header \.recast-nav-chevron/,
+  'mobile submenu chevrons must be drawn by shared CSS and visible on first render');
+assert.match(css, /\.site-header \.recast-nav-group\.is-open \.recast-nav-submenu/,
+  'marketing submenus must have a deterministic expanded state');
 assert.match(css, /focus-visible/);
 assert.match(css, /prefers-reduced-motion:reduce/);
 assert.match(css, /@media\(max-width:640px\)/);
 assert.match(wrapper, /worker-release4\.js/);
 assert.match(wrapper, /ui-consistency\.css/);
 assert.match(wrapper, /ui-consistency\.js/);
-assert.match(wrapper, /ui-consistency\.css\?v=13/);
-assert.match(wrapper, /ui-consistency\.js\?v=13/);
+assert.match(wrapper, /ui-consistency\.css\?v=14/);
+assert.match(wrapper, /ui-consistency\.js\?v=14/);
 assert.match(wrapper, /localStorage\.getItem\("recast_theme"\)/);
 assert.match(wrapper, /recast-favicon-64\.png/);
 assert.match(wrapper, /app\.js\?v=87/);
@@ -42,7 +55,7 @@ for (const route of ['/blog/*','/how-to/*','/demo/*','/tools/*','/automation/*',
   assert.ok(wrangler.includes(`"${route}"`), `Worker UI wrapper must cover ${route}`);
 }
 const serviceWorker = await readFile(new URL('../public/sw.js', import.meta.url), 'utf8');
-assert.match(serviceWorker, /CACHE_VERSION = 'recast-v98'/);
+assert.match(serviceWorker, /CACHE_VERSION = 'recast-v99'/);
 assert.match(css, /:root:not\(\[data-theme="light"\]\)\{--bg:var\(--recast-bg\)/,
   'all page families must share the canonical dark background unless the user explicitly selects light mode');
 assert.match(css, /--recast-header-max:1360px/);

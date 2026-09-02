@@ -21,6 +21,66 @@
     return globalNavItems.map(([label, href]) => `<a href="${href}"${isCurrentSection(href) ? ' aria-current="page"' : ''}>${label}</a>`).join('');
   }
 
+  const marketingSubmenus = {
+    tools: [
+      ['JSON → CSV', '/tools/json-to-csv.html'],
+      ['CSV → JSON', '/tools/csv-to-json.html'],
+      ['JSON Diff', '/tools/json-diff.html'],
+      ['CSV Diff', '/tools/csv-diff.html'],
+      ['Validate JSON', '/tools/json-validator.html'],
+      ['All tools', '/tools/']
+    ],
+    automation: [
+      ['Automation overview', '/automation/'],
+      ['Workflow builder', '/app/#workflowBuilder'],
+      ['API', '/api/']
+    ],
+    guides: [
+      ['How Recast works', '/how-to/'],
+      ['Examples', '/how-to/examples.html'],
+      ['Blog', '/blog/'],
+      ['Contact', '/contact.html']
+    ]
+  };
+
+  function marketingNavGroup(label, key) {
+    return `<div class="recast-nav-group" data-recast-nav-group="${key}"><button type="button" class="recast-nav-group-button" aria-expanded="false" aria-controls="recast-nav-${key}">${label}<span class="recast-nav-chevron" aria-hidden="true"></span></button><div class="recast-nav-submenu" id="recast-nav-${key}">${marketingSubmenus[key].map(([itemLabel, href]) => `<a href="${href}"${isCurrentSection(href) ? ' aria-current="page"' : ''}>${itemLabel}</a>`).join('')}</div></div>`;
+  }
+
+  function marketingNavMarkup() {
+    return marketingNavGroup('Tools', 'tools') +
+      '<a href="/app/#workflowBuilder">Workflows</a>' +
+      marketingNavGroup('Automation', 'automation') +
+      '<a href="/api/">API</a>' +
+      marketingNavGroup('Guides', 'guides') +
+      '<a href="/#pricing">Pricing</a>';
+  }
+
+  function bindMarketingSubmenus(nav) {
+    const groups = [...nav.querySelectorAll('.recast-nav-group')];
+    const closeGroups = except => groups.forEach(group => {
+      if (group === except) return;
+      group.classList.remove('is-open');
+      group.querySelector('.recast-nav-group-button')?.setAttribute('aria-expanded', 'false');
+    });
+    groups.forEach(group => {
+      const button = group.querySelector('.recast-nav-group-button');
+      button?.addEventListener('click', event => {
+        event.stopPropagation();
+        const open = button.getAttribute('aria-expanded') !== 'true';
+        closeGroups(group);
+        group.classList.toggle('is-open', open);
+        button.setAttribute('aria-expanded', String(open));
+      });
+    });
+    document.addEventListener('click', event => {
+      if (!nav.contains(event.target)) closeGroups();
+    });
+    document.addEventListener('keydown', event => {
+      if (event.key === 'Escape') closeGroups();
+    });
+  }
+
   const canonicalLogo = '/assets/brand/recast-logo.png';
   const brandMarkup = '<img class="recast-brand-logo" src="' + canonicalLogo + '" alt="" width="32" height="32"><span class="recast-brand-wordmark">Recast</span>';
 
@@ -231,8 +291,10 @@
 
   function normalizeMarketingNav() {
     document.querySelectorAll('.site-header nav').forEach(nav => {
-      const expected = ['Tools', 'Workflows', 'Automation', 'API', 'Guides', 'Pricing'];
-      [...nav.querySelectorAll(':scope > a')].forEach((a, index) => { if (expected[index]) a.textContent = expected[index]; });
+      if (nav.dataset.recastGrouped === 'true') return;
+      nav.innerHTML = marketingNavMarkup();
+      nav.dataset.recastGrouped = 'true';
+      bindMarketingSubmenus(nav);
     });
   }
 
