@@ -35,7 +35,7 @@ a:focus-visible,button:focus-visible,input:focus-visible,textarea:focus-visible,
 /* Rendered regression fixes: keep the acquisition hero and Copilot inside the viewport. */
 .minimal-home,.minimal-hero-inner,.minimal-hero-copy,.ai-request-feature,.workflow-copilot,.wc-input-row,.home-quick-actions,.pathway-strip,.pathway-card{min-width:0!important;max-width:100%!important;box-sizing:border-box!important}
 .minimal-hero-copy h1{max-width:100%!important;font-size:clamp(3rem,5.15vw,4.65rem)!important;overflow-wrap:normal!important;text-wrap:balance}
-.minimal-hero-copy h1 .hero-accent{padding-bottom:.12em!important;margin-bottom:-.12em!important}
+.minimal-hero-copy h1 .hero-accent,.hero h1>span,.section h2>span{display:inline-block!important;padding-bottom:.12em!important;margin-bottom:-.12em!important}
 .minimal-hero-copy .sub,.copilot-ai-disclosure{max-width:100%!important;overflow-wrap:anywhere}
 .wc-prompt{min-width:0!important;max-width:100%!important}
 pre,code,.code-block{max-width:100%;overflow-wrap:normal}
