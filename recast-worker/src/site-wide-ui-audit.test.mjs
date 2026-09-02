@@ -1,6 +1,7 @@
 import assert from 'node:assert/strict';
 import { existsSync, readFileSync, readdirSync } from 'node:fs';
 import { dirname, extname, join, resolve } from 'node:path';
+import { Script } from 'node:vm';
 
 const publicRoot = new URL('../public/', import.meta.url).pathname;
 
@@ -46,4 +47,8 @@ for (const file of pages) {
 }
 
 assert.ok(internalLinkCount >= 2700, `expected the complete internal-link graph, found ${internalLinkCount}`);
-console.log(`site-wide UI audit passed: ${pages.length} pages, ${internalLinkCount} internal links`);
+
+const browserScripts = walk(publicRoot).filter(file => file.endsWith('.js') && !file.includes('/src/'));
+for (const file of browserScripts) new Script(readFileSync(file, 'utf8'), { filename: file });
+
+console.log(`site-wide UI audit passed: ${pages.length} pages, ${internalLinkCount} internal links, ${browserScripts.length} browser scripts`);

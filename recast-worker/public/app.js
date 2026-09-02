@@ -1,6 +1,3 @@
-Warning: truncated output (original token count: 38689)
-Total output lines: 2920
-
 // =====================================================================
 // STRIPE CONFIG — tryrecast.app
 //
@@ -1014,7 +1011,637 @@ const samples = {
   jsonSchema: JSON.stringify({ id: 1, name: "Ada Lovelace", active: true, tags: ["math","computing"], address: { city: "London", zip: null } }, null, 2),
   jsonStructure: JSON.stringify([
     { id: 1, name: "Ada Lovelace", role: "Engineer", address: { city: "London", country: "UK" }, tags: ["math","computing"] },
-    { id: 2, nam…8689 tokens truncated…bel.replace(/\s+/g, '_')), 'width=900,height=700');
+    { id: 2, name: "Grace Hopper", role: "Admiral", address: { city: "New York", country: "US" }, tags: ["navy"], nickname: "Amazing Grace" }
+  ], null, 2),
+  json2ts: JSON.stringify({ id: 1, name: "Ada Lovelace", active: true, tags: ["math","computing"], address: { city: "London", zip: null } }, null, 2),
+  json2kotlin: JSON.stringify({ id: 1, name: "Ada Lovelace", active: true, tags: ["math","computing"], address: { city: "London", zip: null } }, null, 2),
+  json2rust: JSON.stringify({ id: 1, name: "Ada Lovelace", active: true, tags: ["math","computing"], address: { city: "London", zip: null } }, null, 2),
+  json2java: JSON.stringify({ id: 1, name: "Ada Lovelace", active: true, tags: ["math","computing"], address: { city: "London", zip: null } }, null, 2),
+  json2swift: JSON.stringify({ id: 1, name: "Ada Lovelace", active: true, tags: ["math","computing"], address: { city: "London", zip: null } }, null, 2),
+  json2csharp: JSON.stringify({ id: 1, name: "Ada Lovelace", active: true, tags: ["math","computing"], address: { city: "London", zip: null } }, null, 2),
+  json2sql: JSON.stringify([{ id: 1, customer: "Ada Lovelace", items: [{ sku: "A1", qty: 2 }, { sku: "B2", qty: 1 }], shipping: { city: "London", zip: "E1" } }], null, 2),
+  jsonMock: JSON.stringify({ id: 1, name: "Ada Lovelace", email: "ada@example.com", city: "London", joinedDate: "2020-01-01", active: true }, null, 2),
+  json2zod: JSON.stringify({ id: 1, name: "Ada Lovelace", active: true, tags: ["math","computing"], address: { city: "London", zip: null } }, null, 2),
+};
+const diffSamples = {
+  diffJson: {
+    a: JSON.stringify([{ id: 1, name: "Ada", role: "Engineer" }, { id: 2, name: "Bob", role: "Analyst" }, { id: 3, name: "Cy", role: "Intern" }], null, 2),
+    b: JSON.stringify([{ id: 2, name: "Bob", role: "Analyst" }, { id: 1, name: "Ada Lovelace", role: "Engineer" }, { id: 4, name: "Zoe", role: "Lead" }], null, 2)
+  },
+  diffXml: {
+    a: `<person>\n  <id>1</id>\n  <name>Ada</name>\n  <role>Engineer</role>\n</person>`,
+    b: `<person>\n  <id>1</id>\n  <name>Ada Lovelace</name>\n  <role>Mathematician</role>\n</person>`
+  },
+  diffCsv: {
+    a: `id,name,city\n1,Ada,London\n2,Bob,Paris\n3,Cy,Rome`,
+    b: `id,name,city\n1,Ada Lovelace,London\n2,Bob,Berlin\n4,Zoe,Oslo`
+  },
+  validateSchema: {
+    a: JSON.stringify({ type: 'object', properties: { id: { type: 'integer', minimum: 1 }, name: { type: 'string', minLength: 1 }, role: { type: 'string', enum: ['admin','user','guest'] } }, required: ['id','name'] }, null, 2),
+    b: JSON.stringify({ id: 0, name: '', role: 'superuser' }, null, 2)
+  }
+};
+
+let currentMode = 'json2csv';
+let lastCsvDiffResult = null; // full engine.csvDiff() result, re-filtered locally on each toolbar interaction
+let lastXmlDiffChanges = null; // full engine.deepDiff() result for the structural-analysis view on XML diff, re-filtered locally the same way
+let activeDiffView = 'tree'; // 'tree' | 'structural' — which panel the diffXml view toggle currently shows
+let compareFilterStatus = 'all';
+const $ = id => document.getElementById(id);
+const inputEl = $('input'), outputEl = $('output'), statusEl = $('status');
+
+function renderHl(layerEl, taEl, kind) {
+  if (!layerEl || !taEl) return;
+  const opts = { delimiter: getDelim() };
+  layerEl.innerHTML = RecastHighlight.highlightFor(kind, taEl.value, opts) + (taEl.value.slice(-1) === '\n' ? ' ' : '');
+}
+function updateHighlightLayers() {
+  const cfg = modeConfig[currentMode];
+  renderHl($('hlInput'), inputEl, cfg.hl);
+  renderHl($('hlInputA'), $('inputA'), cfg.hl);
+  renderHl($('hlInputB'), $('inputB'), cfg.hl);
+  renderHl($('hlOutput'), outputEl, cfg.hlOut);
+}
+function wireHighlightSync(taEl, layerEl) {
+  if (!taEl || !layerEl) return;
+  taEl.addEventListener('scroll', () => { layerEl.scrollTop = taEl.scrollTop; layerEl.scrollLeft = taEl.scrollLeft; });
+}
+wireHighlightSync(inputEl, $('hlInput'));
+wireHighlightSync($('inputA'), $('hlInputA'));
+wireHighlightSync($('inputB'), $('hlInputB'));
+wireDiffRowClicks();
+wireCompareTableClicks();
+wireDiffViewToggle();
+wireHighlightSync(outputEl, $('hlOutput'));
+
+function setMode(mode) {
+  if (!modeConfig[mode]) return;
+  currentMode = mode;
+  const cfg = modeConfig[mode];
+  const chip = document.querySelector(`.mode-chip[data-mode="${mode}"]`);
+  const group = chip?.dataset.group;
+  if (group) {
+    document.querySelectorAll('.mode-group-btn').forEach(b => b.classList.toggle('active', b.dataset.group === group));
+    document.querySelectorAll('.mode-chip[data-group]').forEach(c => c.classList.toggle('hidden', c.dataset.group !== group));
+  }
+  document.querySelectorAll('.mode-chip').forEach(c => c.classList.toggle('active', c.dataset.mode === mode));
+  $('inFmt').textContent = cfg.inFmt;
+  $('outFmt').textContent = cfg.outFmt;
+  outputEl.value = '';
+  statusEl.textContent = '';
+  $('diffPanel').classList.remove('show');
+  $('diffKeyNote').style.display = 'none';
+  $('comparePanel')?.classList.remove('show');
+
+  // The side-by-side layout, hidden output panel, and 2-column grid on
+  // the diff tool pages are all scoped to this class (toggled here, not
+  // just to #diffFullscreenWrap's mere presence) — because non-diff
+  // dual-input modes on the very same page (e.g. validateSchema, whose
+  // report writes to this exact output panel) still need the original,
+  // 3-column layout with the output panel visible.
+  $('diffFullscreenWrap')?.classList.toggle('diff-mode-active', !!cfg.isDiff);
+
+  const dual = $('dualInput');
+  const singleWrap = $('singleInputWrap');
+  if (cfg.dual) { dual?.classList.add('show'); singleWrap?.classList.add('hide'); }
+  else { dual?.classList.remove('show'); singleWrap?.classList.remove('hide'); }
+  if ($('inputA')) $('inputA').placeholder = (cfg.dualLabels && cfg.dualLabels[0]) || 'Original / left side\u2026';
+  if ($('inputB')) $('inputB').placeholder = (cfg.dualLabels && cfg.dualLabels[1]) || 'Modified / right side\u2026';
+
+  // Table/graph view are reading aids — drop them on any mode switch so
+  // they don't linger showing stale/irrelevant data in an unrelated mode.
+  if (inputTableActive) { inputTableActive = false; singleWrap?.classList.remove('table-active'); $('inputTableBtn')?.classList.remove('active'); if ($('inputTableBtn')) $('inputTableBtn').title = 'Toggle table view'; }
+  if (outputTableActive) { outputTableActive = false; $('outputTableWrap')?.closest('.ta-wrap')?.classList.remove('table-active'); $('outputTableBtn')?.classList.remove('active'); if ($('outputTableBtn')) $('outputTableBtn').title = 'Toggle table view'; }
+  tableSortState = { input: null, output: null };
+  if (typeof setGraphActive === 'function') { setGraphActive('input', false); setGraphActive('output', false); }
+
+  if (typeof liveValidateIfApplicable === 'function') liveValidateIfApplicable();
+
+  const pathRow = $('pathRow');
+  if (cfg.path) pathRow?.classList.add('show'); else pathRow?.classList.remove('show');
+  renderJsonPathWorkingBanner();
+
+  if ($('prettyLabel')) $('prettyLabel').style.display = cfg.showPretty ? '' : 'none';
+  if ($('bomLabel')) $('bomLabel').style.display = cfg.showBom ? '' : 'none';
+  if ($('rootNameLabel')) $('rootNameLabel').style.display = cfg.showRootName ? '' : 'none';
+  if ($('mockCountLabel')) $('mockCountLabel').style.display = cfg.showMockCount ? '' : 'none';
+  if ($('delimLabel')) $('delimLabel').style.display = cfg.showDelim ? '' : 'none';
+  if ($('inferLabel')) $('inferLabel').style.display = cfg.showInfer ? '' : 'none';
+
+  const btn = $('convertBtn');
+  if (btn) btn.textContent = cfg.btn || 'Convert';
+  updateCounts();
+  updateHighlightLayers();
+
+  // Batch support: hide the toggle entirely for modes that can't batch
+  // either as single-file conversion or as paired-file diff (JSONPath and
+  // schema-validation need a query alongside each file, so batch doesn't
+  // make sense for those).
+  const batchToggle = $('batchToggleBtn');
+  if (batchToggle) {
+    const supported = RecastBatch.isBatchSupported(mode) || RecastBatch.isBatchDiffSupported(mode);
+    batchToggle.style.display = supported ? '' : 'none';
+    if (!supported) $('batchPanel')?.classList.remove('show');
+  }
+  updateBatchPanelForMode(mode);
+}
+
+function setGroup(group) {
+  document.querySelectorAll('.mode-group-btn').forEach(b => b.classList.toggle('active', b.dataset.group === group));
+  document.querySelectorAll('.mode-chip[data-group]').forEach(chip => chip.classList.toggle('hidden', chip.dataset.group !== group));
+  const currentChip = document.querySelector(`.mode-chip[data-mode="${currentMode}"]`);
+  if (!currentChip || currentChip.dataset.group !== group) {
+    const first = document.querySelector(`.mode-chip[data-group="${group}"]`);
+    if (first) setMode(first.dataset.mode);
+  }
+}
+document.querySelectorAll('.mode-group-btn').forEach(btn => btn.addEventListener('click', () => setGroup(btn.dataset.group)));
+document.querySelectorAll('.mode-chip[data-mode]').forEach(chip => chip.addEventListener('click', () => { setMode(chip.dataset.mode); track('select_tool', { mode: chip.dataset.mode }); }));
+document.querySelectorAll('.qs-card[data-mode]').forEach(card => card.addEventListener('click', () => {
+  setMode(card.dataset.mode);
+  // Scroll to the quick-start row itself, not all the way down to the
+  // input panel — that overshot past the cards and the mode tabs, leaving
+  // the user unable to see what they'd just clicked or switch again
+  // without scrolling back up. Account for the sticky header's real
+  // height rather than a hardcoded offset, since it wraps taller on
+  // narrow screens.
+  const target = $('quickStart');
+  const header = document.querySelector('header.titleblock');
+  if (target) {
+    const headerH = header ? header.getBoundingClientRect().height : 0;
+    const y = target.getBoundingClientRect().top + window.scrollY - headerH - 12;
+    window.scrollTo({ top: y, behavior: 'smooth' });
+  }
+  track('quick_start_select', { mode: card.dataset.mode });
+}));
+
+function updateCounts() {
+  const cfg = modeConfig[currentMode];
+  const inLen = cfg?.dual ? (($('inputA')?.value.length || 0) + ($('inputB')?.value.length || 0)) : inputEl.value.length;
+  $('inCount').textContent = inLen + ' chars';
+  $('outCount').textContent = outputEl.value.length + ' chars';
+  const src = cfg?.dual ? (($('inputA')?.value || '') + ($('inputB')?.value || '')) : inputEl.value;
+  const bytes = new Blob([src]).size;
+  const limit = getLimitBytes();
+  const pct = Math.min(100, (bytes / limit) * 100);
+  $('capFill').style.width = pct + '%';
+  $('capFill').style.background = pct > 90 ? '#F2846B' : '#3AA2FC';
+  $('capLabel').textContent = isPro() ? `${Math.round(bytes/1024)} KB \u00b7 Pro` : `${(bytes/1024/1024).toFixed(2)} / 3 MB free limit`;
+  const nudge = $('upgradeNudge');
+  if (nudge) { if (pct > 80) nudge.classList.add('show'); else nudge.classList.remove('show'); }
+}
+inputEl.addEventListener('input', () => { updateCounts(); renderHl($('hlInput'), inputEl, modeConfig[currentMode].hl); });
+$('inputA')?.addEventListener('input', () => { updateCounts(); renderHl($('hlInputA'), $('inputA'), modeConfig[currentMode].hl); liveValidateIfApplicable(); });
+$('inputB')?.addEventListener('input', () => { updateCounts(); renderHl($('hlInputB'), $('inputB'), modeConfig[currentMode].hl); liveValidateIfApplicable(); });
+
+// ---------------- Live inline schema validation ----------------
+// Updates a small valid/invalid badge as you type against a schema,
+// instead of only reporting on button-click — closer to how an IDE
+// behaves. Debounced and length-guarded so it can't jank typing on a
+// large paste; skipped entirely outside the schema-validation mode.
+let liveValidateTimer = null;
+const LIVE_VALIDATE_MAX_BYTES = 200 * 1024;
+
+function liveValidateIfApplicable() {
+  const cfg = modeConfig[currentMode];
+  const badge = $('liveValidateBadge');
+  if (!badge) return;
+  if (!cfg?.isSchemaCheck) { badge.style.display = 'none'; return; }
+  clearTimeout(liveValidateTimer);
+  liveValidateTimer = setTimeout(runLiveValidate, 400);
+}
+
+function runLiveValidate() {
+  const badge = $('liveValidateBadge');
+  const schemaText = $('inputA')?.value || '';
+  const dataText = $('inputB')?.value || '';
+  if (!schemaText.trim() || !dataText.trim()) { badge.style.display = 'none'; return; }
+  if (new Blob([schemaText, dataText]).size > LIVE_VALIDATE_MAX_BYTES) {
+    badge.className = 'live-validate-badge wait';
+    badge.textContent = 'Too large for live validation \u2014 use the button';
+    badge.style.display = 'block';
+    return;
+  }
+  let schema, data;
+  try { schema = JSON.parse(schemaText); data = JSON.parse(dataText); }
+  catch (e) {
+    badge.className = 'live-validate-badge wait';
+    badge.textContent = '\u22ef waiting for valid JSON';
+    badge.style.display = 'block';
+    return;
+  }
+  try {
+    const result = RecastEngine.validateAgainstSchema(data, schema);
+    badge.className = 'live-validate-badge ' + (result.valid ? 'ok' : 'err');
+    badge.textContent = result.valid ? '\u2713 Valid' : `\u2715 ${result.errors.length} issue${result.errors.length === 1 ? '' : 's'}`;
+    badge.style.display = 'block';
+  } catch (e) {
+    badge.className = 'live-validate-badge wait';
+    badge.textContent = '\u22ef ' + (e.message || 'checking\u2026');
+    badge.style.display = 'block';
+  }
+}
+
+
+function setWorking(on) { $('workerStatus').classList.toggle('show', on); }
+
+async function runCurrentMode() {
+  const cfg = modeConfig[currentMode];
+  const sourceText = cfg.dual ? ($('inputA').value + $('inputB').value) : inputEl.value;
+  const bytes = new Blob([sourceText]).size;
+  if (bytes > getLimitBytes()) {
+    statusEl.innerHTML = '<span class="status-err">\u2715 File exceeds the free limit \u2014 <a href="#pricing" style="color:#A855F7">upgrade to Pro</a> for files up to 25 MB.</span>';
+    $('upgradeNudge')?.classList.add('show');
+    track('limit_hit', { mode: currentMode, reason: 'file_size' });
+    recordPaywallHit('file_size');
+    return;
+  }
+  if (currentMode === 'diffCsv' && !isPro()) {
+    const delim = getDelim();
+    const rowsA = RecastEngine.csvRowCount($('inputA').value, delim);
+    const rowsB = RecastEngine.csvRowCount($('inputB').value, delim);
+    if (Math.max(rowsA, rowsB) > CSV_COMPARE_FREE_ROW_LIMIT) {
+      statusEl.innerHTML = `<span class="status-err">\u2715 Free tier compares up to ${CSV_COMPARE_FREE_ROW_LIMIT} rows per file \u2014 <a href="#pricing" style="color:#A855F7">upgrade to Pro</a>, or <a href="#" onclick="startCheckout('day_pass');return false;" style="color:#A855F7">get a 24-hour pass \u2014 \u00a32.99</a> for just this one.</span>`;
+      $('upgradeNudge')?.classList.add('show');
+      track('limit_hit', { mode: currentMode, reason: 'row_count' });
+      recordPaywallHit('row_count');
+      return;
+    }
+  }
+  try {
+    if (cfg.sync) {
+      const result = cfg.sync(inputEl.value);
+      outputEl.value = result;
+      $('diffPanel').classList.remove('show');
+      const okLabel = cfg.btn === 'Validate' ? '\u2713 Valid' : '\u2713 Done';
+      statusEl.innerHTML = `<span class="status-ok">${okLabel}</span>`;
+    } else {
+      setWorking(true);
+      const { task, payload } = cfg.task();
+      const result = await RecastWorkerClient.runTask(task, payload);
+      setWorking(false);
+
+      if (cfg.isDiff) {
+        if (cfg.diffKind === 'csv') {
+          lastCsvDiffResult = result.result;
+          compareFilterStatus = 'all';
+          $('compareSearch').value = '';
+          renderCompareTable();
+          outputEl.value = flatTextFromCsvDiff(result.result);
+          $('diffPanel').classList.remove('show');
+          $('comparePanel').classList.add('show');
+        } else {
+          lastXmlDiffChanges = result.result; // harmless to set for diffJson too — the structural view toggle only exists on xml-diff.html's markup, so it's simply unused there
+          renderTreeDiff(result.result);
+          outputEl.value = flatTextFromChanges(result.result);
+          // Re-comparing shouldn't silently switch the user back to tree
+          // view if they'd already chosen structural analysis.
+          if (activeDiffView === 'structural') {
+            compareFilterStatus = 'all';
+            $('compareSearch').value = '';
+            renderXmlStructuralTable();
+            $('diffPanel').classList.remove('show');
+            $('comparePanel').classList.add('show');
+          } else {
+            $('comparePanel').classList.remove('show');
+            $('diffPanel').classList.add('show');
+          }
+        }
+        statusEl.innerHTML = '<span class="status-ok">\u2713 Compared</span>';
+      } else if (cfg.isSchemaCheck) {
+        outputEl.value = formatSchemaValidationReport(result);
+        $('diffPanel').classList.remove('show');
+        $('comparePanel').classList.remove('show');
+        statusEl.innerHTML = result.valid
+          ? '<span class="status-ok">\u2713 Valid against schema</span>'
+          : `<span class="status-err">\u2715 ${result.errors.length} violation${result.errors.length===1?'':'s'} found</span>`;
+      } else {
+        outputEl.value = result;
+        $('diffPanel').classList.remove('show');
+        $('comparePanel').classList.remove('show');
+        statusEl.innerHTML = '<span class="status-ok">\u2713 Done</span>';
+      }
+    }
+    updateCounts();
+    renderHl($('hlOutput'), outputEl, cfg.hlOut);
+    if (outputTableActive) renderCsvTableInto($('outputTableWrap'), outputEl.value, getDelim());
+    if (outputGraphActive) RecastGraph.render($('outputGraphWrap'), outputEl.value);
+
+    RecastHistory.add(cfg.dual
+      ? { mode: currentMode, inputA: $('inputA').value, inputB: $('inputB').value }
+      : { mode: currentMode, input: inputEl.value });
+    renderHistoryList();
+    track('convert_run', { mode: currentMode, success: true, is_pro: isPro() });
+  } catch (e) {
+    setWorking(false);
+    const msg = e.message || String(e);
+    if (cfg.btn === 'Validate') { outputEl.value = '\u2715 ' + msg; statusEl.innerHTML = '<span class="status-err">\u2715 Invalid \u2014 see report</span>'; }
+    else { statusEl.innerHTML = '<span class="status-err">\u2715 ' + msg.split('\n')[0] + '</span>'; }
+    updateCounts();
+    track('convert_run', { mode: currentMode, success: false, is_pro: isPro() });
+  }
+}
+$('convertBtn').addEventListener('click', runCurrentMode);
+
+// ---------------- Expand to full screen + pop out into a separate window ----------------
+// Two ways to get more screen real estate for large datasets, since the
+// panels otherwise cap out at whatever fits in the page layout:
+// - "Expand" keeps everything in this tab but overlays the panel/workbench/
+//   playground across the full viewport (Escape or the button again exits).
+// - "Pop out" opens a genuinely separate browser window with a live,
+//   two-way-synced mirror of the field, so it can be dragged to another
+//   monitor. Editing in either window updates the other; output/read-only
+//   fields sync one-way since there's nothing to type back.
+let currentFullscreenEl = null;
+function setExpandIcon(btn, expanded) {
+  const use = btn?.querySelector('use');
+  if (use) use.setAttribute('href', expanded ? '#ico-collapse' : '#ico-expand');
+  if (btn) btn.title = expanded ? 'Exit full screen' : 'Expand to full screen';
+}
+function toggleFullscreen(el, btn) {
+  if (!el) return;
+  if (currentFullscreenEl && currentFullscreenEl !== el) {
+    currentFullscreenEl.classList.remove('wb-fullscreen');
+    document.querySelectorAll('.win-btn[title="Exit full screen"]').forEach(b => setExpandIcon(b, false));
+  }
+  const nowExpanded = !el.classList.contains('wb-fullscreen');
+  el.classList.toggle('wb-fullscreen', nowExpanded);
+  document.body.classList.toggle('wb-lock', nowExpanded);
+  currentFullscreenEl = nowExpanded ? el : null;
+  setExpandIcon(btn, nowExpanded);
+}
+document.addEventListener('keydown', (e) => {
+  if (e.key === 'Escape' && currentFullscreenEl) {
+    const btn = document.querySelector('.win-btn[title="Exit full screen"]');
+    toggleFullscreen(currentFullscreenEl, btn);
+  }
+});
+$('inputExpandBtn')?.addEventListener('click', (e) => toggleFullscreen($('inputPanel'), e.currentTarget));
+$('outputExpandBtn')?.addEventListener('click', (e) => toggleFullscreen($('outputPanel') || e.currentTarget.closest('.panel'), e.currentTarget));
+// On the diff tools, expand the wrapper that also contains the diff
+// summary/compare panel below the input area — not just the input/output
+// textareas — so a user can click a summary row and jump to a highlighted
+// line without ever leaving full-screen mode. Every other tool page has
+// no such wrapper, so this falls back to the existing, unchanged
+// behavior (expanding just .workbench) exactly as before.
+$('workbenchExpandBtn')?.addEventListener('click', (e) => toggleFullscreen($('diffFullscreenWrap') || document.querySelector('.workbench'), e.currentTarget));
+$('playgroundExpandBtn')?.addEventListener('click', (e) => toggleFullscreen($('apiPlayground'), e.currentTarget));
+
+// Diff-specific pop-out: mirrors BOTH inputA and inputB (side by side,
+// live-synced, same two-way mechanism as the single-field mirror below)
+// plus the actual summary/structural panel currently showing on the main
+// tab — since that panel is exactly what this feature is for including.
+// The summary mirror is read-only (copied innerHTML, not independently
+// rendered) — it always reflects whichever result the main tab last
+// computed. Genuine click-to-jump inside the popup itself is out of
+// scope here (it would mean fully re-implementing the highlight-overlay
+// and position-mapping machinery in a second, separate document), but a
+// "Compare" button lets the user edit here and get a fresh result
+// without switching back to the main tab.
+// Generic dual-input pop-out for non-diff dual:true modes (currently
+// just validateSchema — the only other mode that uses two labeled
+// inputs). Simpler than openDiffPopout: there's no summary panel to
+// mirror here, since the result of this kind of mode goes to the
+// regular output panel, which already has its own, correctly-working
+// pop-out (openPopoutMirror(outputEl, ...) below) — this only needed to
+// exist because the INPUT side was wrongly mirroring a different,
+// hidden single-input textarea for every dual-input mode, diff or not.
+function openDualInputPopout() {
+  const inputAEl = $('inputA'), inputBEl = $('inputB');
+  if (!inputAEl || !inputBEl) return;
+  const cfg = modeConfig[currentMode];
+  const labelA = (cfg?.dualLabels && cfg.dualLabels[0]?.replace(/[\u2026:]+$/, '').trim()) || 'Input A';
+  const labelB = (cfg?.dualLabels && cfg.dualLabels[1]?.replace(/[\u2026:]+$/, '').trim()) || 'Input B';
+  const w = window.open('', 'recast_dual_popout', 'width=1000,height=650');
+  if (!w) { showToast('Pop-out blocked \u2014 allow pop-ups for this site'); return; }
+  const doc = w.document;
+  doc.title = 'Recast \u2014 ' + (cfg?.inFmt || 'Input');
+
+  const style = doc.createElement('style');
+  style.textContent =
+    "html,body{margin:0;height:100%;background:#0A0E1F;color:#EDF3F8;font-family:'IBM Plex Mono',ui-monospace,monospace;}" +
+    "body{display:flex;flex-direction:column;}" +
+    ".head{box-sizing:border-box;padding:10px 14px;border-bottom:1px solid rgba(120,110,180,0.32);font-size:12px;letter-spacing:.06em;text-transform:uppercase;color:#B9CBDA;flex-shrink:0;}" +
+    ".panes{display:flex;flex:1;min-height:0;}" +
+    ".pane{flex:1;min-width:0;display:flex;flex-direction:column;border-right:1px solid rgba(120,110,180,0.2);}" +
+    ".pane:last-child{border-right:none;}" +
+    ".pane-label{font-size:10.5px;text-transform:uppercase;letter-spacing:.05em;color:#8A8FA3;padding:8px 12px 4px;flex-shrink:0;}" +
+    "textarea{box-sizing:border-box;width:100%;flex:1;min-height:0;border:none;outline:none;background:transparent;color:#EDF3F8;font-family:inherit;font-size:13px;line-height:1.6;padding:0 12px 12px;resize:none;}";
+  doc.head.appendChild(style);
+
+  const head = doc.createElement('div');
+  head.className = 'head';
+  head.textContent = (cfg?.inFmt || 'Input') + ' \u2014 synced with the main tab';
+  doc.body.appendChild(head);
+
+  const panes = doc.createElement('div');
+  panes.className = 'panes';
+  function buildPane(labelText) {
+    const pane = doc.createElement('div');
+    pane.className = 'pane';
+    const lbl = doc.createElement('div');
+    lbl.className = 'pane-label';
+    lbl.textContent = labelText;
+    const ta = doc.createElement('textarea');
+    ta.spellcheck = false;
+    pane.appendChild(lbl);
+    pane.appendChild(ta);
+    return { pane, ta };
+  }
+  const paneA = buildPane(labelA);
+  const paneB = buildPane(labelB);
+  panes.appendChild(paneA.pane);
+  panes.appendChild(paneB.pane);
+  doc.body.appendChild(panes);
+
+  paneA.ta.value = inputAEl.value;
+  paneB.ta.value = inputBEl.value;
+
+  let syncing = false;
+  function wireTwoWay(ta, sourceEl) {
+    ta.addEventListener('input', () => {
+      if (syncing) return;
+      syncing = true;
+      sourceEl.value = ta.value;
+      sourceEl.dispatchEvent(new Event('input', { bubbles: true }));
+      syncing = false;
+    });
+  }
+  wireTwoWay(paneA.ta, inputAEl);
+  wireTwoWay(paneB.ta, inputBEl);
+
+  function pushFromMain() {
+    if (w.closed) { clearInterval(poll); return; }
+    if (syncing) return;
+    syncing = true;
+    if (paneA.ta.value !== inputAEl.value) paneA.ta.value = inputAEl.value;
+    if (paneB.ta.value !== inputBEl.value) paneB.ta.value = inputBEl.value;
+    syncing = false;
+  }
+  const poll = setInterval(pushFromMain, 400);
+  w.addEventListener('beforeunload', () => clearInterval(poll));
+  track('popout_open', { field: 'dual-input' });
+}
+
+function openDiffPopout() {
+  const inputAEl = $('inputA'), inputBEl = $('inputB');
+  if (!inputAEl || !inputBEl) return;
+  const w = window.open('', 'recast_diff_popout', 'width=1100,height=750');
+  if (!w) { showToast('Pop-out blocked \u2014 allow pop-ups for this site'); return; }
+  const doc = w.document;
+  doc.title = 'Recast \u2014 Diff';
+
+  const style = doc.createElement('style');
+  style.textContent =
+    "html,body{margin:0;height:100%;background:#0A0E1F;color:#EDF3F8;font-family:'IBM Plex Mono',ui-monospace,monospace;}" +
+    "body{display:flex;flex-direction:column;}" +
+    ".head{box-sizing:border-box;display:flex;align-items:center;justify-content:space-between;gap:10px;padding:10px 14px;border-bottom:1px solid rgba(120,110,180,0.32);font-size:12px;letter-spacing:.06em;text-transform:uppercase;color:#B9CBDA;flex-shrink:0;}" +
+    ".head button{font-family:inherit;font-size:11px;background:transparent;border:1px solid rgba(120,110,180,0.32);color:#EDF3F8;border-radius:2px;padding:5px 10px;cursor:pointer;}" +
+    ".head button:hover{border-color:#A855F7;color:#A855F7;}" +
+    ".head .compare-btn{background:#A855F7;border-color:#A855F7;color:#1a0f2e;font-weight:600;}" +
+    ".panes{display:flex;flex:0 0 45%;min-height:0;}" +
+    ".pane{flex:1;min-width:0;display:flex;flex-direction:column;border-right:1px solid rgba(120,110,180,0.2);}" +
+    ".pane:last-child{border-right:none;}" +
+    ".pane-label{font-size:10.5px;text-transform:uppercase;letter-spacing:.05em;color:#8A8FA3;padding:8px 12px 4px;flex-shrink:0;}" +
+    "textarea{box-sizing:border-box;width:100%;flex:1;min-height:0;border:none;outline:none;background:transparent;color:#EDF3F8;font-family:inherit;font-size:13px;line-height:1.6;padding:0 12px 12px;resize:none;}" +
+    ".summary-wrap{flex:1;min-height:0;overflow:auto;border-top:1px solid rgba(120,110,180,0.32);}" +
+    ".diff-summary{ display:flex; gap:18px; padding:12px 16px; border-bottom:1px solid rgba(120,110,180,0.2); font-size:12.5px; flex-wrap:wrap; }" +
+    ".diff-summary b{ font-weight:600; }" +
+    ".diff-summary .added b{ color:#3AA2FC; } .diff-summary .removed b{ color:#F2846B; } .diff-summary .changed b{ color:#A855F7; }" +
+    ".diff-row{ display:flex; gap:10px; padding:8px 16px; border-left:3px solid transparent; font-size:12.5px; border-bottom:1px solid rgba(120,110,180,0.16); align-items:baseline; flex-wrap:wrap; }" +
+    ".diff-row.added{ border-left-color:#3AA2FC; background:rgba(58,162,252,0.06); } .diff-row.removed{ border-left-color:#F2846B; background:rgba(242,132,107,0.06); } .diff-row.changed{ border-left-color:#A855F7; background:rgba(168,85,247,0.06); }" +
+    ".diff-row .badge{ font-size:10px; text-transform:uppercase; letter-spacing:.06em; padding:1px 6px; border-radius:2px; flex-shrink:0; }" +
+    ".diff-row.added .badge{ background:#3AA2FC; color:#0A0E1F; } .diff-row.removed .badge{ background:#F2846B; color:#0A0E1F; } .diff-row.changed .badge{ background:#A855F7; color:#0A0E1F; }" +
+    ".diff-row .path{ color:#EDF3F8; flex-shrink:0; } .diff-row .vals{ color:#8A8FA3; }" +
+    ".diff-row .vals .old{ color:#F2846B; text-decoration:line-through; opacity:.8; } .diff-row .vals .new{ color:#3AA2FC; }" +
+    ".diff-table{ border-collapse:collapse; width:100%; font-size:12px; }" +
+    ".diff-table th,.diff-table td{ padding:7px 10px; border-bottom:1px solid rgba(120,110,180,0.16); text-align:left; }" +
+    ".diff-table th{ background:#0A0E1F; position:sticky; top:0; color:#8A8FA3; font-weight:500; text-transform:uppercase; font-size:10.5px; }" +
+    ".row-badge{ font-size:9.5px; text-transform:uppercase; padding:2px 7px; border-radius:2px; display:inline-block; }" +
+    "tr.row-added{ background:rgba(58,162,252,0.06); } tr.row-added .row-badge{ background:#3AA2FC; color:#0A0E1F; }" +
+    "tr.row-removed{ background:rgba(242,132,107,0.06); } tr.row-removed .row-badge{ background:#F2846B; color:#0A0E1F; }" +
+    "tr.row-changed{ background:rgba(168,85,247,0.05); } tr.row-changed .row-badge{ background:#A855F7; color:#0A0E1F; }" +
+    "tr.row-unchanged{ opacity:.72; } tr.row-unchanged .row-badge{ background:rgba(120,110,180,0.28); color:#EDF3F8; }" +
+    ".cell-old{ color:#F2846B; text-decoration:line-through; opacity:.8; } .cell-new{ color:#3AA2FC; }";
+  doc.head.appendChild(style);
+
+  const head = doc.createElement('div');
+  head.className = 'head';
+  const title = doc.createElement('span');
+  title.textContent = 'Diff \u2014 synced with the main tab';
+  const btnGroup = doc.createElement('div');
+  btnGroup.style.display = 'flex';
+  btnGroup.style.gap = '6px';
+  const compareBtn = doc.createElement('button');
+  compareBtn.className = 'compare-btn';
+  compareBtn.textContent = 'Compare';
+  const fsBtn = doc.createElement('button');
+  fsBtn.textContent = 'Full screen';
+  btnGroup.appendChild(compareBtn);
+  btnGroup.appendChild(fsBtn);
+  head.appendChild(title);
+  head.appendChild(btnGroup);
+  doc.body.appendChild(head);
+
+  const panes = doc.createElement('div');
+  panes.className = 'panes';
+  function buildPane(labelText) {
+    const pane = doc.createElement('div');
+    pane.className = 'pane';
+    const lbl = doc.createElement('div');
+    lbl.className = 'pane-label';
+    lbl.textContent = labelText;
+    const ta = doc.createElement('textarea');
+    ta.spellcheck = false;
+    pane.appendChild(lbl);
+    pane.appendChild(ta);
+    return { pane, ta };
+  }
+  const paneA = buildPane('File A');
+  const paneB = buildPane('File B');
+  panes.appendChild(paneA.pane);
+  panes.appendChild(paneB.pane);
+  doc.body.appendChild(panes);
+
+  const summaryWrap = doc.createElement('div');
+  summaryWrap.className = 'summary-wrap';
+  doc.body.appendChild(summaryWrap);
+
+  paneA.ta.value = inputAEl.value;
+  paneB.ta.value = inputBEl.value;
+
+  function activeSummaryEl() {
+    const diffPanel = $('diffPanel'), comparePanel = $('comparePanel');
+    if (comparePanel && comparePanel.classList.contains('show')) return comparePanel;
+    if (diffPanel && diffPanel.classList.contains('show')) return diffPanel;
+    return null;
+  }
+  function pushSummary() {
+    const el = activeSummaryEl();
+    summaryWrap.innerHTML = el ? el.innerHTML : '<div style="padding:16px;color:#8A8FA3;">Run Compare to see the summary here.</div>';
+  }
+  pushSummary();
+
+  compareBtn.addEventListener('click', () => {
+    inputAEl.value = paneA.ta.value;
+    inputBEl.value = paneB.ta.value;
+    inputAEl.dispatchEvent(new Event('input', { bubbles: true }));
+    inputBEl.dispatchEvent(new Event('input', { bubbles: true }));
+    $('convertBtn')?.click();
+  });
+
+  const docEl = doc.documentElement;
+  function updateFsBtn() {
+    fsBtn.textContent = doc.fullscreenElement ? 'Exit full screen' : 'Full screen';
+  }
+  fsBtn.addEventListener('click', () => {
+    if (doc.fullscreenElement) {
+      doc.exitFullscreen?.();
+    } else if (docEl.requestFullscreen) {
+      docEl.requestFullscreen().catch(() => showToast('Full screen isn\u2019t available for this window'));
+    } else {
+      showToast('Full screen isn\u2019t supported in this browser');
+    }
+  });
+  doc.addEventListener('fullscreenchange', updateFsBtn);
+
+  let syncing = false;
+  function wireTwoWay(ta, sourceEl) {
+    ta.addEventListener('input', () => {
+      if (syncing) return;
+      syncing = true;
+      sourceEl.value = ta.value;
+      sourceEl.dispatchEvent(new Event('input', { bubbles: true }));
+      syncing = false;
+    });
+  }
+  wireTwoWay(paneA.ta, inputAEl);
+  wireTwoWay(paneB.ta, inputBEl);
+
+  function pushFromMain() {
+    if (w.closed) { cleanup(); return; }
+    if (syncing) return;
+    syncing = true;
+    if (paneA.ta.value !== inputAEl.value) paneA.ta.value = inputAEl.value;
+    if (paneB.ta.value !== inputBEl.value) paneB.ta.value = inputBEl.value;
+    syncing = false;
+    pushSummary();
+  }
+  // Polling, not an 'input'-event listener — the summary panel updates
+  // programmatically (renderTreeDiff/renderCompareTable/etc.), which
+  // fires no DOM event to hook into, same reasoning as the existing
+  // single-field popout's own poll for programmatic output updates.
+  const poll = setInterval(pushFromMain, 400);
+  function cleanup() { clearInterval(poll); }
+  w.addEventListener('beforeunload', cleanup);
+  track('popout_open', { field: 'diff' });
+}
+
+function openPopoutMirror(sourceEl, label, opts) {
+  opts = opts || {};
+  const isPre = sourceEl.tagName === 'PRE';
+  const readOnly = opts.readOnly || isPre;
+  const w = window.open('', 'recast_popout_' + (opts.id || label.replace(/\s+/g, '_')), 'width=900,height=700');
   if (!w) { showToast('Pop-out blocked \u2014 allow pop-ups for this site'); return; }
   const doc = w.document;
   doc.title = 'Recast \u2014 ' + label;
@@ -2277,4 +2904,3 @@ renderHistoryList();
   }
   inputEl.addEventListener('input', saveSoon);
 })();
-
