@@ -38,6 +38,90 @@
     document.querySelectorAll('.hero-preview').forEach(panel => panel.remove());
   }
 
+  const dedicatedToolGroups = {
+    compare: [
+      ['JSON Diff', '/tools/json-diff.html'],
+      ['XML Diff', '/tools/xml-diff.html'],
+      ['CSV Diff', '/tools/csv-diff.html']
+    ],
+    convert: [
+      ['JSON → CSV', '/tools/json-to-csv.html'],
+      ['CSV → JSON', '/tools/csv-to-json.html'],
+      ['JSON → XML', '/tools/json-to-xml.html'],
+      ['XML → JSON', '/tools/xml-to-json.html'],
+      ['JSON → YAML', '/tools/json-to-yaml.html'],
+      ['YAML → JSON', '/tools/yaml-to-json.html']
+    ],
+    validate: [
+      ['Validate JSON', '/tools/json-validator.html'],
+      ['Format JSON', '/tools/json-formatter.html'],
+      ['Validate Schema', '/tools/validate-json-schema.html']
+    ],
+    transform: [
+      ['Flatten JSON', '/tools/flatten-json.html'],
+      ['Unflatten JSON', '/tools/unflatten-json.html'],
+      ['JSONPath Tester', '/tools/jsonpath-tester.html']
+    ],
+    schema: [
+      ['JSON → Schema', '/tools/json-schema-generator.html'],
+      ['JSON → TypeScript', '/tools/json-to-typescript.html'],
+      ['JSON → Python', '/tools/json-to-python.html'],
+      ['JSON → Zod', '/tools/json-to-zod.html']
+    ]
+  };
+
+  function dedicatedToolGroup(slug) {
+    if (/(?:^|-)(?:diff|compare)(?:-|$)/.test(slug)) return 'compare';
+    if (/validator|validate|formatter|format/.test(slug)) return 'validate';
+    if (/flatten|unflatten|jsonpath/.test(slug)) return 'transform';
+    if (/schema|typescript|pydantic|python|kotlin|rust|swift|csharp|java|zod|sql|go$/.test(slug)) return 'schema';
+    return 'convert';
+  }
+
+  function focusDedicatedToolPage() {
+    const match = location.pathname.match(/^\/tools\/([^/]+?)(?:\.html)?$/);
+    const hero = document.querySelector('main .hero');
+    const workbench = hero?.querySelector('#diffFullscreenWrap');
+    if (!match || !hero || !workbench) return;
+
+    const slug = match[1].replace(/\.html$/, '');
+    const group = dedicatedToolGroup(slug);
+    const heading = hero.querySelector('h1');
+    const shortTitle = (dedicatedToolGroups[group].find(([, href]) => href.includes('/' + slug + '.html'))?.[0] || heading?.textContent || 'Selected tool').trim();
+    document.body.classList.add('recast-dedicated-tool');
+
+    hero.querySelector('.quick-start')?.remove();
+    hero.querySelector('.mode-nav')?.remove();
+    hero.querySelector('.related-groups')?.remove();
+
+    const oldToolkitLink = [...hero.querySelectorAll('a')].find(link => /full toolkit/i.test(link.textContent || ''));
+    oldToolkitLink?.closest('p')?.remove();
+    if (heading && !hero.querySelector('.dedicated-breadcrumb')) {
+      const breadcrumb = document.createElement('nav');
+      breadcrumb.className = 'dedicated-breadcrumb';
+      breadcrumb.setAttribute('aria-label', 'Breadcrumb');
+      breadcrumb.innerHTML = `<a href="/tools/">Tools</a><span>/</span><a href="/tools/">${group[0].toUpperCase() + group.slice(1)}</a><span>/</span><strong>${shortTitle}</strong>`;
+      hero.insertBefore(breadcrumb, heading);
+    }
+
+    if (!workbench.querySelector('.dedicated-tool-label')) {
+      const label = document.createElement('div');
+      label.className = 'dedicated-tool-label';
+      label.innerHTML = `<span>Selected tool</span><strong>${shortTitle}</strong>`;
+      workbench.insertBefore(label, workbench.firstChild);
+    }
+    (hero.querySelector('.sub') || heading)?.insertAdjacentElement('afterend', workbench);
+
+    if (!hero.querySelector('.dedicated-related')) {
+      const related = document.createElement('nav');
+      related.className = 'dedicated-related';
+      related.setAttribute('aria-label', 'Related tools');
+      const alternatives = dedicatedToolGroups[group].filter(([, href]) => !href.includes('/' + slug + '.html')).slice(0, 2);
+      related.innerHTML = `<span>Need a different ${group} tool?</span>${alternatives.map(([label, href]) => `<a href="${href}">${label} →</a>`).join('')}<a href="/tools/">All tools →</a>`;
+      workbench.insertAdjacentElement('afterend', related);
+    }
+  }
+
   function buildGlobalHeader() {
     const header = document.createElement('header');
     header.className = 'recast-global-header';
@@ -167,6 +251,7 @@
   function run() {
     normalizeThemeDefault();
     removeLiveExamplePanels();
+    focusDedicatedToolPage();
     document.body.classList.add('recast-ui-consistent');
     ensureGlobalShell();
     normalizeBranding();
