@@ -6,7 +6,12 @@ const js = await readFile(new URL('../public/ui-consistency.js', import.meta.url
 const wrapper = await readFile(new URL('./worker-ui.js', import.meta.url), 'utf8');
 const wrangler = await readFile(new URL('../wrangler.jsonc', import.meta.url), 'utf8');
 
-for (const label of ['Tools','Workflows','Automation','API','Guides','Pricing']) assert.ok(js.includes(`'${label}'`) || js.includes(`>${label}<`), `missing shared nav label ${label}`);
+for (const label of ['Tools','Workflows','Automation','API','Guides','Demo','Pricing']) assert.ok(js.includes(`'${label}'`) || js.includes(`>${label}<`), `missing shared nav label ${label}`);
+for (const href of ['/tools/','/app/#workflowBuilder','/automation/','/api/','/how-to/','/demo/','/#pricing']) assert.ok(js.includes(`'${href}'`) || js.includes(`href=\"${href}\"`), `missing canonical nav destination ${href}`);
+assert.match(js, /href=\"\/demo\/\">Demo<\/a>/, 'homepage marketing menu must expose Demo as a first-level item');
+assert.match(js, /href\.startsWith\('\/demo'\) && path\.startsWith\('\/demo'\)/, 'Demo pages must receive current-section state');
+assert.match(js, /insertPlain\('demo', 'Demo', '\/demo\/'/, 'technical page navigation must include Demo');
+assert.match(js, /globalNavItems\.map/, 'use-case navigation must derive from the canonical shared menu list');
 assert.match(js, /normalizeBranding/);
 assert.match(js, /\/assets\/brand\/recast-logo\.png/);
 assert.match(js, /recast-brand-logo/);
@@ -44,8 +49,8 @@ assert.match(css, /@media\(max-width:640px\)/);
 assert.match(wrapper, /worker-release4\.js/);
 assert.match(wrapper, /ui-consistency\.css/);
 assert.match(wrapper, /ui-consistency\.js/);
-assert.match(wrapper, /ui-consistency\.css\?v=14/);
-assert.match(wrapper, /ui-consistency\.js\?v=14/);
+assert.match(wrapper, /ui-consistency\.css\?v=15/);
+assert.match(wrapper, /ui-consistency\.js\?v=15/);
 assert.match(wrapper, /localStorage\.getItem\("recast_theme"\)/);
 assert.match(wrapper, /recast-favicon-64\.png/);
 assert.match(wrapper, /app\.js\?v=88/);
