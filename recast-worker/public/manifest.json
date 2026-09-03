@@ -3,7 +3,7 @@
   "short_name": "Recast",
   "description": "Convert, validate, format, diff and generate schemas for JSON, CSV, XML, YAML and Markdown — entirely offline once installed.",
   "id": "/app/",
-  "start_url": "/pwa/?source=installed",
+  "start_url": "/pwa/index.html?source=installed",
   "scope": "/",
   "display": "standalone",
   "background_color": "#0A0E1F",

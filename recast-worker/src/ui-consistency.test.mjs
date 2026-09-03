@@ -55,7 +55,7 @@ for (const route of ['/blog/*','/how-to/*','/demo/*','/tools/*','/automation/*',
   assert.ok(wrangler.includes(`"${route}"`), `Worker UI wrapper must cover ${route}`);
 }
 const serviceWorker = await readFile(new URL('../public/sw.js', import.meta.url), 'utf8');
-assert.match(serviceWorker, /CACHE_VERSION = 'recast-v100'/);
+assert.match(serviceWorker, /CACHE_VERSION = 'recast-v101'/);
 assert.match(css, /:root:not\(\[data-theme="light"\]\)\{--bg:var\(--recast-bg\)/,
   'all page families must share the canonical dark background unless the user explicitly selects light mode');
 assert.match(css, /--recast-header-max:1360px/);

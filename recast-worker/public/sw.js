@@ -22,14 +22,13 @@
 // expiry. This bit someone on the "Demo" page launch: the nav link update
 // never reached anyone with the SW already active, because this file was
 // otherwise unchanged.
-const CACHE_VERSION = 'recast-v100';
+const CACHE_VERSION = 'recast-v101';
 const CORE_ASSETS = [
   '/',
   '/index.html',
   '/styles.css',
   '/app.js',
   '/manifest.json',
-  '/pwa/',
   '/pwa/index.html',
   '/pwa.js',
   '/pwa.css',
@@ -100,7 +99,7 @@ self.addEventListener('fetch', (event) => {
           tx.onerror = () => reject(tx.error);
         });
       } catch (_) {}
-      return Response.redirect('/pwa/?source=share-target', 303);
+      return Response.redirect('/pwa/index.html?source=share-target', 303);
     })());
     return;
   }
