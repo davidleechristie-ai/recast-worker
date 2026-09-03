@@ -4,28 +4,22 @@ const UI_STYLE = '<script>(function(){try{var t=localStorage.getItem("recast_the
 const UI_SCRIPT = '<script src="/ui-consistency.js?v=14" defer></script><script src="/pwa.js?v=2" defer></script>';
 const TOOLS_HUB_URL = 'https://tryrecast.app/tools/';
 const AUTHORITY_STYLE = '<style id="v23-internal-authority">.seo-authority-cluster{max-width:1040px;margin:34px auto 18px;padding:22px 0;border-top:1px solid rgba(148,163,184,.12)}.seo-authority-cluster h2{margin:0 0 8px;font-size:1.15rem}.seo-authority-cluster p{margin:0;max-width:860px;line-height:1.7;color:var(--text-muted)}.seo-authority-cluster a{font-weight:700}</style>';
+const CONVERSION_STYLE = '<style id="v25-conversion">.seo-conversion-cta{max-width:1040px;margin:26px auto;padding:22px 24px;border:1px solid rgba(148,163,184,.16);border-radius:16px;background:rgba(15,23,42,.24)}.seo-conversion-cta h2{margin:0 0 7px;font-size:1.15rem}.seo-conversion-cta p{margin:0 0 14px;max-width:820px;line-height:1.65;color:var(--text-muted)}.seo-conversion-cta a{display:inline-block;font-weight:700;text-decoration:none}.seo-conversion-cta .secondary{margin-left:16px;font-weight:600}@media(max-width:640px){.seo-conversion-cta .secondary{margin:12px 0 0;display:block}}</style>';
 
 const CTR_META = {
-  '/tools/json-to-csv.html': {
-    title: 'JSON to CSV Online — Convert Nested JSON Free | Recast',
-    description: 'Convert JSON to CSV online in your browser. Flatten nested objects and arrays, create Excel-ready CSV, choose delimiters, and keep your data local.'
-  },
-  '/tools/json-diff.html': {
-    title: 'JSON Diff Online — Compare Two JSON Files | Recast',
-    description: 'Compare two JSON files online and instantly spot added, removed and changed values. Structural diff ignores formatting noise and can match arrays by ID.'
-  },
-  '/tools/csv-diff.html': {
-    title: 'CSV Diff Online — Compare Two CSV Files | Recast',
-    description: 'Compare two CSV files online side by side. Find added, removed and changed rows, filter differences, ignore whitespace, and export a diff report.'
-  },
-  '/tools/api-response-to-csv.html': {
-    title: 'API Response to CSV — Convert JSON API Data Online | Recast',
-    description: 'Paste a JSON API response and convert it to CSV online. Flatten nested fields, create spreadsheet-ready output, and reuse the steps as a workflow.'
-  },
-  '/tools/compare-api-responses.html': {
-    title: 'Compare API Responses Online — Find JSON Changes | Recast',
-    description: 'Compare two API responses online and find added, removed and changed JSON fields. Structural comparison ignores formatting noise and highlights real API changes.'
-  }
+  '/tools/json-to-csv.html': { title: 'JSON to CSV Online — Convert Nested JSON Free | Recast', description: 'Convert JSON to CSV online in your browser. Flatten nested objects and arrays, create Excel-ready CSV, choose delimiters, and keep your data local.' },
+  '/tools/json-diff.html': { title: 'JSON Diff Online — Compare Two JSON Files | Recast', description: 'Compare two JSON files online and instantly spot added, removed and changed values. Structural diff ignores formatting noise and can match arrays by ID.' },
+  '/tools/csv-diff.html': { title: 'CSV Diff Online — Compare Two CSV Files | Recast', description: 'Compare two CSV files online side by side. Find added, removed and changed rows, filter differences, ignore whitespace, and export a diff report.' },
+  '/tools/api-response-to-csv.html': { title: 'API Response to CSV — Convert JSON API Data Online | Recast', description: 'Paste a JSON API response and convert it to CSV online. Flatten nested fields, create spreadsheet-ready output, and reuse the steps as a workflow.' },
+  '/tools/compare-api-responses.html': { title: 'Compare API Responses Online — Find JSON Changes | Recast', description: 'Compare two API responses online and find added, removed and changed JSON fields. Structural comparison ignores formatting noise and highlights real API changes.' }
+};
+
+const CONVERSION_CTA = {
+  '/tools/json-to-csv.html': '<section class="seo-conversion-cta" aria-label="Reuse this conversion"><h2>Need to run this conversion more than once?</h2><p>Use the free tool now, then save the same JSON-to-CSV steps as a reusable workflow when the job becomes repetitive.</p><a href="/app">Open the Workbench</a><a class="secondary" href="/pricing.html">See Pro and automation options</a></section>',
+  '/tools/json-diff.html': '<section class="seo-conversion-cta" aria-label="Reuse this comparison"><h2>Turn a one-off comparison into a repeatable check</h2><p>Compare locally first. If this becomes part of a release or data-quality routine, move the same process into a reusable Recast workflow.</p><a href="/app">Open the Workbench</a><a class="secondary" href="/pricing.html">See Pro and automation options</a></section>',
+  '/tools/csv-diff.html': '<section class="seo-conversion-cta" aria-label="Reuse this comparison"><h2>Comparing CSV exports regularly?</h2><p>Start with the free browser tool. For recurring reconciliation, save the process as a workflow instead of rebuilding the comparison each time.</p><a href="/app">Open the Workbench</a><a class="secondary" href="/pricing.html">See Pro and automation options</a></section>',
+  '/tools/api-response-to-csv.html': '<section class="seo-conversion-cta" aria-label="Automate this conversion"><h2>From pasted response to repeatable API workflow</h2><p>Use this tool for an immediate conversion, or turn the same transformation into hosted execution when you need API responses converted repeatedly.</p><a href="/automation/api-response-to-csv.html">Explore API automation</a><a class="secondary" href="/pricing.html">See automation pricing</a></section>',
+  '/tools/compare-api-responses.html': '<section class="seo-conversion-cta" aria-label="Automate API comparison"><h2>Make API change checks repeatable</h2><p>Compare responses here first. For repeated release checks, use Recast workflows and automation to standardise the comparison.</p><a href="/app">Build a workflow</a><a class="secondary" href="/pricing.html">See Pro and automation options</a></section>'
 };
 
 const AUTHORITY_LINKS = {
@@ -42,51 +36,18 @@ const AUTHORITY_LINKS = {
 function applyUi(response, requestUrl) {
   const type = response.headers.get('content-type') || '';
   if (!type.includes('text/html') || !response.body) return response;
-
   const url = new URL(requestUrl);
   const isToolsHub = url.pathname === '/tools/' || url.pathname === '/tools/index.html';
   const authorityHtml = AUTHORITY_LINKS[url.pathname] || '';
+  const conversionHtml = CONVERSION_CTA[url.pathname] || '';
   const ctrMeta = CTR_META[url.pathname];
   const rewriter = new HTMLRewriter()
-    .on('head', { element(element) {
-      element.append(UI_STYLE, { html: true });
-      if (authorityHtml) element.prepend(AUTHORITY_STYLE, { html: true });
-    } })
-    .on('script[src]', { element(element) {
-      const src = element.getAttribute('src') || '';
-      if (src === 'app.js' || src.endsWith('/app.js')) element.setAttribute('src', '/app.js?v=88');
-    } })
-    .on('body', { element(element) {
-      if (authorityHtml) element.append(authorityHtml, { html: true });
-      element.append(UI_SCRIPT, { html: true });
-    } });
-
-  if (isToolsHub) {
-    rewriter
-      .on('link[rel="canonical"]', { element(element) { element.setAttribute('href', TOOLS_HUB_URL); } })
-      .on('meta[property="og:url"]', { element(element) { element.setAttribute('content', TOOLS_HUB_URL); } });
-  }
-
-  if (ctrMeta) {
-    rewriter
-      .on('title', { element(element) { element.setInnerContent(ctrMeta.title); } })
-      .on('meta[name="description"]', { element(element) { element.setAttribute('content', ctrMeta.description); } })
-      .on('meta[property="og:title"]', { element(element) { element.setAttribute('content', ctrMeta.title); } })
-      .on('meta[property="og:description"]', { element(element) { element.setAttribute('content', ctrMeta.description); } })
-      .on('meta[name="twitter:title"]', { element(element) { element.setAttribute('content', ctrMeta.title); } })
-      .on('meta[name="twitter:description"]', { element(element) { element.setAttribute('content', ctrMeta.description); } });
-  }
-
+    .on('head', { element(element) { element.append(UI_STYLE, { html: true }); if (authorityHtml) element.prepend(AUTHORITY_STYLE, { html: true }); if (conversionHtml) element.prepend(CONVERSION_STYLE, { html: true }); } })
+    .on('script[src]', { element(element) { const src = element.getAttribute('src') || ''; if (src === 'app.js' || src.endsWith('/app.js')) element.setAttribute('src', '/app.js?v=88'); } })
+    .on('body', { element(element) { if (conversionHtml) element.append(conversionHtml, { html: true }); if (authorityHtml) element.append(authorityHtml, { html: true }); element.append(UI_SCRIPT, { html: true }); } });
+  if (isToolsHub) rewriter.on('link[rel="canonical"]', { element(element) { element.setAttribute('href', TOOLS_HUB_URL); } }).on('meta[property="og:url"]', { element(element) { element.setAttribute('content', TOOLS_HUB_URL); } });
+  if (ctrMeta) rewriter.on('title', { element(element) { element.setInnerContent(ctrMeta.title); } }).on('meta[name="description"]', { element(element) { element.setAttribute('content', ctrMeta.description); } }).on('meta[property="og:title"]', { element(element) { element.setAttribute('content', ctrMeta.title); } }).on('meta[property="og:description"]', { element(element) { element.setAttribute('content', ctrMeta.description); } }).on('meta[name="twitter:title"]', { element(element) { element.setAttribute('content', ctrMeta.title); } }).on('meta[name="twitter:description"]', { element(element) { element.setAttribute('content', ctrMeta.description); } });
   return rewriter.transform(response);
 }
 
-export default {
-  async scheduled(controller, env, ctx) {
-    return release4Worker.scheduled(controller, env, ctx);
-  },
-  async fetch(request, env, ctx) {
-    const response = await release4Worker.fetch(request, env, ctx);
-    if (request.method !== 'GET') return response;
-    return applyUi(response, request.url);
-  }
-};
+export default { async scheduled(controller, env, ctx) { return release4Worker.scheduled(controller, env, ctx); }, async fetch(request, env, ctx) { const response = await release4Worker.fetch(request, env, ctx); if (request.method !== 'GET') return response; return applyUi(response, request.url); } };
