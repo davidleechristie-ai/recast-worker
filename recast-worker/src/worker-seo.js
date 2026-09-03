@@ -245,6 +245,15 @@ function seoBlock(slug, profile, schemaSet) {
   </section>`;
 }
 
+function focusedJourney(slug) {
+  const journeys = {
+    'jsonpath-tester': `<section class="seo2-landing seo2-focused" aria-label="JSONPath to CSV workflow"><div class="seo2-intro"><span class="seo2-kicker">CONTINUE WITH THE RESULT</span><h2>Extract API records, then export them to CSV.</h2><p>Run a JSONPath expression above. After a successful match, choose <strong>Export matches to CSV</strong>; Recast carries the matched JSON into the converter without another paste or upload.</p></div><div class="seo2-grid"><article><h3>Useful expressions</h3><ul><li><code>$.data[*]</code> — every record in a result envelope</li><li><code>$.orders[?(@.status == "paid")]</code> — filtered records</li><li><code>$.users[*].profile</code> — one nested object per user</li></ul></article><article><h3>When the extraction repeats</h3><p>Preserve the expression in a workflow, add flatten and CSV steps, then choose hosted Automation only when the job must run on a schedule or webhook.</p><a href="/automation/automate-jsonpath-extraction.html">Automate JSONPath extraction →</a></article></div></section>`,
+    'json-schema-generator': `<section class="seo2-landing seo2-focused" aria-label="JSON contract workflow"><div class="seo2-intro"><span class="seo2-kicker">FROM SAMPLE TO CONTRACT</span><h2>Generate the schema, validate the payload, then create runtime types.</h2><p>After generating a schema above, choose <strong>Validate with this schema</strong>. Recast carries both the generated Draft-07 schema and your original sample into validation.</p></div><div class="seo2-grid"><article><h3>Continue into code</h3><ul><li><a href="/tools/json-to-typescript.html">Generate TypeScript types</a></li><li><a href="/tools/json-to-zod.html">Generate a Zod runtime schema</a></li><li><a href="/tools/json-to-pydantic.html">Generate Pydantic models</a></li></ul></article><article><h3>Use the right execution path</h3><p>Browser generation and validation stay local. Use the CLI when data must remain inside CI; use the hosted API only when server-side processing is acceptable.</p><a href="/seo/validate-json-schema-api-payload.html">Validate an API contract →</a></article></div></section>`,
+    'json-diff': `<section class="seo2-landing seo2-focused" aria-label="ID-aware JSON comparison"><div class="seo2-intro"><span class="seo2-kicker">KEY-AWARE COMPARISON</span><h2>Compare records by identity, not array position.</h2><p>Recast automatically uses a unique ID-like field such as <code>id</code>, <code>uuid</code>, <code>key</code>, <code>slug</code>, <code>code</code> or <code>name</code>. Reordered records therefore do not become a wall of false changes.</p></div><div class="seo2-grid"><article><h3>Reliable matching</h3><p>Use a field that is present and unique in both arrays. Duplicate or missing values are ambiguous, so Recast falls back to positional comparison rather than silently pairing the wrong records.</p></article><article><h3>Recurring snapshots</h3><p>Use the focused API comparison path when comparing environments or scheduled snapshots.</p><a href="/tools/compare-api-responses.html">Compare API responses →</a></article></div></section>`
+  };
+  return journeys[slug] || '';
+}
+
 function jsonScript(value) {
   return `<script type="application/ld+json" data-recast-seo="2">${JSON.stringify(value).replace(/</g,'\\u003c')}</script>`;
 }
@@ -269,7 +278,7 @@ function enhanceToolHtml(response, slug) {
       el.append('<link rel="stylesheet" href="/tool-seo.css?v=2">', {html:true});
       el.append(jsonScript(schemaSet.app) + jsonScript(schemaSet.crumbs) + jsonScript(schemaSet.faq), {html:true});
     }})
-    .on('main', { element(el) { el.append(seoBlock(slug, profile, schemaSet), {html:true}); } });
+    .on('main', { element(el) { el.append(seoBlock(slug, profile, schemaSet) + focusedJourney(slug), {html:true}); } });
   return rewriter.transform(response);
 }
 
@@ -292,6 +301,19 @@ export default {
   },
   async fetch(request, env, ctx) {
     const url = new URL(request.url);
+
+    const directoryIndexCanonical = {
+      '/index.html': '/',
+      '/tools/index.html': '/tools/',
+      '/blog/index.html': '/blog/',
+      '/how-to/index.html': '/how-to/',
+      '/demo/index.html': '/demo/',
+      '/api/index.html': '/api/',
+      '/automation/index.html': '/automation/'
+    }[url.pathname];
+    if ((request.method === 'GET' || request.method === 'HEAD') && directoryIndexCanonical) {
+      return Response.redirect(`${url.origin}${directoryIndexCanonical}${url.search}`, 301);
+    }
 
     if ((request.method === 'GET' || request.method === 'HEAD') && /^\/tools\/[^/.]+$/.test(url.pathname)) {
       const destination = `${url.origin}${url.pathname}.html${url.search}`;

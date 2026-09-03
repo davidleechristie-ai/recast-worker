@@ -17,4 +17,15 @@ async function testUnknownExtensionlessToolStillCanonicalises() {
 
 await testExtensionlessToolCanonicalRedirect();
 await testUnknownExtensionlessToolStillCanonicalises();
+
+for (const [from, to] of [
+  ['/index.html', '/'],
+  ['/tools/index.html', '/tools/'],
+  ['/api/index.html', '/api/'],
+  ['/automation/index.html', '/automation/']
+]) {
+  const response = await seoWorker.fetch(new Request('https://tryrecast.app' + from + '?ref=test', { redirect:'manual' }), {}, {});
+  assert.equal(response.status, 301);
+  assert.equal(response.headers.get('location'), 'https://tryrecast.app' + to + '?ref=test');
+}
 console.log('worker-seo tests passed');

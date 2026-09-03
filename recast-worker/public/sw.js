@@ -22,10 +22,9 @@
 // expiry. This bit someone on the "Demo" page launch: the nav link update
 // never reached anyone with the SW already active, because this file was
 // otherwise unchanged.
-const CACHE_VERSION = 'recast-v102';
+const CACHE_VERSION = 'recast-v103';
 const CORE_ASSETS = [
   '/',
-  '/index.html',
   '/styles.css',
   '/app.js',
   '/manifest.json',
@@ -119,7 +118,7 @@ self.addEventListener('fetch', (event) => {
         // Offline and not cached — for a page navigation, fall back to the
         // shell so the app still opens rather than showing the browser's
         // dinosaur/no-connection page.
-        if (req.mode === 'navigate') return caches.match('/index.html');
+        if (req.mode === 'navigate') return caches.match('/');
         return new Response('', { status: 503, statusText: 'Offline' });
       });
     })

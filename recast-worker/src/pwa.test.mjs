@@ -10,7 +10,8 @@ assert.ok(manifest.file_handlers[0].accept['application/json'].includes('.json')
 assert.ok(manifest.icons.some(icon => icon.purpose === 'maskable'));
 for (const path of ['pwa/index.html', 'pwa.js', 'pwa-hub.js', 'pwa.css', 'sw.js']) assert.ok((await stat(new URL(path, root))).size > 0, `${path} must exist`);
 const sw = await readFile(new URL('sw.js', root), 'utf8');
-assert.match(sw, /recast-v102/);
+assert.match(sw, /recast-v103/);
+assert.doesNotMatch(sw, /'\/index\.html'/);
 assert.match(sw, /\/pwa\/share-target/);
 assert.match(sw, /indexedDB\.open\('recast-pwa'/);
 const manager = await readFile(new URL('pwa.js', root), 'utf8');

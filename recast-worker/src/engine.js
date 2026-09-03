@@ -494,10 +494,12 @@
   // ---------------- Deep diff (key-aware for arrays of objects) ----------------
   function isPlainObj(v) { return v !== null && typeof v === 'object' && !Array.isArray(v); }
 
-  function pickArrayKey(arrA, arrB) {
+  function pickArrayKey(arrA, arrB, preferredKey) {
     if (!arrA.length || !arrB.length) return null;
     if (!arrA.every(isPlainObj) || !arrB.every(isPlainObj)) return null;
-    const candidates = ['id', 'uuid', '_id', 'key', 'slug', 'code', 'name'];
+    const candidates = preferredKey
+      ? [preferredKey]
+      : ['id', 'uuid', '_id', 'key', 'slug', 'code', 'name'];
     for (let ci = 0; ci < candidates.length; ci++) {
       const cand = candidates[ci];
       const inAllA = arrA.every(function (v) { return Object.prototype.hasOwnProperty.call(v, cand); });
@@ -510,7 +512,7 @@
     return null;
   }
 
-  function deepDiff(a, b, path) {
+  function deepDiff(a, b, path, options) {
     path = path || '';
     const changes = [];
     const aObj = isPlainObj(a) || Array.isArray(a);
@@ -526,7 +528,7 @@
     if (aIsArr !== bIsArr) { changes.push({ path: path || '(root)', type: 'changed', oldVal: a, newVal: b }); return changes; }
 
     if (aIsArr) {
-      const key = pickArrayKey(a, b);
+      const key = pickArrayKey(a, b, options && options.arrayKey);
       if (key) {
         const mapA = new Map(a.map(function (v) { return [v[key], v]; }));
         const mapB = new Map(b.map(function (v) { return [v[key], v]; }));
@@ -536,7 +538,7 @@
           const inA = mapA.has(k), inB = mapB.has(k);
           if (inA && !inB) changes.push({ path: p, type: 'removed', oldVal: mapA.get(k), newVal: undefined });
           else if (!inA && inB) changes.push({ path: p, type: 'added', oldVal: undefined, newVal: mapB.get(k) });
-          else changes.push.apply(changes, deepDiff(mapA.get(k), mapB.get(k), p));
+          else changes.push.apply(changes, deepDiff(mapA.get(k), mapB.get(k), p, options));
         });
         return changes;
       }
@@ -545,7 +547,7 @@
         const p = path + '[' + idx + ']';
         if (idx >= a.length) changes.push({ path: p, type: 'added', oldVal: undefined, newVal: b[idx] });
         else if (idx >= b.length) changes.push({ path: p, type: 'removed', oldVal: a[idx], newVal: undefined });
-        else changes.push.apply(changes, deepDiff(a[idx], b[idx], p));
+        else changes.push.apply(changes, deepDiff(a[idx], b[idx], p, options));
       }
       return changes;
     }
@@ -558,7 +560,7 @@
       const inB = Object.prototype.hasOwnProperty.call(b, k);
       if (inA && !inB) changes.push({ path: p, type: 'removed', oldVal: a[k], newVal: undefined });
       else if (!inA && inB) changes.push({ path: p, type: 'added', oldVal: undefined, newVal: b[k] });
-      else changes.push.apply(changes, deepDiff(a[k], b[k], p));
+      else changes.push.apply(changes, deepDiff(a[k], b[k], p, options));
     });
     return changes;
   }

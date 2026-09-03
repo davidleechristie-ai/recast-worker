@@ -30,7 +30,7 @@ function runDiff(p) {
   }
   const dataA = p.op === 'diffXml' ? E.xmlToJson(p.textA) : JSON.parse(p.textA);
   const dataB = p.op === 'diffXml' ? E.xmlToJson(p.textB) : JSON.parse(p.textB);
-  return { kind: 'tree', result: E.deepDiff(dataA, dataB) };
+  return { kind: 'tree', result: E.deepDiff(dataA, dataB, '', opts) };
 }
 
 function runSchema(p) {

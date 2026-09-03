@@ -11,17 +11,25 @@
 <script type="application/ld+json">{"@context":"https://schema.org","@type":"WebPage","name":"Compare JSON Arrays by ID Online | Recast","description":"Compare JSON arrays by ID-like fields so reordered objects still match. Find real added, removed and changed values in your browser.","url":"https://tryrecast.app/tools/compare-json-arrays-by-id.html","isPartOf":{"@type":"WebSite","name":"Recast","url":"https://tryrecast.app/"}}</script>
 <style>
 .intent-page{max-width:960px;margin:0 auto;padding:28px 22px 70px}.intent-nav{display:flex;justify-content:space-between;align-items:center;margin-bottom:70px}.intent-nav a{color:inherit;text-decoration:none}.intent-logo{font-weight:800;font-size:1.1rem}.intent-hero{max-width:780px}.intent-hero h1{font-size:clamp(2.5rem,6vw,5.1rem);line-height:.96;letter-spacing:-.055em;margin:12px 0 22px}.intent-lead{font-size:1rem;line-height:1.7;opacity:.68;max-width:720px}.intent-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:10px;margin:34px 0}.intent-grid div{padding:17px;border:1px solid rgba(148,163,184,.13);border-radius:12px}.intent-grid strong,.intent-grid span{display:block}.intent-grid span{font-size:.76rem;line-height:1.5;opacity:.55;margin-top:7px}.intent-cta{display:inline-flex;margin-top:8px}.intent-note{margin-top:55px;padding-top:22px;border-top:1px solid rgba(148,163,184,.1);font-size:.76rem;line-height:1.6;opacity:.55}@media(max-width:700px){.intent-nav{margin-bottom:45px}.intent-grid{grid-template-columns:1fr}}
+.intent-detail{margin-top:42px;padding-top:26px;border-top:1px solid rgba(148,163,184,.12)}.intent-detail h2{font-size:1.35rem}.intent-detail p,.intent-detail li{font-size:.9rem;line-height:1.7;opacity:.72}.intent-example{display:grid;grid-template-columns:1fr 1fr;gap:12px}.intent-example pre{white-space:pre-wrap;padding:16px;border:1px solid rgba(148,163,184,.14);border-radius:10px;background:rgba(15,23,42,.42)}@media(max-width:700px){.intent-example{grid-template-columns:1fr}}
 </style>
 </head>
 <body style="background:var(--bg);color:var(--text);margin:0;min-height:100vh">
 <main class="intent-page">
-<nav class="intent-nav"><a class="intent-logo" href="../index.html">Recast</a><a href="index.html">All tools →</a></nav>
+<nav class="intent-nav"><a class="intent-logo" href="/">Recast</a><a href="/tools/">All tools →</a></nav>
 <section class="intent-hero">
 <p class="eyebrow">Free browser data tool</p>
 <h1>Compare JSON Arrays by ID</h1>
 <p class="intent-lead">Array order often changes even when the records do not. Recast's JSON diff can match objects using ID-like fields so a reordered response does not become a wall of false changes.</p>
 <div class="intent-grid"><div><strong>Match objects by identity</strong><span>Compare corresponding records rather than only array positions.</span></div><div><strong>Reduce reorder noise</strong><span>Focus on changed values instead of harmless movement.</span></div><div><strong>Inspect API responses</strong><span>Useful for snapshots and API responses containing arrays of records.</span></div></div>
 <a class="btn btn-gold intent-cta" href="json-diff.html">Compare JSON →</a>
+<section class="intent-detail"><h2>How Recast chooses a matching key</h2><p>Recast looks for a field that exists and is unique in both arrays, using common identity fields such as <code>id</code>, <code>uuid</code>, <code>_id</code>, <code>key</code>, <code>slug</code>, <code>code</code> and <code>name</code>. If no reliable shared key exists, it falls back to comparing by position instead of silently pairing the wrong records.</p></section>
+<section class="intent-detail"><h2>Reordering is not a data change</h2><div class="intent-example"><pre>BEFORE
+[{&quot;id&quot;:1,&quot;status&quot;:&quot;new&quot;},
+ {&quot;id&quot;:2,&quot;status&quot;:&quot;paid&quot;}]</pre><pre>AFTER
+[{&quot;id&quot;:2,&quot;status&quot;:&quot;paid&quot;},
+ {&quot;id&quot;:1,&quot;status&quot;:&quot;shipped&quot;}]</pre></div><p>The record with ID 2 is unchanged even though it moved. Recast reports only the status change on ID 1.</p></section>
+<section class="intent-detail"><h2>Before relying on an ID field</h2><ul><li>Use a key that is present in every record on both sides.</li><li>Make sure values are unique; duplicate keys make matching ambiguous.</li><li>Use the same value type in both files—<code>42</code> and <code>&quot;42&quot;</code> are not necessarily the same identity.</li><li>Remove volatile fields such as request IDs or timestamps before comparing snapshots.</li></ul><p><a href="compare-api-responses.html">Compare captured API responses →</a> · <a href="../automation/clean-api-responses.html">Build a repeatable cleanup workflow →</a></p></section>
 <p class="intent-note"><strong>Privacy:</strong> browser tools process the data you paste locally. If you explicitly use Recast's hosted API or Automation features, the input for that hosted execution is sent to Recast for processing.</p>
 </section>
 </main>

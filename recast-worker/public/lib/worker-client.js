@@ -64,7 +64,7 @@
       if (payload.op === 'diffCsv') return { kind: 'csv', result: E.csvDiff(payload.textA, payload.textB, opts) };
       const dataA = payload.op === 'diffXml' ? E.xmlToJson(payload.textA) : JSON.parse(payload.textA);
       const dataB = payload.op === 'diffXml' ? E.xmlToJson(payload.textB) : JSON.parse(payload.textB);
-      return { kind: 'tree', result: E.deepDiff(dataA, dataB) };
+      return { kind: 'tree', result: E.deepDiff(dataA, dataB, '', opts) };
     }
     if (task === 'schema') {
       const schema = E.jsonSchemaFromSample(JSON.parse(payload.text), opts);

@@ -7,7 +7,7 @@
   "scripts": {
     "dev": "wrangler dev",
     "deploy": "wrangler deploy",
-    "test": "node src/pwa.test.mjs && node src/worker-seo.test.mjs && node src/release3-tool-workflow.test.mjs && node src/release3-analytics.test.mjs && node src/release3-phase2.test.mjs && node src/release4-seo.test.mjs && node src/ui-consistency.test.mjs && node src/site-wide-ui-audit.test.mjs && node src/copilot-ai.test.mjs && node src/workflow-copilot.test.mjs && node src/workflow-executor.test.mjs && node src/workflow-api.test.mjs && node src/credential-vault.test.mjs && node src/stripe-verify.test.mjs && node src/entitlements.test.mjs && node src/worker.test.mjs && node src/pipeline-field-discovery.test.mjs && node src/structural-analysis-classification.test.mjs && node src/typegen-array-root.test.mjs && node src/diff-position-mapping.test.mjs && node src/tree-compare.test.mjs"
+    "test": "node src/pwa.test.mjs && node src/worker-seo.test.mjs && node src/release3-tool-workflow.test.mjs && node src/release3-analytics.test.mjs && node src/release3-phase2.test.mjs && node src/release4-seo.test.mjs && node src/commercial-journeys.test.mjs && node src/ui-consistency.test.mjs && node src/site-wide-ui-audit.test.mjs && node src/copilot-ai.test.mjs && node src/workflow-copilot.test.mjs && node src/workflow-executor.test.mjs && node src/workflow-api.test.mjs && node src/credential-vault.test.mjs && node src/stripe-verify.test.mjs && node src/entitlements.test.mjs && node src/worker.test.mjs && node src/pipeline-field-discovery.test.mjs && node src/structural-analysis-classification.test.mjs && node src/typegen-array-root.test.mjs && node src/diff-position-mapping.test.mjs && node src/tree-compare.test.mjs"
   },
   "devDependencies": {
     "wrangler": "^4.0.0"

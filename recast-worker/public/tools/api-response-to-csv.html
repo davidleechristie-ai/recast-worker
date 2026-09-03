@@ -21,13 +21,14 @@
 .intent-faq summary{cursor:pointer;font-weight:700}
 .intent-faq p,.intent-related p,.intent-example p{font-size:.9rem;line-height:1.7;opacity:.72}
 .intent-related a{font-weight:700}
+.intent-cases{margin-top:42px;padding-top:26px;border-top:1px solid rgba(148,163,184,.12)}.intent-case-grid{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:12px}.intent-case-grid article{padding:18px;border:1px solid rgba(148,163,184,.14);border-radius:12px}.intent-case-grid h3{margin:0 0 8px;font-size:1rem}.intent-case-grid p{margin:0;font-size:.85rem;line-height:1.65;opacity:.68}.intent-repeat{margin-top:34px;padding:22px;border:1px solid rgba(168,85,247,.35);border-radius:14px;background:rgba(168,85,247,.08)}.intent-repeat h2{margin-top:0}.intent-repeat .btn{margin:6px 8px 0 0}@media(max-width:700px){.intent-case-grid{grid-template-columns:1fr}}
 </style>
 
 <script type="application/ld+json">{"@context":"https://schema.org","@type":"FAQPage","mainEntity":[{"@type":"Question","name":"Can I convert a nested JSON API response to CSV?","acceptedAnswer":{"@type":"Answer","text":"Yes. Flatten nested objects first so nested values become predictable columns, then convert the flattened JSON to CSV."}},{"@type":"Question","name":"Do I need to call the API directly from Recast?","acceptedAnswer":{"@type":"Answer","text":"No. You can paste a captured JSON response into the browser tool. Hosted API and Automation execution are separate options."}},{"@type":"Question","name":"What if the response contains arrays?","acceptedAnswer":{"@type":"Answer","text":"Arrays need an export strategy. You may preserve them, flatten indexes, or reshape the data before CSV export depending on the use case."}}]}</script>
 </head>
 <body style="background:var(--bg);color:var(--text);margin:0;min-height:100vh">
 <main class="intent-page">
-<nav class="intent-nav"><a class="intent-logo" href="../index.html">Recast</a><a href="index.html">All tools →</a></nav>
+<nav class="intent-nav"><a class="intent-logo" href="/">Recast</a><a href="/tools/">All tools →</a></nav>
 <section class="intent-hero">
 <p class="eyebrow">Free browser data tool</p>
 <h1>Convert an API Response to CSV</h1>
@@ -45,13 +46,24 @@
 }</pre>
 <p>Flattening the nested object creates stable CSV columns such as <code>customer.name</code> and <code>customer.city</code>. The result can then be downloaded as a spreadsheet-friendly CSV without writing a one-off script.</p>
 </section>
+<section class="intent-cases" aria-labelledby="apiCsvCasesHeading">
+<h2 id="apiCsvCasesHeading">Choose how the response becomes rows</h2>
+<div class="intent-case-grid">
+<article><h3>Result envelopes</h3><p>Select the records inside common wrappers such as <code>data</code>, <code>results</code> or <code>items</code> before conversion.</p></article>
+<article><h3>Nested objects</h3><p>Flatten nested paths into stable columns such as <code>customer.name</code> and <code>address.city</code>.</p></article>
+<article><h3>Nested arrays</h3><p>Preserve an array, flatten its indexes, select a child collection or reshape child values into separate rows depending on the report.</p></article>
+<article><h3>Stable columns</h3><p>Select and rename the fields required by Excel, Google Sheets or the system receiving the export.</p></article>
+</div>
+</section>
+<section class="intent-cases"><h2>What about paginated APIs?</h2><p class="intent-lead">For a captured response, convert each complete record set locally. For a recurring export, use the API → CSV workflow to authenticate, collect cursor, page-number or next-link pages, apply a maximum-page guard and deliver one consistent CSV.</p></section>
 <section class="intent-faq" aria-labelledby="apiCsvFaqHeading">
 <h2 id="apiCsvFaqHeading">API response to CSV questions</h2>
 <details><summary>Can I convert a nested JSON API response to CSV?</summary><p>Yes. Flatten nested objects first so nested values become predictable columns, then convert the flattened JSON to CSV.</p></details>
 <details><summary>Do I need to call the API directly from Recast?</summary><p>No. You can paste a captured JSON response into the browser tool. Recast's hosted API and Automation features are separate options when you explicitly want server-side execution.</p></details>
 <details><summary>What if the response contains arrays?</summary><p>Arrays need a deliberate export strategy because one API record can contain several child records. Depending on the data, you may keep an array value, flatten indexes, or reshape the data before CSV export.</p></details>
 </section>
-<section class="intent-related"><h2>Related</h2><p><a href="json-to-csv.html">JSON to CSV</a> · <a href="flatten-json.html">Flatten nested JSON</a> · <a href="../api/index.html">Recast API</a></p></section>
+<section class="intent-repeat"><h2>Need to repeat this export?</h2><p>Test the data shape in the free browser tool first. Recast can then carry the successful operation into a reusable workflow and add hosted scheduling only when you explicitly enable it.</p><a class="btn btn-gold" href="json-to-csv.html?source=api-response">Convert the captured response →</a><a class="btn btn-ghost" href="../automation/api-response-to-csv.html">Build an automated API → CSV workflow →</a></section>
+<section class="intent-related"><h2>Related</h2><p><a href="json-to-csv.html">JSON to CSV</a> · <a href="flatten-json.html">Flatten nested JSON</a> · <a href="/api/">Recast API</a></p></section>
 
 <p class="intent-note"><strong>Privacy:</strong> browser tools process the data you paste locally. If you explicitly use Recast's hosted API or Automation features, the input for that hosted execution is sent to Recast for processing.</p>
 </section>

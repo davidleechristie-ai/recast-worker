@@ -19,7 +19,7 @@ function injectRelease3(response, pathname) {
   if (needsToolJourney(pathname)) {
     rewriter = rewriter.on('body', {
       element(el) {
-        el.append('<script src="/release3-tool-workflow.js?v=2"></script>', { html: true });
+        el.append('<script src="/release3-tool-workflow.js?v=3"></script>', { html: true });
       }
     });
   }

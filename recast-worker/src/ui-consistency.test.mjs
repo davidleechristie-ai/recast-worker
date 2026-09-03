@@ -48,14 +48,14 @@ assert.match(wrapper, /ui-consistency\.css\?v=14/);
 assert.match(wrapper, /ui-consistency\.js\?v=14/);
 assert.match(wrapper, /localStorage\.getItem\("recast_theme"\)/);
 assert.match(wrapper, /recast-favicon-64\.png/);
-assert.match(wrapper, /app\.js\?v=87/);
+assert.match(wrapper, /app\.js\?v=88/);
 assert.match(wrapper, /release4Worker\.fetch/);
 assert.match(wrangler, /"main": "src\/worker-ui\.js"/);
 for (const route of ['/blog/*','/how-to/*','/demo/*','/tools/*','/automation/*','/use-cases/*','/contact.html','/index.html']) {
   assert.ok(wrangler.includes(`"${route}"`), `Worker UI wrapper must cover ${route}`);
 }
 const serviceWorker = await readFile(new URL('../public/sw.js', import.meta.url), 'utf8');
-assert.match(serviceWorker, /CACHE_VERSION = 'recast-v102'/);
+assert.match(serviceWorker, /CACHE_VERSION = 'recast-v103'/);
 assert.match(css, /:root:not\(\[data-theme="light"\]\)\{--bg:var\(--recast-bg\)/,
   'all page families must share the canonical dark background unless the user explicitly selects light mode');
 assert.match(css, /--recast-header-max:1360px/);

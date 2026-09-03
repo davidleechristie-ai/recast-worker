@@ -10,7 +10,7 @@ function applyUi(response) {
     .on('head', { element(element) { element.append(UI_STYLE, { html: true }); } })
     .on('script[src]', { element(element) {
       const src = element.getAttribute('src') || '';
-      if (src === 'app.js' || src.endsWith('/app.js')) element.setAttribute('src', '/app.js?v=87');
+      if (src === 'app.js' || src.endsWith('/app.js')) element.setAttribute('src', '/app.js?v=88');
     } })
     .on('body', { element(element) { element.append(UI_SCRIPT, { html: true }); } })
     .transform(response);

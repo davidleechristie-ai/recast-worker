@@ -6,7 +6,7 @@
   var USE_COUNT_KEY = 'recast_release3_success_count_v1';
   var SUPPORTED_MODES = new Set([
     'json2csv', 'csv2json', 'json2xml', 'xml2json',
-    'json2yaml', 'yaml2json', 'flatten', 'unflatten'
+    'json2yaml', 'yaml2json', 'flatten', 'unflatten', 'jsonSchema', 'jsonPath'
   ]);
   var API_MODES = new Set([
     'json2csv', 'csv2json', 'json2xml', 'xml2json', 'json2yaml', 'yaml2json',
@@ -41,7 +41,18 @@
     if (excelBom) out.excelBom = !!excelBom.checked;
     if (pretty) out.pretty = !!pretty.checked;
     if (infer) out.inferTypes = !!infer.checked;
+    var jsonPath = document.getElementById('jsonPathInput');
+    if (jsonPath) out.path = String(jsonPath.value || '').slice(0, 500);
     return out;
+  }
+
+  function currentWork() {
+    return {
+      input: (document.getElementById('input') || {}).value || '',
+      inputA: (document.getElementById('inputA') || {}).value || '',
+      inputB: (document.getElementById('inputB') || {}).value || '',
+      output: (document.getElementById('output') || {}).value || ''
+    };
   }
 
   function toolSlug() {
@@ -72,6 +83,9 @@
     var repeatCopy = count >= 3 ? 'You have used Recast several times this session. Save repeat work as a workflow or move recurring execution to a paid plan.' : 'Start a reusable workflow with this operation and its current settings.';
     var actions = '';
     if (canWorkflow) actions += '<button type="button" id="release3WorkflowBtn" class="btn primary">Create workflow</button>';
+    if (mode === 'jsonPath') actions += '<button type="button" id="release3JsonPathCsvBtn" class="btn primary">Export matches to CSV</button>';
+    if (mode === 'jsonSchema') actions += '<button type="button" id="release3SchemaValidateBtn" class="btn primary">Validate with this schema</button>';
+    if (mode === 'diffJson') actions += '<a id="release3RecurringCompareBtn" class="btn primary" href="/automation/?source=json-diff">Run this comparison regularly</a>';
     if (canApi) actions += '<a id="release3ApiBtn" class="btn" href="/api/index.html?source=tool&mode=' + encodeURIComponent(mode) + '">Use via API</a>';
     if (count >= 3) actions += '<a id="release3ProBtn" class="btn" href="/#pricing">Compare plans</a>';
     box.innerHTML = '<div><strong>Need to repeat this?</strong><div style="margin-top:3px;color:var(--text-muted,#94a3b8);font-size:.92rem">' + repeatCopy + '</div></div><div style="display:flex;gap:8px;flex-wrap:wrap">' + actions + '</div>';
@@ -90,6 +104,37 @@
       try { sessionStorage.setItem(HANDOFF_KEY, JSON.stringify(payload)); } catch (_) {}
       track('workflow_handoff_started', { mode: mode, tool: payload.tool, source_path: payload.sourcePath });
       location.href = '/app/?from_tool=' + encodeURIComponent(payload.tool) + '#workflowBuilder';
+    });
+
+    var jsonPathCsvBtn = document.getElementById('release3JsonPathCsvBtn');
+    if (jsonPathCsvBtn) jsonPathCsvBtn.addEventListener('click', function () {
+      var work = currentWork();
+      var csvChip = document.querySelector('.mode-chip[data-mode="json2csv"]');
+      if (!csvChip || !work.output) return;
+      csvChip.click();
+      var input = document.getElementById('input');
+      input.value = work.output;
+      input.dispatchEvent(new Event('input', { bubbles: true }));
+      track('jsonpath_to_csv_started', { source_path: location.pathname, path: safeOptions().path || '' });
+      document.getElementById('release3WorkflowNudge')?.remove();
+      input.scrollIntoView({ behavior: 'smooth', block: 'center' });
+    });
+
+    var schemaValidateBtn = document.getElementById('release3SchemaValidateBtn');
+    if (schemaValidateBtn) schemaValidateBtn.addEventListener('click', function () {
+      var work = currentWork();
+      var validateChip = document.querySelector('.mode-chip[data-mode="validateSchema"]');
+      if (!validateChip || !work.output) return;
+      validateChip.click();
+      var schema = document.getElementById('inputA');
+      var data = document.getElementById('inputB');
+      schema.value = work.output;
+      data.value = work.input;
+      schema.dispatchEvent(new Event('input', { bubbles: true }));
+      data.dispatchEvent(new Event('input', { bubbles: true }));
+      track('schema_to_validation_started', { source_path: location.pathname });
+      document.getElementById('release3WorkflowNudge')?.remove();
+      schema.scrollIntoView({ behavior: 'smooth', block: 'center' });
     });
 
     var apiBtn = document.getElementById('release3ApiBtn');
@@ -167,6 +212,7 @@
         applyOption('excelBom', handoff.options && handoff.options.excelBom);
         applyOption('prettyPrint', handoff.options && handoff.options.pretty);
         applyOption('inferTypes', handoff.options && handoff.options.inferTypes);
+        applyOption('jsonPathInput', handoff.options && handoff.options.path);
 
         var toggle = document.getElementById('recipeToggleBtn');
         var panel = document.getElementById('recipePanel');

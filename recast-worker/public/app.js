@@ -942,7 +942,7 @@ const modeConfig = {
   sortJson: { inFmt:'JSON', outFmt:'JSON', dual:false, path:false, showDelim:false, showBom:false, showPretty:true, showInfer:false, btn:'Sort keys', hl:'json', hlOut:'json',
     sync: t => JSON.stringify(sortKeys(JSON.parse(t)), null, document.getElementById('prettyPrint')?.checked ? 2 : 0) },
   diffJson: { inFmt:'JSON A / B', outFmt:'Diff', dual:true, path:false, showDelim:false, showBom:false, showPretty:false, showInfer:false, btn:'Compare', hl:'json', hlOut:'plain', isDiff:true, diffKind:'tree',
-    task: () => ({ task:'diff', payload:{ op:'diffJson', textA: document.getElementById('inputA').value, textB: document.getElementById('inputB').value } }) },
+    task: () => ({ task:'diff', payload:{ op:'diffJson', textA: document.getElementById('inputA').value, textB: document.getElementById('inputB').value, options:{ arrayKey: document.getElementById('jsonArrayKey')?.value.trim() || '' } } }) },
   diffXml: { inFmt:'XML A / B', outFmt:'Diff', dual:true, path:false, showDelim:false, showBom:false, showPretty:false, showInfer:false, btn:'Compare', hl:'xml', hlOut:'plain', isDiff:true, diffKind:'tree',
     task: () => ({ task:'diff', payload:{ op:'diffXml', textA: document.getElementById('inputA').value, textB: document.getElementById('inputB').value } }) },
   diffCsv: { inFmt:'CSV A / B', outFmt:'Diff', dual:true, path:false, showDelim:true, showBom:false, showPretty:false, showInfer:false, btn:'Compare', hl:'csv', hlOut:'plain', isDiff:true, diffKind:'csv',
@@ -1049,6 +1049,17 @@ let activeDiffView = 'tree'; // 'tree' | 'structural' — which panel the diffXm
 let compareFilterStatus = 'all';
 const $ = id => document.getElementById(id);
 const inputEl = $('input'), outputEl = $('output'), statusEl = $('status');
+const jsonArrayKeyControl = (() => {
+  const optionsRow = document.querySelector('#inputPanel > .opts-row');
+  if (!optionsRow || document.getElementById('jsonArrayKey')) return null;
+  const label = document.createElement('label');
+  label.id = 'jsonArrayKeyControl';
+  label.className = 'icon-btn';
+  label.style.cssText = 'display:none;align-items:center;gap:7px;cursor:default';
+  label.innerHTML = 'Match arrays by <input id="jsonArrayKey" type="text" placeholder="Auto (id, uuid, key…)" aria-label="Preferred JSON array matching key" style="width:165px">';
+  optionsRow.appendChild(label);
+  return label;
+})();
 
 function renderHl(layerEl, taEl, kind) {
   if (!layerEl || !taEl) return;
@@ -1078,6 +1089,7 @@ function setMode(mode) {
   if (!modeConfig[mode]) return;
   currentMode = mode;
   const cfg = modeConfig[mode];
+  if (jsonArrayKeyControl) jsonArrayKeyControl.style.display = mode === 'diffJson' ? 'inline-flex' : 'none';
   const chip = document.querySelector(`.mode-chip[data-mode="${mode}"]`);
   const group = chip?.dataset.group;
   if (group) {
@@ -2100,6 +2112,7 @@ function currentOptionsSnapshot() {
     excelBom: $('excelBom') ? $('excelBom').checked : false,
     inferTypes: $('inferTypes') ? $('inferTypes').checked !== false : true,
     pretty: $('prettyPrint') ? $('prettyPrint').checked !== false : true,
+    path: $('jsonPathInput') ? $('jsonPathInput').value : '',
   };
 }
 function applyOptionsSnapshot(opts) {
@@ -2112,6 +2125,7 @@ function applyOptionsSnapshot(opts) {
   if ($('excelBom')) $('excelBom').checked = !!opts.excelBom;
   if ($('inferTypes')) $('inferTypes').checked = opts.inferTypes !== false;
   if ($('prettyPrint')) $('prettyPrint').checked = opts.pretty !== false;
+  if ($('jsonPathInput') && opts.path !== undefined) $('jsonPathInput').value = opts.path;
 }
 
 function renderBatchFileList() {
