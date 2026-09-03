@@ -5,6 +5,29 @@ const UI_SCRIPT = '<script src="/ui-consistency.js?v=14" defer></script><script 
 const TOOLS_HUB_URL = 'https://tryrecast.app/tools/';
 const AUTHORITY_STYLE = '<style id="v23-internal-authority">.seo-authority-cluster{max-width:1040px;margin:34px auto 18px;padding:22px 0;border-top:1px solid rgba(148,163,184,.12)}.seo-authority-cluster h2{margin:0 0 8px;font-size:1.15rem}.seo-authority-cluster p{margin:0;max-width:860px;line-height:1.7;color:var(--text-muted)}.seo-authority-cluster a{font-weight:700}</style>';
 
+const CTR_META = {
+  '/tools/json-to-csv.html': {
+    title: 'JSON to CSV Online — Convert Nested JSON Free | Recast',
+    description: 'Convert JSON to CSV online in your browser. Flatten nested objects and arrays, create Excel-ready CSV, choose delimiters, and keep your data local.'
+  },
+  '/tools/json-diff.html': {
+    title: 'JSON Diff Online — Compare Two JSON Files | Recast',
+    description: 'Compare two JSON files online and instantly spot added, removed and changed values. Structural diff ignores formatting noise and can match arrays by ID.'
+  },
+  '/tools/csv-diff.html': {
+    title: 'CSV Diff Online — Compare Two CSV Files | Recast',
+    description: 'Compare two CSV files online side by side. Find added, removed and changed rows, filter differences, ignore whitespace, and export a diff report.'
+  },
+  '/tools/api-response-to-csv.html': {
+    title: 'API Response to CSV — Convert JSON API Data Online | Recast',
+    description: 'Paste a JSON API response and convert it to CSV online. Flatten nested fields, create spreadsheet-ready output, and reuse the steps as a workflow.'
+  },
+  '/tools/compare-api-responses.html': {
+    title: 'Compare API Responses Online — Find JSON Changes | Recast',
+    description: 'Compare two API responses online and find added, removed and changed JSON fields. Structural comparison ignores formatting noise and highlights real API changes.'
+  }
+};
+
 const AUTHORITY_LINKS = {
   '/tools/': '<section class="seo-authority-cluster" aria-label="Popular specialist tools"><h2>Specialist comparison and API tools</h2><p><a href="/tools/compare-csv-files-by-id.html">Compare CSV files by ID</a> · <a href="/tools/api-response-to-csv.html">Convert an API response to CSV</a> · <a href="/tools/compare-api-responses.html">Compare API responses</a></p></section>',
   '/tools/index.html': '<section class="seo-authority-cluster" aria-label="Popular specialist tools"><h2>Specialist comparison and API tools</h2><p><a href="/tools/compare-csv-files-by-id.html">Compare CSV files by ID</a> · <a href="/tools/api-response-to-csv.html">Convert an API response to CSV</a> · <a href="/tools/compare-api-responses.html">Compare API responses</a></p></section>',
@@ -23,6 +46,7 @@ function applyUi(response, requestUrl) {
   const url = new URL(requestUrl);
   const isToolsHub = url.pathname === '/tools/' || url.pathname === '/tools/index.html';
   const authorityHtml = AUTHORITY_LINKS[url.pathname] || '';
+  const ctrMeta = CTR_META[url.pathname];
   const rewriter = new HTMLRewriter()
     .on('head', { element(element) {
       element.append(UI_STYLE, { html: true });
@@ -41,6 +65,16 @@ function applyUi(response, requestUrl) {
     rewriter
       .on('link[rel="canonical"]', { element(element) { element.setAttribute('href', TOOLS_HUB_URL); } })
       .on('meta[property="og:url"]', { element(element) { element.setAttribute('content', TOOLS_HUB_URL); } });
+  }
+
+  if (ctrMeta) {
+    rewriter
+      .on('title', { element(element) { element.setInnerContent(ctrMeta.title); } })
+      .on('meta[name="description"]', { element(element) { element.setAttribute('content', ctrMeta.description); } })
+      .on('meta[property="og:title"]', { element(element) { element.setAttribute('content', ctrMeta.title); } })
+      .on('meta[property="og:description"]', { element(element) { element.setAttribute('content', ctrMeta.description); } })
+      .on('meta[name="twitter:title"]', { element(element) { element.setAttribute('content', ctrMeta.title); } })
+      .on('meta[name="twitter:description"]', { element(element) { element.setAttribute('content', ctrMeta.description); } });
   }
 
   return rewriter.transform(response);
