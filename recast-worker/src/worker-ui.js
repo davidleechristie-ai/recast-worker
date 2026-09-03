@@ -3,6 +3,18 @@ import release4Worker from './worker-release4.js';
 const UI_STYLE = '<script>(function(){try{var t=localStorage.getItem("recast_theme");if(t==="light")document.documentElement.setAttribute("data-theme","light");else document.documentElement.removeAttribute("data-theme")}catch(e){document.documentElement.removeAttribute("data-theme")}})();</script><link rel="icon" type="image/png" sizes="64x64" href="/assets/brand/recast-favicon-64.png"><link rel="apple-touch-icon" href="/icons/icon-192.png"><link rel="manifest" href="/manifest.json"><meta name="theme-color" content="#0A0E1F"><meta name="apple-mobile-web-app-capable" content="yes"><meta name="apple-mobile-web-app-status-bar-style" content="black-translucent"><link rel="stylesheet" href="/ui-consistency.css?v=14"><link rel="stylesheet" href="/pwa.css?v=2">';
 const UI_SCRIPT = '<script src="/ui-consistency.js?v=14" defer></script><script src="/pwa.js?v=2" defer></script>';
 const TOOLS_HUB_URL = 'https://tryrecast.app/tools/';
+const AUTHORITY_STYLE = '<style id="v23-internal-authority">.seo-authority-cluster{max-width:1040px;margin:34px auto 18px;padding:22px 0;border-top:1px solid rgba(148,163,184,.12)}.seo-authority-cluster h2{margin:0 0 8px;font-size:1.15rem}.seo-authority-cluster p{margin:0;max-width:860px;line-height:1.7;color:var(--text-muted)}.seo-authority-cluster a{font-weight:700}</style>';
+
+const AUTHORITY_LINKS = {
+  '/tools/': '<section class="seo-authority-cluster" aria-label="Popular specialist tools"><h2>Specialist comparison and API tools</h2><p><a href="/tools/compare-csv-files-by-id.html">Compare CSV files by ID</a> · <a href="/tools/api-response-to-csv.html">Convert an API response to CSV</a> · <a href="/tools/compare-api-responses.html">Compare API responses</a></p></section>',
+  '/tools/index.html': '<section class="seo-authority-cluster" aria-label="Popular specialist tools"><h2>Specialist comparison and API tools</h2><p><a href="/tools/compare-csv-files-by-id.html">Compare CSV files by ID</a> · <a href="/tools/api-response-to-csv.html">Convert an API response to CSV</a> · <a href="/tools/compare-api-responses.html">Compare API responses</a></p></section>',
+  '/tools/csv-diff.html': '<section class="seo-authority-cluster" aria-label="Related CSV comparison tasks"><h2>Related CSV comparison tasks</h2><p>Need to match reordered records using a stable key? <a href="/tools/compare-csv-files-by-id.html">Compare CSV files by ID</a>. For data arriving from an endpoint, <a href="/tools/api-response-to-csv.html">convert an API response to CSV</a> first.</p></section>',
+  '/tools/json-diff.html': '<section class="seo-authority-cluster" aria-label="Related API comparison tasks"><h2>Related API comparison tasks</h2><p>Comparing responses from two endpoints or releases? Use <a href="/tools/compare-api-responses.html">Compare API Responses</a>. For arrays whose order changes, use <a href="/tools/compare-json-arrays-by-id.html">Compare JSON arrays by ID</a>.</p></section>',
+  '/tools/json-to-csv.html': '<section class="seo-authority-cluster" aria-label="Related JSON and API conversion tasks"><h2>Related JSON and API conversion tasks</h2><p>Working with a live endpoint rather than pasted JSON? <a href="/tools/api-response-to-csv.html">Convert an API response to CSV</a>. For nested records, <a href="/tools/flatten-json.html">flatten nested JSON</a> before export.</p></section>',
+  '/tools/api-response-to-csv.html': '<section class="seo-authority-cluster" aria-label="Related API tasks"><h2>Related API tasks</h2><p>Need to inspect changes between two payloads instead? <a href="/tools/compare-api-responses.html">Compare API responses</a>. For reusable hosted execution, see <a href="/automation/api-response-to-csv.html">API response to CSV automation</a>.</p></section>',
+  '/tools/compare-api-responses.html': '<section class="seo-authority-cluster" aria-label="Related comparison tasks"><h2>Related comparison tasks</h2><p>For general JSON structure changes, use <a href="/tools/json-diff.html">JSON Diff</a>. When records need key-aware matching, use <a href="/tools/compare-json-arrays-by-id.html">Compare JSON arrays by ID</a>.</p></section>',
+  '/tools/compare-csv-files-by-id.html': '<section class="seo-authority-cluster" aria-label="Related CSV tasks"><h2>Related CSV tasks</h2><p>For straightforward row-by-row comparison, use <a href="/tools/csv-diff.html">CSV Diff</a>. If the source data is JSON from an endpoint, <a href="/tools/api-response-to-csv.html">convert the API response to CSV</a> first.</p></section>'
+};
 
 function applyUi(response, requestUrl) {
   const type = response.headers.get('content-type') || '';
@@ -10,13 +22,20 @@ function applyUi(response, requestUrl) {
 
   const url = new URL(requestUrl);
   const isToolsHub = url.pathname === '/tools/' || url.pathname === '/tools/index.html';
+  const authorityHtml = AUTHORITY_LINKS[url.pathname] || '';
   const rewriter = new HTMLRewriter()
-    .on('head', { element(element) { element.append(UI_STYLE, { html: true }); } })
+    .on('head', { element(element) {
+      element.append(UI_STYLE, { html: true });
+      if (authorityHtml) element.prepend(AUTHORITY_STYLE, { html: true });
+    } })
     .on('script[src]', { element(element) {
       const src = element.getAttribute('src') || '';
       if (src === 'app.js' || src.endsWith('/app.js')) element.setAttribute('src', '/app.js?v=88');
     } })
-    .on('body', { element(element) { element.append(UI_SCRIPT, { html: true }); } });
+    .on('body', { element(element) {
+      if (authorityHtml) element.append(authorityHtml, { html: true });
+      element.append(UI_SCRIPT, { html: true });
+    } });
 
   if (isToolsHub) {
     rewriter
