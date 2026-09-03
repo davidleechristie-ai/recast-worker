@@ -49,6 +49,8 @@ jobs:
             "https://tryrecast.app/tools/"
             "https://tryrecast.app/tools/json-to-csv.html"
             "https://tryrecast.app/tools/csv-to-json.html"
+            "https://tryrecast.app/tools/csv-diff.html"
+            "https://tryrecast.app/tools/json-diff.html"
             "https://tryrecast.app/tools/compare-csv-files-by-id.html"
             "https://tryrecast.app/tools/api-response-to-csv.html"
             "https://tryrecast.app/tools/compare-api-responses.html"
@@ -88,6 +90,28 @@ jobs:
           fi
           if ! grep -q '<meta property="og:url" content="https://tryrecast.app/tools/"' <<< "$tools"; then
             echo "Production verification failed: tools hub og:url is not /tools/"
+            exit 1
+          fi
+          if ! grep -q 'seo-authority-cluster' <<< "$tools"; then
+            echo "Production verification failed: tools hub authority cluster missing"
+            exit 1
+          fi
+
+          csv_diff=$(curl -L -sS --max-time 20 "https://tryrecast.app/tools/csv-diff.html")
+          if ! grep -q '/tools/compare-csv-files-by-id.html' <<< "$csv_diff"; then
+            echo "Production verification failed: CSV Diff does not link to Compare CSV Files by ID"
+            exit 1
+          fi
+
+          json_diff=$(curl -L -sS --max-time 20 "https://tryrecast.app/tools/json-diff.html")
+          if ! grep -q '/tools/compare-api-responses.html' <<< "$json_diff"; then
+            echo "Production verification failed: JSON Diff does not link to Compare API Responses"
+            exit 1
+          fi
+
+          json_csv=$(curl -L -sS --max-time 20 "https://tryrecast.app/tools/json-to-csv.html")
+          if ! grep -q '/tools/api-response-to-csv.html' <<< "$json_csv"; then
+            echo "Production verification failed: JSON to CSV does not link to API Response to CSV"
             exit 1
           fi
 
