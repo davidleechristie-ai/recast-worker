@@ -5,6 +5,7 @@
     ['Automation', '/automation/'],
     ['API', '/api/'],
     ['Guides', '/how-to/'],
+    ['Demo', '/demo/'],
     ['Pricing', '/#pricing']
   ];
 
@@ -14,6 +15,7 @@
       (href.startsWith('/automation') && path.startsWith('/automation')) ||
       (href.startsWith('/api') && path.startsWith('/api')) ||
       (href.startsWith('/how-to') && path.startsWith('/how-to')) ||
+      (href.startsWith('/demo') && path.startsWith('/demo')) ||
       (href.startsWith('/app') && path.startsWith('/app'));
   }
 
@@ -53,6 +55,7 @@
       marketingNavGroup('Automation', 'automation') +
       '<a href="/api/">API</a>' +
       marketingNavGroup('Guides', 'guides') +
+      '<a href="/demo/">Demo</a>' +
       '<a href="/#pricing">Pricing</a>';
   }
 
@@ -194,7 +197,7 @@
     const footer = document.createElement('footer');
     footer.className = 'recast-global-footer';
     footer.dataset.recastShell = 'footer';
-    footer.innerHTML = `<div class="recast-global-footer-inner"><div><a class="recast-global-footer-brand" href="/" aria-label="Recast home">${brandMarkup}</a><small>Private browser tools. Repeatable workflows.</small></div><nav aria-label="Footer navigation"><a href="/tools/">Tools</a><a href="/automation/">Automation</a><a href="/api/">API</a><a href="/how-to/">Guides</a><a href="/contact.html">Contact</a></nav><small>© 2026 Recast</small></div>`;
+    footer.innerHTML = `<div class="recast-global-footer-inner"><div><a class="recast-global-footer-brand" href="/" aria-label="Recast home">${brandMarkup}</a><small>Private browser tools. Repeatable workflows.</small></div><nav aria-label="Footer navigation">${globalNavLinks()}<a href="/contact.html">Contact</a></nav><small>© 2026 Recast</small></div>`;
     return footer;
   }
 
@@ -250,14 +253,7 @@
 
   function normalizeUseCaseNav() {
     document.querySelectorAll('.uc-nav nav').forEach(nav => {
-      nav.innerHTML = [
-        ['Tools', '/tools/'],
-        ['Workflows', '/app/#workflowBuilder'],
-        ['Automation', '/automation/'],
-        ['API', '/api/'],
-        ['Guides', '/how-to/'],
-        ['Pricing', '/#pricing']
-      ].map(([label, href]) => `<a href="${href}">${label}</a>`).join('');
+      nav.innerHTML = globalNavItems.map(([label, href]) => `<a href="${href}">${label}</a>`).join('');
     });
   }
 
@@ -265,26 +261,25 @@
     document.querySelectorAll('.tb-nav').forEach(nav => {
       setButtonLabel(nav.querySelector('[data-nav-group="automate"] .nav-group-btn'), 'Automation');
       setButtonLabel(nav.querySelector('[data-nav-group="resources"] .nav-group-btn'), 'Guides');
-      if (!nav.querySelector('[data-ui-consistency="workflows"]')) {
-        const workflows = document.createElement('a');
-        workflows.href = '/app/#workflowBuilder';
-        workflows.className = 'nav-plain-link';
-        workflows.dataset.uiConsistency = 'workflows';
-        workflows.textContent = 'Workflows';
-        const automation = nav.querySelector('[data-nav-group="automate"]');
-        if (automation) nav.insertBefore(workflows, automation);
-      }
-      if (!nav.querySelector('[data-ui-consistency="api"]')) {
-        const api = document.createElement('a');
-        api.href = '/api/';
-        api.className = 'nav-plain-link';
-        api.dataset.uiConsistency = 'api';
-        api.textContent = 'API';
-        const guides = nav.querySelector('[data-nav-group="resources"]');
-        if (guides) nav.insertBefore(api, guides);
-      }
+      const insertPlain = (key, label, href, before) => {
+        if (nav.querySelector(`[data-ui-consistency="${key}"]`)) return;
+        const link = document.createElement('a');
+        link.href = href;
+        link.className = 'nav-plain-link';
+        link.dataset.uiConsistency = key;
+        link.textContent = label;
+        const anchor = nav.querySelector(before);
+        if (anchor) nav.insertBefore(link, anchor);
+        else nav.appendChild(link);
+      };
+      insertPlain('workflows', 'Workflows', '/app/#workflowBuilder', '[data-nav-group="automate"]');
+      insertPlain('api', 'API', '/api/', '[data-nav-group="resources"]');
+      insertPlain('demo', 'Demo', '/demo/', '[data-nav-group="resources"]');
       nav.querySelectorAll('[data-nav-group="automate"] .nav-dropdown-item').forEach(item => {
         if (item.textContent.trim().toLowerCase() === 'api') item.hidden = true;
+      });
+      nav.querySelectorAll('[data-nav-group="resources"] .nav-dropdown-item').forEach(item => {
+        if (item.textContent.trim().toLowerCase() === 'demo') item.hidden = true;
       });
     });
   }
@@ -299,14 +294,10 @@
   }
 
   function markCurrentPage() {
-    const path = location.pathname;
-    document.querySelectorAll('.site-header nav a,.uc-nav nav a,.tb-nav a.nav-plain-link,.recast-global-nav a').forEach(a => {
+    document.querySelectorAll('.site-header nav a,.uc-nav nav a,.tb-nav a.nav-plain-link,.recast-global-nav a,.recast-global-footer nav a').forEach(a => {
       const href = a.getAttribute('href') || '';
-      if ((href.startsWith('/tools') && path.startsWith('/tools')) ||
-          (href.startsWith('/automation') && path.startsWith('/automation')) ||
-          (href.startsWith('/api') && path.startsWith('/api')) ||
-          (href.startsWith('/how-to') && path.startsWith('/how-to')) ||
-          (href.startsWith('/app') && path.startsWith('/app'))) a.setAttribute('aria-current', 'page');
+      if (isCurrentSection(href)) a.setAttribute('aria-current', 'page');
+      else a.removeAttribute('aria-current');
     });
   }
 
