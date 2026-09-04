@@ -45,13 +45,18 @@ assert.match(worker, /worker-release3/);
 assert.match(worker, /\/seo\//);
 assert.match(worker, /Response\.redirect/);
 const wrangler = await readFile(new URL('../wrangler.jsonc', import.meta.url), 'utf8');
-const mainMatch = wrangler.match(/"main":\s*"([^"]+)"/);
+const mainMatch = wrangler.match(/"main":\s*"src\/([^"]+)"/);
 assert.ok(mainMatch, 'Wrangler must declare a Worker entry point');
-if (mainMatch[1] !== 'src/worker-release4.js') {
-  const activeWrapper = await readFile(new URL(`./${mainMatch[1].replace(/^src\//, '')}`, import.meta.url), 'utf8');
-  assert.match(activeWrapper, /worker-release4\.js/);
-  assert.match(activeWrapper, /release4Worker\.fetch/);
+let active = mainMatch[1];
+let reachedRelease4 = active === 'worker-release4.js';
+for (let depth = 0; !reachedRelease4 && depth < 6; depth += 1) {
+  const source = await readFile(new URL(`./${active}`, import.meta.url), 'utf8');
+  const importMatch = source.match(/from ['"]\.\/(worker-[^'"]+\.js)['"]/);
+  assert.ok(importMatch, `${active} must delegate to a lower Worker wrapper`);
+  active = importMatch[1];
+  reachedRelease4 = active === 'worker-release4.js';
 }
+assert.ok(reachedRelease4, 'Active Worker wrapper chain must preserve worker-release4.js');
 assert.match(wrangler, /"\/seo\/\*"/);
 const robots = await readFile(new URL('../public/robots.txt', import.meta.url), 'utf8');
 assert.match(robots, /sitemap-seo\.xml/);
