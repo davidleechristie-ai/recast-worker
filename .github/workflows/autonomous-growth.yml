@@ -1,7 +1,7 @@
 name: Recast autonomous daily growth
 
 # Updating this workflow intentionally triggers a self-test run on main.
-# Self-test marker: GPT-6 Astra growth agent enabled.
+# Self-test marker: GPT-6 Astra growth agent enabled; dependency install hardened.
 on:
   push:
     branches:
@@ -18,11 +18,12 @@ permissions:
 
 concurrency:
   group: recast-autonomous-growth
-  cancel-in-progress: false
+  cancel-in-progress: true
 
 jobs:
   improve:
     runs-on: ubuntu-latest
+    timeout-minutes: 45
     steps:
       - name: Check out main
         uses: actions/checkout@v5
@@ -32,10 +33,13 @@ jobs:
       - name: Set up Node.js
         uses: actions/setup-node@v4
         with:
-          node-version: 20
+          node-version: 22
+          cache: npm
+          cache-dependency-path: recast-worker/package-lock.json
       - name: Install dependencies
         working-directory: recast-worker
-        run: npm install --no-package-lock
+        timeout-minutes: 5
+        run: npm ci --no-audit --no-fund
       - name: Baseline test suite
         working-directory: recast-worker
         run: npm test
