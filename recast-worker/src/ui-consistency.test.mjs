@@ -55,7 +55,18 @@ assert.match(wrapper, /localStorage\.getItem\("recast_theme"\)/);
 assert.match(wrapper, /recast-favicon-64\.png/);
 assert.match(wrapper, /app\.js\?v=88/);
 assert.match(wrapper, /release4Worker\.fetch/);
-assert.match(wrangler, /"main": "src\/worker-ui\.js"/);
+const mainMatch = wrangler.match(/"main":\s*"src\/([^"]+)"/);
+assert.ok(mainMatch, 'Wrangler must declare an active Worker entry point');
+let active = mainMatch[1];
+let reachedUi = active === 'worker-ui.js';
+for (let depth = 0; !reachedUi && depth < 5; depth += 1) {
+  const source = await readFile(new URL(`./${active}`, import.meta.url), 'utf8');
+  const importMatch = source.match(/from ['"]\.\/(worker-[^'"]+\.js)['"]/);
+  assert.ok(importMatch, `${active} must delegate to a lower Worker wrapper`);
+  active = importMatch[1];
+  reachedUi = active === 'worker-ui.js';
+}
+assert.ok(reachedUi, 'Active Worker wrapper chain must preserve worker-ui.js');
 for (const route of ['/blog/*','/how-to/*','/demo/*','/tools/*','/automation/*','/use-cases/*','/contact.html','/index.html']) {
   assert.ok(wrangler.includes(`"${route}"`), `Worker UI wrapper must cover ${route}`);
 }
