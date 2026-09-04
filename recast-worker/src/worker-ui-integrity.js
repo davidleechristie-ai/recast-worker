@@ -1,5 +1,14 @@
 import workerUi from './worker-ui.js';
 
+const GLOBAL_UI_CLEANUP = `
+<style id="global-ui-cleanup">
+  /* Dedicated pages should keep the selected workbench/tool dominant.
+     Legacy API live-example/playground panels are intentionally hidden site-wide. */
+  .api-playground {
+    display: none !important;
+  }
+</style>`;
+
 const DEMO_LAYOUT_FIX = `
 <style id="demo-layout-integrity-fix">
   .demo-gallery > .demo-next {
@@ -36,14 +45,13 @@ function applyIntegrityFix(response, requestUrl) {
   if (!type.includes('text/html') || !response.body) return response;
 
   const url = new URL(requestUrl);
-  if (!(url.pathname === '/demo' || url.pathname === '/demo/' || url.pathname === '/demo/index.html')) {
-    return response;
-  }
+  const isDemo = url.pathname === '/demo' || url.pathname === '/demo/' || url.pathname === '/demo/index.html';
 
   return new HTMLRewriter()
     .on('head', {
       element(element) {
-        element.append(DEMO_LAYOUT_FIX, { html: true });
+        element.append(GLOBAL_UI_CLEANUP, { html: true });
+        if (isDemo) element.append(DEMO_LAYOUT_FIX, { html: true });
       }
     })
     .transform(response);
