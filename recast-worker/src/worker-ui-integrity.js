@@ -10,6 +10,7 @@ const GLOBAL_UI_CLEANUP = `
 </style>`;
 
 const WORKFLOW_USABILITY_ASSETS = '<link rel="stylesheet" href="/workflow-usability.css?v=1"><script src="/workflow-usability.js?v=1" defer></script>';
+const WORKFLOW_DOCS_SYNC_ASSET = '<script src="/workflow-docs-sync.js?v=1" defer></script>';
 
 const DEMO_LAYOUT_FIX = `
 <style id="demo-layout-integrity-fix">
@@ -48,12 +49,14 @@ function applyIntegrityFix(response, requestUrl) {
 
   const url = new URL(requestUrl);
   const isDemo = url.pathname === '/demo' || url.pathname === '/demo/' || url.pathname === '/demo/index.html';
+  const isWorkflowDocs = url.pathname === '/how-to/' || url.pathname === '/how-to/index.html' || url.pathname === '/how-to/automate.html' || url.pathname === '/demo/' || url.pathname === '/demo/index.html' || url.pathname === '/demo/workflows.html';
 
   return new HTMLRewriter()
     .on('head', {
       element(element) {
         element.append(GLOBAL_UI_CLEANUP, { html: true });
         element.append(WORKFLOW_USABILITY_ASSETS, { html: true });
+        if (isWorkflowDocs) element.append(WORKFLOW_DOCS_SYNC_ASSET, { html: true });
         if (isDemo) element.append(DEMO_LAYOUT_FIX, { html: true });
       }
     })
