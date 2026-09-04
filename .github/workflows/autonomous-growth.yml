@@ -1,7 +1,7 @@
 name: Recast autonomous daily growth
 
 # Updating this workflow intentionally triggers a self-test run on main.
-# Self-test marker: prefer GPT-6 Astra, automatically fall back to GPT-5.6 Sol until Astra API access reaches this key.
+# Self-test marker: prefer GPT-6 Astra, automatically fall back to GPT-5.6 Sol until Astra API access reaches this key; publish a management report every run.
 on:
   push:
     branches:
@@ -85,6 +85,27 @@ jobs:
           codex-args: '["--config","web_search=\"live\""]'
           safety-strategy: 'drop-sudo'
           allow-bots: 'true'
+      - name: Publish growth agent report
+        if: always()
+        shell: bash
+        run: |
+          {
+            echo "# Recast Growth Agent Report"
+            echo
+            echo "**Run:** $GITHUB_RUN_NUMBER"
+            echo "**Model selected:** ${{ steps.model.outputs.selected || 'not reached' }}"
+            echo "**Workflow:** $GITHUB_SERVER_URL/$GITHUB_REPOSITORY/actions/runs/$GITHUB_RUN_ID"
+            echo
+            if [ -s /tmp/recast-growth-report.md ]; then
+              cat /tmp/recast-growth-report.md
+            else
+              echo "## Executive summary"
+              echo "The agent did not produce its management report file. Review the failed or interrupted workflow step above."
+              echo
+              echo "## Risks / blockers"
+              echo "The run ended before the reporting contract completed, so findings and suggestions may be incomplete."
+            fi
+          } >> "$GITHUB_STEP_SUMMARY"
       - name: Enforce autonomous scope
         run: node recast-worker/guard-autonomous-diff.mjs
       - name: Validate growth scoreboard
@@ -110,6 +131,11 @@ jobs:
           GH_TOKEN: ${{ github.token }}
         run: gh workflow run deploy-exact-release.yml --ref main
       - name: Summary
+        if: always()
         run: |
-          echo "Growth model: ${{ steps.model.outputs.selected }}"
-          if [ "${{ steps.commit.outputs.changed }}" = "true" ]; then echo "Authoritative metrics refreshed; safe metric-driven acquisition change committed to main and production deployment explicitly dispatched."; else echo "Authoritative metrics refreshed; agent completed with no production change."; fi
+          echo "Growth model: ${{ steps.model.outputs.selected || 'not reached' }}"
+          if [ "${{ steps.commit.outputs.changed }}" = "true" ]; then
+            echo "Authoritative metrics refreshed; safe metric-driven acquisition change committed to main and production deployment explicitly dispatched."
+          else
+            echo "Agent run completed without a production-facing commit, or stopped before the commit stage. See the published management report in the workflow summary."
+          fi
