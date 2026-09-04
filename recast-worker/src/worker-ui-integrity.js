@@ -9,6 +9,8 @@ const GLOBAL_UI_CLEANUP = `
   }
 </style>`;
 
+const WORKFLOW_USABILITY_ASSETS = '<link rel="stylesheet" href="/workflow-usability.css?v=1"><script src="/workflow-usability.js?v=1" defer></script>';
+
 const DEMO_LAYOUT_FIX = `
 <style id="demo-layout-integrity-fix">
   .demo-gallery > .demo-next {
@@ -51,6 +53,7 @@ function applyIntegrityFix(response, requestUrl) {
     .on('head', {
       element(element) {
         element.append(GLOBAL_UI_CLEANUP, { html: true });
+        element.append(WORKFLOW_USABILITY_ASSETS, { html: true });
         if (isDemo) element.append(DEMO_LAYOUT_FIX, { html: true });
       }
     })
