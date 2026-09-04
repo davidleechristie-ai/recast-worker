@@ -1,7 +1,7 @@
 name: Recast autonomous daily growth
 
 # Updating this workflow intentionally triggers a self-test run on main.
-# Self-test marker: genuine Stripe revenue filtering enabled.
+# Self-test marker: GPT-6 Astra growth agent enabled.
 on:
   push:
     branches:
@@ -59,6 +59,8 @@ jobs:
           openai-api-key: ${{ secrets.OPENAI_API_KEY }}
           permission-profile: ':workspace'
           prompt-file: '.github/recast-daily-growth.md'
+          model: 'gpt-6-astra'
+          effort: 'high'
           codex-args: '["--config","web_search=\"live\""]'
           safety-strategy: 'drop-sudo'
           allow-bots: 'true'
