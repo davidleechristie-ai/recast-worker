@@ -91,8 +91,7 @@
     }
   ],
   "missing_instrumentation": [
-    "Indexed target-page count or URL Inspection/index coverage evidence is unavailable.",
-    "The current live HTTP status and redirect target for https://tryrecast.app/blog/json-schema-validation-guide are unavailable; Search Console reports both this extensionless URL and the canonical .html URL, but external DNS access is unavailable in this run."
+    "Indexed target-page count or URL Inspection/index coverage evidence is unavailable."
   ],
   "last_updated": "2026-09-04",
   "measurement_rules": {

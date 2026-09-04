@@ -106,3 +106,15 @@ Purpose: retain evidence, hypotheses, changes and follow-up windows so the agent
 - Hypothesis and baseline: no growth experiment was launched. If future live-response or URL Inspection evidence confirms both variants serve indexable content, consolidating them may concentrate signals on the canonical URL; current baseline is 50 versus 33 impressions, both with 0 clicks, in the same rolling 28-day report. This is a diagnostic hypothesis, not a result.
 - Files changed: `recast-worker/GROWTH_SCOREBOARD.json`, `recast-worker/AUTONOMOUS_GROWTH_LOG.md` (records only).
 - Metrics that should move: this audit predicts no metric movement. A future canonicalisation experiment, if evidence supports it, should track each variant's indexed status, impressions, clicks, and canonical selection with its own 7/14/28-day windows.
+
+## 2026-09-04 — Active-experiment guardrail review; no product change
+
+- Evidence/opportunity: the latest available 28-day measurements remain 1,565 Search Console impressions, 11 clicks (0.70% CTR), and average position 65.99; 46 GA4 organic sessions, 1 successful tool use, and no workflow starts, completions, or upgrade clicks; and 0 genuine subscription customers and £0 MRR. No newer evidence was available in this run.
+- Bottleneck interpretation: search visibility remains the earliest measured constraint. The JSON Schema Generator is still the largest page opportunity at 453 impressions, 0 clicks, and average position 68.05, but its content experiment is only three days old.
+- Follow-up reviewed: no experiment review is due. The generator experiment's 7/14/28-day reviews remain scheduled for 2026-09-08, 2026-09-15, and 2026-09-29, so current evidence is insufficient to classify.
+- Change made: no acquisition-facing product change. Starting another search experiment on the same evidence would weaken attribution and violate the active follow-up window. The scoreboard was reviewed and already carries the latest observable values and 2026-09-04 evidence date.
+- Target page/query/funnel stage: no new target; ongoing `/tools/json-schema-generator.html` experiment at rankings/visibility → organic clicks/CTR.
+- Hypothesis and baseline: no new hypothesis was launched. The active experiment retains its fixed baseline of 404 page impressions, 0 clicks, 0% CTR, and average position 68.64.
+- Files changed: `recast-worker/AUTONOMOUS_GROWTH_LOG.md` (run record only); no production-facing file changed.
+- Metrics that should move: this review predicts no movement. At the 7-day review, compare target-page and target-query position, impressions, clicks, and CTR against the recorded baseline without claiming causation from a rolling window alone.
+- Public inspection limitation: live-site and public-search requests failed because external DNS resolution is unavailable in this execution environment. Local inspection found the generator URL in the sitemap with a unique title, description, canonical URL, one H1, and crawlable supporting links.
