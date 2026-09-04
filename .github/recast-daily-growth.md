@@ -88,4 +88,34 @@ Append a concise dated entry to `recast-worker/AUTONOMOUS_GROWTH_LOG.md` contain
 - metric(s) that should move if successful
 - 7/14/28-day follow-up dates where appropriate
 
-Do not claim a result before enough evidence exists. Distinguish measured facts from hypotheses.
+## Mandatory run report
+
+At the end of EVERY run, whether or not you make a product change, write a concise management report to `/tmp/recast-growth-report.md`. This report is for the Recast owner and must stand on its own. Use exactly these sections:
+
+# Recast Growth Agent Report
+
+## Executive summary
+State the most important conclusion from this run in plain English, including whether the agent made a production-facing change.
+
+## Model used
+State the model actually running this analysis if observable. If not observable, say that the workflow selected it externally.
+
+## Current growth position
+Summarise the latest measured evidence from Search Console, GA4 and Stripe that materially affects the decision. Include the North Star MRR and the current bottleneck. Never invent missing metrics.
+
+## Findings
+Summarise the most important findings from the repository, live site, search results and experiment reviews. Separate measured evidence from interpretation.
+
+## Action taken
+Describe the single change made and why, or state clearly why no change was justified. Include files changed and the target funnel stage.
+
+## Suggestions and next opportunities
+Provide 3 to 5 ranked suggestions for future growth work. For each suggestion, explain the expected benefit, evidence supporting it, and what would need to be true before acting. Do not implement these extra suggestions in the same run.
+
+## Risks / blockers
+List important blockers, missing instrumentation, experiment conflicts, model-access limitations or risks that could affect growth.
+
+## What to watch next
+State the metrics, experiments, dates or thresholds that should determine the next decision.
+
+Keep the report decision-oriented, specific and concise. Do not pad it with generic SEO advice. Do not claim a result before enough evidence exists. Distinguish measured facts from hypotheses.
