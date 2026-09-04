@@ -1,7 +1,7 @@
 name: Recast autonomous daily growth
 
 # Updating this workflow intentionally triggers a self-test run on main.
-# Self-test marker: GPT-6 Astra growth agent enabled; dependency install hardened.
+# Self-test marker: prefer GPT-6 Astra, automatically fall back to GPT-5.6 Sol until Astra API access reaches this key.
 on:
   push:
     branches:
@@ -57,13 +57,30 @@ jobs:
           OPENAI_API_KEY: ${{ secrets.OPENAI_API_KEY }}
         run: |
           if [ -z "$OPENAI_API_KEY" ]; then echo "OPENAI_API_KEY repository secret is required for the autonomous growth agent."; exit 1; fi
+      - name: Select best available OpenAI model
+        id: model
+        env:
+          OPENAI_API_KEY: ${{ secrets.OPENAI_API_KEY }}
+        shell: bash
+        run: |
+          set -euo pipefail
+          status="$(curl -sS -o /tmp/astra-model.json -w '%{http_code}' \
+            -H "Authorization: Bearer $OPENAI_API_KEY" \
+            https://api.openai.com/v1/models/gpt-6-astra || true)"
+          if [ "$status" = "200" ]; then
+            echo "selected=gpt-6-astra" >> "$GITHUB_OUTPUT"
+            echo "GPT-6 Astra is available to this API key; using Astra."
+          else
+            echo "selected=gpt-5.6-sol" >> "$GITHUB_OUTPUT"
+            echo "GPT-6 Astra is not yet available to this API key (HTTP $status); using GPT-5.6 Sol for this run."
+          fi
       - name: Run Recast growth agent
         uses: openai/codex-action@v1
         with:
           openai-api-key: ${{ secrets.OPENAI_API_KEY }}
           permission-profile: ':workspace'
           prompt-file: '.github/recast-daily-growth.md'
-          model: 'gpt-6-astra'
+          model: ${{ steps.model.outputs.selected }}
           effort: 'high'
           codex-args: '["--config","web_search=\"live\""]'
           safety-strategy: 'drop-sudo'
@@ -94,4 +111,5 @@ jobs:
         run: gh workflow run deploy-exact-release.yml --ref main
       - name: Summary
         run: |
+          echo "Growth model: ${{ steps.model.outputs.selected }}"
           if [ "${{ steps.commit.outputs.changed }}" = "true" ]; then echo "Authoritative metrics refreshed; safe metric-driven acquisition change committed to main and production deployment explicitly dispatched."; else echo "Authoritative metrics refreshed; agent completed with no production change."; fi
