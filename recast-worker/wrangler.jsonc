@@ -17,7 +17,7 @@
   }
 ],
   "name": "falling-cloud-0deb",
-  "main": "src/worker-ui.js",
+  "main": "src/worker-ui-integrity.js",
   "compatibility_date": "2026-08-13",
 
   "assets": {
