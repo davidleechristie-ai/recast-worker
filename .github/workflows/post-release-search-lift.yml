@@ -1,0 +1,32 @@
+name: Post-Release 4 Search Lift QA
+
+on:
+  push:
+    branches:
+      - post-release-4-search-lift
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+concurrency:
+  group: post-release-search-lift
+  cancel-in-progress: true
+
+jobs:
+  quality_gate:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v5
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 22
+      - name: Install dependencies
+        working-directory: recast-worker
+        run: npm install
+      - name: Full test suite
+        working-directory: recast-worker
+        run: npm test
+      - name: Wrangler build validation
+        working-directory: recast-worker
+        run: npx wrangler deploy --dry-run --outdir=.wrangler-dry-run
