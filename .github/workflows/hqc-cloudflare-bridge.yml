@@ -32,3 +32,20 @@ jobs:
         env:
           CLOUDFLARE_API_TOKEN: ${{ secrets.CLOUDFLARE_API_TOKEN }}
           CLOUDFLARE_ACCOUNT_ID: ${{ secrets.CLOUDFLARE_ACCOUNT_ID }}
+      - name: Verify HQC preview
+        shell: bash
+        run: |
+          set -euo pipefail
+          base='https://hqc-migration-preview.davidleechristie.workers.dev'
+          for path in /health / /api/_healthcheck /robots.txt /resources/homepage-graphic.png; do
+            code=$(curl -L -sS -o /tmp/hqc-check -w '%{http_code}' --max-time 30 "$base$path")
+            echo "$path -> $code"
+            test "$code" = '200'
+          done
+          health=$(curl -L -sS --max-time 30 "$base/health")
+          grep -q 'hqc-migration-preview' <<< "$health"
+          home=$(curl -L -sS --max-time 30 "$base/")
+          grep -q 'Home Quote Check' <<< "$home"
+          api=$(curl -L -sS --max-time 30 "$base/api/_healthcheck")
+          grep -q 'Success' <<< "$api"
+          echo 'HQC Cloudflare preview verification passed.'
