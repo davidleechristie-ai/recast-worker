@@ -1,2 +1,2 @@
-2026-09-08T20:45:00+01:00
-DNS state recognised as Cloudflare transitional AAAA 100::. Retry reversible HQC production cutover.
+2026-09-08T20:50:00+01:00
+Cloudflare-managed transitional record detected. Retry root-domain adoption and verify.
