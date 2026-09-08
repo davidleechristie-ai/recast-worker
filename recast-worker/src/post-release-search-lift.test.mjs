@@ -17,7 +17,15 @@ assert.match(wrapper, /\/tools\/unflatten-json\.html/);
 assert.match(wrapper, /\/tools\/json-to-csv\.html/);
 assert.match(wrapper, /\/blog\/flatten-nested-json\.html/);
 
+// Strategic scorecard instrumentation must expose both numerator and denominator
+// events without reading or transmitting user input/output content.
+assert.match(wrapper, /tool_run_attempt/);
+assert.match(wrapper, /successful_tool_use/);
+assert.match(wrapper, /workflow_start/);
+assert.match(wrapper, /workflow_complete/);
+assert.match(wrapper, /upgrade_click/);
+assert.match(wrapper, /recast-funnel-measurement/);
 assert.doesNotMatch(wrapper, /textarea\.value|inputEl\.value|outputEl\.value/);
 assert.match(wrangler, /"main": "src\/worker-post-release\.js"/);
 
-console.log('post-release search lift tests passed');
+console.log('post-release search lift and funnel measurement tests passed');
