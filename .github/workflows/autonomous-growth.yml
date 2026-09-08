@@ -1,7 +1,7 @@
 name: Recast autonomous daily growth
 
 # Updating this workflow intentionally triggers a self-test run on main.
-# Self-test marker: prefer GPT-6 Astra, automatically fall back to GPT-5.6 Sol until Astra API access reaches this key; publish a management report every run.
+# Authoritative metrics are persisted before the optional AI optimisation step so evidence collection remains reliable even if API credit/model access fails.
 on:
   push:
     branches:
@@ -52,6 +52,23 @@ jobs:
           STRIPE_SECRET_KEY: ${{ secrets.STRIPE_SECRET_KEY }}
           PRICE_MAP: '{"price_1U41Bw07vRRG7JsXH0iAKy7g":"pro_monthly","price_1U41Bx07vRRG7JsXlwnms0uo":"pro_yearly","price_1U41Bs07vRRG7JsXnYpcoHh1":"api_monthly","price_1U41Br07vRRG7JsXV1vskFmE":"api_yearly","price_1U4Kub07vRRG7JsXtMatleol":"day_pass"}'
         run: node scripts/refresh-growth-scoreboard.mjs
+      - name: Validate refreshed growth scoreboard
+        run: node -e "JSON.parse(require('fs').readFileSync('recast-worker/GROWTH_SCOREBOARD.json','utf8')); console.log('Growth scoreboard JSON valid')"
+      - name: Persist authoritative metrics
+        id: metrics
+        shell: bash
+        run: |
+          if git diff --quiet -- recast-worker/GROWTH_SCOREBOARD.json; then
+            echo "changed=false" >> "$GITHUB_OUTPUT"
+            echo "No scoreboard change to persist."
+            exit 0
+          fi
+          git config user.name "recast-growth-bot"
+          git config user.email "recast-growth-bot@users.noreply.github.com"
+          git add recast-worker/GROWTH_SCOREBOARD.json
+          git commit -m "Refresh authoritative Recast growth metrics"
+          git push origin HEAD:main
+          echo "changed=true" >> "$GITHUB_OUTPUT"
       - name: Require OpenAI API key
         env:
           OPENAI_API_KEY: ${{ secrets.OPENAI_API_KEY }}
@@ -93,6 +110,7 @@ jobs:
             echo "# Recast Growth Agent Report"
             echo
             echo "**Run:** $GITHUB_RUN_NUMBER"
+            echo "**Metrics persisted before AI:** ${{ steps.metrics.outputs.changed || 'not reached' }}"
             echo "**Model selected:** ${{ steps.model.outputs.selected || 'not reached' }}"
             echo "**Workflow:** $GITHUB_SERVER_URL/$GITHUB_REPOSITORY/actions/runs/$GITHUB_RUN_ID"
             echo
@@ -100,10 +118,10 @@ jobs:
               cat /tmp/recast-growth-report.md
             else
               echo "## Executive summary"
-              echo "The agent did not produce its management report file. Review the failed or interrupted workflow step above."
+              echo "Authoritative measurement completed independently of the AI optimisation step. The AI agent did not produce its management report file."
               echo
               echo "## Risks / blockers"
-              echo "The run ended before the reporting contract completed, so findings and suggestions may be incomplete."
+              echo "Review the AI step for API credit/model-access issues. Fresh GSC/GA4/Stripe evidence remains persisted even when that optional step fails."
             fi
           } >> "$GITHUB_STEP_SUMMARY"
       - name: Enforce autonomous scope
@@ -133,9 +151,10 @@ jobs:
       - name: Summary
         if: always()
         run: |
+          echo "Authoritative metrics persisted: ${{ steps.metrics.outputs.changed || 'not reached' }}"
           echo "Growth model: ${{ steps.model.outputs.selected || 'not reached' }}"
           if [ "${{ steps.commit.outputs.changed }}" = "true" ]; then
-            echo "Authoritative metrics refreshed; safe metric-driven acquisition change committed to main and production deployment explicitly dispatched."
+            echo "Safe metric-driven acquisition change committed to main and production deployment explicitly dispatched."
           else
-            echo "Agent run completed without a production-facing commit, or stopped before the commit stage. See the published management report in the workflow summary."
+            echo "Measurement completed independently; no production-facing AI change was committed, or the optional AI step stopped before that stage."
           fi
