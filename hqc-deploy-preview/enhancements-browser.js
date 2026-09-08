@@ -10,12 +10,34 @@
   const dedupe=quotes=>{const seen=new Set();return quotes.filter(q=>{const key=[q.fileName,q.installer,q.price,q.model,q.heatLossKw,q.flowTemperatureC].join('|');if(seen.has(key))return false;seen.add(key);return true;}).slice(0,4);};
   function polishHero(){
     const img=[...document.querySelectorAll('img')].find(x=>/homepage-graphic\.png/i.test(x.getAttribute('src')||''));
-    if(!img||img.dataset.hqcHeroPolished==='1')return;
-    img.dataset.hqcHeroPolished='1';
-    const wrap=img.parentElement;
-    if(wrap){wrap.style.overflow='hidden';wrap.style.borderRadius='18px';wrap.style.display='flex';wrap.style.alignItems='center';wrap.style.justifyContent='center';wrap.style.background='#eef8f4';}
-    img.style.width='100%';img.style.height='100%';img.style.maxHeight='690px';img.style.objectFit='cover';img.style.objectPosition='50% 43%';img.style.display='block';
-    img.alt='Heat-pump quote comparison showing price and heat-loss differences before you decide';
+    if(img){
+      img.dataset.hqcHeroPolished='1';
+      const wrap=img.parentElement;
+      if(wrap){
+        wrap.style.overflow='hidden';
+        wrap.style.borderRadius='18px';
+        wrap.style.display='flex';
+        wrap.style.alignItems='center';
+        wrap.style.justifyContent='center';
+        wrap.style.background='#eef8f4';
+        wrap.style.padding='0';
+      }
+      img.style.display='block';
+      img.style.width='100%';
+      img.style.height='auto';
+      img.style.maxWidth='100%';
+      img.style.margin='0 auto';
+      img.style.objectFit='contain';
+      img.style.objectPosition='50% 50%';
+      img.alt='Heat-pump quote comparison showing price and heat-loss differences before you decide';
+    }
+    const candidates=[...document.querySelectorAll('div,section,aside')].filter(el=>/We compare them/i.test(el.textContent||''));
+    const strip=candidates.sort((a,b)=>(a.textContent||'').length-(b.textContent||'').length)[0];
+    if(strip){
+      let node=strip;
+      while(node.parentElement && node.parentElement.textContent && /We compare them/i.test(node.parentElement.textContent) && (node.parentElement.textContent||'').length<220){node=node.parentElement;}
+      node.style.setProperty('display','none','important');
+    }
   }
   function optimiseLanding(){
     const copy=document.querySelector('.copy');if(!copy||document.getElementById('hqc-landing-proof'))return;
