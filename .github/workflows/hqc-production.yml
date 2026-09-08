@@ -1,11 +1,6 @@
 name: HQC production deploy
 
 on:
-  push:
-    branches: [main]
-    paths:
-      - 'hqc-deploy-preview/**'
-      - '.github/workflows/hqc-production.yml'
   workflow_dispatch:
 
 permissions:
@@ -39,6 +34,10 @@ jobs:
           test -s hqc-deploy-preview/site/__hqc_enhancements.js
           grep -q 'root' hqc-deploy-preview/site/index.html
           grep -q 'Quote evidence completeness' hqc-deploy-preview/site/__hqc_enhancements.js
+          grep -q 'https://homequotecheck.co.uk' hqc-deploy-preview/site/index.html
+          ! grep -q 'hqc-migration-preview.davidleechristie.workers.dev' hqc-deploy-preview/site/index.html
+          ! grep -q 'cf-preview.homequotecheck.co.uk' hqc-deploy-preview/site/index.html
+          ! grep -q 'heat-pump-second-opinion-v43csv.v2.appdeploy.ai' hqc-deploy-preview/site/index.html
       - name: Deploy HQC production worker
         working-directory: hqc-deploy-preview
         run: npx wrangler deploy --config wrangler.production.toml
@@ -54,7 +53,7 @@ jobs:
           for attempt in 1 2 3 4 5 6 7 8; do
             health=$(curl -L -sS --max-time 30 "$base/health" || true)
             echo "attempt $attempt -> $health"
-            if grep -q 'hqc-migration-preview' <<< "$health"; then ok=true; break; fi
+            if grep -q 'home-quote-check' <<< "$health" && grep -q 'production' <<< "$health"; then ok=true; break; fi
             sleep 5
           done
           test "$ok" = 'true'
@@ -63,9 +62,18 @@ jobs:
             echo "$path -> $code"
             test "$code" = '200'
           done
+          headers=$(curl -sS -I --max-time 30 "$base/")
+          grep -qi 'x-hqc-cloudflare-edge: production' <<< "$headers"
+          home=$(curl -L -sS --max-time 30 "$base/")
+          grep -q '__hqc_enhancements.js' <<< "$home"
+          grep -q 'https://homequotecheck.co.uk' <<< "$home"
+          ! grep -q 'hqc-migration-preview.davidleechristie.workers.dev' <<< "$home"
+          ! grep -q 'cf-preview.homequotecheck.co.uk' <<< "$home"
+          ! grep -q 'heat-pump-second-opinion-v43csv.v2.appdeploy.ai' <<< "$home"
           api=$(curl -L -sS --max-time 30 "$base/api/_healthcheck")
           grep -q 'Success' <<< "$api"
           enhancement=$(curl -L -sS --max-time 30 "$base/__hqc_enhancements.js")
           grep -q 'Quote evidence completeness' <<< "$enhancement"
           grep -q 'Add another quote' <<< "$enhancement"
+          grep -q 'does not score sizing quality' <<< "$enhancement"
           echo 'HQC production Cloudflare deployment verified.'
