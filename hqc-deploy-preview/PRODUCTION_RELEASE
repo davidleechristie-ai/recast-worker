@@ -1,6 +1,5 @@
-2026-09-08T23:40+01:00
-Re-run the verified upload-friction-v3 production promotion with propagation-aware verification after the first deployment successfully published the Worker/assets but the immediate homepage assertion raced Cloudflare edge propagation. Functional canary already passed; this release requires production homepage readiness plus a real mobile filechooser event before success.
-Upload handoff commit: 9fa8c3793f92ebc28211448e4e9473e3ee2626c0
-Snapshot commit: 9067483d5f99d1923b315653d00be9b149df733e
-Canary verification commit: 5fb4643254ae08baee50a74bf308cd5944537317
-Propagation-aware production verification commit: 38e3783ea0be88462e3dde513f676616d5c9dc0a
+2026-09-09T00:31+01:00
+Promote verified quote-intake micro-funnel diagnostics after canary success. This release adds privacy-safe anonymous events for chooser open, file selected, manual-entry open and upload-control unavailable, while marking canary/workers.dev/smoke/release probes as test traffic so QA is excluded from traction evidence.
+Instrumentation commit: 35b8db4e596d9824c650906cb86fcaa56294686b
+Test-traffic guard commit: 1aa14fbe2f59fa47faaf0fade79c3eee02391bc9
+Canary run: 34290942269 (success)
