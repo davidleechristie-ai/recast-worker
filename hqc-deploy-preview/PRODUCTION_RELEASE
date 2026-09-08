@@ -1,5 +1,4 @@
-2026-09-08T22:41+01:00
-Promote single-layer responsive HQC homepage rebuild after preview verification passed. No secondary mobile DOM script. Production gate now includes a mobile interaction smoke test.
-Enhancement commit: 780999249688339f35d7714a312d8cb0c6791864
-Preview verification fix: 03ae46238e892aed5e5d2974f987c9d73e4a2212
-Interaction-gate commit: d8fa07764f74936be1e02fbff36b8ebf874e5839
+2026-09-08T22:47+01:00
+Promote dedicated clean homepage house illustration after preview verification passed. Removes dependence on cropping the old full-page screenshot while retaining the single responsive enhancement layer and mobile interaction gate.
+Artwork commit: 3c59fbbf496b10daf778edb17f3ceaa772573efb
+Snapshot commit: 693f3b8fe2445291ee21bc88c35b2aa854e61023
