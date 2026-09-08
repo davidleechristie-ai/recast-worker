@@ -1,0 +1,54 @@
+name: HQC custom-domain canary
+
+on:
+  push:
+    branches: [main]
+    paths:
+      - 'hqc-deploy-preview/wrangler.canary.toml'
+      - '.github/workflows/hqc-canary-domain.yml'
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+concurrency:
+  group: hqc-custom-domain-canary
+  cancel-in-progress: true
+
+jobs:
+  canary:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 22
+      - name: Install
+        working-directory: hqc-deploy-preview
+        run: npm install
+      - name: Snapshot HQC frontend
+        working-directory: hqc-deploy-preview
+        run: node snapshot.mjs
+      - name: Bind safe HQC canary custom domain
+        working-directory: hqc-deploy-preview
+        run: npx wrangler deploy --config wrangler.canary.toml
+        env:
+          CLOUDFLARE_API_TOKEN: ${{ secrets.CLOUDFLARE_API_TOKEN }}
+          CLOUDFLARE_ACCOUNT_ID: ${{ secrets.CLOUDFLARE_ACCOUNT_ID }}
+      - name: Verify canary domain
+        shell: bash
+        run: |
+          set -euo pipefail
+          base='https://cf-preview.homequotecheck.co.uk'
+          ok=false
+          for attempt in 1 2 3 4 5 6; do
+            code=$(curl -L -sS -o /tmp/canary -w '%{http_code}' --max-time 30 "$base/health" || true)
+            body=$(cat /tmp/canary 2>/dev/null || true)
+            echo "attempt $attempt -> $code $body"
+            if [ "$code" = '200' ] && grep -q 'hqc-migration-preview' <<< "$body"; then ok=true; break; fi
+            sleep 5
+          done
+          test "$ok" = 'true'
+          api=$(curl -L -sS --max-time 30 "$base/api/_healthcheck")
+          grep -q 'Success' <<< "$api"
+          echo 'HQC custom-domain canary passed.'
