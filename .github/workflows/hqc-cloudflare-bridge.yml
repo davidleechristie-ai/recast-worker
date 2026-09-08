@@ -74,3 +74,16 @@ jobs:
           static=$(curl -L -sS --max-time 30 "$base/is-this-a-good-heat-pump-quote.html")
           grep -q 'Is this a good heat-pump quote' <<< "$static"
           echo 'HQC frozen Cloudflare frontend verification passed.'
+      - name: Inspect current HQC production routing
+        shell: bash
+        run: |
+          set -u
+          echo '--- DNS A/AAAA/CNAME ---'
+          dig +short homequotecheck.co.uk A || true
+          dig +short homequotecheck.co.uk AAAA || true
+          dig +short homequotecheck.co.uk CNAME || true
+          echo '--- HTTPS headers ---'
+          curl -sS -I -L --max-time 30 https://homequotecheck.co.uk/ | sed -n '1,30p' || true
+          echo '--- Current production marker ---'
+          curl -sS -L --max-time 30 https://homequotecheck.co.uk/ | head -c 500 || true
+          echo
