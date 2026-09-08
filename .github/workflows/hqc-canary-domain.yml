@@ -4,7 +4,7 @@ on:
   push:
     branches: [main]
     paths:
-      - 'hqc-deploy-preview/wrangler.canary.toml'
+      - 'hqc-deploy-preview/**'
       - '.github/workflows/hqc-canary-domain.yml'
   workflow_dispatch:
 
@@ -26,9 +26,11 @@ jobs:
       - name: Install
         working-directory: hqc-deploy-preview
         run: npm install
-      - name: Snapshot HQC frontend
+      - name: Snapshot HQC frontend for canary hostname
         working-directory: hqc-deploy-preview
         run: node snapshot.mjs
+        env:
+          HQC_PUBLIC_ORIGIN: https://cf-preview.homequotecheck.co.uk
       - name: Bind safe HQC canary custom domain
         working-directory: hqc-deploy-preview
         run: npx wrangler deploy --config wrangler.canary.toml
@@ -49,6 +51,15 @@ jobs:
             sleep 5
           done
           test "$ok" = 'true'
+          home=$(curl -L -sS --max-time 30 "$base/")
+          grep -q '__hqc_enhancements.js' <<< "$home"
+          grep -q 'https://cf-preview.homequotecheck.co.uk' <<< "$home"
+          if grep -q 'hqc-migration-preview.davidleechristie.workers.dev' <<< "$home"; then
+            echo 'Canary frontend contains workers.dev public URLs'
+            exit 1
+          fi
+          enhancement=$(curl -L -sS --max-time 30 "$base/__hqc_enhancements.js")
+          grep -q 'Quote evidence completeness' <<< "$enhancement"
           api=$(curl -L -sS --max-time 30 "$base/api/_healthcheck")
           grep -q 'Success' <<< "$api"
-          echo 'HQC custom-domain canary passed.'
+          echo 'HQC custom-domain canary passed with hostname-correct frontend.'
