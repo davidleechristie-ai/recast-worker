@@ -6,6 +6,9 @@ routes = [
   { pattern = "homequotecheck.co.uk", custom_domain = true }
 ]
 
+[vars]
+HQC_ENV = "production"
+
 [assets]
 directory = "./site"
 binding = "ASSETS"
