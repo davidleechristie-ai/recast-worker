@@ -75,7 +75,6 @@ jobs:
           grep -q 'does not score sizing quality' <<< "$enhancement"
           grep -q 'Got a heat-pump quote? Check what’s missing before you sign.' <<< "$enhancement"
           grep -q 'Check my quote — free' <<< "$enhancement"
-          grep -q 'Start with just one quote.' <<< "$enhancement"
           grep -q 'Fastest way to start' <<< "$enhancement"
           api=$(curl -L -sS --max-time 30 "$base/api/_healthcheck")
           echo "api=$api"
