@@ -1,14 +1,15 @@
 import {mkdir,writeFile,rm,copyFile} from 'node:fs/promises';
 import {dirname,join} from 'node:path';
 const ORIGIN='https://heat-pump-second-opinion-v43csv.v2.appdeploy.ai';
-const PREVIEW='https://hqc-migration-preview.davidleechristie.workers.dev';
+const DEFAULT_TARGET='https://hqc-migration-preview.davidleechristie.workers.dev';
+const TARGET=(process.env.HQC_PUBLIC_ORIGIN||DEFAULT_TARGET).replace(/\/$/,'');
 const SITE='site';
 await rm(SITE,{recursive:true,force:true});
 await mkdir(SITE,{recursive:true});
 const saved=new Set();
 function localPath(ref){
   if(ref.startsWith(ORIGIN+'/'))return new URL(ref).pathname;
-  if(ref.startsWith(PREVIEW+'/'))return new URL(ref).pathname;
+  if(ref.startsWith(TARGET+'/'))return new URL(ref).pathname;
   if(ref.startsWith('./'))return '/'+ref.slice(2);
   if(ref.startsWith('/'))return ref;
   return null;
@@ -19,8 +20,8 @@ function cleanHtml(body){
     .replace(/<script async src="https:\/\/v2\.appdeploy\.ai\/shared\/js\/overlay\.js"[\s\S]*?<\/script>/g,'')
     .replace(/<script>window\.__APPDEPLOY_APP_ID[\s\S]*?<\/script>/g,'')
     .replace(/<script data-appdeploy-network-hook>[\s\S]*?<\/script>/g,'')
-    .replaceAll('https://homequotecheck.co.uk',PREVIEW)
-    .replaceAll(ORIGIN,PREVIEW)
+    .replaceAll('https://homequotecheck.co.uk',TARGET)
+    .replaceAll(ORIGIN,TARGET)
     .replace('</body>','<script src="/__hqc_enhancements.js" defer></script></body>');
 }
 async function save(path,binary=false){
@@ -31,7 +32,7 @@ async function save(path,binary=false){
   let body=binary?Buffer.from(await res.arrayBuffer()):await res.text();
   if(!binary){
     if(path==='/'||path.endsWith('.html'))body=cleanHtml(body);
-    else body=body.replaceAll('https://homequotecheck.co.uk',PREVIEW).replaceAll(ORIGIN,PREVIEW);
+    else body=body.replaceAll('https://homequotecheck.co.uk',TARGET).replaceAll(ORIGIN,TARGET);
     if(path==='/'||path.endsWith('.html')){
       const refs=[...body.matchAll(/(?:src|href)=["']([^"']+)["']/g)].map(m=>m[1]);
       for(const ref of refs){
@@ -50,4 +51,4 @@ await save('/');
 for(const path of ['/robots.txt','/sitemap.xml','/is-this-a-good-heat-pump-quote.html'])await save(path);
 await save('/resources/homepage-graphic.png',true);
 await copyFile('enhancements-browser.js',join(SITE,'__hqc_enhancements.js'));
-console.log(`HQC frontend snapshot complete: ${saved.size} files + enhancements`);
+console.log(`HQC frontend snapshot complete for ${TARGET}: ${saved.size} files + enhancements`);
