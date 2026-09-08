@@ -23,14 +23,20 @@ jobs:
           curl -fsS --max-time 30 "$base/api/metrics" | jq .
           echo '--- /api/growth-report ---'
           curl -fsS --max-time 30 "$base/api/growth-report" | jq .
-          echo '--- instrumentation scan ---'
+          echo '--- event payload scan ---'
           site='https://heat-pump-second-opinion-v43csv.v2.appdeploy.ai'
-          html=$(mktemp)
-          curl -fsS --max-time 30 "$site/" -o "$html"
-          grep -Eo '(src|href)="[^"]+"' "$html" | grep -E '/assets/.*\.js' | head -20 || true
-          for p in $(grep -Eo 'src="[^"]+\.js"' "$html" | sed -E 's/^src="|"$//g'); do
-            case "$p" in http*) u="$p";; /*) u="$site$p";; *) u="$site/$p";; esac
-            echo "asset=$u"
-            curl -fsS --max-time 30 "$u" | grep -Eo '/api/[A-Za-z0-9_?&=./:-]+' | sort -u | grep -E 'growth|metric|event|track|share|upload|analysis' || true
-          done
+          js=$(mktemp)
+          curl -fsS --max-time 30 "$site/assets/index-CbjepCsd.js" -o "$js"
+          python - "$js" <<'PY'
+          import sys
+          s=open(sys.argv[1],encoding='utf-8').read()
+          needle='/api/event'
+          start=0
+          for i in range(8):
+            p=s.find(needle,start)
+            if p<0: break
+            print(s[max(0,p-900):p+1400])
+            print('\n--- occurrence ---\n')
+            start=p+len(needle)
+          PY
           echo 'snapshot=2026-09-09T00:26:54+01:00'
