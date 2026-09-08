@@ -3,6 +3,9 @@
   const qs=(s,r=document)=>r.querySelector(s);
   const qsa=(s,r=document)=>[...r.querySelectorAll(s)];
   const text=n=>(n?.textContent||'').replace(/\s+/g,' ').trim();
+  const source=()=>new URLSearchParams(location.search).get('src')||'direct';
+  const isTest=()=>/cf-preview|workers\.dev|localhost|127\.0\.0\.1/i.test(location.hostname);
+  const track=event=>fetch('/api/event',{method:'POST',headers:{'content-type':'application/json'},body:JSON.stringify({event,source:source(),analysisId:'',quoteCount:0,provenance:'',isTest:isTest()})}).catch(()=>{});
   const cardFor=el=>el?.closest?.('.card')||qsa('.card').find(c=>/add your quotes/i.test(text(qs('h1,h2',c))))||document;
   const scoreInput=(input,card)=>{
     let score=0;
@@ -27,17 +30,21 @@
     const card=cardFor(choose);
     choose.addEventListener('click',ev=>{
       ev.preventDefault();ev.stopImmediatePropagation();
+      track('intake_chooser_open');
       const input=bestFileInput(card);
       if(input){
         if(input.dataset.hqcV3Change!=='1'){
           input.dataset.hqcV3Change='1';
-          input.addEventListener('change',()=>{if(input.files?.length)status(help,'File selected. Continue with the existing check/analyse action below.');});
+          input.addEventListener('change',()=>{
+            if(input.files?.length){track('intake_file_selected');status(help,'File selected. Continue with the existing check/analyse action below.');}
+          });
         }
         input.click();
         return;
       }
       const native=nativeUploadControl(card);
       if(native){native.click();return;}
+      track('intake_upload_unavailable');
       status(help,'Upload control could not be opened. Use “Enter figures manually” below.');
     },true);
     const manual=qs('#hqc-enter-manual');
@@ -46,7 +53,7 @@
       manual.addEventListener('click',ev=>{
         const native=nativeManualControl(card);
         if(!native)return;
-        ev.preventDefault();ev.stopImmediatePropagation();native.click();
+        ev.preventDefault();ev.stopImmediatePropagation();track('intake_manual_open');native.click();
       },true);
     }
   }
