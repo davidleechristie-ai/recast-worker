@@ -59,20 +59,21 @@ jobs:
         run: |
           set -euo pipefail
           base='https://homequotecheck.co.uk'
-          ok=false
-          for attempt in 1 2 3 4 5 6 7 8; do
+          ready=false
+          for attempt in 1 2 3 4 5 6 7 8 9 10 11 12; do
             health=$(curl -L -sS --max-time 30 "$base/health" || true)
-            echo "attempt $attempt -> $health"
-            if grep -q 'home-quote-check' <<< "$health" && grep -q 'production' <<< "$health"; then ok=true; break; fi
+            home=$(curl -L -sS --max-time 30 "$base/?release_probe=$attempt" || true)
+            echo "attempt $attempt health=$health uploadV3=$(grep -c '__hqc_upload_v3.js' <<< "$home" || true)"
+            if grep -q 'home-quote-check' <<< "$health" && grep -q 'production' <<< "$health" && grep -q '__hqc_enhancements.js' <<< "$home" && grep -q '__hqc_upload_v3.js' <<< "$home"; then ready=true; break; fi
             sleep 5
           done
-          test "$ok" = 'true'
+          test "$ready" = 'true'
           for path in / /api/_healthcheck /robots.txt /sitemap.xml /resources/homepage-graphic.png /is-this-a-good-heat-pump-quote.html /__hqc_enhancements.js /__hqc_upload_v3.js; do
             code=$(curl -L -sS -o /tmp/hqc-prod -w '%{http_code}' --max-time 30 "$base$path")
             echo "$path -> $code"
             test "$code" = '200'
           done
-          home=$(curl -L -sS --max-time 30 "$base/")
+          home=$(curl -L -sS --max-time 30 "$base/?release_probe=final")
           grep -q '__hqc_enhancements.js' <<< "$home"
           grep -q '__hqc_upload_v3.js' <<< "$home"
           ! grep -q '__hqc_target_mobile.js' <<< "$home"
@@ -104,7 +105,7 @@ jobs:
           const page = await browser.newPage({viewport:{width:390,height:844},isMobile:true,hasTouch:true});
           const errors=[];
           page.on('pageerror',e=>errors.push(String(e)));
-          await page.goto('https://homequotecheck.co.uk/',{waitUntil:'networkidle',timeout:60000});
+          await page.goto('https://homequotecheck.co.uk/?upload_handoff_smoke=1',{waitUntil:'networkidle',timeout:60000});
           const cta=page.getByRole('button',{name:/check my quote/i}).first();
           await cta.waitFor({state:'visible',timeout:15000});
           await cta.click({timeout:10000});
