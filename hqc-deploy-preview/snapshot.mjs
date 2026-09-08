@@ -24,7 +24,7 @@ function cleanHtml(body){
     .replaceAll(ORIGIN,TARGET)
     .replaceAll('./resources/homepage-graphic.png','/resources/homepage-house-reference.svg')
     .replaceAll('/resources/homepage-graphic.png','/resources/homepage-house-reference.svg')
-    .replace('</body>','<script src="/__hqc_enhancements.js" defer></script></body>');
+    .replace('</body>','<script src="/__hqc_enhancements.js" defer></script><script src="/__hqc_upload_v3.js" defer></script></body>');
 }
 async function save(path,binary=false){
   if(saved.has(path))return;
@@ -54,4 +54,5 @@ for(const path of ['/robots.txt','/sitemap.xml','/is-this-a-good-heat-pump-quote
 await mkdir(join(SITE,'resources'),{recursive:true});
 await copyFile('homepage-house-reference.svg',join(SITE,'resources/homepage-house-reference.svg'));
 await copyFile('enhancements-browser.js',join(SITE,'__hqc_enhancements.js'));
-console.log(`HQC frontend snapshot complete for ${TARGET}: ${saved.size} fetched files + clean house artwork + enhancements`);
+await copyFile('upload-friction-v3.js',join(SITE,'__hqc_upload_v3.js'));
+console.log(`HQC frontend snapshot complete for ${TARGET}: ${saved.size} fetched files + clean house artwork + enhancements + upload handoff v3`);
