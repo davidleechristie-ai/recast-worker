@@ -11,32 +11,25 @@
   function polishHero(){
     const img=[...document.querySelectorAll('img')].find(x=>/homepage-graphic\.png/i.test(x.getAttribute('src')||''));
     if(img){
-      img.dataset.hqcHeroPolished='1';
+      img.dataset.hqcHeroPolished='2';
       const wrap=img.parentElement;
       if(wrap){
-        wrap.style.overflow='hidden';
-        wrap.style.borderRadius='18px';
-        wrap.style.display='flex';
-        wrap.style.alignItems='center';
-        wrap.style.justifyContent='center';
-        wrap.style.background='#eef8f4';
-        wrap.style.padding='0';
+        wrap.style.setProperty('overflow','hidden','important');
+        wrap.style.setProperty('border-radius','18px','important');
+        wrap.style.setProperty('display','block','important');
+        wrap.style.setProperty('background','#eef8f4','important');
+        wrap.style.setProperty('padding','0','important');
+        wrap.style.setProperty('aspect-ratio',window.innerWidth<700?'1.18 / 1':'1.45 / 1','important');
+        wrap.style.setProperty('max-height',window.innerWidth<700?'390px':'520px','important');
       }
-      img.style.display='block';
-      img.style.width='100%';
-      img.style.height='auto';
-      img.style.maxWidth='100%';
-      img.style.margin='0 auto';
-      img.style.objectFit='contain';
-      img.style.objectPosition='50% 50%';
-      img.alt='Heat-pump quote comparison showing price and heat-loss differences before you decide';
-    }
-    const candidates=[...document.querySelectorAll('div,section,aside')].filter(el=>/We compare them/i.test(el.textContent||''));
-    const strip=candidates.sort((a,b)=>(a.textContent||'').length-(b.textContent||'').length)[0];
-    if(strip){
-      let node=strip;
-      while(node.parentElement && node.parentElement.textContent && /We compare them/i.test(node.parentElement.textContent) && (node.parentElement.textContent||'').length<220){node=node.parentElement;}
-      node.style.setProperty('display','none','important');
+      img.style.setProperty('display','block','important');
+      img.style.setProperty('width','100%','important');
+      img.style.setProperty('height','100%','important');
+      img.style.setProperty('max-width','none','important');
+      img.style.setProperty('margin','0','important');
+      img.style.setProperty('object-fit','cover','important');
+      img.style.setProperty('object-position','50% 43%','important');
+      img.alt='Heat-pump quote comparison illustration';
     }
   }
   function optimiseLanding(){
@@ -57,5 +50,5 @@
   function renderCompleteness(){const quotes=readCase();const facts=document.querySelector('.facts.panel');if(!facts||!quotes.length||document.getElementById('hqc-completeness'))return;const section=document.createElement('section');section.id='hqc-completeness';section.className='panel';const cards=quotes.map((q,i)=>{const c=completeness(q);const missing=c.items.filter(([,ok])=>!ok).map(([name])=>name);const who=escapeHtml(q.installer||q.fileName||`Quote ${i+1}`);return `<article><small>EVIDENCE COMPLETENESS</small><h3>${who}</h3><p style="font-size:32px;font-weight:900;margin:6px 0;color:#00845c">${c.score}/10</p><p style="font-size:11px;color:#617187;margin:0 0 8px">documented</p>${missing.length?`<p style="font-size:11px;line-height:1.5"><b>Still missing:</b> ${missing.map(escapeHtml).join(', ')}</p>`:'<p style="font-size:11px;line-height:1.5"><b>All 10 evidence fields are stated.</b></p>'}</article>`;}).join('');const addSecond=quotes.length===1&&quotes[0].isReal?`<div class="seoCta"><h2>Have another quote?</h2><p>Add it and Home Quote Check will show where the installers disagree rather than judging either quote in isolation.</p><button id="hqc-add-second" class="primary">Add another quote →</button></div>`:'';section.innerHTML=`<h2>Quote evidence completeness</h2><p style="color:#617187;line-height:1.55"><b>This measures what each quote documents, not whether the design is correct.</b> It does not score sizing quality, MCS status or Boiler Upgrade Scheme eligibility.</p><div class="factCards">${cards}</div>${addSecond}`;facts.parentNode.insertBefore(section,facts);const button=document.getElementById('hqc-add-second');if(button)button.addEventListener('click',()=>{sessionStorage.setItem(PENDING,JSON.stringify(quotes));sessionStorage.setItem(MODE,'1');sessionStorage.removeItem(AUTO);const reset=[...document.querySelectorAll('button')].find(x=>/check different quotes/i.test(x.textContent||''));if(reset)reset.click();});}
   function strengthenInstallerQuestions(){const panel=document.querySelector('.questions');if(!panel||panel.dataset.hqcEnhanced==='1')return;const button=panel.querySelector('button.primary');if(!button)return;panel.dataset.hqcEnhanced='1';const intro=document.createElement('div');intro.className='evidenceState';intro.innerHTML='<b>TAKE THE EVIDENCE BACK TO THE INSTALLER</b><p>Copy these neutral clarification questions into email, WhatsApp or the installer’s portal. They contain no customer details or source quote documents.</p>';const heading=panel.querySelector('h2');if(heading)heading.insertAdjacentElement('afterend',intro);if(/copy questions/i.test(button.textContent||''))button.textContent='Copy questions to send →';}
   function tick(){polishHero();optimiseLanding();optimiseUpload();if(mergeSecondQuoteIfReady())return;renderCompleteness();strengthenInstallerQuestions();}
-  new MutationObserver(tick).observe(document.documentElement,{childList:true,subtree:true});window.addEventListener('storage',tick);tick();
+  new MutationObserver(tick).observe(document.documentElement,{childList:true,subtree:true});window.addEventListener('resize',polishHero);window.addEventListener('storage',tick);tick();
 })();
