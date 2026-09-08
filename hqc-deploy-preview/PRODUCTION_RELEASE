@@ -1,6 +1,6 @@
-2026-09-08T23:36+01:00
-Promote upload-friction-v3 after custom-domain canary passed the real mobile file-chooser handoff test. This release keeps the existing privacy/evidence guardrails and custom-domain routing, while hardening the transition from checker start to quote selection and strengthening production verification to require an actual browser filechooser event.
+2026-09-08T23:40+01:00
+Re-run the verified upload-friction-v3 production promotion with propagation-aware verification after the first deployment successfully published the Worker/assets but the immediate homepage assertion raced Cloudflare edge propagation. Functional canary already passed; this release requires production homepage readiness plus a real mobile filechooser event before success.
 Upload handoff commit: 9fa8c3793f92ebc28211448e4e9473e3ee2626c0
 Snapshot commit: 9067483d5f99d1923b315653d00be9b149df733e
 Canary verification commit: 5fb4643254ae08baee50a74bf308cd5944537317
-Production verification commit: 786b09bc1a8640b9d029d098cff6bdb002387842
+Propagation-aware production verification commit: 38e3783ea0be88462e3dde513f676616d5c9dc0a
