@@ -1,0 +1,13 @@
+name = "hqc-production"
+main = "worker.js"
+compatibility_date = "2026-09-08"
+workers_dev = true
+routes = [
+  { pattern = "homequotecheck.co.uk", custom_domain = true },
+  { pattern = "www.homequotecheck.co.uk", custom_domain = true }
+]
+
+[assets]
+directory = "./site"
+binding = "ASSETS"
+not_found_handling = "single-page-application"
