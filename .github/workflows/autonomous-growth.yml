@@ -92,6 +92,7 @@ jobs:
             echo "GPT-6 Astra is not yet available to this API key (HTTP $status); using GPT-5.6 Sol for this run."
           fi
       - name: Run Recast growth agent
+        continue-on-error: true
         uses: openai/codex-action@v1
         with:
           openai-api-key: ${{ secrets.OPENAI_API_KEY }}
