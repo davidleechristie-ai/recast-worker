@@ -11,8 +11,20 @@ for (const event of [
   'pricing_viewed',
   'checkout_started',
   'api_documentation_viewed',
+  'commercial_intent',
   'purchase_entitlement_confirmed'
 ]) assert.match(analytics, new RegExp(event));
+
+for (const intent of [
+  'pricing_page',
+  'pricing_section',
+  'pricing_link',
+  'pricing_click',
+  'api_documentation',
+  'api_click',
+  'automation_click',
+  'checkout'
+]) assert.match(analytics, new RegExp(intent));
 
 assert.match(analytics, /\/api\/verify-session/);
 assert.match(analytics, /data\.token && data\.entitled/);
