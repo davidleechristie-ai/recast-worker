@@ -1,4 +1,4 @@
-import {mkdir,writeFile,rm} from 'node:fs/promises';
+import {mkdir,writeFile,rm,copyFile} from 'node:fs/promises';
 import {dirname,join} from 'node:path';
 const ORIGIN='https://heat-pump-second-opinion-v43csv.v2.appdeploy.ai';
 const PREVIEW='https://hqc-migration-preview.davidleechristie.workers.dev';
@@ -20,7 +20,8 @@ function cleanHtml(body){
     .replace(/<script>window\.__APPDEPLOY_APP_ID[\s\S]*?<\/script>/g,'')
     .replace(/<script data-appdeploy-network-hook>[\s\S]*?<\/script>/g,'')
     .replaceAll('https://homequotecheck.co.uk',PREVIEW)
-    .replaceAll(ORIGIN,PREVIEW);
+    .replaceAll(ORIGIN,PREVIEW)
+    .replace('</body>','<script src="/__hqc_enhancements.js" defer></script></body>');
 }
 async function save(path,binary=false){
   if(saved.has(path))return;
@@ -48,4 +49,5 @@ async function save(path,binary=false){
 await save('/');
 for(const path of ['/robots.txt','/sitemap.xml','/is-this-a-good-heat-pump-quote.html'])await save(path);
 await save('/resources/homepage-graphic.png',true);
-console.log(`HQC frontend snapshot complete: ${saved.size} files`);
+await copyFile('enhancements-browser.js',join(SITE,'__hqc_enhancements.js'));
+console.log(`HQC frontend snapshot complete: ${saved.size} files + enhancements`);
