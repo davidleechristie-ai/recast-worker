@@ -26,6 +26,9 @@ jobs:
       - name: Install
         working-directory: hqc-deploy-preview
         run: npm install
+      - name: Snapshot current HQC frontend
+        working-directory: hqc-deploy-preview
+        run: node snapshot.mjs
       - name: Deploy HQC preview worker
         working-directory: hqc-deploy-preview
         run: npx wrangler deploy
@@ -37,18 +40,20 @@ jobs:
         run: |
           set -euo pipefail
           base='https://hqc-migration-preview.davidleechristie.workers.dev'
-          for path in /health / /api/_healthcheck /robots.txt /resources/homepage-graphic.png; do
+          for path in /health / /api/_healthcheck /robots.txt /resources/homepage-graphic.png /is-this-a-good-heat-pump-quote.html; do
             code=$(curl -L -sS -o /tmp/hqc-check -w '%{http_code}' --max-time 30 "$base$path")
             echo "$path -> $code"
             test "$code" = '200'
           done
           health=$(curl -L -sS --max-time 30 "$base/health")
           echo "health=$health"
-          grep -q 'hqc-migration-preview' <<< "$health"
+          grep -q 'cloudflare-assets' <<< "$health"
           home=$(curl -L -sS --max-time 30 "$base/")
           echo "home-prefix=${home:0:180}"
           grep -q 'root' <<< "$home"
           api=$(curl -L -sS --max-time 30 "$base/api/_healthcheck")
           echo "api=$api"
           grep -q 'Success' <<< "$api"
-          echo 'HQC Cloudflare preview verification passed.'
+          static=$(curl -L -sS --max-time 30 "$base/is-this-a-good-heat-pump-quote.html")
+          grep -q 'Is this a good heat-pump quote' <<< "$static"
+          echo 'HQC frozen Cloudflare frontend verification passed.'
