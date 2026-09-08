@@ -13,6 +13,15 @@ function localPath(ref){
   if(ref.startsWith('/'))return ref;
   return null;
 }
+function cleanHtml(body){
+  return body
+    .replace(/<script data-appdeploy-overlay-bootstrap>[\s\S]*?<\/script>/g,'')
+    .replace(/<script async src="https:\/\/v2\.appdeploy\.ai\/shared\/js\/overlay\.js"[\s\S]*?<\/script>/g,'')
+    .replace(/<script>window\.__APPDEPLOY_APP_ID[\s\S]*?<\/script>/g,'')
+    .replace(/<script data-appdeploy-network-hook>[\s\S]*?<\/script>/g,'')
+    .replaceAll('https://homequotecheck.co.uk',PREVIEW)
+    .replaceAll(ORIGIN,PREVIEW);
+}
 async function save(path,binary=false){
   if(saved.has(path))return;
   saved.add(path);
@@ -20,7 +29,8 @@ async function save(path,binary=false){
   if(!res.ok)throw new Error(`${path} -> ${res.status}`);
   let body=binary?Buffer.from(await res.arrayBuffer()):await res.text();
   if(!binary){
-    body=body.replaceAll('https://homequotecheck.co.uk',PREVIEW).replaceAll(ORIGIN,PREVIEW);
+    if(path==='/'||path.endsWith('.html'))body=cleanHtml(body);
+    else body=body.replaceAll('https://homequotecheck.co.uk',PREVIEW).replaceAll(ORIGIN,PREVIEW);
     if(path==='/'||path.endsWith('.html')){
       const refs=[...body.matchAll(/(?:src|href)=["']([^"']+)["']/g)].map(m=>m[1]);
       for(const ref of refs){
