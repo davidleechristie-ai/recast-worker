@@ -70,7 +70,20 @@
       if(reset)reset.click();
     });
   }
-  function tick(){if(mergeSecondQuoteIfReady())return;renderCompleteness();}
+  function strengthenInstallerQuestions(){
+    const panel=document.querySelector('.questions');
+    if(!panel||panel.dataset.hqcEnhanced==='1')return;
+    const button=panel.querySelector('button.primary');
+    if(!button)return;
+    panel.dataset.hqcEnhanced='1';
+    const intro=document.createElement('div');
+    intro.className='evidenceState';
+    intro.innerHTML='<b>TAKE THE EVIDENCE BACK TO THE INSTALLER</b><p>Copy these neutral clarification questions into email, WhatsApp or the installer’s portal. They contain no customer details or source quote documents.</p>';
+    const heading=panel.querySelector('h2');
+    if(heading)heading.insertAdjacentElement('afterend',intro);
+    if(/copy questions/i.test(button.textContent||''))button.textContent='Copy questions to send →';
+  }
+  function tick(){if(mergeSecondQuoteIfReady())return;renderCompleteness();strengthenInstallerQuestions();}
   new MutationObserver(tick).observe(document.documentElement,{childList:true,subtree:true});
   window.addEventListener('storage',tick);tick();
 })();
