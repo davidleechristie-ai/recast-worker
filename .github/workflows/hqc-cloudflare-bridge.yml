@@ -84,6 +84,20 @@ jobs:
           dig +short homequotecheck.co.uk CNAME || true
           echo '--- HTTPS headers ---'
           curl -sS -I -L --max-time 30 https://homequotecheck.co.uk/ | sed -n '1,30p' || true
-          echo '--- Current production marker ---'
-          curl -sS -L --max-time 30 https://homequotecheck.co.uk/ | head -c 500 || true
-          echo
+      - name: Inspect Cloudflare zone ownership
+        shell: bash
+        env:
+          CLOUDFLARE_API_TOKEN: ${{ secrets.CLOUDFLARE_API_TOKEN }}
+          CLOUDFLARE_ACCOUNT_ID: ${{ secrets.CLOUDFLARE_ACCOUNT_ID }}
+        run: |
+          set -u
+          zone=$(curl -sS -H "Authorization: Bearer $CLOUDFLARE_API_TOKEN" -H 'Content-Type: application/json' "https://api.cloudflare.com/client/v4/zones?name=homequotecheck.co.uk&account.id=$CLOUDFLARE_ACCOUNT_ID")
+          echo "$zone" | jq '{success,errors,zones:[.result[]? | {id,name,status,name_servers}]}'
+          zone_id=$(echo "$zone" | jq -r '.result[0].id // empty')
+          if [ -n "$zone_id" ]; then
+            echo "HQC_ZONE_ID=$zone_id"
+            dns=$(curl -sS -H "Authorization: Bearer $CLOUDFLARE_API_TOKEN" -H 'Content-Type: application/json' "https://api.cloudflare.com/client/v4/zones/$zone_id/dns_records?name=homequotecheck.co.uk")
+            echo "$dns" | jq '{success,errors,records:[.result[]? | {id,type,name,content,proxied,ttl}]}'
+          else
+            echo 'HQC zone not found in this Cloudflare account.'
+          fi
