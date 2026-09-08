@@ -18,8 +18,6 @@ assert.match(wrapper, /\/tools\/unflatten-json\.html/);
 assert.match(wrapper, /\/tools\/json-to-csv\.html/);
 assert.match(wrapper, /\/blog\/flatten-nested-json\.html/);
 
-// Strategic scorecard instrumentation must expose both numerator and denominator
-// events without reading or transmitting user input/output content.
 assert.match(wrapper, /tool_run_attempt/);
 assert.match(wrapper, /successful_tool_use/);
 assert.match(wrapper, /workflow_start/);
@@ -31,8 +29,6 @@ assert.match(wrapper, /\/api/);
 assert.match(wrapper, /recast-funnel-measurement/);
 assert.doesNotMatch(wrapper, /textarea\.value|inputEl\.value|outputEl\.value/);
 
-// The daily scorecard must consume the same events and preserve N/A when a
-// denominator does not yet exist rather than manufacturing a zero rate.
 assert.match(scoreboardRefresh, /tool_run_attempt/);
 assert.match(scoreboardRefresh, /commercial_intent/);
 assert.match(scoreboardRefresh, /successful_task_rate/);
@@ -43,6 +39,18 @@ assert.match(scoreboardRefresh, /commercial_intent_rate/);
 assert.match(scoreboardRefresh, /returning_user_rate/);
 assert.match(scoreboardRefresh, /denominator\) > 0/);
 assert.match(scoreboardRefresh, /zero_denominator/);
+
+// SEO experiments must retain fixed baselines and close only when their
+// scheduled evidence windows become due.
+assert.match(scoreboardRefresh, /2026-09-08-flatten-json-search-intent-alignment/);
+assert.match(scoreboardRefresh, /page_impressions: 194/);
+assert.match(scoreboardRefresh, /page_average_position: 62\.103092783505154/);
+assert.match(scoreboardRefresh, /'7_day': \{ due: '2026-09-15'/);
+assert.match(scoreboardRefresh, /'14_day': \{ due: '2026-09-22'/);
+assert.match(scoreboardRefresh, /'28_day': \{ due: '2026-10-06'/);
+assert.match(scoreboardRefresh, /classifyReadout/);
+assert.match(scoreboardRefresh, /updateExperimentRegistry/);
+assert.match(scoreboardRefresh, /follow\.status !== 'pending'/);
 assert.match(wrangler, /"main": "src\/worker-post-release\.js"/);
 
-console.log('post-release search lift and funnel measurement tests passed');
+console.log('post-release search lift, funnel measurement and experiment registry tests passed');
