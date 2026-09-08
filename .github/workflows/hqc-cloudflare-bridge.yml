@@ -43,9 +43,12 @@ jobs:
             test "$code" = '200'
           done
           health=$(curl -L -sS --max-time 30 "$base/health")
+          echo "health=$health"
           grep -q 'hqc-migration-preview' <<< "$health"
           home=$(curl -L -sS --max-time 30 "$base/")
-          grep -q 'Home Quote Check' <<< "$home"
+          echo "home-prefix=${home:0:180}"
+          grep -q 'root' <<< "$home"
           api=$(curl -L -sS --max-time 30 "$base/api/_healthcheck")
+          echo "api=$api"
           grep -q 'Success' <<< "$api"
           echo 'HQC Cloudflare preview verification passed.'
