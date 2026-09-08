@@ -41,6 +41,7 @@ jobs:
           grep -q 'Fastest way to start' hqc-deploy-preview/site/__hqc_enhancements.js
           grep -q 'Check my quote — free' hqc-deploy-preview/site/__hqc_enhancements.js
           grep -q 'https://homequotecheck.co.uk' hqc-deploy-preview/site/index.html
+          ! grep -q '__hqc_target_mobile.js' hqc-deploy-preview/site/index.html
           ! grep -q 'hqc-migration-preview.davidleechristie.workers.dev' hqc-deploy-preview/site/index.html
           ! grep -q 'cf-preview.homequotecheck.co.uk' hqc-deploy-preview/site/index.html
           ! grep -q 'heat-pump-second-opinion-v43csv.v2.appdeploy.ai' hqc-deploy-preview/site/index.html
@@ -70,6 +71,7 @@ jobs:
           done
           home=$(curl -L -sS --max-time 30 "$base/")
           grep -q '__hqc_enhancements.js' <<< "$home"
+          ! grep -q '__hqc_target_mobile.js' <<< "$home"
           grep -q 'https://homequotecheck.co.uk' <<< "$home"
           ! grep -q 'hqc-migration-preview.davidleechristie.workers.dev' <<< "$home"
           ! grep -q 'cf-preview.homequotecheck.co.uk' <<< "$home"
@@ -82,4 +84,29 @@ jobs:
           grep -q 'does not score sizing quality' <<< "$enhancement"
           grep -q 'Fastest way to start' <<< "$enhancement"
           grep -q 'Check my quote — free' <<< "$enhancement"
-          echo 'HQC production Cloudflare deployment verified.'
+          echo 'HQC production HTTP verification passed.'
+      - name: Mobile interaction smoke test
+        working-directory: hqc-deploy-preview
+        shell: bash
+        run: |
+          set -euo pipefail
+          npm install --no-save playwright@1.55.0
+          npx playwright install --with-deps chromium
+          node --input-type=module <<'NODE'
+          import { chromium } from 'playwright';
+          const browser = await chromium.launch({headless:true});
+          const page = await browser.newPage({viewport:{width:390,height:844},isMobile:true,hasTouch:true});
+          const errors=[];
+          page.on('pageerror',e=>errors.push(String(e)));
+          await page.goto('https://homequotecheck.co.uk/',{waitUntil:'networkidle',timeout:60000});
+          const cta=page.getByRole('button',{name:/check my quote/i}).first();
+          await cta.waitFor({state:'visible',timeout:15000});
+          await cta.click({timeout:10000});
+          await page.waitForTimeout(800);
+          const uploadVisible=await page.getByText(/Add your quotes/i).first().isVisible().catch(()=>false);
+          const fileInputVisible=await page.locator('input[type="file"]').first().isVisible().catch(()=>false);
+          if(!uploadVisible&&!fileInputVisible) throw new Error('Primary CTA did not open the quote intake flow');
+          if(errors.length) throw new Error('Browser errors: '+errors.join(' | '));
+          await browser.close();
+          console.log('HQC mobile interaction smoke test passed.');
+          NODE
