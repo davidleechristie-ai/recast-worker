@@ -53,8 +53,18 @@ const FUNNEL_MEASUREMENT_SCRIPT = `<script id="recast-funnel-measurement">
       });
     }
     document.addEventListener('click',function(e){
-      var a=e.target && e.target.closest ? e.target.closest('a[href="#pricing"],a[href*="buy.stripe.com"]') : null;
-      if(a) emit('upgrade_click',{destination:a.getAttribute('href') || ''});
+      var a=e.target && e.target.closest ? e.target.closest('a[href]') : null;
+      if(!a) return;
+      var href=a.getAttribute('href') || '';
+      var isCheckout=href.indexOf('buy.stripe.com')!==-1;
+      var isPricing=href==='#pricing' || href.indexOf('#pricing')!==-1;
+      var isAutomation=href==='/automation' || href.indexOf('/automation/')===0;
+      var isApi=href==='/api' || href.indexOf('/api/')===0;
+      if(isCheckout || isPricing) emit('upgrade_click',{destination:href});
+      if(isCheckout || isPricing || isAutomation || isApi){
+        var intent=isCheckout?'checkout':isPricing?'pricing':isAutomation?'automation':'api';
+        emit('commercial_intent',{intent:intent,destination:href});
+      }
     },true);
   }
   if(document.readyState==='loading') document.addEventListener('DOMContentLoaded',wire,{once:true}); else wire();
