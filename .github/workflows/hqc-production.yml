@@ -1,6 +1,11 @@
 name: HQC production deploy
 
 on:
+  push:
+    branches: [main]
+    paths:
+      - 'hqc-deploy-preview/**'
+      - '.github/workflows/hqc-production.yml'
   workflow_dispatch:
 
 permissions:
@@ -34,6 +39,8 @@ jobs:
           test -s hqc-deploy-preview/site/__hqc_enhancements.js
           grep -q 'root' hqc-deploy-preview/site/index.html
           grep -q 'Quote evidence completeness' hqc-deploy-preview/site/__hqc_enhancements.js
+          grep -q 'Fastest way to start' hqc-deploy-preview/site/__hqc_enhancements.js
+          grep -q 'Check my quote — free' hqc-deploy-preview/site/__hqc_enhancements.js
           grep -q 'https://homequotecheck.co.uk' hqc-deploy-preview/site/index.html
           ! grep -q 'hqc-migration-preview.davidleechristie.workers.dev' hqc-deploy-preview/site/index.html
           ! grep -q 'cf-preview.homequotecheck.co.uk' hqc-deploy-preview/site/index.html
@@ -76,4 +83,6 @@ jobs:
           grep -q 'Quote evidence completeness' <<< "$enhancement"
           grep -q 'Add another quote' <<< "$enhancement"
           grep -q 'does not score sizing quality' <<< "$enhancement"
+          grep -q 'Fastest way to start' <<< "$enhancement"
+          grep -q 'Check my quote — free' <<< "$enhancement"
           echo 'HQC production Cloudflare deployment verified.'
