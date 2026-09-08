@@ -17,7 +17,9 @@
     "returning_users": 5,
     "upgrade_visits": 0,
     "pro_customers": 0,
-    "api_automation_customers": 0
+    "api_automation_customers": 0,
+    "tool_run_attempts": 0,
+    "commercial_intent_events": 0
   },
   "diagnosis": {
     "current_bottleneck": "search_visibility",
@@ -74,8 +76,17 @@
       "follow_ups": {
         "7_day": {
           "due": "2026-09-08",
-          "status": "pending",
-          "classification": null
+          "status": "completed",
+          "classification": "improving",
+          "observed": {
+            "evidence_date": "2026-09-08",
+            "period_days": 28,
+            "page_impressions": 455,
+            "page_clicks": 0,
+            "page_ctr": 0,
+            "page_average_position": 68.02197802197803
+          },
+          "completed_date": "2026-09-08"
         },
         "14_day": {
           "due": "2026-09-15",
@@ -88,10 +99,59 @@
           "classification": null
         }
       }
+    },
+    {
+      "id": "2026-09-08-flatten-json-search-intent-alignment",
+      "status": "active",
+      "hypothesis": "Aligning the Flatten JSON title, H1, description and related links with measured \"flatten json online\" intent will improve rankings and produce the first organic clicks without changing tool behaviour.",
+      "target_page": "https://tryrecast.app/tools/flatten-json.html",
+      "target_queries": [
+        "flatten json online",
+        "json flattener online"
+      ],
+      "funnel_stage": "rankings_visibility_to_organic_clicks",
+      "baseline": {
+        "period_days": 28,
+        "evidence_date": "2026-09-08",
+        "page_impressions": 194,
+        "page_clicks": 0,
+        "page_ctr": 0,
+        "page_average_position": 62.103092783505154,
+        "query_position_evidence": {
+          "flatten json online": 52.25,
+          "json flattener online": 58.6
+        }
+      },
+      "target_metrics": [
+        "target page average position",
+        "target page organic clicks",
+        "target page organic CTR",
+        "target query average position"
+      ],
+      "implementation_date": "2026-09-08",
+      "follow_ups": {
+        "7_day": {
+          "due": "2026-09-15",
+          "status": "pending",
+          "classification": null
+        },
+        "14_day": {
+          "due": "2026-09-22",
+          "status": "pending",
+          "classification": null
+        },
+        "28_day": {
+          "due": "2026-10-06",
+          "status": "pending",
+          "classification": null
+        }
+      }
     }
   ],
   "missing_instrumentation": [
-    "Indexed target-page count or URL Inspection/index coverage evidence is unavailable."
+    "Indexed target-page count or URL Inspection/index coverage evidence is unavailable.",
+    "Successful-task rate awaits post-instrumentation tool_run_attempt traffic.",
+    "Workflow completion rate awaits a workflow_start denominator."
   ],
   "last_updated": "2026-09-08",
   "measurement_rules": {
@@ -107,7 +167,17 @@
       "flat",
       "declining",
       "insufficient"
-    ]
+    ],
+    "rate_definitions": {
+      "successful_task_rate": "successful_tool_use events / tool_run_attempt events",
+      "workflow_completion_rate": "workflow_complete events / workflow_start events",
+      "activation_rate": "organic users with successful_tool_use / organic active users",
+      "deeper_product_usage_rate": "organic users with workflow_start / organic users with successful_tool_use",
+      "commercial_intent_rate": "organic users with commercial_intent / organic users with successful_tool_use",
+      "returning_user_rate": "organic returning active users / organic active users"
+    },
+    "zero_denominator": "A rate remains null when its denominator is zero; zero is never substituted for an unavailable rate.",
+    "experiment_readout": "Due 7/14/28-day SEO experiments are classified from the fixed baseline and current 28-day Search Console page evidence. Improving requires a new click or both >=10% impression growth and >=0.5 position improvement; declining is the inverse; otherwise insufficient."
   },
   "sources": {
     "search_console": {
@@ -3068,10 +3138,40 @@
       "organic_active_users": 5,
       "organic_new_users": 1,
       "organic_returning_users": 5,
+      "event_counts": {
+        "successful_tool_use": 3
+      },
+      "event_active_users": {
+        "successful_tool_use": 3
+      },
+      "organic_event_counts": {
+        "successful_tool_use": 2
+      },
+      "organic_event_active_users": {
+        "successful_tool_use": 2
+      },
+      "tool_run_attempts": 0,
       "successful_tool_uses": 3,
       "workflow_starts": 0,
       "workflow_completions": 0,
       "upgrade_clicks": 0,
+      "commercial_intent_events": 0,
+      "rates": {
+        "successful_task_rate": null,
+        "workflow_completion_rate": null,
+        "activation_rate": 0.4,
+        "deeper_product_usage_rate": 0,
+        "commercial_intent_rate": 0,
+        "returning_user_rate": 1
+      },
+      "rate_definitions": {
+        "successful_task_rate": "successful_tool_use events / tool_run_attempt events",
+        "workflow_completion_rate": "workflow_complete events / workflow_start events",
+        "activation_rate": "organic users with successful_tool_use / organic active users",
+        "deeper_product_usage_rate": "organic users with workflow_start / organic users with successful_tool_use",
+        "commercial_intent_rate": "organic users with commercial_intent / organic users with successful_tool_use",
+        "returning_user_rate": "organic returning active users / organic active users"
+      },
       "evidence_date": "2026-09-08"
     },
     "stripe": {
@@ -3083,5 +3183,13 @@
       "evidence_date": "2026-09-08"
     }
   },
-  "refresh_warnings": []
+  "refresh_warnings": [],
+  "rates": {
+    "successful_task_rate": null,
+    "workflow_completion_rate": null,
+    "activation_rate": 0.4,
+    "deeper_product_usage_rate": 0,
+    "commercial_intent_rate": 0,
+    "returning_user_rate": 1
+  }
 }
