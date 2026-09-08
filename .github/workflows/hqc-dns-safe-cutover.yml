@@ -1,0 +1,100 @@
+name: HQC reversible DNS cutover
+
+on:
+  push:
+    branches: [main]
+    paths:
+      - 'hqc-deploy-preview/CUTOVER'
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+concurrency:
+  group: hqc-production-cutover
+  cancel-in-progress: false
+
+jobs:
+  cutover:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 22
+      - name: Install
+        working-directory: hqc-deploy-preview
+        run: npm install
+      - name: Snapshot HQC for production
+        working-directory: hqc-deploy-preview
+        env:
+          HQC_PUBLIC_ORIGIN: https://homequotecheck.co.uk
+        run: node snapshot.mjs
+      - name: Reversible DNS and Worker cutover
+        working-directory: hqc-deploy-preview
+        shell: bash
+        env:
+          CLOUDFLARE_API_TOKEN: ${{ secrets.CLOUDFLARE_API_TOKEN }}
+          CLOUDFLARE_ACCOUNT_ID: ${{ secrets.CLOUDFLARE_ACCOUNT_ID }}
+        run: |
+          set -euo pipefail
+          api='https://api.cloudflare.com/client/v4'
+          auth=(-H "Authorization: Bearer $CLOUDFLARE_API_TOKEN" -H 'Content-Type: application/json')
+          zone_json=$(curl -fsS "${auth[@]}" "$api/zones?name=homequotecheck.co.uk&account.id=$CLOUDFLARE_ACCOUNT_ID")
+          zone_id=$(jq -r '.result[0].id // empty' <<< "$zone_json")
+          test -n "$zone_id"
+          dns_json=$(curl -fsS "${auth[@]}" "$api/zones/$zone_id/dns_records?name=homequotecheck.co.uk")
+          echo "$dns_json" | jq '{records:[.result[] | {id,type,name,content,ttl,proxied}]}'
+          mapfile -t appdeploy_ids < <(jq -r '.result[] | select(.type=="A" and .name=="homequotecheck.co.uk" and .content=="18.232.7.146") | .id' <<< "$dns_json")
+          other_origin_count=$(jq '[.result[] | select(.name=="homequotecheck.co.uk" and ((.type=="A" and .content!="18.232.7.146") or .type=="AAAA" or .type=="CNAME"))] | length' <<< "$dns_json")
+          if [ "${#appdeploy_ids[@]}" -lt 1 ] || [ "$other_origin_count" -ne 0 ]; then
+            echo 'Unexpected apex DNS state; refusing automatic cutover.'
+            exit 1
+          fi
+          jq '[.result[] | select(.type=="A" and .name=="homequotecheck.co.uk" and .content=="18.232.7.146") | {type,name,content,ttl,proxied}]' <<< "$dns_json" > /tmp/hqc-old-dns.json
+          restore_dns(){
+            echo 'Restoring AppDeploy apex DNS record(s)...'
+            while read -r record; do
+              curl -fsS -X POST "${auth[@]}" "$api/zones/$zone_id/dns_records" --data "$record" >/dev/null || true
+            done < <(jq -c '.[]' /tmp/hqc-old-dns.json)
+          }
+          for id in "${appdeploy_ids[@]}"; do
+            echo "Deleting AppDeploy DNS record $id"
+            curl -fsS -X DELETE "${auth[@]}" "$api/zones/$zone_id/dns_records/$id" >/dev/null
+          done
+          echo 'Binding production Worker custom domain...'
+          if ! npx wrangler deploy --config wrangler.production.toml; then
+            echo 'Worker custom-domain binding failed.'
+            restore_dns
+            exit 1
+          fi
+          verify=false
+          for attempt in 1 2 3 4 5 6 7 8; do
+            echo "Verification attempt $attempt"
+            health_code=$(curl -L -sS -o /tmp/hqc-health -w '%{http_code}' --max-time 30 https://homequotecheck.co.uk/health || true)
+            home_code=$(curl -L -sS -o /tmp/hqc-home -w '%{http_code}' --max-time 30 https://homequotecheck.co.uk/ || true)
+            api_code=$(curl -L -sS -o /tmp/hqc-api -w '%{http_code}' --max-time 30 https://homequotecheck.co.uk/api/_healthcheck || true)
+            static_code=$(curl -L -sS -o /tmp/hqc-static -w '%{http_code}' --max-time 30 https://homequotecheck.co.uk/is-this-a-good-heat-pump-quote.html || true)
+            if [ "$health_code" = '200' ] && [ "$home_code" = '200' ] && [ "$api_code" = '200' ] && [ "$static_code" = '200' ] \
+              && grep -q 'cloudflare-assets' /tmp/hqc-health \
+              && grep -q 'Success' /tmp/hqc-api \
+              && grep -q '__hqc_enhancements.js' /tmp/hqc-home \
+              && ! grep -q 'data-appdeploy-overlay-bootstrap' /tmp/hqc-home \
+              && grep -q 'Is this a good heat-pump quote' /tmp/hqc-static; then
+              verify=true
+              break
+            fi
+            sleep 5
+          done
+          if [ "$verify" != 'true' ]; then
+            echo 'Cloudflare production verification failed. Removing Worker custom domain and restoring AppDeploy DNS.'
+            npx wrangler deploy --config wrangler.production-rollback.toml || true
+            restore_dns
+            exit 1
+          fi
+          css_path=$(grep -oE '/assets/[^" ]+\.css' /tmp/hqc-home | head -1)
+          js_path=$(grep -oE '/assets/[^" ]+\.js' /tmp/hqc-home | head -1)
+          test -n "$css_path" && test -n "$js_path"
+          test "$(curl -L -sS -o /tmp/hqc-css -w '%{http_code}' --max-time 30 "https://homequotecheck.co.uk$css_path")" = '200'
+          test "$(curl -L -sS -o /tmp/hqc-js -w '%{http_code}' --max-time 30 "https://homequotecheck.co.uk$js_path")" = '200'
+          echo 'HQC reversible production cutover passed.'
