@@ -29,6 +29,33 @@
       seen.add(key);return true;
     }).slice(0,4);
   };
+  function optimiseLanding(){
+    const copy=document.querySelector('.copy');
+    if(!copy||document.getElementById('hqc-landing-proof'))return;
+    const h2=copy.querySelector('h2');
+    const p=copy.querySelector('p');
+    const button=copy.querySelector('button.primary');
+    if(h2)h2.textContent='Got a heat-pump quote? Check what’s missing before you sign.';
+    if(p)p.textContent='Start with one screenshot or photo. We compare what the quote actually says, flag missing evidence and give you the questions worth asking.';
+    if(button)button.textContent='Check my quote — free →';
+    const proof=document.createElement('div');
+    proof.id='hqc-landing-proof';
+    proof.style.cssText='margin-top:12px;padding:12px 14px;border:1px solid #d9e9e3;border-radius:10px;background:#f4faf7;font-size:11px;line-height:1.5;color:#526277';
+    proof.innerHTML='<b style="color:#16493d">Start with just one quote.</b> A phone screenshot is enough to begin. No account, email, phone number or address is required.';
+    button?.insertAdjacentElement('afterend',proof);
+  }
+  function optimiseUpload(){
+    const card=[...document.querySelectorAll('.card')].find(x=>/Add your quotes/i.test(x.querySelector('h1')?.textContent||''));
+    if(!card||document.getElementById('hqc-upload-help'))return;
+    const intro=card.querySelector('h1')?.nextElementSibling;
+    if(intro)intro.textContent='Start with one genuine installer quote. A screenshot or clear phone photo is enough for automatic extraction; you can add another quote after the first check.';
+    const help=document.createElement('div');
+    help.id='hqc-upload-help';
+    help.style.cssText='margin:16px 0;padding:14px;border-radius:11px;background:#eef8f4;border:1px solid #d7e9e2;color:#40516a;font-size:12px;line-height:1.5';
+    help.innerHTML='<b style="display:block;color:#07503b;margin-bottom:4px">Fastest way to start</b><span>Take a screenshot of the pages showing the price, heat-pump model and design figures, then choose the image below.</span><small style="display:block;margin-top:7px;color:#68778a">Have a PDF? Screenshot the relevant pages, or use “Enter manually”. Original quote images are processed transiently and are not intentionally stored.</small>';
+    const drop=card.querySelector('.drop');
+    if(drop)drop.insertAdjacentElement('beforebegin',help);
+  }
   function mergeSecondQuoteIfReady(){
     if(sessionStorage.getItem(MODE)!=='1')return false;
     const pending=readPending();
@@ -44,7 +71,7 @@
       }
     }
     if(!onResults&&current.length===0&&!sessionStorage.getItem(AUTO)){
-      const start=[...document.querySelectorAll('button')].find(x=>/check my heat-pump quotes|get started/i.test(x.textContent||''));
+      const start=[...document.querySelectorAll('button')].find(x=>/check my heat-pump quotes|check my quote|get started/i.test(x.textContent||''));
       if(start){sessionStorage.setItem(AUTO,'1');start.click();}
     }
     return false;
@@ -83,7 +110,7 @@
     if(heading)heading.insertAdjacentElement('afterend',intro);
     if(/copy questions/i.test(button.textContent||''))button.textContent='Copy questions to send →';
   }
-  function tick(){if(mergeSecondQuoteIfReady())return;renderCompleteness();strengthenInstallerQuestions();}
+  function tick(){optimiseLanding();optimiseUpload();if(mergeSecondQuoteIfReady())return;renderCompleteness();strengthenInstallerQuestions();}
   new MutationObserver(tick).observe(document.documentElement,{childList:true,subtree:true});
   window.addEventListener('storage',tick);tick();
 })();
