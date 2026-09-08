@@ -1,2 +1,2 @@
-2026-09-08T20:40:00+01:00
-DNS Edit permission confirmed by account owner. Trigger reversible HQC production cutover.
+2026-09-08T20:45:00+01:00
+DNS state recognised as Cloudflare transitional AAAA 100::. Retry reversible HQC production cutover.
