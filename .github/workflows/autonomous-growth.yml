@@ -1,6 +1,7 @@
 name: Recast autonomous daily growth
 
 # Updating this workflow intentionally triggers a self-test run on main.
+# 2026-09-08 self-test: persist the formal experiment registry and due readouts.
 # Authoritative metrics are persisted before the optional AI optimisation step so evidence collection remains reliable even if API credit/model access fails.
 on:
   push:

@@ -135,6 +135,84 @@ async function fetchStripe() {
   return {active_subscription_customers:genuineCustomers.size,mrr_gbp:Math.round(mrr*100)/100,plan_counts:planCounts,excluded_non_genuine_subscriptions:excluded.length,measurement_rule:'Counts only active/trialing subscriptions backed by a paid, succeeded latest invoice charge that has not been fully refunded.',evidence_date:today};
 }
 
+function pageSnapshot(gsc, targetPage) {
+  if (!gsc) return null;
+  const row = gsc.top_pages.find((p) => p.page === targetPage);
+  if (!row) return null;
+  return {
+    evidence_date: gsc.evidence_date,
+    period_days: gsc.period_days,
+    page_impressions: row.impressions,
+    page_clicks: row.clicks,
+    page_ctr: row.ctr,
+    page_average_position: row.average_position
+  };
+}
+
+function classifyReadout(baseline, observed) {
+  if (!baseline || !observed) return 'insufficient';
+  if (observed.page_clicks > (baseline.page_clicks ?? 0)) return 'improving';
+  const baseImp = Number(baseline.page_impressions || 0);
+  const obsImp = Number(observed.page_impressions || 0);
+  const basePos = Number(baseline.page_average_position);
+  const obsPos = Number(observed.page_average_position);
+  const impressionsUp = baseImp > 0 && obsImp >= baseImp * 1.1;
+  const impressionsDown = baseImp > 0 && obsImp <= baseImp * 0.9;
+  const positionUp = Number.isFinite(basePos) && Number.isFinite(obsPos) && obsPos <= basePos - 0.5;
+  const positionDown = Number.isFinite(basePos) && Number.isFinite(obsPos) && obsPos >= basePos + 0.5;
+  if (impressionsUp && positionUp) return 'improving';
+  if (impressionsDown && positionDown) return 'declining';
+  return 'insufficient';
+}
+
+function updateExperimentRegistry(board, gsc) {
+  board.experiments = Array.isArray(board.experiments) ? board.experiments : [];
+  const flattenId = '2026-09-08-flatten-json-search-intent-alignment';
+  if (!board.experiments.some((e) => e.id === flattenId)) {
+    board.experiments.push({
+      id: flattenId,
+      status: 'active',
+      hypothesis: 'Aligning the Flatten JSON title, H1, description and related links with measured "flatten json online" intent will improve rankings and produce the first organic clicks without changing tool behaviour.',
+      target_page: 'https://tryrecast.app/tools/flatten-json.html',
+      target_queries: ['flatten json online', 'json flattener online'],
+      funnel_stage: 'rankings_visibility_to_organic_clicks',
+      baseline: {
+        period_days: 28,
+        evidence_date: '2026-09-08',
+        page_impressions: 194,
+        page_clicks: 0,
+        page_ctr: 0,
+        page_average_position: 62.103092783505154,
+        query_position_evidence: {
+          'flatten json online': 52.25,
+          'json flattener online': 58.6
+        }
+      },
+      target_metrics: ['target page average position', 'target page organic clicks', 'target page organic CTR', 'target query average position'],
+      implementation_date: '2026-09-08',
+      follow_ups: {
+        '7_day': { due: '2026-09-15', status: 'pending', classification: null },
+        '14_day': { due: '2026-09-22', status: 'pending', classification: null },
+        '28_day': { due: '2026-10-06', status: 'pending', classification: null }
+      }
+    });
+  }
+
+  for (const experiment of board.experiments) {
+    if (!experiment?.target_page || !experiment?.baseline || !experiment?.follow_ups) continue;
+    const observed = pageSnapshot(gsc, experiment.target_page);
+    for (const key of ['7_day', '14_day', '28_day']) {
+      const follow = experiment.follow_ups[key];
+      if (!follow || follow.status !== 'pending' || !follow.due || follow.due > today) continue;
+      follow.status = 'completed';
+      follow.classification = classifyReadout(experiment.baseline, observed);
+      follow.observed = observed;
+      follow.completed_date = today;
+    }
+    if (experiment.follow_ups['28_day']?.status === 'completed') experiment.status = 'completed';
+  }
+}
+
 const board=JSON.parse(await fs.readFile(SCOREBOARD,'utf8'));
 let googleToken=null;
 try{googleToken=await googleAccessToken();}catch(e){warnings.push(e.message);}
@@ -154,6 +232,7 @@ if(gsc){
   board.funnel.search_impressions=gsc.impressions;
   board.funnel.organic_clicks=gsc.clicks;
   board.funnel.organic_ctr=gsc.ctr;
+  updateExperimentRegistry(board,gsc);
 }
 if(ga4){
   board.funnel.tool_run_attempts=ga4.tool_run_attempts;
@@ -176,6 +255,7 @@ if(stripe){
 board.measurement_rules=board.measurement_rules||{};
 board.measurement_rules.rate_definitions=ga4?.rate_definitions||board.measurement_rules.rate_definitions||{};
 board.measurement_rules.zero_denominator='A rate remains null when its denominator is zero; zero is never substituted for an unavailable rate.';
+board.measurement_rules.experiment_readout='Due 7/14/28-day SEO experiments are classified from the fixed baseline and current 28-day Search Console page evidence. Improving requires a new click or both >=10% impression growth and >=0.5 position improvement; declining is the inverse; otherwise insufficient.';
 board.missing_instrumentation=[];
 if(!gsc)board.missing_instrumentation.push('Google Search Console feed unavailable.');
 if(!ga4)board.missing_instrumentation.push('GA4 feed unavailable.');
@@ -189,4 +269,4 @@ board.last_updated=today;
 board.refresh_warnings=warnings;
 
 await fs.writeFile(SCOREBOARD,JSON.stringify(board,null,2)+'\n');
-console.log(JSON.stringify({refreshed:{gsc:!!gsc,ga4:!!ga4,stripe:!!stripe},rates:ga4?.rates||null,warnings},null,2));
+console.log(JSON.stringify({refreshed:{gsc:!!gsc,ga4:!!ga4,stripe:!!stripe},rates:ga4?.rates||null,experiments:board.experiments?.map(e=>({id:e.id,status:e.status,follow_ups:e.follow_ups})),warnings},null,2));
