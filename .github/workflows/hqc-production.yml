@@ -1,0 +1,71 @@
+name: HQC production deploy
+
+on:
+  push:
+    branches: [main]
+    paths:
+      - 'hqc-deploy-preview/**'
+      - '.github/workflows/hqc-production.yml'
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+concurrency:
+  group: hqc-production
+  cancel-in-progress: true
+
+jobs:
+  deploy:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 22
+      - name: Install
+        working-directory: hqc-deploy-preview
+        run: npm install
+      - name: Snapshot HQC frontend
+        working-directory: hqc-deploy-preview
+        env:
+          HQC_PUBLIC_ORIGIN: https://homequotecheck.co.uk
+        run: node snapshot.mjs
+      - name: Preflight snapshot
+        shell: bash
+        run: |
+          set -euo pipefail
+          test -s hqc-deploy-preview/site/index.html
+          test -s hqc-deploy-preview/site/__hqc_enhancements.js
+          grep -q 'root' hqc-deploy-preview/site/index.html
+          grep -q 'Quote evidence completeness' hqc-deploy-preview/site/__hqc_enhancements.js
+      - name: Deploy HQC production worker
+        working-directory: hqc-deploy-preview
+        run: npx wrangler deploy --config wrangler.production.toml
+        env:
+          CLOUDFLARE_API_TOKEN: ${{ secrets.CLOUDFLARE_API_TOKEN }}
+          CLOUDFLARE_ACCOUNT_ID: ${{ secrets.CLOUDFLARE_ACCOUNT_ID }}
+      - name: Verify HQC production
+        shell: bash
+        run: |
+          set -euo pipefail
+          base='https://homequotecheck.co.uk'
+          ok=false
+          for attempt in 1 2 3 4 5 6 7 8; do
+            health=$(curl -L -sS --max-time 30 "$base/health" || true)
+            echo "attempt $attempt -> $health"
+            if grep -q 'hqc-migration-preview' <<< "$health"; then ok=true; break; fi
+            sleep 5
+          done
+          test "$ok" = 'true'
+          for path in / /api/_healthcheck /robots.txt /sitemap.xml /resources/homepage-graphic.png /is-this-a-good-heat-pump-quote.html /__hqc_enhancements.js; do
+            code=$(curl -L -sS -o /tmp/hqc-prod -w '%{http_code}' --max-time 30 "$base$path")
+            echo "$path -> $code"
+            test "$code" = '200'
+          done
+          api=$(curl -L -sS --max-time 30 "$base/api/_healthcheck")
+          grep -q 'Success' <<< "$api"
+          enhancement=$(curl -L -sS --max-time 30 "$base/__hqc_enhancements.js")
+          grep -q 'Quote evidence completeness' <<< "$enhancement"
+          grep -q 'Add another quote' <<< "$enhancement"
+          echo 'HQC production Cloudflare deployment verified.'
