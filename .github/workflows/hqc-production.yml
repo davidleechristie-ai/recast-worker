@@ -4,8 +4,7 @@ on:
   push:
     branches: [main]
     paths:
-      - 'hqc-deploy-preview/**'
-      - '.github/workflows/hqc-production.yml'
+      - 'hqc-deploy-preview/PRODUCTION_RELEASE'
   workflow_dispatch:
 
 permissions:
