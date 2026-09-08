@@ -22,7 +22,7 @@ function cleanHtml(body){
     .replace(/<script data-appdeploy-network-hook>[\s\S]*?<\/script>/g,'')
     .replaceAll('https://homequotecheck.co.uk',TARGET)
     .replaceAll(ORIGIN,TARGET)
-    .replace('</body>','<script src="/__hqc_enhancements.js" defer></script></body>');
+    .replace('</body>','<script src="/__hqc_enhancements.js" defer></script><script src="/__hqc_target_mobile.js" defer></script></body>');
 }
 async function save(path,binary=false){
   if(saved.has(path))return;
@@ -35,11 +35,7 @@ async function save(path,binary=false){
     else body=body.replaceAll('https://homequotecheck.co.uk',TARGET).replaceAll(ORIGIN,TARGET);
     if(path==='/'||path.endsWith('.html')){
       const refs=[...body.matchAll(/(?:src|href)=["']([^"']+)["']/g)].map(m=>m[1]);
-      for(const ref of refs){
-        const p=localPath(ref);
-        if(!p)continue;
-        if(p.startsWith('/assets/')||p==='/manifest.json'||p==='/sw.js')await save(p,false);
-      }
+      for(const ref of refs){const p=localPath(ref);if(!p)continue;if(p.startsWith('/assets/')||p==='/manifest.json'||p==='/sw.js')await save(p,false);}
     }
   }
   const filePath=join(SITE,path==='/'?'index.html':path.replace(/^\//,''));
@@ -51,4 +47,5 @@ await save('/');
 for(const path of ['/robots.txt','/sitemap.xml','/is-this-a-good-heat-pump-quote.html'])await save(path);
 await save('/resources/homepage-graphic.png',true);
 await copyFile('enhancements-browser.js',join(SITE,'__hqc_enhancements.js'));
-console.log(`HQC frontend snapshot complete for ${TARGET}: ${saved.size} files + enhancements`);
+await copyFile('target-mobile-design.js',join(SITE,'__hqc_target_mobile.js'));
+console.log(`HQC frontend snapshot complete for ${TARGET}: ${saved.size} files + enhancements + approved mobile target`);
