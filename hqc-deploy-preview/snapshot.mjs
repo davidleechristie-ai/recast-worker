@@ -1,23 +1,33 @@
 import {mkdir,writeFile,rm} from 'node:fs/promises';
 import {dirname,join} from 'node:path';
 const ORIGIN='https://heat-pump-second-opinion-v43csv.v2.appdeploy.ai';
+const PREVIEW='https://hqc-migration-preview.davidleechristie.workers.dev';
 const SITE='site';
 await rm(SITE,{recursive:true,force:true});
 await mkdir(SITE,{recursive:true});
 const saved=new Set();
+function localPath(ref){
+  if(ref.startsWith(ORIGIN+'/'))return new URL(ref).pathname;
+  if(ref.startsWith(PREVIEW+'/'))return new URL(ref).pathname;
+  if(ref.startsWith('./'))return '/'+ref.slice(2);
+  if(ref.startsWith('/'))return ref;
+  return null;
+}
 async function save(path,binary=false){
   if(saved.has(path))return;
   saved.add(path);
   const res=await fetch(ORIGIN+path,{redirect:'follow'});
   if(!res.ok)throw new Error(`${path} -> ${res.status}`);
   let body=binary?Buffer.from(await res.arrayBuffer()):await res.text();
-  if(!binary&&path==='/'){
-    body=body.replaceAll('https://homequotecheck.co.uk','https://hqc-migration-preview.davidleechristie.workers.dev');
-    const refs=[...body.matchAll(/(?:src|href)=["']([^"']+)["']/g)].map(m=>m[1]);
-    for(const ref of refs){
-      if(ref.startsWith('./assets/')||ref.startsWith('/assets/')) await save('/'+ref.replace(/^\.?\//,''),false);
-      if(ref==='./manifest.json'||ref==='/manifest.json') await save('/manifest.json',false);
-      if(ref==='./sw.js'||ref==='/sw.js') await save('/sw.js',false);
+  if(!binary){
+    body=body.replaceAll('https://homequotecheck.co.uk',PREVIEW).replaceAll(ORIGIN,PREVIEW);
+    if(path==='/'||path.endsWith('.html')){
+      const refs=[...body.matchAll(/(?:src|href)=["']([^"']+)["']/g)].map(m=>m[1]);
+      for(const ref of refs){
+        const p=localPath(ref);
+        if(!p)continue;
+        if(p.startsWith('/assets/')||p==='/manifest.json'||p==='/sw.js')await save(p,false);
+      }
     }
   }
   const filePath=join(SITE,path==='/'?'index.html':path.replace(/^\//,''));
