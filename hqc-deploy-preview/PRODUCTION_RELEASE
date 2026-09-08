@@ -1,3 +1,5 @@
-2026-09-08T22:34+01:00
-Restore responsive homepage by removing the additional mobile target script and returning to the enhancement-only frontend snapshot.
-Rollback commit: 543c48298fc2ad3bb556bff4565def52fbb7a841
+2026-09-08T22:41+01:00
+Promote single-layer responsive HQC homepage rebuild after preview verification passed. No secondary mobile DOM script. Production gate now includes a mobile interaction smoke test.
+Enhancement commit: 780999249688339f35d7714a312d8cb0c6791864
+Preview verification fix: 03ae46238e892aed5e5d2974f987c9d73e4a2212
+Interaction-gate commit: d8fa07764f74936be1e02fbff36b8ebf874e5839
