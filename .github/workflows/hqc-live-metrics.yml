@@ -23,3 +23,4 @@ jobs:
           curl -fsS --max-time 30 "$base/api/metrics" | jq .
           echo '--- /api/growth-report ---'
           curl -fsS --max-time 30 "$base/api/growth-report" | jq .
+          echo 'snapshot=2026-09-09T00:26:54+01:00'
