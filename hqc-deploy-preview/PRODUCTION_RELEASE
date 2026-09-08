@@ -1,4 +1,4 @@
-2026-09-08T20:34Z
-Promote canary-verified upload-friction-v2 experiment.
-Canary run: 34275541191
-Experiment commit: 52f370d8d3f8333b33b44d133797a63bd225e75f
+2026-09-08T22:13+01:00
+Promote corrected mobile house artwork zoom and alignment.
+Enhancement commit: 4fe72ee4dfe50885fba4b48320d72d636d846643
+Verification assertion fix: 58e9a648889daa17ce38a3a29139513402947c8d
