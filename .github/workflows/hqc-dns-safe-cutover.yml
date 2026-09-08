@@ -45,31 +45,43 @@ jobs:
           test -n "$zone_id"
           dns_json=$(curl -fsS "${auth[@]}" "$api/zones/$zone_id/dns_records?name=homequotecheck.co.uk")
           echo "$dns_json" | jq '{records:[.result[] | {id,type,name,content,ttl,proxied}]}'
+
+          # Accept either the original AppDeploy A record or Cloudflare's own
+          # transitional proxied AAAA 100:: placeholder created by a partial
+          # custom-domain binding. Refuse any other apex origin state.
           mapfile -t appdeploy_ids < <(jq -r '.result[] | select(.type=="A" and .name=="homequotecheck.co.uk" and .content=="18.232.7.146") | .id' <<< "$dns_json")
-          other_origin_count=$(jq '[.result[] | select(.name=="homequotecheck.co.uk" and ((.type=="A" and .content!="18.232.7.146") or .type=="AAAA" or .type=="CNAME"))] | length' <<< "$dns_json")
-          if [ "${#appdeploy_ids[@]}" -lt 1 ] || [ "$other_origin_count" -ne 0 ]; then
+          mapfile -t cf_transition_ids < <(jq -r '.result[] | select(.type=="AAAA" and .name=="homequotecheck.co.uk" and .content=="100::" and .proxied==true) | .id' <<< "$dns_json")
+          unknown_origin_count=$(jq '[.result[] | select(.name=="homequotecheck.co.uk" and ((.type=="A" and .content!="18.232.7.146") or (.type=="AAAA" and (.content!="100::" or .proxied!=true)) or .type=="CNAME"))] | length' <<< "$dns_json")
+          if [ "$unknown_origin_count" -ne 0 ] || { [ "${#appdeploy_ids[@]}" -lt 1 ] && [ "${#cf_transition_ids[@]}" -lt 1 ]; }; then
             echo 'Unexpected apex DNS state; refusing automatic cutover.'
             exit 1
           fi
-          jq '[.result[] | select(.type=="A" and .name=="homequotecheck.co.uk" and .content=="18.232.7.146") | {type,name,content,ttl,proxied}]' <<< "$dns_json" > /tmp/hqc-old-dns.json
+
+          jq '[.result[] | select(.name=="homequotecheck.co.uk" and ((.type=="A" and .content=="18.232.7.146") or (.type=="AAAA" and .content=="100::" and .proxied==true))) | {type,name,content,ttl,proxied}]' <<< "$dns_json" > /tmp/hqc-old-dns.json
           restore_dns(){
-            echo 'Restoring AppDeploy apex DNS record(s)...'
+            echo 'Restoring pre-cutover apex DNS record(s)...'
             while read -r record; do
               curl -fsS -X POST "${auth[@]}" "$api/zones/$zone_id/dns_records" --data "$record" >/dev/null || true
             done < <(jq -c '.[]' /tmp/hqc-old-dns.json)
           }
-          for id in "${appdeploy_ids[@]}"; do
-            echo "Deleting AppDeploy DNS record $id"
+
+          # Remove only known migration records. Preserve TXT/MX and all other
+          # non-origin records.
+          for id in "${appdeploy_ids[@]}" "${cf_transition_ids[@]}"; do
+            [ -n "$id" ] || continue
+            echo "Deleting known transitional origin record $id"
             curl -fsS -X DELETE "${auth[@]}" "$api/zones/$zone_id/dns_records/$id" >/dev/null
           done
+
           echo 'Binding production Worker custom domain...'
           if ! npx wrangler deploy --config wrangler.production.toml; then
             echo 'Worker custom-domain binding failed.'
             restore_dns
             exit 1
           fi
+
           verify=false
-          for attempt in 1 2 3 4 5 6 7 8; do
+          for attempt in 1 2 3 4 5 6 7 8 9 10; do
             echo "Verification attempt $attempt"
             health_code=$(curl -L -sS -o /tmp/hqc-health -w '%{http_code}' --max-time 30 https://homequotecheck.co.uk/health || true)
             home_code=$(curl -L -sS -o /tmp/hqc-home -w '%{http_code}' --max-time 30 https://homequotecheck.co.uk/ || true)
@@ -87,11 +99,12 @@ jobs:
             sleep 5
           done
           if [ "$verify" != 'true' ]; then
-            echo 'Cloudflare production verification failed. Removing Worker custom domain and restoring AppDeploy DNS.'
+            echo 'Cloudflare production verification failed. Removing Worker custom domain and restoring previous DNS.'
             npx wrangler deploy --config wrangler.production-rollback.toml || true
             restore_dns
             exit 1
           fi
+
           css_path=$(grep -oE '/assets/[^" ]+\.css' /tmp/hqc-home | head -1)
           js_path=$(grep -oE '/assets/[^" ]+\.js' /tmp/hqc-home | head -1)
           test -n "$css_path" && test -n "$js_path"
