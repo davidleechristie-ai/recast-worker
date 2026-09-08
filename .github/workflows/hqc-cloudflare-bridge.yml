@@ -63,7 +63,7 @@ jobs:
             echo 'AppDeploy overlay bootstrap still present'
             exit 1
           fi
-          css=$(grep -oE 'https://hqc-migration-preview\.davidleechristie\.workers\.dev/assets/[^"'"']+\.css' <<< "$home" | head -1)
+          css=$(grep -oE "https://hqc-migration-preview\\.davidleechristie\\.workers\\.dev/assets/[^\"]+\\.css" <<< "$home" | head -1)
           test -n "$css"
           css_code=$(curl -L -sS -o /tmp/hqc-css -w '%{http_code}' --max-time 30 "$css")
           echo "css -> $css_code"
