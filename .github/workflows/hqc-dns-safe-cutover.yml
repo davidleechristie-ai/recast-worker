@@ -46,38 +46,49 @@ jobs:
           dns_json=$(curl -fsS "${auth[@]}" "$api/zones/$zone_id/dns_records?name=homequotecheck.co.uk")
           echo "$dns_json" | jq '{records:[.result[] | {id,type,name,content,ttl,proxied}]}'
 
-          # Accept either the original AppDeploy A record or Cloudflare's own
-          # transitional proxied AAAA 100:: placeholder created by a partial
-          # custom-domain binding. Refuse any other apex origin state.
-          mapfile -t appdeploy_ids < <(jq -r '.result[] | select(.type=="A" and .name=="homequotecheck.co.uk" and .content=="18.232.7.146") | .id' <<< "$dns_json")
-          mapfile -t cf_transition_ids < <(jq -r '.result[] | select(.type=="AAAA" and .name=="homequotecheck.co.uk" and .content=="100::" and .proxied==true) | .id' <<< "$dns_json")
-          unknown_origin_count=$(jq '[.result[] | select(.name=="homequotecheck.co.uk" and ((.type=="A" and .content!="18.232.7.146") or (.type=="AAAA" and (.content!="100::" or .proxied!=true)) or .type=="CNAME"))] | length' <<< "$dns_json")
-          if [ "$unknown_origin_count" -ne 0 ] || { [ "${#appdeploy_ids[@]}" -lt 1 ] && [ "${#cf_transition_ids[@]}" -lt 1 ]; }; then
-            echo 'Unexpected apex DNS state; refusing automatic cutover.'
-            exit 1
-          fi
-
-          jq '[.result[] | select(.name=="homequotecheck.co.uk" and ((.type=="A" and .content=="18.232.7.146") or (.type=="AAAA" and .content=="100::" and .proxied==true))) | {type,name,content,ttl,proxied}]' <<< "$dns_json" > /tmp/hqc-old-dns.json
-          restore_dns(){
-            echo 'Restoring pre-cutover apex DNS record(s)...'
-            while read -r record; do
-              curl -fsS -X POST "${auth[@]}" "$api/zones/$zone_id/dns_records" --data "$record" >/dev/null || true
-            done < <(jq -c '.[]' /tmp/hqc-old-dns.json)
+          live_is_hqc(){
+            health_code=$(curl -L -sS -o /tmp/hqc-health -w '%{http_code}' --max-time 20 https://homequotecheck.co.uk/health || true)
+            home_code=$(curl -L -sS -o /tmp/hqc-home -w '%{http_code}' --max-time 20 https://homequotecheck.co.uk/ || true)
+            api_code=$(curl -L -sS -o /tmp/hqc-api -w '%{http_code}' --max-time 20 https://homequotecheck.co.uk/api/_healthcheck || true)
+            [ "$health_code" = '200' ] && [ "$home_code" = '200' ] && [ "$api_code" = '200' ] \
+              && grep -q 'cloudflare-assets' /tmp/hqc-health \
+              && grep -q '__hqc_enhancements.js' /tmp/hqc-home \
+              && grep -q 'Success' /tmp/hqc-api
           }
 
-          # Remove only known migration records. Preserve TXT/MX and all other
-          # non-origin records.
-          for id in "${appdeploy_ids[@]}" "${cf_transition_ids[@]}"; do
-            [ -n "$id" ] || continue
-            echo "Deleting known transitional origin record $id"
-            curl -fsS -X DELETE "${auth[@]}" "$api/zones/$zone_id/dns_records/$id" >/dev/null
-          done
+          if live_is_hqc; then
+            echo 'Root domain is already serving the verified HQC Cloudflare Worker.'
+          else
+            mapfile -t appdeploy_ids < <(jq -r '.result[] | select(.type=="A" and .name=="homequotecheck.co.uk" and .content=="18.232.7.146") | .id' <<< "$dns_json")
+            mapfile -t cf_transition_ids < <(jq -r '.result[] | select(.type=="AAAA" and .name=="homequotecheck.co.uk" and .content=="100::" and .proxied==true) | .id' <<< "$dns_json")
+            unknown_origin_count=$(jq '[.result[] | select(.name=="homequotecheck.co.uk" and ((.type=="A" and .content!="18.232.7.146") or (.type=="AAAA" and (.content!="100::" or .proxied!=true)) or .type=="CNAME"))] | length' <<< "$dns_json")
+            if [ "$unknown_origin_count" -ne 0 ] || { [ "${#appdeploy_ids[@]}" -lt 1 ] && [ "${#cf_transition_ids[@]}" -lt 1 ]; }; then
+              echo 'Unexpected apex DNS state; refusing automatic cutover.'
+              exit 1
+            fi
 
-          echo 'Binding production Worker custom domain...'
-          if ! npx wrangler deploy --config wrangler.production.toml; then
-            echo 'Worker custom-domain binding failed.'
-            restore_dns
-            exit 1
+            # Only ordinary AppDeploy A records are deletable here. Cloudflare's
+            # proxied AAAA 100:: record is a protected custom-domain placeholder
+            # and must remain for Wrangler to adopt/update.
+            jq '[.result[] | select(.type=="A" and .name=="homequotecheck.co.uk" and .content=="18.232.7.146") | {type,name,content,ttl,proxied}]' <<< "$dns_json" > /tmp/hqc-old-dns.json
+            restore_dns(){
+              echo 'Restoring pre-cutover AppDeploy apex DNS record(s)...'
+              while read -r record; do
+                curl -fsS -X POST "${auth[@]}" "$api/zones/$zone_id/dns_records" --data "$record" >/dev/null || true
+              done < <(jq -c '.[]' /tmp/hqc-old-dns.json)
+            }
+            for id in "${appdeploy_ids[@]}"; do
+              [ -n "$id" ] || continue
+              echo "Deleting AppDeploy origin record $id"
+              curl -fsS -X DELETE "${auth[@]}" "$api/zones/$zone_id/dns_records/$id" >/dev/null
+            done
+
+            echo 'Binding/adopting production Worker custom domain...'
+            if ! npx wrangler deploy --config wrangler.production.toml; then
+              echo 'Worker custom-domain binding failed.'
+              restore_dns
+              exit 1
+            fi
           fi
 
           verify=false
@@ -99,9 +110,12 @@ jobs:
             sleep 5
           done
           if [ "$verify" != 'true' ]; then
-            echo 'Cloudflare production verification failed. Removing Worker custom domain and restoring previous DNS.'
-            npx wrangler deploy --config wrangler.production-rollback.toml || true
-            restore_dns
+            echo 'Cloudflare production verification failed.'
+            # Only roll back ordinary AppDeploy A records if this run removed one.
+            if [ -s /tmp/hqc-old-dns.json ] && [ "$(jq 'length' /tmp/hqc-old-dns.json)" -gt 0 ]; then
+              npx wrangler deploy --config wrangler.production-rollback.toml || true
+              restore_dns
+            fi
             exit 1
           fi
 
