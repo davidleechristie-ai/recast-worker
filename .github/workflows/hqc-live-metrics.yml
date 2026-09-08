@@ -1,0 +1,25 @@
+name: HQC live metrics snapshot
+
+on:
+  push:
+    branches: [main]
+    paths:
+      - '.github/workflows/hqc-live-metrics.yml'
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+jobs:
+  metrics:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Fetch production HQC metrics
+        shell: bash
+        run: |
+          set -euo pipefail
+          base='https://api-v2.appdeploy.ai/app/heat-pump-second-opinion-v43csv'
+          echo '--- /api/metrics ---'
+          curl -fsS --max-time 30 "$base/api/metrics" | jq .
+          echo '--- /api/growth-report ---'
+          curl -fsS --max-time 30 "$base/api/growth-report" | jq .
