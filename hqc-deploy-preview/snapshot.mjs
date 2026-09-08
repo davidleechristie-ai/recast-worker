@@ -22,6 +22,8 @@ function cleanHtml(body){
     .replace(/<script data-appdeploy-network-hook>[\s\S]*?<\/script>/g,'')
     .replaceAll('https://homequotecheck.co.uk',TARGET)
     .replaceAll(ORIGIN,TARGET)
+    .replaceAll('./resources/homepage-graphic.png','/resources/homepage-house-reference.svg')
+    .replaceAll('/resources/homepage-graphic.png','/resources/homepage-house-reference.svg')
     .replace('</body>','<script src="/__hqc_enhancements.js" defer></script></body>');
 }
 async function save(path,binary=false){
@@ -49,6 +51,7 @@ async function save(path,binary=false){
 }
 await save('/');
 for(const path of ['/robots.txt','/sitemap.xml','/is-this-a-good-heat-pump-quote.html'])await save(path);
-await save('/resources/homepage-graphic.png',true);
+await mkdir(join(SITE,'resources'),{recursive:true});
+await copyFile('homepage-house-reference.svg',join(SITE,'resources/homepage-house-reference.svg'));
 await copyFile('enhancements-browser.js',join(SITE,'__hqc_enhancements.js'));
-console.log(`HQC frontend snapshot complete for ${TARGET}: ${saved.size} files + enhancements`);
+console.log(`HQC frontend snapshot complete for ${TARGET}: ${saved.size} fetched files + clean house artwork + enhancements`);
