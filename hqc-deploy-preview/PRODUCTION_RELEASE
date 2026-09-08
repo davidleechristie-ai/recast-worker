@@ -1,3 +1,3 @@
-2026-09-08T22:31+01:00
-Promote the user-approved mobile homepage composition: compact header, bold hero, three proof points, full-width CTA, clean house panel and dark three-step strip.
-Target design commits: d99b14b96758ab475731f6f37d3cfebca0f15f5c, 4c605c82a0de8d10fe5aa2ebbf63a5100e06ba7b
+2026-09-08T22:34+01:00
+Restore responsive homepage by removing the additional mobile target script and returning to the enhancement-only frontend snapshot.
+Rollback commit: 543c48298fc2ad3bb556bff4565def52fbb7a841
