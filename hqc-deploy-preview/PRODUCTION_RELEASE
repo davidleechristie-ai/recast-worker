@@ -1,4 +1,3 @@
-2026-09-08T22:13+01:00
-Promote corrected mobile house artwork zoom and alignment.
-Enhancement commit: 4fe72ee4dfe50885fba4b48320d72d636d846643
-Verification assertion fix: 58e9a648889daa17ce38a3a29139513402947c8d
+2026-09-08T22:19+01:00
+Promote corrected mobile artwork crop using right-hand illustration only and restore hero copy visibility.
+Enhancement commit: 763353bde5d55f0db02aff775756280ad84f2e6f
