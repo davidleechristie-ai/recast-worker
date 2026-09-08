@@ -1,4 +1,6 @@
-2026-09-08T22:47+01:00
-Promote dedicated clean homepage house illustration after preview verification passed. Removes dependence on cropping the old full-page screenshot while retaining the single responsive enhancement layer and mobile interaction gate.
-Artwork commit: 3c59fbbf496b10daf778edb17f3ceaa772573efb
-Snapshot commit: 693f3b8fe2445291ee21bc88c35b2aa854e61023
+2026-09-08T23:36+01:00
+Promote upload-friction-v3 after custom-domain canary passed the real mobile file-chooser handoff test. This release keeps the existing privacy/evidence guardrails and custom-domain routing, while hardening the transition from checker start to quote selection and strengthening production verification to require an actual browser filechooser event.
+Upload handoff commit: 9fa8c3793f92ebc28211448e4e9473e3ee2626c0
+Snapshot commit: 9067483d5f99d1923b315653d00be9b149df733e
+Canary verification commit: 5fb4643254ae08baee50a74bf308cd5944537317
+Production verification commit: 786b09bc1a8640b9d029d098cff6bdb002387842
