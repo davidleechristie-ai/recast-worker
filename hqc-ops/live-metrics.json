@@ -1,7 +1,7 @@
 {
-  "fetchedAt": "2026-09-09T08:51:53Z",
+  "fetchedAt": "2026-09-09T12:32:56Z",
   "metrics": {
-    "genuineAnalyses": 0,
+    "genuineAnalyses": 2,
     "shareOpens": 0,
     "outboundClicks": 0,
     "targets": {
@@ -18,12 +18,12 @@
     }
   },
   "growthReport": {
-    "generatedAt": "2026-09-09T08:51:53.286Z",
+    "generatedAt": "2026-09-09T12:32:56.541Z",
     "total": {
-      "landings": 221,
-      "cta": 51,
-      "uploads": 6,
-      "genuine": 0,
+      "landings": 242,
+      "cta": 72,
+      "uploads": 16,
+      "genuine": 2,
       "shareIntent": 4,
       "shareOpens": 0,
       "checkouts": 0
@@ -31,16 +31,16 @@
     "sources": [
       {
         "source": "direct",
-        "landings": 199,
-        "cta": 45,
-        "uploads": 6,
-        "genuine": 0,
+        "landings": 220,
+        "cta": 66,
+        "uploads": 16,
+        "genuine": 2,
         "shareIntent": 4,
         "shareOpens": 0,
         "checkouts": 0,
-        "landingToCta": 23,
-        "ctaToUpload": 13,
-        "landingToGenuine": 0
+        "landingToCta": 30,
+        "ctaToUpload": 24,
+        "landingToGenuine": 1
       },
       {
         "source": "organic_compare",
@@ -201,6 +201,7 @@
     ],
     "recommendations": [
       "Landing-to-CTA is weak: improve message match, trust proof and CTA prominence before adding more traffic.",
+      "Share loop is below the 20% validation threshold: strengthen Decision Case sharing and recipient conversion.",
       "No qualified organic cohort yet: keep expanding long-tail decision pages and internal links, then measure genuine analyses rather than clicks."
     ],
     "loop": [
@@ -212,84 +213,23 @@
     ]
   },
   "authoritativeSinceBaseline": {
-    "baselineAt": "2026-09-09T00:38:16Z",
-    "landings": 56,
-    "cta": 27,
-    "uploads": 6,
+    "baselineAt": "2026-09-09T11:41:33Z",
+    "landings": 0,
+    "cta": 0,
+    "uploads": 0,
     "genuine": 0,
     "shareIntent": 0,
     "shareOpens": 0,
     "checkouts": 0
   },
   "authoritativeSourcesSinceBaseline": {
-    "baselineAt": "2026-09-09T02:32:44Z",
+    "baselineAt": "2026-09-09T11:41:33Z",
     "note": "Source deltas start later than the global validation baseline and are directional only; do not sum them to infer the full clean funnel.",
-    "sources": [
-      {
-        "source": "direct",
-        "landings": 45,
-        "cta": 27,
-        "uploads": 6,
-        "genuine": 0,
-        "shareIntent": 0,
-        "shareOpens": 0,
-        "checkouts": 0
-      },
-      {
-        "source": "organic_compare",
-        "landings": 1,
-        "cta": 0,
-        "uploads": 0,
-        "genuine": 0,
-        "shareIntent": 0,
-        "shareOpens": 0,
-        "checkouts": 0
-      },
-      {
-        "source": "organic_flowtemp",
-        "landings": 1,
-        "cta": 0,
-        "uploads": 0,
-        "genuine": 0,
-        "shareIntent": 0,
-        "shareOpens": 0,
-        "checkouts": 0
-      },
-      {
-        "source": "organic_heatloss",
-        "landings": 1,
-        "cta": 0,
-        "uploads": 0,
-        "genuine": 0,
-        "shareIntent": 0,
-        "shareOpens": 0,
-        "checkouts": 0
-      },
-      {
-        "source": "organic_questions",
-        "landings": 1,
-        "cta": 0,
-        "uploads": 0,
-        "genuine": 0,
-        "shareIntent": 0,
-        "shareOpens": 0,
-        "checkouts": 0
-      },
-      {
-        "source": "organic_bus",
-        "landings": 1,
-        "cta": 0,
-        "uploads": 0,
-        "genuine": 0,
-        "shareIntent": 0,
-        "shareOpens": 0,
-        "checkouts": 0
-      }
-    ]
+    "sources": []
   },
   "autonomousDecisionGate": {
-    "status": "ACT",
-    "bottleneck": "quote submission -> genuine analysis",
-    "action": "Investigate the post-submission analysis-details and analyse action before adding acquisition or further upload changes. Preserve evidence guardrails and do not create QA analyses that could contaminate the genuine-analysis metric."
+    "status": "HOLD",
+    "bottleneck": "insufficient clean sample",
+    "action": "Do not churn production. Continue measurement and research until a downstream conversion event identifies the next actionable bottleneck."
   }
 }
