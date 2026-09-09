@@ -1,4 +1,5 @@
-2026-09-09T07:20+01:00
-Promote a slightly more zoomed-out presentation of the approved 1:1 house-and-garden artwork. The image now renders at 92% within the square hero panel using object-fit contain and centered alignment, giving the house, garden, heat pump and quote cards more breathing room without cropping.
-Artwork-fit commit: 34dcc42c28ffbedade4913979bc037d3af78cf51
-Existing production checks continue to require the live hero image to render and the mobile quote-upload interaction to remain functional.
+2026-09-09T08:00+01:00
+Promote the compact mobile Home Quote Check homepage through the authenticated Recast Cloudflare bridge. Mobile now prioritises the quote-check proposition and CTA before the house artwork, reduces vertical hero space, applies the compact headline/CTA treatment, and retains the existing upload handoff and evidence safeguards.
+Bridge snapshot commit: a71ff666e66699ddcdeeca94e399ef8d7cf424f6
+Bridge verification commit: b5bf9f15e34c5c179d7a33b2214ffe61a82a707a
+Production workflow update: 9d25d8170a6ae3b20b75fcd559d37ddfbd63410f
