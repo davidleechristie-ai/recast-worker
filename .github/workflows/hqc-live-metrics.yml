@@ -7,6 +7,7 @@ on:
       - '.github/workflows/hqc-live-metrics.yml'
   workflow_dispatch:
 
+# Autonomous refresh trigger: 2026-09-09T08:28Z
 permissions:
   contents: write
 
