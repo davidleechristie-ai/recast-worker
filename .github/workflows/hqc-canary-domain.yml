@@ -71,6 +71,14 @@ jobs:
           grep -q 'input\[type="file"\]' <<< "$uploadfix"
           api=$(curl -L -sS --max-time 30 "$base/api/_healthcheck")
           grep -q 'Success' <<< "$api"
+          qa_headers=$(mktemp)
+          curl -sS --max-time 30 -D "$qa_headers" -o /tmp/qa-event -X POST "$base/api/event" -H 'content-type: application/json' --data '{"event":"landing_view","source":"qa_canary_guard","analysisId":"","quoteCount":0,"provenance":"","isTest":false}'
+          grep -qi '^x-hqc-qa-event: excluded' "$qa_headers"
+          growth=$(curl -L -sS --max-time 30 "$base/api/growth-report")
+          ! grep -q 'qa_canary_guard' <<< "$growth"
+          echo 'HQC canary QA-event exclusion verified.'
+          static=$(curl -L -sS --max-time 30 "$base/is-this-a-good-heat-pump-quote.html")
+          grep -q 'Is this a good heat-pump quote' <<< "$static"
           echo 'HQC custom-domain canary passed: health, API proxy and current enhancement bundle verified.'
       - name: Verify quote upload handoff in mobile browser
         working-directory: hqc-deploy-preview
