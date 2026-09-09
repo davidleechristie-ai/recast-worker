@@ -1,4 +1,4 @@
-2026-09-09T06:53+01:00
-Promote corrected HQC homepage illustration fit. Mobile crop reduced from 300% to 208%, recentered, and given a taller 1.62:1 frame so the house, heat pump and quote cards fit without excessive clipping. Desktop crop also relaxed.
-Image-fit commit: 60e53a3d9e06238e8ab3ad9a0507ebf25c7a1a40
+2026-09-09T07:00+01:00
+Promote corrected HQC homepage illustration fit. Mobile artwork reduced from 208% to 172%, recentered, and panel made slightly taller at 1.50:1 so more of the complete house, heat pump and quote cards fit inside the frame. Desktop artwork also relaxed to 155%.
+Image-fit commit: 434debee3d32e988a41f312b3a60cf1c2b644dc5
 Existing production gate continues to require the live hero image to be visible with valid natural dimensions and the mobile quote-upload interaction to remain functional.
