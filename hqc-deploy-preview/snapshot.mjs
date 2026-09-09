@@ -14,14 +14,13 @@ function localPath(ref){
   if(ref.startsWith('/'))return ref;
   return null;
 }
+function rewriteOrigins(body){return body.replaceAll('https://homequotecheck.co.uk',TARGET).replaceAll(ORIGIN,TARGET).replaceAll(DEFAULT_TARGET,TARGET);}
 function cleanHtml(body){
-  return body
+  return rewriteOrigins(body)
     .replace(/<script data-appdeploy-overlay-bootstrap>[\s\S]*?<\/script>/g,'')
     .replace(/<script async src="https:\/\/v2\.appdeploy\.ai\/shared\/js\/overlay\.js"[\s\S]*?<\/script>/g,'')
     .replace(/<script>window\.__APPDEPLOY_APP_ID[\s\S]*?<\/script>/g,'')
     .replace(/<script data-appdeploy-network-hook>[\s\S]*?<\/script>/g,'')
-    .replaceAll('https://homequotecheck.co.uk',TARGET)
-    .replaceAll(ORIGIN,TARGET)
     .replace('</body>','<script src="/__hqc_enhancements.js" defer></script><script src="/__hqc_artwork_fit.js" defer></script><script src="/__hqc_upload_v3.js" defer></script><script src="/__hqc_target_mobile.js" defer></script></body>');
 }
 async function save(path,binary=false){
@@ -32,7 +31,7 @@ async function save(path,binary=false){
   let body=binary?Buffer.from(await res.arrayBuffer()):await res.text();
   if(!binary){
     if(path==='/'||path.endsWith('.html'))body=cleanHtml(body);
-    else body=body.replaceAll('https://homequotecheck.co.uk',TARGET).replaceAll(ORIGIN,TARGET);
+    else body=rewriteOrigins(body);
     if(path==='/'||path.endsWith('.html')){
       const refs=[...body.matchAll(/(?:src|href)=["']([^"']+)["']/g)].map(m=>m[1]);
       for(const ref of refs){
