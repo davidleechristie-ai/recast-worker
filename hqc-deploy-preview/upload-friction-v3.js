@@ -1,5 +1,5 @@
 (()=>{
-  const VERSION='upload-friction-v3.3';
+  const VERSION='upload-friction-v3.4', HANDOFF='hqc_analysis_handoff_pending';
   const qs=(s,r=document)=>r.querySelector(s);
   const qsa=(s,r=document)=>[...r.querySelectorAll(s)];
   const text=n=>(n?.textContent||'').replace(/\s+/g,' ').trim();
@@ -11,6 +11,7 @@
   function status(help,message){let s=qs('#hqc-upload-v3-status',help);if(!s){s=document.createElement('div');s.id='hqc-upload-v3-status';s.setAttribute('role','status');s.style.cssText='margin-top:10px;padding:10px 12px;border-radius:8px;background:#fff;color:#07503b;font-size:12px;font-weight:800';help.appendChild(s);}s.textContent=message;}
   function advanceAfterSelection(card,help){
     status(help,'Quote selected ✓  Preparing your analysis…');
+    try{sessionStorage.setItem(HANDOFF,'1');}catch{}
     let attempts=0;
     const timer=setInterval(()=>{
       attempts++;
@@ -55,6 +56,16 @@
       if(manual.dataset.hqcV3!=='1'){manual.dataset.hqcV3='1';manual.addEventListener('click',ev=>{const native=nativeManualControl(card);if(!native)return;ev.preventDefault();ev.stopImmediatePropagation();native.click();},true);}
     }
   }
-  function streamlineAnalysisStep(){const card=qsa('.card').find(c=>/tell us about your home/i.test(text(qs('h1',c))));if(!card||card.dataset.hqcAutoAnalysis==='1')return;const analyse=qsa('button',card).find(n=>/analyse my quotes/i.test(text(n)));if(!analyse)return;card.dataset.hqcAutoAnalysis='1';const h=qs('h1',card),p=qs('p',card);if(h)h.textContent='Ready to analyse';if(p)p.textContent='We will compare only the evidence in the quote you supplied. This is not a design certification, MCS verification or grant-eligibility determination.';analyse.textContent='Analyse my quote →';analyse.style.setProperty('min-height','52px','important');analyse.style.setProperty('font-weight','800','important');}
+  function streamlineAnalysisStep(){
+    const card=qsa('.card').find(c=>/tell us about your home|ready to analyse/i.test(text(qs('h1',c))));if(!card)return;
+    const analyse=qsa('button',card).find(n=>/analyse my quotes?|analyse my quote/i.test(text(n)));if(!analyse)return;
+    if(card.dataset.hqcAutoAnalysis!=='1'){
+      card.dataset.hqcAutoAnalysis='1';const h=qs('h1',card),p=qs('p',card);if(h)h.textContent='Ready to analyse';if(p)p.textContent='We will compare only the evidence in the quote you supplied. This is not a design certification, MCS verification or grant-eligibility determination.';
+      let cue=qs('#hqc-analysis-handoff',card);if(!cue){cue=document.createElement('div');cue.id='hqc-analysis-handoff';cue.setAttribute('role','status');cue.textContent='Your quote is ready. Tap Analyse my quote to get the evidence check.';cue.style.cssText='margin:14px 0 10px;padding:12px 14px;border:1px solid #b8ded0;border-radius:10px;background:#eef8f4;color:#07503b;font-size:13px;font-weight:800;line-height:1.45';analyse.insertAdjacentElement('beforebegin',cue);}
+      analyse.textContent='Analyse my quote →';analyse.style.setProperty('min-height','54px','important');analyse.style.setProperty('font-weight','800','important');analyse.style.setProperty('width','100%','important');
+    }
+    let pending=false;try{pending=sessionStorage.getItem(HANDOFF)==='1';}catch{}
+    if(pending&&analyse.offsetParent!==null){try{sessionStorage.removeItem(HANDOFF);}catch{}requestAnimationFrame(()=>{analyse.scrollIntoView({behavior:'smooth',block:'center'});setTimeout(()=>analyse.focus({preventScroll:true}),250);});}
+  }
   let queued=false;const tick=()=>{if(queued)return;queued=true;requestAnimationFrame(()=>{queued=false;wire();streamlineAnalysisStep();});};new MutationObserver(tick).observe(document.documentElement,{childList:true,subtree:true});tick();
 })();
