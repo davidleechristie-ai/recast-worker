@@ -1,3 +1,4 @@
-2026-09-09T08:41+01:00
-Deploy the desktop Home Quote Check homepage layout repair after visual QA identified an oversized multi-line hero headline, excessive vertical imbalance and the house artwork sitting too low on desktop. The repair is desktop-only: balanced two-column hero, smaller responsive headline, top-aligned content, tighter spacing, and a controlled landscape artwork panel. The emergency mobile rollback remains in place, so this release does not reintroduce the mobile DOM-rewrite that caused the earlier blank-screen regression.
-Desktop repair commits: cf313fa0dc883efda7dbe0942a42a65bd96920c8, b4892526a877ed2430ed2fbe2edc128b7eeab364
+2026-09-09T08:49+01:00
+Promote the isolated Home Quote Check homepage house-artwork repair after successful custom-domain canary verification. This release replaces the conflicted/cropped composite artwork path with a clean house-only asset, removes zoom/negative-offset treatment via the dedicated artwork-fit layer, and preserves the recovered responsive/mobile and desktop layout code unchanged. Do not alter custom-domain routing or AppDeploy DNS.
+House artwork commits: e19074811e191a3ba20e8e338125eae2ed5f31c7, 72c70abf0537054efa78c77ac9744cddddad06d0, 8bbd51901a69e363c05679256d285a6e39441c52
+Canary: HQC custom-domain canary run 34325438517 passed.
