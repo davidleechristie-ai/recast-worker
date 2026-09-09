@@ -1,5 +1,5 @@
 {
-  "fetchedAt": "2026-09-09T08:49:45Z",
+  "fetchedAt": "2026-09-09T08:51:53Z",
   "metrics": {
     "genuineAnalyses": 0,
     "shareOpens": 0,
@@ -18,7 +18,7 @@
     }
   },
   "growthReport": {
-    "generatedAt": "2026-09-09T08:49:45.395Z",
+    "generatedAt": "2026-09-09T08:51:53.286Z",
     "total": {
       "landings": 221,
       "cta": 51,
@@ -288,8 +288,8 @@
     ]
   },
   "autonomousDecisionGate": {
-    "status": "HOLD",
-    "bottleneck": "insufficient clean sample",
-    "action": "Do not churn production. Continue measurement and research until at least 15 clean landings or a downstream conversion event identifies an earlier actionable bottleneck."
+    "status": "ACT",
+    "bottleneck": "quote submission -> genuine analysis",
+    "action": "Investigate the post-submission analysis-details and analyse action before adding acquisition or further upload changes. Preserve evidence guardrails and do not create QA analyses that could contaminate the genuine-analysis metric."
   }
 }
