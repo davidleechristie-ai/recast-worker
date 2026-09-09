@@ -1,5 +1,6 @@
-2026-09-09T08:52+01:00
-Re-run the isolated HQC house-artwork promotion with the production regression gate updated to validate the new house-only SVG rather than the retired composite-image selector. Product change remains limited to artwork presentation; recovered mobile responsiveness, desktop layout, upload flow, API proxy and custom-domain routing are unchanged.
-House artwork commits: e19074811e191a3ba20e8e338125eae2ed5f31c7, 72c70abf0537054efa78c77ac9744cddddad06d0, 8bbd51901a69e363c05679256d285a6e39441c52
-Production smoke-test update: fd3fa7a8fd9cdfca1635373d6a1218dbc1cb1e6d
-Canary: HQC custom-domain canary run 34325438517 passed.
+2026-09-09T09:49+01:00
+Promote the measured quote-intake conversion experiment after clean evidence reached 45 landings -> 17 checker starts -> 0 quote submissions -> 0 genuine analyses. Canary proved that mobile file selection is accepted and advances to the analysis-details step, and that manual quote entry reveals editable fields. The change therefore targets commitment/privacy friction rather than a broken uploader: present upload and manual entry as two explicit ways to start, including “Prefer not to upload? Enter quote figures →”. Product evidence guardrails, recovered mobile/desktop layout, house artwork, API proxy and custom-domain routing remain unchanged.
+Product change: 62a8022e4df3c568b6c849e1e1e45b68f399f371
+Snapshot origin normalisation: 0f32c64e5daf81321cac065671a358d8eb9c927d
+Canary/release-gate improvements: f8a3604d1b478db5dbcef1a2e7814ed641b94f0a, c3b780c1db701c8596cc56fcd848cd22e30ea0a7, e5eb434924c68930bbd1eeb3031c2174b228b92f
+Canary: HQC custom-domain canary run 34330950150 passed, including current-asset propagation, file-selection progression, manual-entry reveal and QA-event exclusion.
