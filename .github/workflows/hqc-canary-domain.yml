@@ -49,8 +49,8 @@ jobs:
             home=$(curl -L -sS --max-time 30 "$base/?release_probe=$attempt" || true)
             uploadfix=$(curl -L -sS --max-time 30 "$base/__hqc_upload_v3.js?release_probe=$attempt" || true)
             stale=$(grep -c 'hqc-migration-preview.davidleechristie.workers.dev' <<< "$home" || true)
-            echo "attempt $attempt -> health=$code staleHost=$stale uploadV32=$(grep -c 'upload-friction-v3.2' <<< "$uploadfix" || true)"
-            if [ "$code" = '200' ] && grep -q 'hqc-migration-preview' <<< "$body" && grep -q '__hqc_enhancements.js' <<< "$home" && grep -q '__hqc_upload_v3.js' <<< "$home" && ! grep -q 'hqc-migration-preview.davidleechristie.workers.dev' <<< "$home" && ! grep -q 'heat-pump-second-opinion-v43csv.v2.appdeploy.ai' <<< "$home" && grep -q 'upload-friction-v3.2' <<< "$uploadfix"; then
+            echo "attempt $attempt -> health=$code staleHost=$stale uploadV33=$(grep -c 'upload-friction-v3.3' <<< "$uploadfix" || true)"
+            if [ "$code" = '200' ] && grep -q 'hqc-migration-preview' <<< "$body" && grep -q '__hqc_enhancements.js' <<< "$home" && grep -q '__hqc_upload_v3.js' <<< "$home" && ! grep -q 'hqc-migration-preview.davidleechristie.workers.dev' <<< "$home" && ! grep -q 'heat-pump-second-opinion-v43csv.v2.appdeploy.ai' <<< "$home" && grep -q 'upload-friction-v3.3' <<< "$uploadfix"; then
               ready=true
               break
             fi
@@ -62,7 +62,8 @@ jobs:
           grep -q 'Choose screenshot / photo' <<< "$enhancement"
           grep -q 'Enter figures manually' <<< "$enhancement"
           uploadfix=$(curl -L -sS --max-time 30 "$base/__hqc_upload_v3.js")
-          grep -q 'upload-friction-v3.2' <<< "$uploadfix"
+          grep -q 'upload-friction-v3.3' <<< "$uploadfix"
+          grep -q 'Preparing your analysis' <<< "$uploadfix"
           grep -q 'Prefer not to upload? Enter quote figures' <<< "$uploadfix"
           grep -q 'input\[type="file"\]' <<< "$uploadfix"
           grep -q 'Enter quote figures manually' <<< "$uploadfix"
@@ -103,9 +104,6 @@ jobs:
           const chooser=await chooserPromise;
           const png=Buffer.from('iVBORw0KGgoAAAANSUhEUgAAAAEAAAABCAQAAAC1HAwCAAAAC0lEQVR42mP8/x8AAusB9Wl2+XkAAAAASUVORK5CYII=','base64');
           await chooser.setFiles({name:'qa-heat-pump-quote.png',mimeType:'image/png',buffer:png});
-          const next=page.getByRole('button',{name:/continue/i}).first();
-          await next.waitFor({state:'visible',timeout:10000});
-          await next.click();
           await page.getByRole('heading',{name:/Ready to analyse|Tell us about your home/i}).waitFor({state:'visible',timeout:10000});
           if(errors.length) throw new Error('Browser errors on file path: '+errors.join(' | '));
           await fileContext.close();
@@ -129,5 +127,5 @@ jobs:
           if(manualErrors.length) throw new Error('Browser errors on manual path: '+manualErrors.join(' | '));
           await manualContext.close();
           await browser.close();
-          console.log(`HQC canary quote intake paths passed: file progression and first-class manual entry (${before} -> ${after} editable fields).`);
+          console.log(`HQC canary quote intake paths passed: automatic file progression and first-class manual entry (${before} -> ${after} editable fields).`);
           NODE
