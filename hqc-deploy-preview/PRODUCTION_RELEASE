@@ -1,3 +1,3 @@
-2026-09-09T08:37+01:00
-Promote the validated checker-to-upload friction reduction after the clean post-integrity funnel crossed the action threshold: 32 authoritative landings, 9 checker starts and 0 uploads. The intake now makes the entire upload helper a file-picker target, uses a single full-width screenshot/photo/PDF action, preserves manual entry and privacy/evidence guardrails, and normalizes historical workers.dev origins during snapshot generation. Canary health, API proxy, custom-domain origin safety and mobile filechooser handoff all passed before production promotion.
-Canary source commits: a0a9226d44bdbc009cc7a970eba5a3ace7579688, 8f038bc9941118102ff270c4be6dedc7ec84b1d6
+2026-09-09T08:41+01:00
+Deploy the desktop Home Quote Check homepage layout repair after visual QA identified an oversized multi-line hero headline, excessive vertical imbalance and the house artwork sitting too low on desktop. The repair is desktop-only: balanced two-column hero, smaller responsive headline, top-aligned content, tighter spacing, and a controlled landscape artwork panel. The emergency mobile rollback remains in place, so this release does not reintroduce the mobile DOM-rewrite that caused the earlier blank-screen regression.
+Desktop repair commits: cf313fa0dc883efda7dbe0942a42a65bd96920c8, b4892526a877ed2430ed2fbe2edc128b7eeab364
