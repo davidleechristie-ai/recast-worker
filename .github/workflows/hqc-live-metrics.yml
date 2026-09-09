@@ -47,6 +47,7 @@ jobs:
               },
               authoritativeSourcesSinceBaseline:{
                 baselineAt:$sourceBaseline[0].baselineAt,
+                note:"Source deltas start later than the global validation baseline and are directional only; do not sum them to infer the full clean funnel.",
                 sources:[
                   $growth[0].sources[] as $current
                   | (($sourceBaseline[0].sources | map(select(.source == $current.source)) | .[0]) // {
@@ -64,7 +65,20 @@ jobs:
                     }
                 ] | map(select((.landings != 0) or (.cta != 0) or (.uploads != 0) or (.genuine != 0) or (.shareIntent != 0) or (.shareOpens != 0) or (.checkouts != 0)))
               }
-            }' \
+            }
+            | . as $r
+            | .autonomousDecisionGate = (
+                if $r.authoritativeSinceBaseline.genuine >= 100 then
+                  {status:"SCALE_HOLD_PIVOT_REVIEW", bottleneck:"validation threshold reached", action:"Perform SCALE/HOLD/PIVOT review before further autonomous growth changes."}
+                elif $r.authoritativeSinceBaseline.cta > 0 and $r.authoritativeSinceBaseline.uploads == 0 then
+                  {status:"ACT", bottleneck:"checker start -> quote submission", action:"Prioritise quote-intake friction and instrumentation; do not add acquisition pages merely to increase traffic."}
+                elif $r.authoritativeSinceBaseline.landings >= 15 and $r.authoritativeSinceBaseline.cta == 0 then
+                  {status:"ACT", bottleneck:"landing -> checker start", action:"Prioritise message-match, trust and CTA clarity on existing landing/decision pages before expanding acquisition."}
+                else
+                  {status:"HOLD", bottleneck:"insufficient clean sample", action:"Do not churn production. Continue measurement and research until at least 15 clean landings or a downstream conversion event identifies an earlier actionable bottleneck."}
+                end
+              )
+            ' \
             > hqc-ops/live-metrics.json
           jq . hqc-ops/live-metrics.json
       - name: Commit snapshot
