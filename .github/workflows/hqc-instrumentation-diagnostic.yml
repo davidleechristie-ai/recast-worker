@@ -1,0 +1,33 @@
+name: HQC instrumentation diagnostic
+
+on:
+  push:
+    branches: [main]
+    paths:
+      - '.github/workflows/hqc-instrumentation-diagnostic.yml'
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+jobs:
+  trace:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 22
+      - name: Snapshot and inspect native analytics hooks
+        working-directory: hqc-deploy-preview
+        shell: bash
+        run: |
+          set -euo pipefail
+          npm install
+          HQC_PUBLIC_ORIGIN='https://cf-preview.homequotecheck.co.uk' node snapshot.mjs >/tmp/snapshot.log
+          echo '--- snapshot ---'
+          cat /tmp/snapshot.log
+          echo '--- api/event references ---'
+          grep -Rni -E '/api/event|genuineAnalyses|analysis[_-]?(complete|completed|success)|landing_view|upload_started|share_open|outbound' site --include='*.js' --include='*.html' | head -200 || true
+          echo '--- candidate event literals ---'
+          grep -Rho -E "['\"][A-Za-z0-9_:-]{3,50}['\"]" site/assets site/index.html 2>/dev/null | tr -d "'\"" | grep -Ei 'analysis|upload|landing|share|outbound|checkout|quote' | sort -u | head -200 || true
