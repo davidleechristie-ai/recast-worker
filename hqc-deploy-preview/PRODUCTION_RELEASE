@@ -1,4 +1,5 @@
-2026-09-09T07:00+01:00
-Promote corrected HQC homepage illustration fit. Mobile artwork reduced from 208% to 172%, recentered, and panel made slightly taller at 1.50:1 so more of the complete house, heat pump and quote cards fit inside the frame. Desktop artwork also relaxed to 155%.
-Image-fit commit: 434debee3d32e988a41f312b3a60cf1c2b644dc5
-Existing production gate continues to require the live hero image to be visible with valid natural dimensions and the mobile quote-upload interaction to remain functional.
+2026-09-09T07:16+01:00
+Promote the user-approved 1:1 HQC house-and-garden artwork. The uploaded binary at hqc-deploy-preview/homepage-house-approved.png is now served through the stable /resources/homepage-graphic.png path so the existing homepage enhancement remains compatible. A dedicated artwork-fit layer forces a true 1:1 panel with the image rendered at 100% width/height and centered, removing the prior 172% crop/zoom behavior.
+Snapshot integration commit: 1fae73be4cfd0e4e0f790c9688c0453502f163da
+Artwork-fit commit: e92e6abf57211c93b9ffbec8bfd5844cc39c6b81
+Existing production checks continue to require the live hero image to render and the mobile quote-upload interaction to remain functional.
