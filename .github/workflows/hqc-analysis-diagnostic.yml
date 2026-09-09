@@ -23,6 +23,9 @@ jobs:
         shell: bash
         run: |
           set -euo pipefail
+          echo 'METRICS_BEFORE'
+          curl -fsSL --max-time 30 'https://homequotecheck.co.uk/api/metrics'
+          echo
           npm install --no-save playwright@1.55.0
           npx playwright install --with-deps chromium
           node --input-type=module <<'NODE'
@@ -33,10 +36,10 @@ jobs:
           const requests=[];
           const responses=[];
           const consoleErrors=[];
-          page.on('request',r=>{if(new URL(r.url()).pathname.startsWith('/api/')) requests.push({method:r.method(),url:r.url()});});
-          page.on('response',r=>{if(new URL(r.url()).pathname.startsWith('/api/')) responses.push({status:r.status(),url:r.url()});});
+          page.on('request',r=>{if(['fetch','xhr'].includes(r.resourceType())) requests.push({method:r.method(),resourceType:r.resourceType(),url:r.url()});});
+          page.on('response',r=>{const req=r.request();if(['fetch','xhr'].includes(req.resourceType())) responses.push({status:r.status(),resourceType:req.resourceType(),url:r.url()});});
           page.on('pageerror',e=>consoleErrors.push(String(e)));
-          await page.goto('https://cf-preview.homequotecheck.co.uk/?qa=1&analysis_boundary=1',{waitUntil:'networkidle',timeout:60000});
+          await page.goto('https://cf-preview.homequotecheck.co.uk/?qa=1&analysis_boundary=2',{waitUntil:'networkidle',timeout:60000});
           const start=page.getByRole('button',{name:/check my quote/i}).first();
           await start.waitFor({state:'visible',timeout:15000});
           await start.click();
@@ -50,17 +53,17 @@ jobs:
           await page.getByRole('heading',{name:/Ready to analyse|Tell us about your home/i}).waitFor({state:'visible',timeout:15000});
           const analyse=page.getByRole('button',{name:/Analyse my quote/i}).first();
           await analyse.waitFor({state:'visible',timeout:10000});
-          console.log('BEFORE_ANALYSE_URL',page.url());
-          console.log('BEFORE_ANALYSE_TEXT',(await page.locator('body').innerText()).slice(0,2500));
           await analyse.click();
           await page.waitForTimeout(12000);
-          console.log('ANALYSIS_API_REQUESTS',JSON.stringify(requests));
-          console.log('ANALYSIS_API_RESPONSES',JSON.stringify(responses));
+          console.log('FETCH_XHR_REQUESTS',JSON.stringify(requests));
+          console.log('FETCH_XHR_RESPONSES',JSON.stringify(responses));
           console.log('PAGE_ERRORS',JSON.stringify(consoleErrors));
-          console.log('AFTER_ANALYSE_URL',page.url());
           console.log('AFTER_ANALYSE_TEXT',(await page.locator('body').innerText()).slice(0,5000));
           const results=await page.locator('.resultsTop,.facts.panel,.questions').count();
           console.log('RESULT_MARKERS',results);
           await context.close();
           await browser.close();
           NODE
+          echo 'METRICS_AFTER'
+          curl -fsSL --max-time 30 'https://homequotecheck.co.uk/api/metrics'
+          echo
