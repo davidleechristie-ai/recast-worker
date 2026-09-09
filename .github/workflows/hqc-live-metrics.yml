@@ -71,12 +71,14 @@ jobs:
             | .autonomousDecisionGate = (
                 if $r.authoritativeSinceBaseline.genuine >= 100 then
                   {status:"SCALE_HOLD_PIVOT_REVIEW", bottleneck:"validation threshold reached", action:"Perform SCALE/HOLD/PIVOT review before further autonomous growth changes."}
+                elif $r.authoritativeSinceBaseline.uploads > 0 and $r.authoritativeSinceBaseline.genuine == 0 then
+                  {status:"ACT", bottleneck:"quote submission -> genuine analysis", action:"Investigate the post-submission analysis-details and analyse action before adding acquisition or further upload changes. Preserve evidence guardrails and do not create QA analyses that could contaminate the genuine-analysis metric."}
                 elif $r.authoritativeSinceBaseline.cta > 0 and $r.authoritativeSinceBaseline.uploads == 0 then
                   {status:"ACT", bottleneck:"checker start -> quote submission", action:"Prioritise quote-intake friction and instrumentation; do not add acquisition pages merely to increase traffic."}
                 elif $r.authoritativeSinceBaseline.landings >= 15 and $r.authoritativeSinceBaseline.cta == 0 then
                   {status:"ACT", bottleneck:"landing -> checker start", action:"Prioritise message-match, trust and CTA clarity on existing landing/decision pages before expanding acquisition."}
                 else
-                  {status:"HOLD", bottleneck:"insufficient clean sample", action:"Do not churn production. Continue measurement and research until at least 15 clean landings or a downstream conversion event identifies an earlier actionable bottleneck."}
+                  {status:"HOLD", bottleneck:"insufficient clean sample", action:"Do not churn production. Continue measurement and research until a downstream conversion event identifies the next actionable bottleneck."}
                 end
               )
             ' \
