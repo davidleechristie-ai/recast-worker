@@ -1,7 +1,5 @@
-2026-09-09T01:38+01:00
-Promote verified validation-metric integrity guard. Preview/canary events and production smoke/release-probe/QA events are forced isTest=true at the Cloudflare edge before reaching /api/event, preventing routine QA traffic from being counted as acquisition or conversion evidence. Canary verification asserts the guard header and confirms the QA source is absent from growth reporting.
-Worker guard commit: 9a3820a70dfe4a8a719fcef460200d8cb1ce0bf3
-Canary assertion commit: cbe047a823d1b5fc388e8c6ddfc1b75f194eb3e0
-Production verification update: b5dd91b9028ea572fdb83fe49028f0e4102ecf3e
-Canary run: 34295697639 (success)
-Genuine north-star baseline before promotion remains: 0 analyses, 0 share opens, 0 outbound actions.
+2026-09-09T06:50+01:00
+Restore the working homepage graphic asset after the clean-SVG experiment left the hero image absent on mobile. Snapshot again carries /resources/homepage-graphic.png, matching the existing single-layer responsive enhancement selector.
+Snapshot fix: a797dd4895b2464bb6153fd06a573c9ac8fe6b06
+Production gate update: 859272079f9ffa76b98752f00f75d7c4f8351605
+New release gate now requires the live hero image to be visible with non-zero rendered dimensions and a valid natural image size before the upload-flow interaction test can pass.
