@@ -39,4 +39,4 @@ jobs:
             print('\n--- occurrence ---\n')
             start=p+len(needle)
           PY
-          echo 'snapshot=2026-09-09T00:26:54+01:00'
+          echo 'snapshot=2026-09-09T01:27:16+01:00'
