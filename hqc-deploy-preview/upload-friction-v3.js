@@ -1,5 +1,5 @@
 (()=>{
-  const VERSION='upload-friction-v3';
+  const VERSION='upload-friction-v3.1';
   const qs=(s,r=document)=>r.querySelector(s);
   const qsa=(s,r=document)=>[...r.querySelectorAll(s)];
   const text=n=>(n?.textContent||'').replace(/\s+/g,' ').trim();
@@ -10,10 +10,29 @@
   const nativeManualControl=card=>qsa('button,a,[role="button"]',card).find(n=>!/^hqc-/.test(n.id||'')&&/(enter|add|type).*(manual|figure)|manual.*(entry|figure)/i.test(text(n)))||null;
   function status(help,message){let s=qs('#hqc-upload-v3-status',help);if(!s){s=document.createElement('div');s.id='hqc-upload-v3-status';s.setAttribute('role','status');s.style.cssText='margin-top:10px;padding:10px 12px;border-radius:8px;background:#fff;color:#07503b;font-size:12px;font-weight:800';help.appendChild(s);}s.textContent=message;}
   function surfaceContinue(card,help){const next=qsa('button',card).find(n=>/continue/i.test(text(n))&&!n.disabled);if(!next)return;next.textContent='Continue to analysis →';next.style.setProperty('min-height','48px','important');next.style.setProperty('font-weight','800','important');next.scrollIntoView?.({behavior:'smooth',block:'nearest'});status(help,'Quote selected ✓  Continue to analysis below.');}
-  function wire(){const choose=qs('#hqc-choose-file'),help=qs('#hqc-upload-help');if(!choose||!help||choose.dataset.hqcV3==='1')return;choose.dataset.hqcV3='1';help.dataset.hqcUploadVersion=VERSION;const card=cardFor(choose);
+  function simplify(help,choose,manual){
+    const title=help.querySelector('b');
+    const intro=title?.nextElementSibling;
+    const small=help.querySelector('small');
+    if(title)title.textContent='Add your quote';
+    if(intro)intro.textContent='Choose one screenshot, photo or PDF. You can start with a single page and add another quote later.';
+    if(small)small.textContent='No account or personal details required. Uploaded images are processed transiently and are not intentionally stored. This check does not certify design, MCS status or grant eligibility.';
+    help.style.setProperty('cursor','pointer','important');
+    help.style.setProperty('padding','18px','important');
+    choose.textContent='Choose quote screenshot / PDF →';
+    choose.style.setProperty('width','100%','important');
+    choose.style.setProperty('min-height','54px','important');
+    choose.style.setProperty('font-size','16px','important');
+    if(manual){manual.textContent='No file? Enter figures manually';manual.style.setProperty('width','100%','important');manual.style.setProperty('margin-top','2px','important');}
+  }
+  function openPicker(card,help){const input=bestFileInput(card);if(input){if(input.dataset.hqcV3Change!=='1'){input.dataset.hqcV3Change='1';input.addEventListener('change',()=>{if(input.files?.length)surfaceContinue(card,help);});}input.click();return true;}const native=nativeUploadControl(card);if(native){native.click();return true;}status(help,'Upload control could not be opened. Use “Enter quote figures manually” below.');return false;}
+  function wire(){const choose=qs('#hqc-choose-file'),help=qs('#hqc-upload-help');if(!choose||!help||choose.dataset.hqcV3==='1')return;choose.dataset.hqcV3='1';help.dataset.hqcUploadVersion=VERSION;const card=cardFor(choose);const manual=qs('#hqc-enter-manual');simplify(help,choose,manual);
     const legacy=qs('.drop',card);if(legacy){legacy.dataset.hqcLegacyUpload='1';legacy.style.setProperty('position','absolute','important');legacy.style.setProperty('width','1px','important');legacy.style.setProperty('height','1px','important');legacy.style.setProperty('overflow','hidden','important');legacy.style.setProperty('clip-path','inset(50%)','important');}
-    choose.addEventListener('click',ev=>{ev.preventDefault();ev.stopImmediatePropagation();const input=bestFileInput(card);if(input){if(input.dataset.hqcV3Change!=='1'){input.dataset.hqcV3Change='1';input.addEventListener('change',()=>{if(input.files?.length)surfaceContinue(card,help);});}input.click();return;}const native=nativeUploadControl(card);if(native){native.click();return;}status(help,'Upload control could not be opened. Use “Enter quote figures manually” below.');},true);
-    const manual=qs('#hqc-enter-manual');if(manual){manual.textContent='No file? Enter quote figures manually →';if(manual.dataset.hqcV3!=='1'){manual.dataset.hqcV3='1';manual.addEventListener('click',ev=>{const native=nativeManualControl(card);if(!native)return;ev.preventDefault();ev.stopImmediatePropagation();native.click();},true);}}
+    choose.addEventListener('click',ev=>{ev.preventDefault();ev.stopImmediatePropagation();openPicker(card,help);},true);
+    help.addEventListener('click',ev=>{if(ev.target.closest('#hqc-enter-manual,#hqc-choose-file'))return;ev.preventDefault();openPicker(card,help);});
+    help.addEventListener('keydown',ev=>{if((ev.key==='Enter'||ev.key===' ')&&!ev.target.closest('button,a,input')){ev.preventDefault();openPicker(card,help);}});
+    help.tabIndex=0;help.setAttribute('role','button');help.setAttribute('aria-label','Choose a heat-pump quote screenshot, photo or PDF');
+    if(manual){if(manual.dataset.hqcV3!=='1'){manual.dataset.hqcV3='1';manual.addEventListener('click',ev=>{const native=nativeManualControl(card);if(!native)return;ev.preventDefault();ev.stopImmediatePropagation();native.click();},true);}}
   }
   function streamlineAnalysisStep(){const card=qsa('.card').find(c=>/tell us about your home/i.test(text(qs('h1',c))));if(!card||card.dataset.hqcAutoAnalysis==='1')return;const analyse=qsa('button',card).find(n=>/analyse my quotes/i.test(text(n)));if(!analyse)return;card.dataset.hqcAutoAnalysis='1';const h=qs('h1',card),p=qs('p',card);if(h)h.textContent='Ready to analyse';if(p)p.textContent='We will compare only the evidence in the quote you supplied. This is not a design certification, MCS verification or grant-eligibility determination.';analyse.textContent='Analyse my quote →';analyse.style.setProperty('min-height','52px','important');analyse.style.setProperty('font-weight','800','important');}
   let queued=false;const tick=()=>{if(queued)return;queued=true;requestAnimationFrame(()=>{queued=false;wire();streamlineAnalysisStep();});};new MutationObserver(tick).observe(document.documentElement,{childList:true,subtree:true});tick();
