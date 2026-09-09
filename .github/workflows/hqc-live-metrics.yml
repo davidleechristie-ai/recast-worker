@@ -30,6 +30,7 @@ jobs:
             --slurpfile metrics "$metrics" \
             --slurpfile growth "$growth" \
             --slurpfile baseline hqc-ops/validation-baseline.json \
+            --slurpfile sourceBaseline hqc-ops/source-validation-baseline.json \
             '{
               fetchedAt:$fetchedAt,
               metrics:$metrics[0],
@@ -43,6 +44,25 @@ jobs:
                 shareIntent:($growth[0].total.shareIntent-$baseline[0].total.shareIntent),
                 shareOpens:($growth[0].total.shareOpens-$baseline[0].total.shareOpens),
                 checkouts:($growth[0].total.checkouts-$baseline[0].total.checkouts)
+              },
+              authoritativeSourcesSinceBaseline:{
+                baselineAt:$sourceBaseline[0].baselineAt,
+                sources:[
+                  $growth[0].sources[] as $current
+                  | (($sourceBaseline[0].sources | map(select(.source == $current.source)) | .[0]) // {
+                      source:$current.source,landings:0,cta:0,uploads:0,genuine:0,shareIntent:0,shareOpens:0,checkouts:0
+                    }) as $base
+                  | {
+                      source:$current.source,
+                      landings:($current.landings-$base.landings),
+                      cta:($current.cta-$base.cta),
+                      uploads:($current.uploads-$base.uploads),
+                      genuine:($current.genuine-$base.genuine),
+                      shareIntent:($current.shareIntent-$base.shareIntent),
+                      shareOpens:($current.shareOpens-$base.shareOpens),
+                      checkouts:($current.checkouts-$base.checkouts)
+                    }
+                ] | map(select((.landings != 0) or (.cta != 0) or (.uploads != 0) or (.genuine != 0) or (.shareIntent != 0) or (.shareOpens != 0) or (.checkouts != 0)))
               }
             }' \
             > hqc-ops/live-metrics.json
