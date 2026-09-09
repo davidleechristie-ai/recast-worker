@@ -8,35 +8,39 @@ on:
   workflow_dispatch:
 
 permissions:
-  contents: read
+  contents: write
 
 jobs:
   metrics:
     runs-on: ubuntu-latest
     steps:
+      - uses: actions/checkout@v4
       - name: Fetch production HQC metrics
         shell: bash
         run: |
           set -euo pipefail
           base='https://api-v2.appdeploy.ai/app/heat-pump-second-opinion-v43csv'
-          echo '--- /api/metrics ---'
-          curl -fsS --max-time 30 "$base/api/metrics" | jq .
-          echo '--- /api/growth-report ---'
-          curl -fsS --max-time 30 "$base/api/growth-report" | jq .
-          echo '--- event payload scan ---'
-          site='https://heat-pump-second-opinion-v43csv.v2.appdeploy.ai'
-          js=$(mktemp)
-          curl -fsS --max-time 30 "$site/assets/index-CbjepCsd.js" -o "$js"
-          python - "$js" <<'PY'
-          import sys
-          s=open(sys.argv[1],encoding='utf-8').read()
-          needle='/api/event'
-          start=0
-          for i in range(8):
-            p=s.find(needle,start)
-            if p<0: break
-            print(s[max(0,p-900):p+1400])
-            print('\n--- occurrence ---\n')
-            start=p+len(needle)
-          PY
-          echo 'snapshot=2026-09-09T01:27:16+01:00'
+          metrics=$(mktemp)
+          growth=$(mktemp)
+          curl -fsS --max-time 30 "$base/api/metrics" -o "$metrics"
+          curl -fsS --max-time 30 "$base/api/growth-report" -o "$growth"
+          jq -n \
+            --arg fetchedAt "$(date -u +%Y-%m-%dT%H:%M:%SZ)" \
+            --slurpfile metrics "$metrics" \
+            --slurpfile growth "$growth" \
+            '{fetchedAt:$fetchedAt,metrics:$metrics[0],growthReport:$growth[0]}' \
+            > hqc-deploy-preview/live-metrics.json
+          jq . hqc-deploy-preview/live-metrics.json
+      - name: Commit snapshot
+        shell: bash
+        run: |
+          set -euo pipefail
+          git config user.name 'hqc-growth-bot'
+          git config user.email 'actions@users.noreply.github.com'
+          git add hqc-deploy-preview/live-metrics.json
+          if git diff --cached --quiet; then
+            echo 'No metric change to commit.'
+            exit 0
+          fi
+          git commit -m 'HQC: snapshot live validation metrics'
+          git push
