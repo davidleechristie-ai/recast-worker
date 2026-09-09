@@ -83,6 +83,11 @@ jobs:
           ! grep -q 'heat-pump-second-opinion-v43csv.v2.appdeploy.ai' <<< "$home"
           api=$(curl -L -sS --max-time 30 "$base/api/_healthcheck")
           grep -q 'Success' <<< "$api"
+          qa_headers=$(mktemp)
+          curl -sS --max-time 30 -D "$qa_headers" -o /tmp/qa-event -X POST "$base/api/event" -H 'referer: https://homequotecheck.co.uk/?qa=1' -H 'content-type: application/json' --data '{"event":"landing_view","source":"qa_production_guard","analysisId":"","quoteCount":0,"provenance":"","isTest":false}'
+          grep -qi '^x-hqc-qa-event: excluded' "$qa_headers"
+          growth=$(curl -L -sS --max-time 30 "$base/api/growth-report")
+          ! grep -q 'qa_production_guard' <<< "$growth"
           enhancement=$(curl -L -sS --max-time 30 "$base/__hqc_enhancements.js")
           grep -q 'Quote evidence completeness' <<< "$enhancement"
           grep -q 'Add another quote' <<< "$enhancement"
