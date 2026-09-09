@@ -29,7 +29,22 @@ jobs:
             --arg fetchedAt "$(date -u +%Y-%m-%dT%H:%M:%SZ)" \
             --slurpfile metrics "$metrics" \
             --slurpfile growth "$growth" \
-            '{fetchedAt:$fetchedAt,metrics:$metrics[0],growthReport:$growth[0]}' \
+            --slurpfile baseline hqc-ops/validation-baseline.json \
+            '{
+              fetchedAt:$fetchedAt,
+              metrics:$metrics[0],
+              growthReport:$growth[0],
+              authoritativeSinceBaseline:{
+                baselineAt:$baseline[0].baselineAt,
+                landings:($growth[0].total.landings-$baseline[0].total.landings),
+                cta:($growth[0].total.cta-$baseline[0].total.cta),
+                uploads:($growth[0].total.uploads-$baseline[0].total.uploads),
+                genuine:($growth[0].total.genuine-$baseline[0].total.genuine),
+                shareIntent:($growth[0].total.shareIntent-$baseline[0].total.shareIntent),
+                shareOpens:($growth[0].total.shareOpens-$baseline[0].total.shareOpens),
+                checkouts:($growth[0].total.checkouts-$baseline[0].total.checkouts)
+              }
+            }' \
             > hqc-ops/live-metrics.json
           jq . hqc-ops/live-metrics.json
       - name: Commit snapshot
@@ -45,4 +60,3 @@ jobs:
           fi
           git commit -m 'HQC: snapshot live validation metrics'
           git push
-          # Autonomous growth refresh 2026-09-09T02:29Z.
