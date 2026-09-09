@@ -37,15 +37,18 @@ jobs:
           test -s hqc-deploy-preview/site/index.html
           test -s hqc-deploy-preview/site/__hqc_enhancements.js
           test -s hqc-deploy-preview/site/__hqc_upload_v3.js
+          test -s hqc-deploy-preview/site/__hqc_target_mobile.js
           test -s hqc-deploy-preview/site/resources/homepage-graphic.png
           grep -q 'root' hqc-deploy-preview/site/index.html
           grep -q '__hqc_upload_v3.js' hqc-deploy-preview/site/index.html
+          grep -q '__hqc_target_mobile.js' hqc-deploy-preview/site/index.html
           grep -q 'Quote evidence completeness' hqc-deploy-preview/site/__hqc_enhancements.js
           grep -q 'Fastest way to start' hqc-deploy-preview/site/__hqc_enhancements.js
           grep -q 'Check my quote — free' hqc-deploy-preview/site/__hqc_enhancements.js
+          grep -q 'Check my quote — free' hqc-deploy-preview/site/__hqc_target_mobile.js
+          grep -q 'aspect-ratio:1.94/1' hqc-deploy-preview/site/__hqc_target_mobile.js
           grep -q 'upload-friction-v3' hqc-deploy-preview/site/__hqc_upload_v3.js
           grep -q 'https://homequotecheck.co.uk' hqc-deploy-preview/site/index.html
-          ! grep -q '__hqc_target_mobile.js' hqc-deploy-preview/site/index.html
           ! grep -q 'hqc-migration-preview.davidleechristie.workers.dev' hqc-deploy-preview/site/index.html
           ! grep -q 'cf-preview.homequotecheck.co.uk' hqc-deploy-preview/site/index.html
           ! grep -q 'heat-pump-second-opinion-v43csv.v2.appdeploy.ai' hqc-deploy-preview/site/index.html
@@ -64,12 +67,12 @@ jobs:
           for attempt in 1 2 3 4 5 6 7 8 9 10 11 12; do
             health=$(curl -L -sS --max-time 30 "$base/health" || true)
             home=$(curl -L -sS --max-time 30 "$base/?release_probe=$attempt" || true)
-            echo "attempt $attempt health=$health uploadV3=$(grep -c '__hqc_upload_v3.js' <<< "$home" || true)"
-            if grep -q 'home-quote-check' <<< "$health" && grep -q 'production' <<< "$health" && grep -q '__hqc_enhancements.js' <<< "$home" && grep -q '__hqc_upload_v3.js' <<< "$home"; then ready=true; break; fi
+            echo "attempt $attempt health=$health uploadV3=$(grep -c '__hqc_upload_v3.js' <<< "$home" || true) mobile=$(grep -c '__hqc_target_mobile.js' <<< "$home" || true)"
+            if grep -q 'home-quote-check' <<< "$health" && grep -q 'production' <<< "$health" && grep -q '__hqc_enhancements.js' <<< "$home" && grep -q '__hqc_upload_v3.js' <<< "$home" && grep -q '__hqc_target_mobile.js' <<< "$home"; then ready=true; break; fi
             sleep 5
           done
           test "$ready" = 'true'
-          for path in / /api/_healthcheck /robots.txt /sitemap.xml /resources/homepage-graphic.png /is-this-a-good-heat-pump-quote.html /__hqc_enhancements.js /__hqc_upload_v3.js; do
+          for path in / /api/_healthcheck /robots.txt /sitemap.xml /resources/homepage-graphic.png /is-this-a-good-heat-pump-quote.html /__hqc_enhancements.js /__hqc_upload_v3.js /__hqc_target_mobile.js; do
             code=$(curl -L -sS -o /tmp/hqc-prod -w '%{http_code}' --max-time 30 "$base$path")
             echo "$path -> $code"
             test "$code" = '200'
@@ -77,7 +80,7 @@ jobs:
           home=$(curl -L -sS --max-time 30 "$base/?release_probe=final")
           grep -q '__hqc_enhancements.js' <<< "$home"
           grep -q '__hqc_upload_v3.js' <<< "$home"
-          ! grep -q '__hqc_target_mobile.js' <<< "$home"
+          grep -q '__hqc_target_mobile.js' <<< "$home"
           grep -q 'https://homequotecheck.co.uk' <<< "$home"
           ! grep -q 'hqc-migration-preview.davidleechristie.workers.dev' <<< "$home"
           ! grep -q 'cf-preview.homequotecheck.co.uk' <<< "$home"
@@ -95,9 +98,12 @@ jobs:
           grep -q 'does not score sizing quality' <<< "$enhancement"
           grep -q 'Fastest way to start' <<< "$enhancement"
           grep -q 'Check my quote — free' <<< "$enhancement"
+          mobile=$(curl -L -sS --max-time 30 "$base/__hqc_target_mobile.js")
+          grep -q 'Check my quote — free' <<< "$mobile"
+          grep -q 'aspect-ratio:1.94/1' <<< "$mobile"
           uploadfix=$(curl -L -sS --max-time 30 "$base/__hqc_upload_v3.js")
           grep -q 'upload-friction-v3' <<< "$uploadfix"
-          echo 'HQC production HTTP verification passed.'
+          echo 'HQC production compact-mobile HTTP verification passed.'
       - name: Mobile upload handoff smoke test
         working-directory: hqc-deploy-preview
         shell: bash
@@ -116,6 +122,10 @@ jobs:
           await hero.waitFor({state:'visible',timeout:15000});
           const heroState=await hero.evaluate(img=>({complete:img.complete,naturalWidth:img.naturalWidth,naturalHeight:img.naturalHeight,rect:img.getBoundingClientRect().toJSON()}));
           if(!heroState.complete||heroState.naturalWidth<100||heroState.naturalHeight<100||heroState.rect.width<100||heroState.rect.height<80) throw new Error('Homepage hero image is missing or not visibly rendered: '+JSON.stringify(heroState));
+          const mobileState=await page.evaluate(()=>{const copy=document.querySelector('.copy');const img=[...document.querySelectorAll('img')].find(x=>/homepage-graphic\.png/i.test(x.getAttribute('src')||''));const button=copy?.querySelector('button.primary');return {headline:copy?.querySelector('h1,h2')?.textContent||'',cta:button?.textContent||'',imgRect:img?.getBoundingClientRect().toJSON()||null};});
+          if(!/Got a heat-pump quote\?/i.test(mobileState.headline)) throw new Error('Compact mobile headline not applied: '+JSON.stringify(mobileState));
+          if(!/Check my quote/i.test(mobileState.cta)) throw new Error('Compact mobile CTA not applied: '+JSON.stringify(mobileState));
+          if(!mobileState.imgRect||mobileState.imgRect.height>360) throw new Error('Mobile hero artwork remains too tall: '+JSON.stringify(mobileState));
           const cta=page.getByRole('button',{name:/check my quote/i}).first();
           await cta.waitFor({state:'visible',timeout:15000});
           await cta.click({timeout:10000});
@@ -128,5 +138,5 @@ jobs:
           await chooserPromise;
           if(errors.length) throw new Error('Browser errors: '+errors.join(' | '));
           await browser.close();
-          console.log('HQC production hero-image + upload handoff smoke test passed.');
+          console.log('HQC production compact-mobile hero + upload handoff smoke test passed.');
           NODE
