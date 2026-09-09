@@ -1,6 +1,7 @@
 import {mkdir,writeFile,rm,copyFile} from 'node:fs/promises';
 import {dirname,join} from 'node:path';
 const ORIGIN='https://heat-pump-second-opinion-v43csv.v2.appdeploy.ai';
+const API_ORIGIN='https://api-v2.appdeploy.ai/app/heat-pump-second-opinion-v43csv';
 const DEFAULT_TARGET='https://hqc-migration-preview.davidleechristie.workers.dev';
 const TARGET=(process.env.HQC_PUBLIC_ORIGIN||DEFAULT_TARGET).replace(/\/$/,'');
 const TARGET_HOST=new URL(TARGET).host;
@@ -18,6 +19,7 @@ function localPath(ref){
 function rewriteOrigins(body){
   return body
     .replaceAll('https://homequotecheck.co.uk',TARGET)
+    .replaceAll(API_ORIGIN,TARGET)
     .replaceAll(ORIGIN,TARGET)
     .replaceAll(DEFAULT_TARGET,TARGET)
     .replaceAll('hqc-migration-preview.davidleechristie.workers.dev',TARGET_HOST);
@@ -63,4 +65,4 @@ await copyFile('artwork-fit.js',join(SITE,'__hqc_artwork_fit.js'));
 await copyFile('upload-friction-v3.js',join(SITE,'__hqc_upload_v3.js'));
 await copyFile('target-mobile-design.js',join(SITE,'__hqc_target_mobile.js'));
 await copyFile('desktop-layout-fix.js',join(SITE,'__hqc_desktop_layout.js'));
-console.log(`HQC frontend snapshot complete for ${TARGET}: ${saved.size} fetched files + house-only artwork + enhancements + upload handoff + safe mobile rollback + desktop layout repair`);
+console.log(`HQC frontend snapshot complete for ${TARGET}: ${saved.size} fetched files + same-origin browser API routing + house-only artwork + enhancements + upload handoff + safe mobile rollback + desktop layout repair`);
