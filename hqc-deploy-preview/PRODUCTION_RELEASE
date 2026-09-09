@@ -1,5 +1,7 @@
-2026-09-09T01:32+01:00
-Promote verified quote-intake simplification after canary success. This release removes unsupported diagnostic-event calls, collapses duplicate upload controls into one prominent screenshot/photo chooser, keeps manual entry as a clear fallback, surfaces the enabled Continue action immediately after file selection, and clarifies the analysis step without changing evidence or privacy guardrails.
-Intake simplification commit: 274acc5b3731e8434eb8953a28134a6e98deacb7
-Canary run: 34295335473 (success)
-Measured baseline before release: 159 landings, 18 checker starts, 0 uploads, 0 genuine analyses, 0 share opens, 0 outbound clicks.
+2026-09-09T01:38+01:00
+Promote verified validation-metric integrity guard. Preview/canary events and production smoke/release-probe/QA events are forced isTest=true at the Cloudflare edge before reaching /api/event, preventing routine QA traffic from being counted as acquisition or conversion evidence. Canary verification asserts the guard header and confirms the QA source is absent from growth reporting.
+Worker guard commit: 9a3820a70dfe4a8a719fcef460200d8cb1ce0bf3
+Canary assertion commit: cbe047a823d1b5fc388e8c6ddfc1b75f194eb3e0
+Production verification update: b5dd91b9028ea572fdb83fe49028f0e4102ecf3e
+Canary run: 34295697639 (success)
+Genuine north-star baseline before promotion remains: 0 analyses, 0 share opens, 0 outbound actions.
