@@ -37,6 +37,7 @@ jobs:
           test -s hqc-deploy-preview/site/index.html
           test -s hqc-deploy-preview/site/__hqc_enhancements.js
           test -s hqc-deploy-preview/site/__hqc_upload_v3.js
+          test -s hqc-deploy-preview/site/resources/homepage-graphic.png
           grep -q 'root' hqc-deploy-preview/site/index.html
           grep -q '__hqc_upload_v3.js' hqc-deploy-preview/site/index.html
           grep -q 'Quote evidence completeness' hqc-deploy-preview/site/__hqc_enhancements.js
@@ -111,6 +112,10 @@ jobs:
           const errors=[];
           page.on('pageerror',e=>errors.push(String(e)));
           await page.goto('https://homequotecheck.co.uk/?upload_handoff_smoke=1',{waitUntil:'networkidle',timeout:60000});
+          const hero=page.locator('img[src*="homepage-graphic.png"]').first();
+          await hero.waitFor({state:'visible',timeout:15000});
+          const heroState=await hero.evaluate(img=>({complete:img.complete,naturalWidth:img.naturalWidth,naturalHeight:img.naturalHeight,rect:img.getBoundingClientRect().toJSON()}));
+          if(!heroState.complete||heroState.naturalWidth<100||heroState.naturalHeight<100||heroState.rect.width<100||heroState.rect.height<80) throw new Error('Homepage hero image is missing or not visibly rendered: '+JSON.stringify(heroState));
           const cta=page.getByRole('button',{name:/check my quote/i}).first();
           await cta.waitFor({state:'visible',timeout:15000});
           await cta.click({timeout:10000});
@@ -123,5 +128,5 @@ jobs:
           await chooserPromise;
           if(errors.length) throw new Error('Browser errors: '+errors.join(' | '));
           await browser.close();
-          console.log('HQC production upload handoff smoke test passed.');
+          console.log('HQC production hero-image + upload handoff smoke test passed.');
           NODE
