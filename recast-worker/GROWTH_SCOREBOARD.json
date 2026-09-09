@@ -3,7 +3,7 @@
     "north_star": "monthly_recurring_revenue_gbp",
     "target": 1000,
     "current": 0,
-    "evidence_date": "2026-09-08",
+    "evidence_date": "2026-09-09",
     "revenue_definition": "Genuine recurring revenue only: current subscription plus paid succeeded latest invoice charge, excluding fully refunded and inactive/cancelled subscriptions."
   },
   "funnel": {
@@ -153,7 +153,7 @@
     "Successful-task rate awaits post-instrumentation tool_run_attempt traffic.",
     "Workflow completion rate awaits a workflow_start denominator."
   ],
-  "last_updated": "2026-09-08",
+  "last_updated": "2026-09-09",
   "measurement_rules": {
     "unknown_values": "Keep unavailable measurements as null; never estimate them as facts.",
     "follow_up_windows_days": [
@@ -3130,7 +3130,7 @@
           "query": "xsd compare"
         }
       ],
-      "evidence_date": "2026-09-08"
+      "evidence_date": "2026-09-09"
     },
     "ga4": {
       "period_days": 28,
@@ -3172,7 +3172,7 @@
         "commercial_intent_rate": "organic users with commercial_intent / organic users with successful_tool_use",
         "returning_user_rate": "organic returning active users / organic active users"
       },
-      "evidence_date": "2026-09-08"
+      "evidence_date": "2026-09-09"
     },
     "stripe": {
       "active_subscription_customers": 0,
@@ -3180,7 +3180,7 @@
       "plan_counts": {},
       "excluded_non_genuine_subscriptions": 9,
       "measurement_rule": "Counts only active/trialing subscriptions backed by a paid, succeeded latest invoice charge that has not been fully refunded.",
-      "evidence_date": "2026-09-08"
+      "evidence_date": "2026-09-09"
     }
   },
   "refresh_warnings": [],
