@@ -1,5 +1,5 @@
 {
-  "fetchedAt": "2026-09-09T17:33:47Z",
+  "fetchedAt": "2026-09-09T18:30:40Z",
   "metrics": {
     "genuineAnalyses": 2,
     "shareOpens": 0,
@@ -18,9 +18,9 @@
     }
   },
   "growthReport": {
-    "generatedAt": "2026-09-09T17:33:47.867Z",
+    "generatedAt": "2026-09-09T18:30:40.697Z",
     "total": {
-      "landings": 244,
+      "landings": 245,
       "cta": 72,
       "uploads": 16,
       "genuine": 2,
@@ -147,6 +147,19 @@
         "landingToGenuine": 0
       },
       {
+        "source": "professional",
+        "landings": 2,
+        "cta": 0,
+        "uploads": 0,
+        "genuine": 0,
+        "shareIntent": 0,
+        "shareOpens": 0,
+        "checkouts": 0,
+        "landingToCta": 0,
+        "ctaToUpload": null,
+        "landingToGenuine": 0
+      },
+      {
         "source": "organic_goodquote",
         "landings": 1,
         "cta": 3,
@@ -161,19 +174,6 @@
       },
       {
         "source": "organic_bus",
-        "landings": 1,
-        "cta": 0,
-        "uploads": 0,
-        "genuine": 0,
-        "shareIntent": 0,
-        "shareOpens": 0,
-        "checkouts": 0,
-        "landingToCta": 0,
-        "ctaToUpload": null,
-        "landingToGenuine": 0
-      },
-      {
-        "source": "professional",
         "landings": 1,
         "cta": 0,
         "uploads": 0,
@@ -214,7 +214,7 @@
   },
   "authoritativeSinceBaseline": {
     "baselineAt": "2026-09-09T11:41:33Z",
-    "landings": 2,
+    "landings": 3,
     "cta": 0,
     "uploads": 0,
     "genuine": 0,
@@ -229,6 +229,16 @@
       {
         "source": "direct",
         "landings": 2,
+        "cta": 0,
+        "uploads": 0,
+        "genuine": 0,
+        "shareIntent": 0,
+        "shareOpens": 0,
+        "checkouts": 0
+      },
+      {
+        "source": "professional",
+        "landings": 1,
         "cta": 0,
         "uploads": 0,
         "genuine": 0,
