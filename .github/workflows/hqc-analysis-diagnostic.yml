@@ -1,0 +1,66 @@
+name: HQC analysis-boundary diagnostic
+
+on:
+  push:
+    branches: [main]
+    paths:
+      - '.github/workflows/hqc-analysis-diagnostic.yml'
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+jobs:
+  diagnose:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 22
+      - name: Diagnose analysis request and result boundary
+        working-directory: hqc-deploy-preview
+        shell: bash
+        run: |
+          set -euo pipefail
+          npm install --no-save playwright@1.55.0
+          npx playwright install --with-deps chromium
+          node --input-type=module <<'NODE'
+          import { chromium } from 'playwright';
+          const browser=await chromium.launch({headless:true});
+          const context=await browser.newContext({viewport:{width:390,height:844},isMobile:true,hasTouch:true});
+          const page=await context.newPage();
+          const requests=[];
+          const responses=[];
+          const consoleErrors=[];
+          page.on('request',r=>{if(new URL(r.url()).pathname.startsWith('/api/')) requests.push({method:r.method(),url:r.url()});});
+          page.on('response',r=>{if(new URL(r.url()).pathname.startsWith('/api/')) responses.push({status:r.status(),url:r.url()});});
+          page.on('pageerror',e=>consoleErrors.push(String(e)));
+          await page.goto('https://cf-preview.homequotecheck.co.uk/?qa=1&analysis_boundary=1',{waitUntil:'networkidle',timeout:60000});
+          const start=page.getByRole('button',{name:/check my quote/i}).first();
+          await start.waitFor({state:'visible',timeout:15000});
+          await start.click();
+          const choose=page.locator('#hqc-choose-file');
+          await choose.waitFor({state:'visible',timeout:15000});
+          const chooserPromise=page.waitForEvent('filechooser',{timeout:5000});
+          await choose.click();
+          const chooser=await chooserPromise;
+          const png=Buffer.from('iVBORw0KGgoAAAANSUhEUgAAAAEAAAABCAQAAAC1HAwCAAAAC0lEQVR42mP8/x8AAusB9Wl2+XkAAAAASUVORK5CYII=','base64');
+          await chooser.setFiles({name:'qa-analysis-boundary.png',mimeType:'image/png',buffer:png});
+          await page.getByRole('heading',{name:/Ready to analyse|Tell us about your home/i}).waitFor({state:'visible',timeout:15000});
+          const analyse=page.getByRole('button',{name:/Analyse my quote/i}).first();
+          await analyse.waitFor({state:'visible',timeout:10000});
+          console.log('BEFORE_ANALYSE_URL',page.url());
+          console.log('BEFORE_ANALYSE_TEXT',(await page.locator('body').innerText()).slice(0,2500));
+          await analyse.click();
+          await page.waitForTimeout(12000);
+          console.log('ANALYSIS_API_REQUESTS',JSON.stringify(requests));
+          console.log('ANALYSIS_API_RESPONSES',JSON.stringify(responses));
+          console.log('PAGE_ERRORS',JSON.stringify(consoleErrors));
+          console.log('AFTER_ANALYSE_URL',page.url());
+          console.log('AFTER_ANALYSE_TEXT',(await page.locator('body').innerText()).slice(0,5000));
+          const results=await page.locator('.resultsTop,.facts.panel,.questions').count();
+          console.log('RESULT_MARKERS',results);
+          await context.close();
+          await browser.close();
+          NODE
