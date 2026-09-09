@@ -22,6 +22,7 @@ jobs:
           base='https://api-v2.appdeploy.ai/app/heat-pump-second-opinion-v43csv'
           metrics=$(mktemp)
           growth=$(mktemp)
+          mkdir -p hqc-ops
           curl -fsS --max-time 30 "$base/api/metrics" -o "$metrics"
           curl -fsS --max-time 30 "$base/api/growth-report" -o "$growth"
           jq -n \
@@ -29,15 +30,15 @@ jobs:
             --slurpfile metrics "$metrics" \
             --slurpfile growth "$growth" \
             '{fetchedAt:$fetchedAt,metrics:$metrics[0],growthReport:$growth[0]}' \
-            > hqc-deploy-preview/live-metrics.json
-          jq . hqc-deploy-preview/live-metrics.json
+            > hqc-ops/live-metrics.json
+          jq . hqc-ops/live-metrics.json
       - name: Commit snapshot
         shell: bash
         run: |
           set -euo pipefail
           git config user.name 'hqc-growth-bot'
           git config user.email 'actions@users.noreply.github.com'
-          git add hqc-deploy-preview/live-metrics.json
+          git add hqc-ops/live-metrics.json
           if git diff --cached --quiet; then
             echo 'No metric change to commit.'
             exit 0
