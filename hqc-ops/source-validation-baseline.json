@@ -1,0 +1,18 @@
+{
+  "baselineAt": "2026-09-09T02:32:44Z",
+  "reason": "Source-level clean baseline added after the traffic-integrity guard. Used only for post-baseline source-cohort deltas; the earlier total validation baseline remains authoritative for overall funnel totals.",
+  "sources": [
+    {"source":"direct","landings":154,"cta":18,"uploads":0,"genuine":0,"shareIntent":4,"shareOpens":0,"checkouts":0},
+    {"source":"organic_compare","landings":3,"cta":1,"uploads":0,"genuine":0,"shareIntent":0,"shareOpens":0,"checkouts":0},
+    {"source":"organic_price","landings":3,"cta":0,"uploads":0,"genuine":0,"shareIntent":0,"shareOpens":0,"checkouts":0},
+    {"source":"organic_checklist","landings":2,"cta":0,"uploads":0,"genuine":0,"shareIntent":0,"shareOpens":0,"checkouts":0},
+    {"source":"organic_radiators","landings":2,"cta":0,"uploads":0,"genuine":0,"shareIntent":0,"shareOpens":0,"checkouts":0},
+    {"source":"organic_sizing","landings":2,"cta":1,"uploads":0,"genuine":0,"shareIntent":0,"shareOpens":0,"checkouts":0},
+    {"source":"organic_flowtemp","landings":1,"cta":1,"uploads":0,"genuine":0,"shareIntent":0,"shareOpens":0,"checkouts":0},
+    {"source":"organic_goodquote","landings":1,"cta":3,"uploads":0,"genuine":0,"shareIntent":0,"shareOpens":0,"checkouts":0},
+    {"source":"organic_questions","landings":1,"cta":0,"uploads":0,"genuine":0,"shareIntent":0,"shareOpens":0,"checkouts":0},
+    {"source":"organic_heatloss","landings":1,"cta":0,"uploads":0,"genuine":0,"shareIntent":0,"shareOpens":0,"checkouts":0},
+    {"source":"professional","landings":1,"cta":0,"uploads":0,"genuine":0,"shareIntent":0,"shareOpens":0,"checkouts":0},
+    {"source":"shared_case","landings":0,"cta":0,"uploads":0,"genuine":0,"shareIntent":0,"shareOpens":0,"checkouts":0}
+  ]
+}
