@@ -1,5 +1,5 @@
 {
-  "fetchedAt": "2026-09-09T05:33:18Z",
+  "fetchedAt": "2026-09-09T08:33:15Z",
   "metrics": {
     "genuineAnalyses": 0,
     "shareOpens": 0,
@@ -18,10 +18,10 @@
     }
   },
   "growthReport": {
-    "generatedAt": "2026-09-09T05:33:18.700Z",
+    "generatedAt": "2026-09-09T08:33:15.264Z",
     "total": {
-      "landings": 176,
-      "cta": 24,
+      "landings": 210,
+      "cta": 41,
       "uploads": 0,
       "genuine": 0,
       "shareIntent": 4,
@@ -31,27 +31,27 @@
     "sources": [
       {
         "source": "direct",
-        "landings": 155,
-        "cta": 18,
+        "landings": 188,
+        "cta": 35,
         "uploads": 0,
         "genuine": 0,
         "shareIntent": 4,
         "shareOpens": 0,
         "checkouts": 0,
-        "landingToCta": 12,
+        "landingToCta": 19,
         "ctaToUpload": 0,
         "landingToGenuine": 0
       },
       {
         "source": "organic_compare",
-        "landings": 3,
+        "landings": 4,
         "cta": 1,
         "uploads": 0,
         "genuine": 0,
         "shareIntent": 0,
         "shareOpens": 0,
         "checkouts": 0,
-        "landingToCta": 33,
+        "landingToCta": 25,
         "ctaToUpload": 0,
         "landingToGenuine": 0
       },
@@ -213,8 +213,8 @@
   },
   "authoritativeSinceBaseline": {
     "baselineAt": "2026-09-09T00:38:16Z",
-    "landings": 11,
-    "cta": 0,
+    "landings": 45,
+    "cta": 17,
     "uploads": 0,
     "genuine": 0,
     "shareIntent": 0,
@@ -227,6 +227,16 @@
     "sources": [
       {
         "source": "direct",
+        "landings": 34,
+        "cta": 17,
+        "uploads": 0,
+        "genuine": 0,
+        "shareIntent": 0,
+        "shareOpens": 0,
+        "checkouts": 0
+      },
+      {
+        "source": "organic_compare",
         "landings": 1,
         "cta": 0,
         "uploads": 0,
@@ -278,8 +288,8 @@
     ]
   },
   "autonomousDecisionGate": {
-    "status": "HOLD",
-    "bottleneck": "insufficient clean sample",
-    "action": "Do not churn production. Continue measurement and research until at least 15 clean landings or a downstream conversion event identifies an earlier actionable bottleneck."
+    "status": "ACT",
+    "bottleneck": "checker start -> quote submission",
+    "action": "Prioritise quote-intake friction and instrumentation; do not add acquisition pages merely to increase traffic."
   }
 }
