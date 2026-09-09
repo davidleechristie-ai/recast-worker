@@ -1,5 +1,4 @@
-2026-09-09T07:16+01:00
-Promote the user-approved 1:1 HQC house-and-garden artwork. The uploaded binary at hqc-deploy-preview/homepage-house-approved.png is now served through the stable /resources/homepage-graphic.png path so the existing homepage enhancement remains compatible. A dedicated artwork-fit layer forces a true 1:1 panel with the image rendered at 100% width/height and centered, removing the prior 172% crop/zoom behavior.
-Snapshot integration commit: 1fae73be4cfd0e4e0f790c9688c0453502f163da
-Artwork-fit commit: e92e6abf57211c93b9ffbec8bfd5844cc39c6b81
+2026-09-09T07:20+01:00
+Promote a slightly more zoomed-out presentation of the approved 1:1 house-and-garden artwork. The image now renders at 92% within the square hero panel using object-fit contain and centered alignment, giving the house, garden, heat pump and quote cards more breathing room without cropping.
+Artwork-fit commit: 34dcc42c28ffbedade4913979bc037d3af78cf51
 Existing production checks continue to require the live hero image to render and the mobile quote-upload interaction to remain functional.
