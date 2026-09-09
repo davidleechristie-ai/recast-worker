@@ -1,5 +1,5 @@
 {
-  "fetchedAt": "2026-09-09T00:33:26Z",
+  "fetchedAt": "2026-09-09T00:38:16Z",
   "metrics": {
     "genuineAnalyses": 0,
     "shareOpens": 0,
@@ -18,10 +18,10 @@
     }
   },
   "growthReport": {
-    "generatedAt": "2026-09-09T00:33:26.141Z",
+    "generatedAt": "2026-09-09T00:38:16.270Z",
     "total": {
-      "landings": 162,
-      "cta": 21,
+      "landings": 165,
+      "cta": 24,
       "uploads": 0,
       "genuine": 0,
       "shareIntent": 4,
@@ -31,14 +31,14 @@
     "sources": [
       {
         "source": "direct",
-        "landings": 149,
-        "cta": 15,
+        "landings": 152,
+        "cta": 18,
         "uploads": 0,
         "genuine": 0,
         "shareIntent": 4,
         "shareOpens": 0,
         "checkouts": 0,
-        "landingToCta": 10,
+        "landingToCta": 12,
         "ctaToUpload": 0,
         "landingToGenuine": 0
       },
