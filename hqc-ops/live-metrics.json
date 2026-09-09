@@ -1,5 +1,5 @@
 {
-  "fetchedAt": "2026-09-09T02:32:44Z",
+  "fetchedAt": "2026-09-09T03:30:59Z",
   "metrics": {
     "genuineAnalyses": 0,
     "shareOpens": 0,
@@ -18,9 +18,9 @@
     }
   },
   "growthReport": {
-    "generatedAt": "2026-09-09T02:32:44.679Z",
+    "generatedAt": "2026-09-09T03:30:59.869Z",
     "total": {
-      "landings": 171,
+      "landings": 176,
       "cta": 24,
       "uploads": 0,
       "genuine": 0,
@@ -31,7 +31,7 @@
     "sources": [
       {
         "source": "direct",
-        "landings": 154,
+        "landings": 155,
         "cta": 18,
         "uploads": 0,
         "genuine": 0,
@@ -69,6 +69,19 @@
         "landingToGenuine": 0
       },
       {
+        "source": "organic_flowtemp",
+        "landings": 2,
+        "cta": 1,
+        "uploads": 0,
+        "genuine": 0,
+        "shareIntent": 0,
+        "shareOpens": 0,
+        "checkouts": 0,
+        "landingToCta": 50,
+        "ctaToUpload": 0,
+        "landingToGenuine": 0
+      },
+      {
         "source": "organic_checklist",
         "landings": 2,
         "cta": 0,
@@ -95,6 +108,32 @@
         "landingToGenuine": 0
       },
       {
+        "source": "organic_heatloss",
+        "landings": 2,
+        "cta": 0,
+        "uploads": 0,
+        "genuine": 0,
+        "shareIntent": 0,
+        "shareOpens": 0,
+        "checkouts": 0,
+        "landingToCta": 0,
+        "ctaToUpload": null,
+        "landingToGenuine": 0
+      },
+      {
+        "source": "organic_questions",
+        "landings": 2,
+        "cta": 0,
+        "uploads": 0,
+        "genuine": 0,
+        "shareIntent": 0,
+        "shareOpens": 0,
+        "checkouts": 0,
+        "landingToCta": 0,
+        "ctaToUpload": null,
+        "landingToGenuine": 0
+      },
+      {
         "source": "organic_sizing",
         "landings": 2,
         "cta": 1,
@@ -104,19 +143,6 @@
         "shareOpens": 0,
         "checkouts": 0,
         "landingToCta": 50,
-        "ctaToUpload": 0,
-        "landingToGenuine": 0
-      },
-      {
-        "source": "organic_flowtemp",
-        "landings": 1,
-        "cta": 1,
-        "uploads": 0,
-        "genuine": 0,
-        "shareIntent": 0,
-        "shareOpens": 0,
-        "checkouts": 0,
-        "landingToCta": 100,
         "ctaToUpload": 0,
         "landingToGenuine": 0
       },
@@ -134,20 +160,7 @@
         "landingToGenuine": 0
       },
       {
-        "source": "organic_questions",
-        "landings": 1,
-        "cta": 0,
-        "uploads": 0,
-        "genuine": 0,
-        "shareIntent": 0,
-        "shareOpens": 0,
-        "checkouts": 0,
-        "landingToCta": 0,
-        "ctaToUpload": null,
-        "landingToGenuine": 0
-      },
-      {
-        "source": "organic_heatloss",
+        "source": "organic_bus",
         "landings": 1,
         "cta": 0,
         "uploads": 0,
@@ -200,12 +213,67 @@
   },
   "authoritativeSinceBaseline": {
     "baselineAt": "2026-09-09T00:38:16Z",
-    "landings": 6,
+    "landings": 11,
     "cta": 0,
     "uploads": 0,
     "genuine": 0,
     "shareIntent": 0,
     "shareOpens": 0,
     "checkouts": 0
+  },
+  "authoritativeSourcesSinceBaseline": {
+    "baselineAt": "2026-09-09T02:32:44Z",
+    "sources": [
+      {
+        "source": "direct",
+        "landings": 1,
+        "cta": 0,
+        "uploads": 0,
+        "genuine": 0,
+        "shareIntent": 0,
+        "shareOpens": 0,
+        "checkouts": 0
+      },
+      {
+        "source": "organic_flowtemp",
+        "landings": 1,
+        "cta": 0,
+        "uploads": 0,
+        "genuine": 0,
+        "shareIntent": 0,
+        "shareOpens": 0,
+        "checkouts": 0
+      },
+      {
+        "source": "organic_heatloss",
+        "landings": 1,
+        "cta": 0,
+        "uploads": 0,
+        "genuine": 0,
+        "shareIntent": 0,
+        "shareOpens": 0,
+        "checkouts": 0
+      },
+      {
+        "source": "organic_questions",
+        "landings": 1,
+        "cta": 0,
+        "uploads": 0,
+        "genuine": 0,
+        "shareIntent": 0,
+        "shareOpens": 0,
+        "checkouts": 0
+      },
+      {
+        "source": "organic_bus",
+        "landings": 1,
+        "cta": 0,
+        "uploads": 0,
+        "genuine": 0,
+        "shareIntent": 0,
+        "shareOpens": 0,
+        "checkouts": 0
+      }
+    ]
   }
 }
