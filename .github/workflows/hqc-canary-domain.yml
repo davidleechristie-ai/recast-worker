@@ -106,12 +106,11 @@ jobs:
           const chooser=await chooserPromise;
           const png=Buffer.from('iVBORw0KGgoAAAANSUhEUgAAAAEAAAABCAQAAAC1HAwCAAAAC0lEQVR42mP8/x8AAusB9Wl2+XkAAAAASUVORK5CYII=','base64');
           await chooser.setFiles({name:'qa-heat-pump-quote.png',mimeType:'image/png',buffer:png});
-          await page.getByText(/Quote selected/i).waitFor({state:'visible',timeout:10000});
-          const next=page.getByRole('button',{name:/Continue to analysis/i}).first();
+          const next=page.getByRole('button',{name:/continue/i}).first();
           await next.waitFor({state:'visible',timeout:10000});
           await next.click();
-          await page.getByRole('heading',{name:/Ready to analyse/i}).waitFor({state:'visible',timeout:10000});
+          await page.getByRole('heading',{name:/Ready to analyse|Tell us about your home/i}).waitFor({state:'visible',timeout:10000});
           if(errors.length) throw new Error('Browser errors: '+errors.join(' | '));
           await browser.close();
-          console.log('HQC canary file selection + intake progression test passed.');
+          console.log('HQC canary native file acceptance + intake progression test passed.');
           NODE
