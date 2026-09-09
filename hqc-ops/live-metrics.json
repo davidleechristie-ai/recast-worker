@@ -1,5 +1,5 @@
 {
-  "fetchedAt": "2026-09-09T02:31:36Z",
+  "fetchedAt": "2026-09-09T02:32:44Z",
   "metrics": {
     "genuineAnalyses": 0,
     "shareOpens": 0,
@@ -18,7 +18,7 @@
     }
   },
   "growthReport": {
-    "generatedAt": "2026-09-09T02:31:36.401Z",
+    "generatedAt": "2026-09-09T02:32:44.679Z",
     "total": {
       "landings": 171,
       "cta": 24,
@@ -197,5 +197,15 @@
       "Deploy one justified improvement",
       "Verify against genuine analyses, shares and anonymous outbound intent"
     ]
+  },
+  "authoritativeSinceBaseline": {
+    "baselineAt": "2026-09-09T00:38:16Z",
+    "landings": 6,
+    "cta": 0,
+    "uploads": 0,
+    "genuine": 0,
+    "shareIntent": 0,
+    "shareOpens": 0,
+    "checkouts": 0
   }
 }
