@@ -1,5 +1,5 @@
 {
-  "fetchedAt": "2026-09-09T08:33:15Z",
+  "fetchedAt": "2026-09-09T08:49:45Z",
   "metrics": {
     "genuineAnalyses": 0,
     "shareOpens": 0,
@@ -18,11 +18,11 @@
     }
   },
   "growthReport": {
-    "generatedAt": "2026-09-09T08:33:15.264Z",
+    "generatedAt": "2026-09-09T08:49:45.395Z",
     "total": {
-      "landings": 210,
-      "cta": 41,
-      "uploads": 0,
+      "landings": 221,
+      "cta": 51,
+      "uploads": 6,
       "genuine": 0,
       "shareIntent": 4,
       "shareOpens": 0,
@@ -31,15 +31,15 @@
     "sources": [
       {
         "source": "direct",
-        "landings": 188,
-        "cta": 35,
-        "uploads": 0,
+        "landings": 199,
+        "cta": 45,
+        "uploads": 6,
         "genuine": 0,
         "shareIntent": 4,
         "shareOpens": 0,
         "checkouts": 0,
-        "landingToCta": 19,
-        "ctaToUpload": 0,
+        "landingToCta": 23,
+        "ctaToUpload": 13,
         "landingToGenuine": 0
       },
       {
@@ -213,9 +213,9 @@
   },
   "authoritativeSinceBaseline": {
     "baselineAt": "2026-09-09T00:38:16Z",
-    "landings": 45,
-    "cta": 17,
-    "uploads": 0,
+    "landings": 56,
+    "cta": 27,
+    "uploads": 6,
     "genuine": 0,
     "shareIntent": 0,
     "shareOpens": 0,
@@ -227,9 +227,9 @@
     "sources": [
       {
         "source": "direct",
-        "landings": 34,
-        "cta": 17,
-        "uploads": 0,
+        "landings": 45,
+        "cta": 27,
+        "uploads": 6,
         "genuine": 0,
         "shareIntent": 0,
         "shareOpens": 0,
@@ -288,8 +288,8 @@
     ]
   },
   "autonomousDecisionGate": {
-    "status": "ACT",
-    "bottleneck": "checker start -> quote submission",
-    "action": "Prioritise quote-intake friction and instrumentation; do not add acquisition pages merely to increase traffic."
+    "status": "HOLD",
+    "bottleneck": "insufficient clean sample",
+    "action": "Do not churn production. Continue measurement and research until at least 15 clean landings or a downstream conversion event identifies an earlier actionable bottleneck."
   }
 }
