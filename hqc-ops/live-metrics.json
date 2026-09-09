@@ -1,5 +1,5 @@
 {
-  "fetchedAt": "2026-09-09T00:38:16Z",
+  "fetchedAt": "2026-09-09T01:30:22Z",
   "metrics": {
     "genuineAnalyses": 0,
     "shareOpens": 0,
@@ -18,7 +18,7 @@
     }
   },
   "growthReport": {
-    "generatedAt": "2026-09-09T00:38:16.270Z",
+    "generatedAt": "2026-09-09T01:30:22.901Z",
     "total": {
       "landings": 165,
       "cta": 24,
