@@ -4,7 +4,6 @@ on:
   push:
     branches: [main]
     paths:
-      - 'hqc-deploy-preview/**'
       - '.github/workflows/hqc-cloudflare-bridge.yml'
   workflow_dispatch:
 
