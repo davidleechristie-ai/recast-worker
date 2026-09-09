@@ -69,6 +69,7 @@ jobs:
           uploadfix=$(curl -L -sS --max-time 30 "$base/__hqc_upload_v3.js")
           grep -q 'upload-friction-v3' <<< "$uploadfix"
           grep -q 'input\[type="file"\]' <<< "$uploadfix"
+          grep -q 'Enter quote figures manually' <<< "$uploadfix"
           api=$(curl -L -sS --max-time 30 "$base/api/_healthcheck")
           grep -q 'Success' <<< "$api"
           qa_headers=$(mktemp)
