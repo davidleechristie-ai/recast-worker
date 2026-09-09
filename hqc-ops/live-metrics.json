@@ -1,5 +1,5 @@
 {
-  "fetchedAt": "2026-09-09T01:30:22Z",
+  "fetchedAt": "2026-09-09T02:31:36Z",
   "metrics": {
     "genuineAnalyses": 0,
     "shareOpens": 0,
@@ -18,9 +18,9 @@
     }
   },
   "growthReport": {
-    "generatedAt": "2026-09-09T01:30:22.901Z",
+    "generatedAt": "2026-09-09T02:31:36.401Z",
     "total": {
-      "landings": 165,
+      "landings": 171,
       "cta": 24,
       "uploads": 0,
       "genuine": 0,
@@ -31,7 +31,7 @@
     "sources": [
       {
         "source": "direct",
-        "landings": 152,
+        "landings": 154,
         "cta": 18,
         "uploads": 0,
         "genuine": 0,
@@ -44,19 +44,32 @@
       },
       {
         "source": "organic_compare",
-        "landings": 2,
+        "landings": 3,
         "cta": 1,
         "uploads": 0,
         "genuine": 0,
         "shareIntent": 0,
         "shareOpens": 0,
         "checkouts": 0,
-        "landingToCta": 50,
+        "landingToCta": 33,
         "ctaToUpload": 0,
         "landingToGenuine": 0
       },
       {
-        "source": "organic_radiators",
+        "source": "organic_price",
+        "landings": 3,
+        "cta": 0,
+        "uploads": 0,
+        "genuine": 0,
+        "shareIntent": 0,
+        "shareOpens": 0,
+        "checkouts": 0,
+        "landingToCta": 0,
+        "ctaToUpload": null,
+        "landingToGenuine": 0
+      },
+      {
+        "source": "organic_checklist",
         "landings": 2,
         "cta": 0,
         "uploads": 0,
@@ -69,7 +82,7 @@
         "landingToGenuine": 0
       },
       {
-        "source": "organic_price",
+        "source": "organic_radiators",
         "landings": 2,
         "cta": 0,
         "uploads": 0,
@@ -121,19 +134,6 @@
         "landingToGenuine": 0
       },
       {
-        "source": "organic_checklist",
-        "landings": 1,
-        "cta": 0,
-        "uploads": 0,
-        "genuine": 0,
-        "shareIntent": 0,
-        "shareOpens": 0,
-        "checkouts": 0,
-        "landingToCta": 0,
-        "ctaToUpload": null,
-        "landingToGenuine": 0
-      },
-      {
         "source": "organic_questions",
         "landings": 1,
         "cta": 0,
@@ -148,6 +148,19 @@
       },
       {
         "source": "organic_heatloss",
+        "landings": 1,
+        "cta": 0,
+        "uploads": 0,
+        "genuine": 0,
+        "shareIntent": 0,
+        "shareOpens": 0,
+        "checkouts": 0,
+        "landingToCta": 0,
+        "ctaToUpload": null,
+        "landingToGenuine": 0
+      },
+      {
+        "source": "professional",
         "landings": 1,
         "cta": 0,
         "uploads": 0,
