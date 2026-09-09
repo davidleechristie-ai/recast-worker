@@ -81,7 +81,7 @@ jobs:
           static=$(curl -L -sS --max-time 30 "$base/is-this-a-good-heat-pump-quote.html")
           grep -q 'Is this a good heat-pump quote' <<< "$static"
           echo 'HQC custom-domain canary passed: health, API proxy and current enhancement bundle verified.'
-      - name: Verify quote selection advances intake in mobile browser
+      - name: Verify quote intake paths in mobile browser
         working-directory: hqc-deploy-preview
         shell: bash
         run: |
@@ -91,7 +91,8 @@ jobs:
           node --input-type=module <<'NODE'
           import { chromium } from 'playwright';
           const browser=await chromium.launch({headless:true});
-          const page=await browser.newPage({viewport:{width:390,height:844},isMobile:true,hasTouch:true});
+          const context=await browser.newContext({viewport:{width:390,height:844},isMobile:true,hasTouch:true});
+          const page=await context.newPage();
           const errors=[]; page.on('pageerror',e=>errors.push(String(e)));
           await page.goto('https://cf-preview.homequotecheck.co.uk/?qa=1',{waitUntil:'networkidle',timeout:60000});
           const start=page.getByRole('button',{name:/check my quote/i}).first();
@@ -110,7 +111,22 @@ jobs:
           await next.waitFor({state:'visible',timeout:10000});
           await next.click();
           await page.getByRole('heading',{name:/Ready to analyse|Tell us about your home/i}).waitFor({state:'visible',timeout:10000});
-          if(errors.length) throw new Error('Browser errors: '+errors.join(' | '));
+          if(errors.length) throw new Error('Browser errors on file path: '+errors.join(' | '));
+
+          const manualPage=await context.newPage();
+          const manualErrors=[]; manualPage.on('pageerror',e=>manualErrors.push(String(e)));
+          await manualPage.goto('https://cf-preview.homequotecheck.co.uk/?qa=1&manual_path=1',{waitUntil:'networkidle',timeout:60000});
+          const manualStart=manualPage.getByRole('button',{name:/check my quote/i}).first();
+          await manualStart.waitFor({state:'visible',timeout:15000});
+          await manualStart.click();
+          const manual=manualPage.locator('#hqc-enter-manual');
+          await manual.waitFor({state:'visible',timeout:15000});
+          const before=await manualPage.locator('input:not([type="file"]),textarea,select').count();
+          await manual.click();
+          await manualPage.waitForTimeout(500);
+          const after=await manualPage.locator('input:not([type="file"]),textarea,select').count();
+          if(after<=before) throw new Error(`Manual-entry fallback did not reveal editable fields: before=${before} after=${after}`);
+          if(manualErrors.length) throw new Error('Browser errors on manual path: '+manualErrors.join(' | '));
           await browser.close();
-          console.log('HQC canary native file acceptance + intake progression test passed.');
+          console.log(`HQC canary quote intake paths passed: file progression and manual entry (${before} -> ${after} editable fields).`);
           NODE
