@@ -1,0 +1,13 @@
+{
+  "baselineAt": "2026-09-09T00:38:16Z",
+  "reason": "First post-integrity-guard snapshot after preview/canary/QA event exclusion was verified. Historical landing/CTA totals before this point are not treated as authoritative traction.",
+  "total": {
+    "landings": 165,
+    "cta": 24,
+    "uploads": 0,
+    "genuine": 0,
+    "shareIntent": 4,
+    "shareOpens": 0,
+    "checkouts": 0
+  }
+}
