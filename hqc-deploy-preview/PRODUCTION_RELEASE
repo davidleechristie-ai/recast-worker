@@ -1,4 +1,5 @@
-2026-09-09T08:49+01:00
-Promote the isolated Home Quote Check homepage house-artwork repair after successful custom-domain canary verification. This release replaces the conflicted/cropped composite artwork path with a clean house-only asset, removes zoom/negative-offset treatment via the dedicated artwork-fit layer, and preserves the recovered responsive/mobile and desktop layout code unchanged. Do not alter custom-domain routing or AppDeploy DNS.
+2026-09-09T08:52+01:00
+Re-run the isolated HQC house-artwork promotion with the production regression gate updated to validate the new house-only SVG rather than the retired composite-image selector. Product change remains limited to artwork presentation; recovered mobile responsiveness, desktop layout, upload flow, API proxy and custom-domain routing are unchanged.
 House artwork commits: e19074811e191a3ba20e8e338125eae2ed5f31c7, 72c70abf0537054efa78c77ac9744cddddad06d0, 8bbd51901a69e363c05679256d285a6e39441c52
+Production smoke-test update: fd3fa7a8fd9cdfca1635373d6a1218dbc1cb1e6d
 Canary: HQC custom-domain canary run 34325438517 passed.
