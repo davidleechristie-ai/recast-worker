@@ -1,5 +1,5 @@
 (()=>{
-  const VERSION='upload-friction-v3.2';
+  const VERSION='upload-friction-v3.3';
   const qs=(s,r=document)=>r.querySelector(s);
   const qsa=(s,r=document)=>[...r.querySelectorAll(s)];
   const text=n=>(n?.textContent||'').replace(/\s+/g,' ').trim();
@@ -9,7 +9,16 @@
   const nativeUploadControl=card=>qsa('button,a,[role="button"]',card).find(n=>!/^hqc-/.test(n.id||'')&&/(upload|add (a )?quote|choose (a )?file|browse|select (a )?(file|photo|image))/i.test(text(n)))||null;
   const nativeManualControl=card=>qsa('button,a,[role="button"]',card).find(n=>!/^hqc-/.test(n.id||'')&&/(enter|add|type).*(manual|figure)|manual.*(entry|figure)/i.test(text(n)))||null;
   function status(help,message){let s=qs('#hqc-upload-v3-status',help);if(!s){s=document.createElement('div');s.id='hqc-upload-v3-status';s.setAttribute('role','status');s.style.cssText='margin-top:10px;padding:10px 12px;border-radius:8px;background:#fff;color:#07503b;font-size:12px;font-weight:800';help.appendChild(s);}s.textContent=message;}
-  function surfaceContinue(card,help){const next=qsa('button',card).find(n=>/continue/i.test(text(n))&&!n.disabled);if(!next)return;next.textContent='Continue to analysis →';next.style.setProperty('min-height','48px','important');next.style.setProperty('font-weight','800','important');next.scrollIntoView?.({behavior:'smooth',block:'nearest'});status(help,'Quote selected ✓  Continue to analysis below.');}
+  function advanceAfterSelection(card,help){
+    status(help,'Quote selected ✓  Preparing your analysis…');
+    let attempts=0;
+    const timer=setInterval(()=>{
+      attempts++;
+      const next=qsa('button',card).find(n=>/continue/i.test(text(n))&&!n.disabled&&n.offsetParent!==null);
+      if(next){clearInterval(timer);next.click();return;}
+      if(attempts>=20){clearInterval(timer);status(help,'Quote selected ✓  Continue when the analysis button appears below.');}
+    },150);
+  }
   function simplify(help,choose,manual){
     const title=help.querySelector('b');
     const intro=title?.nextElementSibling;
@@ -32,7 +41,7 @@
       manual.style.setProperty('font-weight','800','important');
     }
   }
-  function openPicker(card,help){const input=bestFileInput(card);if(input){if(input.dataset.hqcV3Change!=='1'){input.dataset.hqcV3Change='1';input.addEventListener('change',()=>{if(input.files?.length)surfaceContinue(card,help);});}input.click();return true;}const native=nativeUploadControl(card);if(native){native.click();return true;}status(help,'Upload control could not be opened. Use “Enter quote figures manually” below.');return false;}
+  function openPicker(card,help){const input=bestFileInput(card);if(input){if(input.dataset.hqcV3Change!=='1'){input.dataset.hqcV3Change='1';input.addEventListener('change',()=>{if(input.files?.length)advanceAfterSelection(card,help);});}input.click();return true;}const native=nativeUploadControl(card);if(native){native.click();return true;}status(help,'Upload control could not be opened. Use “Enter quote figures manually” below.');return false;}
   function wire(){const choose=qs('#hqc-choose-file'),help=qs('#hqc-upload-help');if(!choose||!help||choose.dataset.hqcV3==='1')return;choose.dataset.hqcV3='1';help.dataset.hqcUploadVersion=VERSION;const card=cardFor(choose);const manual=qs('#hqc-enter-manual');simplify(help,choose,manual);
     const legacy=qs('.drop',card);if(legacy){legacy.dataset.hqcLegacyUpload='1';legacy.style.setProperty('position','absolute','important');legacy.style.setProperty('width','1px','important');legacy.style.setProperty('height','1px','important');legacy.style.setProperty('overflow','hidden','important');legacy.style.setProperty('clip-path','inset(50%)','important');}
     choose.addEventListener('click',ev=>{ev.preventDefault();ev.stopImmediatePropagation();openPicker(card,help);},true);
