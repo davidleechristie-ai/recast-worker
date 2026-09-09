@@ -3,6 +3,7 @@ import {dirname,join} from 'node:path';
 const ORIGIN='https://heat-pump-second-opinion-v43csv.v2.appdeploy.ai';
 const DEFAULT_TARGET='https://hqc-migration-preview.davidleechristie.workers.dev';
 const TARGET=(process.env.HQC_PUBLIC_ORIGIN||DEFAULT_TARGET).replace(/\/$/,'');
+const TARGET_HOST=new URL(TARGET).host;
 const SITE='site';
 await rm(SITE,{recursive:true,force:true});
 await mkdir(SITE,{recursive:true});
@@ -14,7 +15,13 @@ function localPath(ref){
   if(ref.startsWith('/'))return ref;
   return null;
 }
-function rewriteOrigins(body){return body.replaceAll('https://homequotecheck.co.uk',TARGET).replaceAll(ORIGIN,TARGET).replaceAll(DEFAULT_TARGET,TARGET);}
+function rewriteOrigins(body){
+  return body
+    .replaceAll('https://homequotecheck.co.uk',TARGET)
+    .replaceAll(ORIGIN,TARGET)
+    .replaceAll(DEFAULT_TARGET,TARGET)
+    .replaceAll('hqc-migration-preview.davidleechristie.workers.dev',TARGET_HOST);
+}
 function cleanHtml(body){
   return rewriteOrigins(body)
     .replace(/<script data-appdeploy-overlay-bootstrap>[\s\S]*?<\/script>/g,'')
