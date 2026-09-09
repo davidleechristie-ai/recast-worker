@@ -42,32 +42,28 @@ jobs:
         run: |
           set -euo pipefail
           base='https://cf-preview.homequotecheck.co.uk'
-          ok=false
-          for attempt in 1 2 3 4 5 6; do
+          ready=false
+          for attempt in 1 2 3 4 5 6 7 8 9 10 11 12; do
             code=$(curl -L -sS -o /tmp/canary -w '%{http_code}' --max-time 30 "$base/health" || true)
             body=$(cat /tmp/canary 2>/dev/null || true)
-            echo "attempt $attempt -> $code $body"
-            if [ "$code" = '200' ] && grep -q 'hqc-migration-preview' <<< "$body"; then ok=true; break; fi
+            home=$(curl -L -sS --max-time 30 "$base/?release_probe=$attempt" || true)
+            uploadfix=$(curl -L -sS --max-time 30 "$base/__hqc_upload_v3.js?release_probe=$attempt" || true)
+            stale=$(grep -c 'hqc-migration-preview.davidleechristie.workers.dev' <<< "$home" || true)
+            echo "attempt $attempt -> health=$code staleHost=$stale uploadV32=$(grep -c 'upload-friction-v3.2' <<< "$uploadfix" || true)"
+            if [ "$code" = '200' ] && grep -q 'hqc-migration-preview' <<< "$body" && grep -q '__hqc_enhancements.js' <<< "$home" && grep -q '__hqc_upload_v3.js' <<< "$home" && ! grep -q 'hqc-migration-preview.davidleechristie.workers.dev' <<< "$home" && ! grep -q 'heat-pump-second-opinion-v43csv.v2.appdeploy.ai' <<< "$home" && grep -q 'upload-friction-v3.2' <<< "$uploadfix"; then
+              ready=true
+              break
+            fi
             sleep 5
           done
-          test "$ok" = 'true'
-          home=$(curl -L -sS --max-time 30 "$base/")
-          grep -q '__hqc_enhancements.js' <<< "$home"
-          grep -q '__hqc_upload_v3.js' <<< "$home"
-          if grep -q 'hqc-migration-preview.davidleechristie.workers.dev' <<< "$home"; then
-            echo 'Canary frontend contains workers.dev public URLs'
-            exit 1
-          fi
-          if grep -q 'heat-pump-second-opinion-v43csv.v2.appdeploy.ai' <<< "$home"; then
-            echo 'Canary frontend exposes an obsolete AppDeploy frontend URL'
-            exit 1
-          fi
+          test "$ready" = 'true'
           enhancement=$(curl -L -sS --max-time 30 "$base/__hqc_enhancements.js")
           grep -q 'Quote evidence completeness' <<< "$enhancement"
           grep -q 'Choose screenshot / photo' <<< "$enhancement"
           grep -q 'Enter figures manually' <<< "$enhancement"
           uploadfix=$(curl -L -sS --max-time 30 "$base/__hqc_upload_v3.js")
-          grep -q 'upload-friction-v3' <<< "$uploadfix"
+          grep -q 'upload-friction-v3.2' <<< "$uploadfix"
+          grep -q 'Prefer not to upload? Enter quote figures' <<< "$uploadfix"
           grep -q 'input\[type="file"\]' <<< "$uploadfix"
           grep -q 'Enter quote figures manually' <<< "$uploadfix"
           api=$(curl -L -sS --max-time 30 "$base/api/_healthcheck")
@@ -80,7 +76,7 @@ jobs:
           echo 'HQC canary QA-event exclusion verified.'
           static=$(curl -L -sS --max-time 30 "$base/is-this-a-good-heat-pump-quote.html")
           grep -q 'Is this a good heat-pump quote' <<< "$static"
-          echo 'HQC custom-domain canary passed: health, API proxy and current enhancement bundle verified.'
+          echo 'HQC custom-domain canary passed: current assets, health, API proxy and enhancement bundle verified.'
       - name: Verify quote intake paths in mobile browser
         working-directory: hqc-deploy-preview
         shell: bash
@@ -123,6 +119,9 @@ jobs:
           await manualStart.click();
           const manual=manualPage.locator('#hqc-enter-manual');
           await manual.waitFor({state:'visible',timeout:15000});
+          await manual.getByText?.;
+          const manualLabel=(await manual.textContent())||'';
+          if(!/Prefer not to upload/i.test(manualLabel)) throw new Error('Manual-entry path is not presented as a first-class privacy-friendly alternative: '+manualLabel);
           const before=await manualPage.locator('input:not([type="file"]),textarea,select').count();
           await manual.click();
           await manualPage.waitForTimeout(500);
@@ -131,5 +130,5 @@ jobs:
           if(manualErrors.length) throw new Error('Browser errors on manual path: '+manualErrors.join(' | '));
           await manualContext.close();
           await browser.close();
-          console.log(`HQC canary quote intake paths passed: file progression and manual entry (${before} -> ${after} editable fields).`);
+          console.log(`HQC canary quote intake paths passed: file progression and first-class manual entry (${before} -> ${after} editable fields).`);
           NODE
