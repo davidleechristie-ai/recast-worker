@@ -48,7 +48,7 @@ jobs:
             sleep 3
           done
           test "$ok" = 'true'
-          for path in / /api/_healthcheck /robots.txt /resources/homepage-graphic.png /is-this-a-good-heat-pump-quote.html /__hqc_enhancements.js; do
+          for path in / /api/_healthcheck /robots.txt /resources/homepage-graphic.png /is-this-a-good-heat-pump-quote.html /__hqc_enhancements.js /__hqc_target_mobile.js; do
             code=$(curl -L -sS -o /tmp/hqc-check -w '%{http_code}' --max-time 30 "$base$path")
             echo "$path -> $code"
             test "$code" = '200'
@@ -56,7 +56,7 @@ jobs:
           home=$(curl -L -sS --max-time 30 "$base/")
           grep -q 'root' <<< "$home"
           grep -q '__hqc_enhancements.js' <<< "$home"
-          ! grep -q '__hqc_target_mobile.js' <<< "$home"
+          grep -q '__hqc_target_mobile.js' <<< "$home"
           if grep -q 'heat-pump-second-opinion-v43csv.v2.appdeploy.ai' <<< "$home"; then
             echo 'Frontend still references AppDeploy hosting origin'
             exit 1
@@ -77,12 +77,16 @@ jobs:
           grep -q 'Got a heat-pump quote? Check what’s missing before you sign.' <<< "$enhancement"
           grep -q 'Check my quote — free' <<< "$enhancement"
           grep -q 'Fastest way to start' <<< "$enhancement"
+          mobile=$(curl -L -sS --max-time 30 "$base/__hqc_target_mobile.js")
+          grep -q 'Check my quote — free' <<< "$mobile"
+          grep -q 'aspect-ratio:1.94/1' <<< "$mobile"
+          grep -q 'grid-template-columns:1fr' <<< "$mobile"
           api=$(curl -L -sS --max-time 30 "$base/api/_healthcheck")
           echo "api=$api"
           grep -q 'Success' <<< "$api"
           static=$(curl -L -sS --max-time 30 "$base/is-this-a-good-heat-pump-quote.html")
           grep -q 'Is this a good heat-pump quote' <<< "$static"
-          echo 'HQC Cloudflare growth preview verification passed.'
+          echo 'HQC Cloudflare compact-mobile preview verification passed.'
       - name: Inspect current HQC production routing
         shell: bash
         run: |
