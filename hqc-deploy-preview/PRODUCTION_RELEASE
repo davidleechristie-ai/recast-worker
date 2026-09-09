@@ -1,3 +1,3 @@
-2026-09-09T08:58+01:00
-Emergency production rollback of the compact mobile DOM rewrite after a blank-screen regression was reported on the Home Quote Check homepage. The target-mobile script is now inert; existing production assets, upload handoff, evidence safeguards and Cloudflare routing are retained. Mobile compaction will only be reintroduced after preview browser QA passes.
-Rollback commit: 41e6acd22dd8a0401a2a0b7cd67a428e342c9637
+2026-09-09T08:37+01:00
+Promote the validated checker-to-upload friction reduction after the clean post-integrity funnel crossed the action threshold: 32 authoritative landings, 9 checker starts and 0 uploads. The intake now makes the entire upload helper a file-picker target, uses a single full-width screenshot/photo/PDF action, preserves manual entry and privacy/evidence guardrails, and normalizes historical workers.dev origins during snapshot generation. Canary health, API proxy, custom-domain origin safety and mobile filechooser handoff all passed before production promotion.
+Canary source commits: a0a9226d44bdbc009cc7a970eba5a3ace7579688, 8f038bc9941118102ff270c4be6dedc7ec84b1d6
