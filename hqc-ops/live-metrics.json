@@ -1,5 +1,5 @@
 {
-  "fetchedAt": "2026-09-09T03:30:59Z",
+  "fetchedAt": "2026-09-09T05:33:18Z",
   "metrics": {
     "genuineAnalyses": 0,
     "shareOpens": 0,
@@ -18,7 +18,7 @@
     }
   },
   "growthReport": {
-    "generatedAt": "2026-09-09T03:30:59.869Z",
+    "generatedAt": "2026-09-09T05:33:18.700Z",
     "total": {
       "landings": 176,
       "cta": 24,
@@ -223,6 +223,7 @@
   },
   "authoritativeSourcesSinceBaseline": {
     "baselineAt": "2026-09-09T02:32:44Z",
+    "note": "Source deltas start later than the global validation baseline and are directional only; do not sum them to infer the full clean funnel.",
     "sources": [
       {
         "source": "direct",
@@ -275,5 +276,10 @@
         "checkouts": 0
       }
     ]
+  },
+  "autonomousDecisionGate": {
+    "status": "HOLD",
+    "bottleneck": "insufficient clean sample",
+    "action": "Do not churn production. Continue measurement and research until at least 15 clean landings or a downstream conversion event identifies an earlier actionable bottleneck."
   }
 }
