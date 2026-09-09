@@ -1,5 +1,5 @@
-2026-09-09T00:31+01:00
-Promote verified quote-intake micro-funnel diagnostics after canary success. This release adds privacy-safe anonymous events for chooser open, file selected, manual-entry open and upload-control unavailable, while marking canary/workers.dev/smoke/release probes as test traffic so QA is excluded from traction evidence.
-Instrumentation commit: 35b8db4e596d9824c650906cb86fcaa56294686b
-Test-traffic guard commit: 1aa14fbe2f59fa47faaf0fade79c3eee02391bc9
-Canary run: 34290942269 (success)
+2026-09-09T01:32+01:00
+Promote verified quote-intake simplification after canary success. This release removes unsupported diagnostic-event calls, collapses duplicate upload controls into one prominent screenshot/photo chooser, keeps manual entry as a clear fallback, surfaces the enabled Continue action immediately after file selection, and clarifies the analysis step without changing evidence or privacy guardrails.
+Intake simplification commit: 274acc5b3731e8434eb8953a28134a6e98deacb7
+Canary run: 34295335473 (success)
+Measured baseline before release: 159 landings, 18 checker starts, 0 uploads, 0 genuine analyses, 0 share opens, 0 outbound clicks.
