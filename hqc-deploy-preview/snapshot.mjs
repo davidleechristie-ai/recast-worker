@@ -22,7 +22,7 @@ function cleanHtml(body){
     .replace(/<script data-appdeploy-network-hook>[\s\S]*?<\/script>/g,'')
     .replaceAll('https://homequotecheck.co.uk',TARGET)
     .replaceAll(ORIGIN,TARGET)
-    .replace('</body>','<script src="/__hqc_enhancements.js" defer></script><script src="/__hqc_artwork_fit.js" defer></script><script src="/__hqc_upload_v3.js" defer></script></body>');
+    .replace('</body>','<script src="/__hqc_enhancements.js" defer></script><script src="/__hqc_artwork_fit.js" defer></script><script src="/__hqc_upload_v3.js" defer></script><script src="/__hqc_target_mobile.js" defer></script></body>');
 }
 async function save(path,binary=false){
   if(saved.has(path))return;
@@ -54,4 +54,5 @@ await copyFile('homepage-house-approved.png',join(SITE,'resources/homepage-graph
 await copyFile('enhancements-browser.js',join(SITE,'__hqc_enhancements.js'));
 await copyFile('artwork-fit.js',join(SITE,'__hqc_artwork_fit.js'));
 await copyFile('upload-friction-v3.js',join(SITE,'__hqc_upload_v3.js'));
-console.log(`HQC frontend snapshot complete for ${TARGET}: ${saved.size} fetched files + approved square artwork on stable hero path + enhancements + artwork fit + upload handoff v3`);
+await copyFile('target-mobile-design.js',join(SITE,'__hqc_target_mobile.js'));
+console.log(`HQC frontend snapshot complete for ${TARGET}: ${saved.size} fetched files + approved square artwork on stable hero path + enhancements + artwork fit + upload handoff v3 + compact mobile layout`);
