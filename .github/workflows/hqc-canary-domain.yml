@@ -105,6 +105,11 @@ jobs:
           const png=Buffer.from('iVBORw0KGgoAAAANSUhEUgAAAAEAAAABCAQAAAC1HAwCAAAAC0lEQVR42mP8/x8AAusB9Wl2+XkAAAAASUVORK5CYII=','base64');
           await chooser.setFiles({name:'qa-heat-pump-quote.png',mimeType:'image/png',buffer:png});
           await page.getByRole('heading',{name:/Ready to analyse|Tell us about your home/i}).waitFor({state:'visible',timeout:10000});
+          const analyse=page.getByRole('button',{name:/Analyse my quote/i}).first();
+          await analyse.waitFor({state:'visible',timeout:10000});
+          const analysisState=await analyse.evaluate(btn=>({disabled:btn.disabled,ariaDisabled:btn.getAttribute('aria-disabled'),text:btn.textContent,formInvalid:btn.form? !btn.form.checkValidity():null,required:[...document.querySelectorAll('input[required],select[required],textarea[required]')].map(x=>({name:x.getAttribute('name'),type:x.getAttribute('type'),value:x.value,visible:!!x.offsetParent,valid:x.checkValidity()}))}));
+          console.log('POST_UPLOAD_ANALYSIS_STATE',JSON.stringify(analysisState));
+          if(analysisState.disabled||analysisState.ariaDisabled==='true') throw new Error('Analyse action is disabled after a valid quote selection: '+JSON.stringify(analysisState));
           if(errors.length) throw new Error('Browser errors on file path: '+errors.join(' | '));
           await fileContext.close();
 
@@ -127,5 +132,5 @@ jobs:
           if(manualErrors.length) throw new Error('Browser errors on manual path: '+manualErrors.join(' | '));
           await manualContext.close();
           await browser.close();
-          console.log(`HQC canary quote intake paths passed: automatic file progression and first-class manual entry (${before} -> ${after} editable fields).`);
+          console.log(`HQC canary quote intake paths passed: automatic file progression, enabled analysis action and first-class manual entry (${before} -> ${after} editable fields).`);
           NODE
