@@ -1,5 +1,4 @@
-2026-09-09T06:50+01:00
-Restore the working homepage graphic asset after the clean-SVG experiment left the hero image absent on mobile. Snapshot again carries /resources/homepage-graphic.png, matching the existing single-layer responsive enhancement selector.
-Snapshot fix: a797dd4895b2464bb6153fd06a573c9ac8fe6b06
-Production gate update: 859272079f9ffa76b98752f00f75d7c4f8351605
-New release gate now requires the live hero image to be visible with non-zero rendered dimensions and a valid natural image size before the upload-flow interaction test can pass.
+2026-09-09T06:53+01:00
+Promote corrected HQC homepage illustration fit. Mobile crop reduced from 300% to 208%, recentered, and given a taller 1.62:1 frame so the house, heat pump and quote cards fit without excessive clipping. Desktop crop also relaxed.
+Image-fit commit: 60e53a3d9e06238e8ab3ad9a0507ebf25c7a1a40
+Existing production gate continues to require the live hero image to be visible with valid natural dimensions and the mobile quote-upload interaction to remain functional.
