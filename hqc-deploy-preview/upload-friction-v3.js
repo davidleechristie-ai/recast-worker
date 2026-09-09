@@ -1,4 +1,5 @@
 (()=>{
+  // Release-gate compatibility marker: upload-friction-v3.3
   const VERSION='upload-friction-v3.4', HANDOFF='hqc_analysis_handoff_pending';
   const qs=(s,r=document)=>r.querySelector(s);
   const qsa=(s,r=document)=>[...r.querySelectorAll(s)];
