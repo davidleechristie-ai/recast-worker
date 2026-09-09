@@ -91,8 +91,8 @@ jobs:
           node --input-type=module <<'NODE'
           import { chromium } from 'playwright';
           const browser=await chromium.launch({headless:true});
-          const context=await browser.newContext({viewport:{width:390,height:844},isMobile:true,hasTouch:true});
-          const page=await context.newPage();
+          const fileContext=await browser.newContext({viewport:{width:390,height:844},isMobile:true,hasTouch:true});
+          const page=await fileContext.newPage();
           const errors=[]; page.on('pageerror',e=>errors.push(String(e)));
           await page.goto('https://cf-preview.homequotecheck.co.uk/?qa=1',{waitUntil:'networkidle',timeout:60000});
           const start=page.getByRole('button',{name:/check my quote/i}).first();
@@ -112,8 +112,10 @@ jobs:
           await next.click();
           await page.getByRole('heading',{name:/Ready to analyse|Tell us about your home/i}).waitFor({state:'visible',timeout:10000});
           if(errors.length) throw new Error('Browser errors on file path: '+errors.join(' | '));
+          await fileContext.close();
 
-          const manualPage=await context.newPage();
+          const manualContext=await browser.newContext({viewport:{width:390,height:844},isMobile:true,hasTouch:true});
+          const manualPage=await manualContext.newPage();
           const manualErrors=[]; manualPage.on('pageerror',e=>manualErrors.push(String(e)));
           await manualPage.goto('https://cf-preview.homequotecheck.co.uk/?qa=1&manual_path=1',{waitUntil:'networkidle',timeout:60000});
           const manualStart=manualPage.getByRole('button',{name:/check my quote/i}).first();
@@ -127,6 +129,7 @@ jobs:
           const after=await manualPage.locator('input:not([type="file"]),textarea,select').count();
           if(after<=before) throw new Error(`Manual-entry fallback did not reveal editable fields: before=${before} after=${after}`);
           if(manualErrors.length) throw new Error('Browser errors on manual path: '+manualErrors.join(' | '));
+          await manualContext.close();
           await browser.close();
           console.log(`HQC canary quote intake paths passed: file progression and manual entry (${before} -> ${after} editable fields).`);
           NODE
