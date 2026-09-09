@@ -1,5 +1,5 @@
 {
-  "fetchedAt": "2026-09-09T12:32:56Z",
+  "fetchedAt": "2026-09-09T17:33:47Z",
   "metrics": {
     "genuineAnalyses": 2,
     "shareOpens": 0,
@@ -18,9 +18,9 @@
     }
   },
   "growthReport": {
-    "generatedAt": "2026-09-09T12:32:56.541Z",
+    "generatedAt": "2026-09-09T17:33:47.867Z",
     "total": {
-      "landings": 242,
+      "landings": 244,
       "cta": 72,
       "uploads": 16,
       "genuine": 2,
@@ -31,7 +31,7 @@
     "sources": [
       {
         "source": "direct",
-        "landings": 220,
+        "landings": 222,
         "cta": 66,
         "uploads": 16,
         "genuine": 2,
@@ -214,7 +214,7 @@
   },
   "authoritativeSinceBaseline": {
     "baselineAt": "2026-09-09T11:41:33Z",
-    "landings": 0,
+    "landings": 2,
     "cta": 0,
     "uploads": 0,
     "genuine": 0,
@@ -225,7 +225,18 @@
   "authoritativeSourcesSinceBaseline": {
     "baselineAt": "2026-09-09T11:41:33Z",
     "note": "Source deltas start later than the global validation baseline and are directional only; do not sum them to infer the full clean funnel.",
-    "sources": []
+    "sources": [
+      {
+        "source": "direct",
+        "landings": 2,
+        "cta": 0,
+        "uploads": 0,
+        "genuine": 0,
+        "shareIntent": 0,
+        "shareOpens": 0,
+        "checkouts": 0
+      }
+    ]
   },
   "autonomousDecisionGate": {
     "status": "HOLD",
