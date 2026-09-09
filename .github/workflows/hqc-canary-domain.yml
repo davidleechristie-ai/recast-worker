@@ -119,7 +119,6 @@ jobs:
           await manualStart.click();
           const manual=manualPage.locator('#hqc-enter-manual');
           await manual.waitFor({state:'visible',timeout:15000});
-          await manual.getByText?.;
           const manualLabel=(await manual.textContent())||'';
           if(!/Prefer not to upload/i.test(manualLabel)) throw new Error('Manual-entry path is not presented as a first-class privacy-friendly alternative: '+manualLabel);
           const before=await manualPage.locator('input:not([type="file"]),textarea,select').count();
