@@ -1,188 +1,215 @@
 {
-  "fetchedAt": "2026-09-09T00:29:43Z",
-  "metrics": {
-    "genuineAnalyses": 0,
-    "shareOpens": 0,
-    "outboundClicks": 0,
-    "targets": {
-      "genuineAnalyses": 100,
-      "shareOpens": 20,
-      "outboundClicks": 10
-    },
-    "evidence": {
-      "ofgemPel": {
-        "lastUpdated": "2026-07-23",
-        "scope": "Administrative product-list context only; not overall BUS eligibility; SCOP not assessed"
-      },
-      "mcs": "Authoritative deterministic quote-reference lookup not enabled"
-    }
-  },
+  "fetchedAt": "2026-09-10T00:29:46.300053Z",
   "growthReport": {
-    "generatedAt": "2026-09-09T00:29:43.821Z",
-    "total": {
-      "landings": 159,
-      "cta": 18,
-      "uploads": 0,
-      "genuine": 0,
-      "shareIntent": 4,
-      "shareOpens": 0,
-      "checkouts": 0
-    },
-    "sources": [
-      {
-        "source": "direct",
-        "landings": 146,
-        "cta": 12,
-        "uploads": 0,
-        "genuine": 0,
-        "shareIntent": 4,
-        "shareOpens": 0,
-        "checkouts": 0,
-        "landingToCta": 8,
-        "ctaToUpload": 0,
-        "landingToGenuine": 0
-      },
-      {
-        "source": "organic_compare",
-        "landings": 2,
-        "cta": 1,
-        "uploads": 0,
-        "genuine": 0,
-        "shareIntent": 0,
-        "shareOpens": 0,
-        "checkouts": 0,
-        "landingToCta": 50,
-        "ctaToUpload": 0,
-        "landingToGenuine": 0
-      },
-      {
-        "source": "organic_radiators",
-        "landings": 2,
-        "cta": 0,
-        "uploads": 0,
-        "genuine": 0,
-        "shareIntent": 0,
-        "shareOpens": 0,
-        "checkouts": 0,
-        "landingToCta": 0,
-        "ctaToUpload": null,
-        "landingToGenuine": 0
-      },
-      {
-        "source": "organic_price",
-        "landings": 2,
-        "cta": 0,
-        "uploads": 0,
-        "genuine": 0,
-        "shareIntent": 0,
-        "shareOpens": 0,
-        "checkouts": 0,
-        "landingToCta": 0,
-        "ctaToUpload": null,
-        "landingToGenuine": 0
-      },
-      {
-        "source": "organic_sizing",
-        "landings": 2,
-        "cta": 1,
-        "uploads": 0,
-        "genuine": 0,
-        "shareIntent": 0,
-        "shareOpens": 0,
-        "checkouts": 0,
-        "landingToCta": 50,
-        "ctaToUpload": 0,
-        "landingToGenuine": 0
-      },
-      {
-        "source": "organic_flowtemp",
-        "landings": 1,
-        "cta": 1,
-        "uploads": 0,
-        "genuine": 0,
-        "shareIntent": 0,
-        "shareOpens": 0,
-        "checkouts": 0,
-        "landingToCta": 100,
-        "ctaToUpload": 0,
-        "landingToGenuine": 0
-      },
-      {
-        "source": "organic_goodquote",
-        "landings": 1,
-        "cta": 3,
-        "uploads": 0,
-        "genuine": 0,
-        "shareIntent": 0,
-        "shareOpens": 0,
-        "checkouts": 0,
-        "landingToCta": 300,
-        "ctaToUpload": 0,
-        "landingToGenuine": 0
-      },
-      {
-        "source": "organic_checklist",
-        "landings": 1,
-        "cta": 0,
-        "uploads": 0,
-        "genuine": 0,
-        "shareIntent": 0,
-        "shareOpens": 0,
-        "checkouts": 0,
-        "landingToCta": 0,
-        "ctaToUpload": null,
-        "landingToGenuine": 0
-      },
-      {
-        "source": "organic_questions",
-        "landings": 1,
-        "cta": 0,
-        "uploads": 0,
-        "genuine": 0,
-        "shareIntent": 0,
-        "shareOpens": 0,
-        "checkouts": 0,
-        "landingToCta": 0,
-        "ctaToUpload": null,
-        "landingToGenuine": 0
-      },
-      {
-        "source": "organic_heatloss",
-        "landings": 1,
-        "cta": 0,
-        "uploads": 0,
-        "genuine": 0,
-        "shareIntent": 0,
-        "shareOpens": 0,
-        "checkouts": 0,
-        "landingToCta": 0,
-        "ctaToUpload": null,
-        "landingToGenuine": 0
-      },
-      {
-        "source": "shared_case",
-        "landings": 0,
-        "cta": 0,
-        "uploads": 0,
-        "genuine": 0,
-        "shareIntent": 0,
-        "shareOpens": 0,
-        "checkouts": 0,
-        "landingToCta": null,
-        "ctaToUpload": null,
-        "landingToGenuine": null
-      }
-    ],
-    "recommendations": [
-      "Landing-to-CTA is weak: improve message match, trust proof and CTA prominence before adding more traffic.",
-      "No qualified organic cohort yet: keep expanding long-tail decision pages and internal links, then measure genuine analyses rather than clicks."
-    ],
+    "generatedAt": "2026-09-10T00:29:46.265Z",
     "loop": [
       "Acquire qualified homeowners",
       "Measure source funnels",
       "Diagnose the largest constraint",
       "Deploy one justified improvement",
       "Verify against genuine analyses, shares and anonymous outbound intent"
-    ]
+    ],
+    "recommendations": [
+      "Landing-to-CTA is weak: improve message match, trust proof and CTA prominence before adding more traffic.",
+      "Share loop is below the 20% validation threshold: strengthen Decision Case sharing and recipient conversion.",
+      "No qualified organic cohort yet: keep expanding long-tail decision pages and internal links, then measure genuine analyses rather than clicks."
+    ],
+    "sources": [
+      {
+        "checkouts": 0,
+        "cta": 66,
+        "ctaToUpload": 24,
+        "genuine": 2,
+        "landingToCta": 29,
+        "landingToGenuine": 1,
+        "landings": 224,
+        "shareIntent": 4,
+        "shareOpens": 0,
+        "source": "direct",
+        "uploads": 16
+      },
+      {
+        "checkouts": 0,
+        "cta": 1,
+        "ctaToUpload": 0,
+        "genuine": 0,
+        "landingToCta": 25,
+        "landingToGenuine": 0,
+        "landings": 4,
+        "shareIntent": 0,
+        "shareOpens": 0,
+        "source": "organic_compare",
+        "uploads": 0
+      },
+      {
+        "checkouts": 0,
+        "cta": 0,
+        "ctaToUpload": null,
+        "genuine": 0,
+        "landingToCta": 0,
+        "landingToGenuine": 0,
+        "landings": 4,
+        "shareIntent": 0,
+        "shareOpens": 0,
+        "source": "organic_price",
+        "uploads": 0
+      },
+      {
+        "checkouts": 0,
+        "cta": 0,
+        "ctaToUpload": null,
+        "genuine": 0,
+        "landingToCta": 0,
+        "landingToGenuine": 0,
+        "landings": 3,
+        "shareIntent": 0,
+        "shareOpens": 0,
+        "source": "organic_checklist",
+        "uploads": 0
+      },
+      {
+        "checkouts": 0,
+        "cta": 1,
+        "ctaToUpload": 0,
+        "genuine": 0,
+        "landingToCta": 50,
+        "landingToGenuine": 0,
+        "landings": 2,
+        "shareIntent": 0,
+        "shareOpens": 0,
+        "source": "organic_flowtemp",
+        "uploads": 0
+      },
+      {
+        "checkouts": 0,
+        "cta": 0,
+        "ctaToUpload": null,
+        "genuine": 0,
+        "landingToCta": 0,
+        "landingToGenuine": 0,
+        "landings": 2,
+        "shareIntent": 0,
+        "shareOpens": 0,
+        "source": "organic_radiators",
+        "uploads": 0
+      },
+      {
+        "checkouts": 0,
+        "cta": 0,
+        "ctaToUpload": null,
+        "genuine": 0,
+        "landingToCta": 0,
+        "landingToGenuine": 0,
+        "landings": 2,
+        "shareIntent": 0,
+        "shareOpens": 0,
+        "source": "organic_heatloss",
+        "uploads": 0
+      },
+      {
+        "checkouts": 0,
+        "cta": 0,
+        "ctaToUpload": null,
+        "genuine": 0,
+        "landingToCta": 0,
+        "landingToGenuine": 0,
+        "landings": 2,
+        "shareIntent": 0,
+        "shareOpens": 0,
+        "source": "organic_questions",
+        "uploads": 0
+      },
+      {
+        "checkouts": 0,
+        "cta": 0,
+        "ctaToUpload": null,
+        "genuine": 0,
+        "landingToCta": 0,
+        "landingToGenuine": 0,
+        "landings": 2,
+        "shareIntent": 0,
+        "shareOpens": 0,
+        "source": "organic_bus",
+        "uploads": 0
+      },
+      {
+        "checkouts": 0,
+        "cta": 1,
+        "ctaToUpload": 0,
+        "genuine": 0,
+        "landingToCta": 50,
+        "landingToGenuine": 0,
+        "landings": 2,
+        "shareIntent": 0,
+        "shareOpens": 0,
+        "source": "organic_sizing",
+        "uploads": 0
+      },
+      {
+        "checkouts": 0,
+        "cta": 0,
+        "ctaToUpload": null,
+        "genuine": 0,
+        "landingToCta": 0,
+        "landingToGenuine": 0,
+        "landings": 2,
+        "shareIntent": 0,
+        "shareOpens": 0,
+        "source": "professional",
+        "uploads": 0
+      },
+      {
+        "checkouts": 0,
+        "cta": 3,
+        "ctaToUpload": 0,
+        "genuine": 0,
+        "landingToCta": 300,
+        "landingToGenuine": 0,
+        "landings": 1,
+        "shareIntent": 0,
+        "shareOpens": 0,
+        "source": "organic_goodquote",
+        "uploads": 0
+      },
+      {
+        "checkouts": 0,
+        "cta": 0,
+        "ctaToUpload": null,
+        "genuine": 0,
+        "landingToCta": null,
+        "landingToGenuine": null,
+        "landings": 0,
+        "shareIntent": 0,
+        "shareOpens": 0,
+        "source": "shared_case",
+        "uploads": 0
+      }
+    ],
+    "total": {
+      "checkouts": 0,
+      "cta": 72,
+      "genuine": 2,
+      "landings": 250,
+      "shareIntent": 4,
+      "shareOpens": 0,
+      "uploads": 16
+    }
+  },
+  "metrics": {
+    "evidence": {
+      "mcs": "Authoritative deterministic quote-reference lookup not enabled",
+      "ofgemPel": {
+        "lastUpdated": "2026-07-23",
+        "scope": "Administrative product-list context only; not overall BUS eligibility; SCOP not assessed"
+      }
+    },
+    "genuineAnalyses": 2,
+    "outboundClicks": 0,
+    "shareOpens": 0,
+    "targets": {
+      "genuineAnalyses": 100,
+      "outboundClicks": 10,
+      "shareOpens": 20
+    }
   }
 }
