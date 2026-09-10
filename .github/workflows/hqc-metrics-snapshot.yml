@@ -52,15 +52,33 @@ jobs:
         shell: bash
         run: |
           set -euo pipefail
-          if git diff --quiet -- hqc-deploy-preview/live-metrics.json; then
-            echo 'No metrics change to persist'
-            exit 0
-          fi
+          snapshot_file='hqc-deploy-preview/live-metrics.json'
+          cp "$snapshot_file" /tmp/hqc-live-metrics.json
           git config user.name 'github-actions[bot]'
           git config user.email '41898282+github-actions[bot]@users.noreply.github.com'
-          git add hqc-deploy-preview/live-metrics.json
-          git commit -m 'Update HQC live metrics snapshot'
-          git push
+
+          for attempt in 1 2 3; do
+            git fetch origin main
+            git reset --hard origin/main
+            cp /tmp/hqc-live-metrics.json "$snapshot_file"
+
+            if git diff --quiet -- "$snapshot_file"; then
+              echo 'No metrics change to persist'
+              exit 0
+            fi
+
+            git add "$snapshot_file"
+            git commit -m 'Update HQC live metrics snapshot'
+            if git push origin HEAD:main; then
+              exit 0
+            fi
+
+            echo "Metrics push raced with another main update; retrying ($attempt/3)"
+            sleep $((attempt * 2))
+          done
+
+          echo 'Unable to persist metrics after 3 race-safe retries' >&2
+          exit 1
       - uses: actions/upload-artifact@v4
         with:
           name: hqc-north-star-metrics
