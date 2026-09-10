@@ -1,6 +1,5 @@
 name: HQC North Star metrics snapshot
 
-# autonomous run trigger: 2026-09-10T00:27Z
 on:
   push:
     branches: [main]
@@ -11,12 +10,15 @@ on:
   workflow_dispatch:
 
 permissions:
-  contents: read
+  contents: write
 
 jobs:
   snapshot:
     runs-on: ubuntu-latest
     steps:
+      - uses: actions/checkout@v4
+        with:
+          fetch-depth: 1
       - name: Read production North Star metrics
         shell: bash
         run: |
@@ -28,7 +30,7 @@ jobs:
           curl -fsSL --max-time 30 "$base/api/growth-report" | tee hqc-metrics/growth-report.json
           echo
           python - <<'PY'
-          import json
+          import json, datetime
           m=json.load(open('hqc-metrics/metrics.json'))
           g=json.load(open('hqc-metrics/growth-report.json'))
           print('NORTH_STAR_METRICS')
@@ -37,7 +39,28 @@ jobs:
           print('VALIDATION_TARGETS', json.dumps(m.get('validationTargets',{}), sort_keys=True))
           print('GROWTH_RECOMMENDATION', g.get('recommendation'))
           print('SOURCE_FUNNELS', json.dumps(g.get('sources',[]), sort_keys=True))
+          payload={
+            'fetchedAt': datetime.datetime.now(datetime.timezone.utc).isoformat().replace('+00:00','Z'),
+            'metrics': m,
+            'growthReport': g,
+          }
+          with open('hqc-deploy-preview/live-metrics.json','w') as f:
+              json.dump(payload,f,indent=2,sort_keys=True)
+              f.write('\n')
           PY
+      - name: Persist latest production metrics
+        shell: bash
+        run: |
+          set -euo pipefail
+          if git diff --quiet -- hqc-deploy-preview/live-metrics.json; then
+            echo 'No metrics change to persist'
+            exit 0
+          fi
+          git config user.name 'github-actions[bot]'
+          git config user.email '41898282+github-actions[bot]@users.noreply.github.com'
+          git add hqc-deploy-preview/live-metrics.json
+          git commit -m 'Update HQC live metrics snapshot'
+          git push
       - uses: actions/upload-artifact@v4
         with:
           name: hqc-north-star-metrics
