@@ -1,5 +1,6 @@
 name: HQC North Star metrics snapshot
 
+# autonomous run trigger: 2026-09-10T00:27Z
 on:
   push:
     branches: [main]
