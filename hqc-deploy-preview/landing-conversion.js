@@ -18,8 +18,9 @@
       reassurance.style.cssText='margin:0 0 12px;max-width:520px;font-size:13px;line-height:1.45;color:#42566f';
       btn.insertAdjacentElement('beforebegin',reassurance);
     }
+    // The metrics API has a fixed event vocabulary. Keep variant attribution on the
+    // supported CTA event instead of emitting a separate unsupported exposure event.
     btn.addEventListener('click',()=>emit('checker_cta_clicked',{placement:'homepage_hero'}),{once:true});
-    emit('landing_variant_exposed',{placement:'homepage_hero'});
   };
   new MutationObserver(apply).observe(document.documentElement,{childList:true,subtree:true});
   apply();
