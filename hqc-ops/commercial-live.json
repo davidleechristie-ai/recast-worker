@@ -1,5 +1,5 @@
 {
-  "fetchedAt": "2026-09-11T14:27:47Z",
+  "fetchedAt": "2026-09-11T15:27:01Z",
   "northStar": {
     "targetMonthlyRevenueGBP": 500,
     "revenueAvailable": false,
@@ -7,19 +7,19 @@
   },
   "baselineAt": "2026-09-11T08:30:08Z",
   "total": {
-    "landings": 356,
-    "cta": 23,
-    "uploads": 8,
-    "genuine": 2,
+    "landings": 366,
+    "cta": 21,
+    "uploads": 5,
+    "genuine": 1,
     "shareIntent": 2,
     "shareOpens": 0,
     "checkouts": 0
   },
   "sinceCommercialBaseline": {
-    "landings": 93,
-    "cta": -49,
-    "uploads": -8,
-    "genuine": 0,
+    "landings": 103,
+    "cta": -51,
+    "uploads": -11,
+    "genuine": -1,
     "shareIntent": -2,
     "shareOpens": 0,
     "checkouts": 0
@@ -27,20 +27,20 @@
   "sources": [
     {
       "source": "direct",
-      "landings": 300,
-      "cta": 21,
-      "uploads": 8,
-      "genuine": 2,
+      "landings": 309,
+      "cta": 19,
+      "uploads": 5,
+      "genuine": 1,
       "shareIntent": 2,
       "shareOpens": 0,
       "checkouts": 0,
-      "landingToCta": 7,
-      "ctaToUpload": 38,
-      "landingToGenuine": 1
+      "landingToCta": 6,
+      "ctaToUpload": 26,
+      "landingToGenuine": 0
     },
     {
       "source": "organic_goodquote_static",
-      "landings": 23,
+      "landings": 22,
       "cta": 0,
       "uploads": 0,
       "genuine": 0,
@@ -53,7 +53,7 @@
     },
     {
       "source": "organic_goodquote_static_bottom",
-      "landings": 17,
+      "landings": 19,
       "cta": 0,
       "uploads": 0,
       "genuine": 0,
