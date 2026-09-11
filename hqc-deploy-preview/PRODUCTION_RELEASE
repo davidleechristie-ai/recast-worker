@@ -1,13 +1,13 @@
-2026-09-11T10:34+01:00
-Promote the next low-risk landing-to-checker conversion experiment after the approved homepage layout.
+2026-09-11T11:02+01:00
+Promote the £19 Home Quote Check Decision Pack payment flow to production.
 
-Fresh measured state before this change: 264 total landings, 72 checker starts, 16 uploads, 2 historical genuine-analysis markers, 0 share opens and 0 checkouts. Against the post-layout baseline, traffic moved but checker starts, uploads and genuine analyses did not, so the earliest measured constraint remains landing/search source → checker start.
+The implementation uses the existing live Stripe product price price_1UER4fCnmTy7aZ0Hp1zMfDYT and the STRIPE_SECRET_KEY stored as a Cloudflare Worker secret. Checkout is Stripe-hosted, one-off only, and associated to an opaque HQC case reference. Uploaded quote contents are not sent to Stripe.
 
-Current UK search research shows many competing heat-pump journeys are installer-matching or quote-generation services, while decision content focuses on checklists and quote completeness. HQC's differentiator is therefore made explicit in the hero: “Independent quote check — not an installer lead form. We do not sell your details or match you to installers.” The supporting copy now starts with the user's existing quote and the existing free CTA remains primary.
+Payment unlock is not trusted from the return URL: the Cloudflare Worker retrieves the Checkout Session from Stripe server-side and verifies payment status plus matching case/product metadata before the Decision Pack is marked paid. QA/non-production checkout is blocked and existing QA event exclusion remains in place.
 
-Hypothesis: qualified homeowners may mistake HQC for another lead-generation/comparison form and avoid starting. Making the independence and existing-quote proposition explicit should improve checker-start rate without adding acquisition spend, personal-data collection, installer incentives or regulatory risk.
+Paid Decision Pack actions currently expose second-quote progression, installer clarification questions and a printable Decision Case while retaining evidence guardrails: no design certification, installer approval or grant-eligibility confirmation.
 
-No payment, evidence, certification, grant-eligibility, DNS or backend logic is changed.
+A render-loop defect detected during canary verification was fixed before release by making Decision Pack rendering state-keyed and idempotent.
 
-Product commit: cf1427ea64e8a2b25c70520c5e3801d4fa96b490
-Canary: HQC custom-domain canary run 34584703218 passed successfully, including snapshot, Cloudflare canary deployment, custom-domain verification and mobile quote-intake smoke tests.
+Product commits: 06af542db23361720003a2fa91541b336b916324 and b7c46204ccd4b830e39bb5ceb4a1dd48a6d7b353
+Canary: HQC custom-domain canary run 34586970993 passed successfully, including snapshot, Cloudflare canary deployment, custom-domain verification, API proxy verification and mobile quote-intake smoke tests.
