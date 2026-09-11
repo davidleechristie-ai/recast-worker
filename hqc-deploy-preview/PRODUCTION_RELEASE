@@ -1,20 +1,16 @@
-2026-09-11T20:35+01:00
-Promote canary-verified extended HQC durable funnel measurement to production.
+2026-09-11T20:39+01:00
+Promote canary-verified same-epoch extended HQC funnel measurement to production.
 
-Measured hypothesis:
-- the clean durable sample is still too small to justify another acquisition or conversion-page change;
-- the current durable report does not cover several required funnel stages, so it cannot yet identify the earliest/largest bottleneck across multi-quote, Decision Case, installer-question/share and recipient-start progression.
-
-Low-risk measurement improvement:
-- retain the existing authoritative durable counters for landings, checker CTA, uploads, unique genuine analyses, share opens, outbound clicks and checkouts;
-- add privacy-safe cumulative counters for unique multi-quote analyses, unique Decision Cases, unique cases where installer questions are copied, and shared-case recipient checker starts;
-- expose aggregate funnel rates without adding personal data;
-- give the extended counters their own measurement start timestamp so no historical behaviour is invented or silently backfilled;
-- delay share/multi-quote optimisation recommendations until adequate sample sizes exist.
+Measurement integrity correction:
+- preserve cumulative authoritative North Star counters and their original measurement epoch;
+- keep new downstream funnel counters for multi-quote analysis, Decision Case, installer questions and recipient checker starts;
+- add an extendedGenuine denominator that begins with the extended funnel measurement epoch so multi-quote and Decision Case rates never mix historical and newly introduced counters;
+- use sample thresholds before downstream recommendations, avoiding false bottleneck diagnoses from tiny cohorts;
+- QA/demo/test traffic remains excluded, no personal data is added, and no historical values are invented or backfilled.
 
 Canary verification:
-- custom-domain canary #182 passed snapshot, Cloudflare deployment, domain/API verification and both mobile quote-intake paths;
+- custom-domain canary #184 passed snapshot, Cloudflare deployment, domain/API verification and both mobile quote-intake paths;
 - no AppDeploy deployment is involved;
 - preserve current custom-domain routing and same-origin /api proxy.
 
-Deploy via the existing guarded hqc-production workflow and verify production before using the extended funnel for growth decisions.
+Deploy via the existing guarded hqc-production workflow and remeasure durable production metrics before making the next growth change.
