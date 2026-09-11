@@ -1,16 +1,14 @@
-2026-09-11T14:03+01:00
-Promote the approved action-led results layout fix.
+2026-09-11T14:09+01:00
+Promote the approved Quote Facts cleanup.
 
-This release keeps the personalised £19 Decision Pack, resilient quote intake and runtime asset/service-worker fixes, and corrects the Decision Case layout shown in production:
-- remove the empty third-column space left after Evidence status was hidden;
-- render What to do next and Questions to ask installers as a balanced two-column decision row on desktop and stacked cards on mobile;
-- fix the Do this action text that was collapsing into a one-word-wide implicit grid column;
-- present Do this actions as readable highlighted action boxes beneath each issue;
-- expand the primary send-questions action to match the approved design.
+This release keeps the personalised £19 Decision Pack, resilient quote intake, runtime asset/service-worker fixes and approved action-led results layout, and additionally:
+- renames the visible panel from "Quote facts and provenance" to "Quote Facts";
+- adds a concise explanatory line: "Key details extracted from this quote. Values may be estimates where not explicitly stated.";
+- removes the raw internal state token "CLAIMED_NOT_VERIFIED" from the customer-facing results;
+- replaces that internal token with the plain-English wording "Claimed in quote — not independently verified".
 
-Free remains genuinely useful: multiple quote upload and comparison, extracted facts, material differences, evidence gaps and core next steps remain outside the paywall.
-Paid remains the personalised decision layer after verified Stripe payment.
+No free/paid functionality boundary changes are introduced in this release.
 
-Approved results layout script commit: 6c4a8526186193e5f4d11e89388b384cb84cb52a
-Snapshot injection commit: addbd41cc1b78e4e095448c32b6fde42fbdc16c3
-Runtime asset commit: 09e8663f29fe21f4c8c7112e61e5bc8095d35e1b
+Quote Facts polish script commit: a0c2ba910f531453b91cc65b49def0fd37555cdb
+Snapshot injection commit: b135c21e6d83f65762db30a76bc91ae0cdc1f629
+Approved results layout commit: 6c4a8526186193e5f4d11e89388b384cb84cb52a
