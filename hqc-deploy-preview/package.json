@@ -1,1 +1,1 @@
-{"name":"hqc-cloudflare-preview","private":true,"version":"1.0.0","type":"module","scripts":{"deploy":"wrangler deploy"},"devDependencies":{"wrangler":"^4.37.0"}}
+{"name":"hqc-cloudflare-preview","private":true,"version":"1.0.0","type":"module","scripts":{"deploy":"wrangler deploy"},"devDependencies":{"pdfjs-dist":"^5.4.149","wrangler":"^4.37.0"}}
