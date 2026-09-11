@@ -1,137 +1,81 @@
 {
-  "fetchedAt": "2026-09-11T19:25:03Z",
+  "fetchedAt": "2026-09-11T19:33:22Z",
+  "durable": true,
+  "measurementStartedAt": "2026-09-11T18:33:07.244Z",
   "northStar": {
-    "targetMonthlyRevenueGBP": 500,
-    "revenueAvailable": false,
-    "note": "Authoritative payment revenue feed is not connected; never infer revenue from intent or checkout counts."
+    "genuineAnalyses": {
+      "current": 1,
+      "target": 100
+    },
+    "shareOpens": {
+      "current": 0,
+      "target": 20
+    },
+    "outboundActions": {
+      "current": 0,
+      "target": 10
+    },
+    "note": "Cumulative Cloudflare-side validation counters. QA/demo/test traffic is excluded; payment intent is not treated as revenue."
   },
-  "baselineAt": "2026-09-11T08:30:08Z",
   "total": {
-    "landings": 342,
-    "cta": 16,
-    "uploads": 5,
-    "genuine": 0,
-    "shareIntent": 2,
+    "landings": 8,
+    "cta": 0,
+    "uploads": 1,
+    "genuine": 1,
+    "shareIntent": 0,
     "shareOpens": 0,
-    "checkouts": 0
-  },
-  "sinceCommercialBaseline": {
-    "landings": 79,
-    "cta": -56,
-    "uploads": -11,
-    "genuine": -2,
-    "shareIntent": -2,
-    "shareOpens": 0,
+    "outboundClicks": 0,
     "checkouts": 0
   },
   "sources": [
     {
       "source": "direct",
-      "landings": 292,
-      "cta": 14,
-      "uploads": 5,
-      "genuine": 0,
-      "shareIntent": 2,
-      "shareOpens": 0,
-      "checkouts": 0,
-      "landingToCta": 5,
-      "ctaToUpload": 36,
-      "landingToGenuine": 0
-    },
-    {
-      "source": "organic_goodquote_static",
-      "landings": 21,
+      "landings": 6,
       "cta": 0,
-      "uploads": 0,
-      "genuine": 0,
+      "uploads": 1,
+      "genuine": 1,
       "shareIntent": 0,
       "shareOpens": 0,
+      "outboundClicks": 0,
       "checkouts": 0,
       "landingToCta": 0,
       "ctaToUpload": null,
-      "landingToGenuine": 0
+      "landingToGenuine": 17
     },
     {
-      "source": "organic_goodquote_static_compare",
-      "landings": 14,
-      "cta": 0,
-      "uploads": 0,
-      "genuine": 0,
-      "shareIntent": 0,
-      "shareOpens": 0,
-      "checkouts": 0,
-      "landingToCta": 0,
-      "ctaToUpload": null,
-      "landingToGenuine": 0
-    },
-    {
-      "source": "organic_goodquote_static_bottom",
-      "landings": 11,
-      "cta": 0,
-      "uploads": 0,
-      "genuine": 0,
-      "shareIntent": 0,
-      "shareOpens": 0,
-      "checkouts": 0,
-      "landingToCta": 0,
-      "ctaToUpload": null,
-      "landingToGenuine": 0
-    },
-    {
-      "source": "organic_compare",
-      "landings": 2,
-      "cta": 0,
-      "uploads": 0,
-      "genuine": 0,
-      "shareIntent": 0,
-      "shareOpens": 0,
-      "checkouts": 0,
-      "landingToCta": 0,
-      "ctaToUpload": null,
-      "landingToGenuine": 0
-    },
-    {
-      "source": "organic_flowtemp",
+      "source": "organic_checklist",
       "landings": 1,
-      "cta": 1,
-      "uploads": 0,
-      "genuine": 0,
-      "shareIntent": 0,
-      "shareOpens": 0,
-      "checkouts": 0,
-      "landingToCta": 100,
-      "ctaToUpload": 0,
-      "landingToGenuine": 0
-    },
-    {
-      "source": "organic_goodquote",
-      "landings": 1,
-      "cta": 1,
-      "uploads": 0,
-      "genuine": 0,
-      "shareIntent": 0,
-      "shareOpens": 0,
-      "checkouts": 0,
-      "landingToCta": 100,
-      "ctaToUpload": 0,
-      "landingToGenuine": 0
-    },
-    {
-      "source": "shared_case",
-      "landings": 0,
       "cta": 0,
       "uploads": 0,
       "genuine": 0,
       "shareIntent": 0,
       "shareOpens": 0,
+      "outboundClicks": 0,
       "checkouts": 0,
-      "landingToCta": null,
+      "landingToCta": 0,
       "ctaToUpload": null,
-      "landingToGenuine": null
+      "landingToGenuine": 0
+    },
+    {
+      "source": "professional",
+      "landings": 1,
+      "cta": 0,
+      "uploads": 0,
+      "genuine": 0,
+      "shareIntent": 0,
+      "shareOpens": 0,
+      "outboundClicks": 0,
+      "checkouts": 0,
+      "landingToCta": 0,
+      "ctaToUpload": null,
+      "landingToGenuine": 0
     }
   ],
+  "recommendations": [
+    "Share loop is below the 20% validation threshold: strengthen Decision Case sharing and recipient conversion."
+  ],
   "decision": {
-    "priority": "measure",
-    "action": "No new authoritative downstream signal yet. Avoid speculative feature churn; research and prepare next reversible experiment."
+    "priority": "share evidence",
+    "action": "Keep measuring the Decision Case share path; strengthen it only after enough genuine analyses establish a repeatable gap."
   }
 }
