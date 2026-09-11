@@ -1,7 +1,7 @@
 {
-  "fetchedAt": "2026-09-11T12:34:06.670554Z",
+  "fetchedAt": "2026-09-11T13:28:55.066850Z",
   "growthReport": {
-    "generatedAt": "2026-09-11T12:34:06.609Z",
+    "generatedAt": "2026-09-11T13:28:55.022Z",
     "loop": [
       "Acquire qualified homeowners",
       "Measure source funnels",
@@ -17,16 +17,16 @@
     "sources": [
       {
         "checkouts": 0,
-        "cta": 41,
-        "ctaToUpload": 34,
-        "genuine": 4,
-        "landingToCta": 16,
-        "landingToGenuine": 2,
-        "landings": 263,
+        "cta": 22,
+        "ctaToUpload": 50,
+        "genuine": 3,
+        "landingToCta": 8,
+        "landingToGenuine": 1,
+        "landings": 290,
         "shareIntent": 3,
         "shareOpens": 0,
         "source": "direct",
-        "uploads": 14
+        "uploads": 11
       },
       {
         "checkouts": 0,
@@ -35,7 +35,7 @@
         "genuine": 0,
         "landingToCta": 0,
         "landingToGenuine": 0,
-        "landings": 13,
+        "landings": 19,
         "shareIntent": 0,
         "shareOpens": 0,
         "source": "organic_goodquote_static",
@@ -48,7 +48,7 @@
         "genuine": 0,
         "landingToCta": 0,
         "landingToGenuine": 0,
-        "landings": 10,
+        "landings": 15,
         "shareIntent": 0,
         "shareOpens": 0,
         "source": "organic_goodquote_static_bottom",
@@ -61,7 +61,7 @@
         "genuine": 0,
         "landingToCta": 0,
         "landingToGenuine": 0,
-        "landings": 10,
+        "landings": 14,
         "shareIntent": 0,
         "shareOpens": 0,
         "source": "organic_goodquote_static_compare",
@@ -74,20 +74,7 @@
         "genuine": 0,
         "landingToCta": 0,
         "landingToGenuine": 0,
-        "landings": 4,
-        "shareIntent": 0,
-        "shareOpens": 0,
-        "source": "organic_price",
-        "uploads": 0
-      },
-      {
-        "checkouts": 0,
-        "cta": 0,
-        "ctaToUpload": null,
-        "genuine": 0,
-        "landingToCta": 0,
-        "landingToGenuine": 0,
-        "landings": 3,
+        "landings": 2,
         "shareIntent": 0,
         "shareOpens": 0,
         "source": "organic_compare",
@@ -100,23 +87,10 @@
         "genuine": 0,
         "landingToCta": 0,
         "landingToGenuine": 0,
-        "landings": 3,
-        "shareIntent": 0,
-        "shareOpens": 0,
-        "source": "organic_checklist",
-        "uploads": 0
-      },
-      {
-        "checkouts": 0,
-        "cta": 0,
-        "ctaToUpload": null,
-        "genuine": 0,
-        "landingToCta": 0,
-        "landingToGenuine": 0,
         "landings": 2,
         "shareIntent": 0,
         "shareOpens": 0,
-        "source": "organic_radiators",
+        "source": "organic_price",
         "uploads": 0
       },
       {
@@ -134,10 +108,10 @@
       },
       {
         "checkouts": 0,
-        "cta": 3,
+        "cta": 1,
         "ctaToUpload": 0,
         "genuine": 0,
-        "landingToCta": 300,
+        "landingToCta": 100,
         "landingToGenuine": 0,
         "landings": 1,
         "shareIntent": 0,
@@ -155,7 +129,20 @@
         "landings": 1,
         "shareIntent": 0,
         "shareOpens": 0,
-        "source": "organic_heatloss",
+        "source": "organic_checklist",
+        "uploads": 0
+      },
+      {
+        "checkouts": 0,
+        "cta": 0,
+        "ctaToUpload": null,
+        "genuine": 0,
+        "landingToCta": 0,
+        "landingToGenuine": 0,
+        "landings": 1,
+        "shareIntent": 0,
+        "shareOpens": 0,
+        "source": "organic_radiators",
         "uploads": 0
       },
       {
@@ -174,12 +161,12 @@
     ],
     "total": {
       "checkouts": 0,
-      "cta": 45,
-      "genuine": 4,
-      "landings": 311,
+      "cta": 24,
+      "genuine": 3,
+      "landings": 346,
       "shareIntent": 3,
       "shareOpens": 0,
-      "uploads": 14
+      "uploads": 11
     }
   },
   "metrics": {
@@ -190,8 +177,8 @@
         "scope": "Administrative product-list context only; not overall BUS eligibility; SCOP not assessed"
       }
     },
-    "genuineAnalyses": 4,
-    "outboundClicks": 1,
+    "genuineAnalyses": 3,
+    "outboundClicks": 0,
     "shareOpens": 0,
     "targets": {
       "genuineAnalyses": 100,
