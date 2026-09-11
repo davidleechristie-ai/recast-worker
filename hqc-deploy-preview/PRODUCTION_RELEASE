@@ -1,11 +1,10 @@
-2026-09-11T11:49+01:00
-Promote the safe compact-mobile Home Quote Check restoration to production.
+2026-09-11T12:15+01:00
+Promote Home Quote Check Stripe Decision Pack hardening to production.
 
-This release restores the compact mobile hero after the previous DOM-rewrite implementation was rolled back for a blank-screen regression. The replacement is deliberately style-only: it does not destructively replace the application DOM, keeps the existing Home Quote Check app and upload flow intact, and reduces mobile hero height while retaining the approved house-only artwork, independence messaging and the primary “Check my quote — free” action.
+Stripe live account verification confirms the active Decision Pack product is £19 GBP one-time using price_1UER4fCnmTy7aZ0Hp1zMfDYT. Checkout remains Stripe-hosted and quote contents are never sent to Stripe; only the opaque case reference and product marker are metadata.
 
-Mobile presentation now uses a single-column hero, a 1.94:1 artwork area capped at 250px, and hides the non-essential hero steps overlay on narrow screens so the quote-check action appears earlier without removing product or trust content.
+This release adds a stable case-scoped idempotency key to Checkout Session creation, a signed Stripe webhook endpoint at /api/stripe/webhook with five-minute timestamp tolerance and constant-time signature comparison, and payment confirmation/failure event forwarding after signature and product/case validation. Existing server-side Checkout Session verification on the success return remains the customer unlock authority.
 
-Product commit: c7b765f32a856c555aa6e8e631cb9451828b3286
-Canary: HQC custom-domain canary run 34590877192 passed successfully, including snapshot build, Cloudflare custom-domain deployment, API proxy checks, QA-event exclusion, automatic file-upload progression, enabled analysis action and manual-entry fallback in a mobile Chromium browser.
+A live Stripe webhook endpoint has been created for checkout.session.completed, checkout.session.async_payment_succeeded and checkout.session.async_payment_failed. STRIPE_WEBHOOK_SECRET must be configured as a Cloudflare Worker secret before webhook delivery can complete successfully.
 
-This is a regression-tested UX restoration, not a new commercial experiment. The existing £19 Decision Pack, free initial evidence check and evidence/compliance guardrails remain unchanged.
+Product commit: 568f0b6a96a70031f73e45e024d253e824197ce4
