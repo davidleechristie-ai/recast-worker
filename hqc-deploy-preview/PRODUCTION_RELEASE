@@ -1,10 +1,12 @@
-2026-09-11T13:15+01:00
-Promote action-led Decision Case results UX.
+2026-09-11T13:28+01:00
+Promote the new free-to-paid value boundary and personalised £19 Decision Pack.
 
-This release responds to live results usability feedback. The generic Evidence status panel is removed from the visible Decision Case because it explains methodology rather than helping the homeowner decide what to do. Key issues is renamed What to do next and each issue now carries a concrete Do this action. The installer-question panel is reframed as Your next action and explicitly tells the homeowner to obtain written answers before paying a deposit.
+Free remains genuinely useful: users can upload and compare multiple quotes, see extracted facts, material differences, evidence gaps and top next steps. Multi-quote comparison is explicitly not paywalled.
 
-A direct Send these questions action is added from the next-steps panel, while detailed evidence completeness and quote provenance remain available lower in the result for users who want the supporting detail.
+The £19 one-off Decision Pack now delivers a materially deeper decision layer after verified Stripe payment: personalised current position, quote/installer-specific material gaps, separate actions and questions for each installer, commercial price/scope caution, explicit decision conditions to resolve before choosing or paying a deposit, and a printable personalised Decision Pack.
 
-PDF upload support and the existing live Stripe configuration are preserved.
+The paywall no longer claims that adding or comparing another quote is a paid benefit. Copy now sells detailed personalised decision support rather than repackaging the free comparison. No subscription is introduced.
 
-Product commit: 7daf7004b7a79a5c69c83d081bab9d76c14d8ac1
+Existing server-side Stripe verification remains the unlock authority. PDF support and production secret preservation are unchanged.
+
+Product commit: ee40d8424b6270f85f3e0f19beb5bffa647eeff5
