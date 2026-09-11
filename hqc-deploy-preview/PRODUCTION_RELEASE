@@ -1,16 +1,15 @@
-2026-09-11T17:28+01:00
-Emergency production repair: restore missing primary stylesheet on homequotecheck.co.uk.
+2026-09-11T17:34+01:00
+Promote canary-verified stylesheet repair to HQC production.
 
-Incident observed on production:
-- index.html references /assets/index-CjgMTR3j.css;
-- Cloudflare asset bundle does not contain that stylesheet;
-- SPA fallback therefore returns index.html with content-type text/html for the CSS URL;
-- the browser renders the site largely unstyled.
+Root cause:
+- upstream HTML may contain absolute https://homequotecheck.co.uk asset URLs;
+- snapshot discovery previously accepted only the AppDeploy upstream origin;
+- the production-domain stylesheet reference was therefore preserved in index.html but omitted from the Cloudflare asset bundle;
+- Cloudflare SPA fallback returned HTML for the missing CSS path.
 
-Action for this release:
-- rebuild a fresh snapshot from the healthy upstream HQC app;
-- include all current transitive CSS/JS assets;
-- deploy to the existing hqc-production Cloudflare Worker;
-- verify the production homepage and runtime assets after cutover.
+Fix:
+- snapshot discovery now treats both upstream and configured target origins as local asset references, while still fetching bytes from the upstream source;
+- every stylesheet referenced by index.html must be present, non-empty and non-HTML before deployment;
+- custom-domain canary run #163 passed snapshot, deployment/domain verification and both mobile quote-intake paths.
 
-Follow-up release gates will explicitly validate every stylesheet referenced by index.html before and after deployment.
+Production release must preserve the existing hqc-production custom-domain routing and verify the restored stylesheet after cutover.
