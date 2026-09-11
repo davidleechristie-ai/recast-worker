@@ -1,5 +1,5 @@
 {
-  "fetchedAt": "2026-09-11T09:27:26Z",
+  "fetchedAt": "2026-09-11T10:27:52Z",
   "northStar": {
     "targetMonthlyRevenueGBP": 500,
     "revenueAvailable": false,
@@ -7,34 +7,34 @@
   },
   "baselineAt": "2026-09-11T08:30:08Z",
   "total": {
-    "landings": 264,
+    "landings": 261,
     "cta": 72,
     "uploads": 16,
     "genuine": 2,
-    "shareIntent": 4,
+    "shareIntent": 3,
     "shareOpens": 0,
     "checkouts": 0
   },
   "sinceCommercialBaseline": {
-    "landings": 1,
+    "landings": -2,
     "cta": 0,
     "uploads": 0,
     "genuine": 0,
-    "shareIntent": 0,
+    "shareIntent": -1,
     "shareOpens": 0,
     "checkouts": 0
   },
   "sources": [
     {
       "source": "direct",
-      "landings": 233,
+      "landings": 229,
       "cta": 66,
       "uploads": 16,
       "genuine": 2,
-      "shareIntent": 4,
+      "shareIntent": 3,
       "shareOpens": 0,
       "checkouts": 0,
-      "landingToCta": 28,
+      "landingToCta": 29,
       "ctaToUpload": 24,
       "landingToGenuine": 1
     },
@@ -104,6 +104,19 @@
       "landingToGenuine": 0
     },
     {
+      "source": "organic_heatloss",
+      "landings": 3,
+      "cta": 0,
+      "uploads": 0,
+      "genuine": 0,
+      "shareIntent": 0,
+      "shareOpens": 0,
+      "checkouts": 0,
+      "landingToCta": 0,
+      "ctaToUpload": null,
+      "landingToGenuine": 0
+    },
+    {
       "source": "organic_bus",
       "landings": 3,
       "cta": 0,
@@ -127,19 +140,6 @@
       "checkouts": 0,
       "landingToCta": 33,
       "ctaToUpload": 0,
-      "landingToGenuine": 0
-    },
-    {
-      "source": "organic_heatloss",
-      "landings": 2,
-      "cta": 0,
-      "uploads": 0,
-      "genuine": 0,
-      "shareIntent": 0,
-      "shareOpens": 0,
-      "checkouts": 0,
-      "landingToCta": 0,
-      "ctaToUpload": null,
       "landingToGenuine": 0
     },
     {
@@ -196,7 +196,7 @@
     }
   ],
   "decision": {
-    "priority": "landing conversion",
-    "action": "Continue fast-fail message-match/CTA iteration on existing qualified pages; do not add thin SEO pages."
+    "priority": "measure",
+    "action": "No new authoritative downstream signal yet. Avoid speculative feature churn; research and prepare next reversible experiment."
   }
 }
