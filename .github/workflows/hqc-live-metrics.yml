@@ -7,7 +7,6 @@ on:
       - '.github/workflows/hqc-live-metrics.yml'
   workflow_dispatch:
 
-# Autonomous refresh trigger: 2026-09-11T17:39Z
 permissions:
   contents: write
 
@@ -16,73 +15,42 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v4
-      - name: Fetch production HQC metrics
+      - name: Fetch durable production HQC metrics
         shell: bash
         run: |
           set -euo pipefail
-          base='https://api-v2.appdeploy.ai/app/heat-pump-second-opinion-v43csv'
+          base='https://homequotecheck.co.uk'
           metrics=$(mktemp)
           growth=$(mktemp)
           mkdir -p hqc-ops
           curl -fsS --max-time 30 "$base/api/metrics" -o "$metrics"
           curl -fsS --max-time 30 "$base/api/growth-report" -o "$growth"
+          jq -e '.durable == true and (.measurementStartedAt|length)>0' "$metrics" >/dev/null
+          jq -e '.durable == true and (.measurementStartedAt|length)>0' "$growth" >/dev/null
           jq -n \
             --arg fetchedAt "$(date -u +%Y-%m-%dT%H:%M:%SZ)" \
             --slurpfile metrics "$metrics" \
             --slurpfile growth "$growth" \
-            --slurpfile baseline hqc-ops/validation-baseline.json \
-            --slurpfile sourceBaseline hqc-ops/source-validation-baseline.json \
             '{
               fetchedAt:$fetchedAt,
               metrics:$metrics[0],
-              growthReport:$growth[0],
-              authoritativeSinceBaseline:{
-                baselineAt:$baseline[0].baselineAt,
-                landings:($growth[0].total.landings-$baseline[0].total.landings),
-                cta:($growth[0].total.cta-$baseline[0].total.cta),
-                uploads:($growth[0].total.uploads-$baseline[0].total.uploads),
-                genuine:($growth[0].total.genuine-$baseline[0].total.genuine),
-                shareIntent:($growth[0].total.shareIntent-$baseline[0].total.shareIntent),
-                shareOpens:($growth[0].total.shareOpens-$baseline[0].total.shareOpens),
-                checkouts:($growth[0].total.checkouts-$baseline[0].total.checkouts)
-              },
-              authoritativeSourcesSinceBaseline:{
-                baselineAt:$sourceBaseline[0].baselineAt,
-                note:"Source deltas start later than the global validation baseline and are directional only; do not sum them to infer the full clean funnel.",
-                sources:[
-                  $growth[0].sources[] as $current
-                  | (($sourceBaseline[0].sources | map(select(.source == $current.source)) | .[0]) // {
-                      source:$current.source,landings:0,cta:0,uploads:0,genuine:0,shareIntent:0,shareOpens:0,checkouts:0
-                    }) as $base
-                  | {
-                      source:$current.source,
-                      landings:($current.landings-$base.landings),
-                      cta:($current.cta-$base.cta),
-                      uploads:($current.uploads-$base.uploads),
-                      genuine:($current.genuine-$base.genuine),
-                      shareIntent:($current.shareIntent-$base.shareIntent),
-                      shareOpens:($current.shareOpens-$base.shareOpens),
-                      checkouts:($current.checkouts-$base.checkouts)
-                    }
-                ] | map(select((.landings != 0) or (.cta != 0) or (.uploads != 0) or (.genuine != 0) or (.shareIntent != 0) or (.shareOpens != 0) or (.checkouts != 0)))
-              }
+              growthReport:$growth[0]
             }
             | . as $r
             | .autonomousDecisionGate = (
-                if $r.authoritativeSinceBaseline.genuine >= 100 then
+                if $r.metrics.genuineAnalyses >= 100 then
                   {status:"SCALE_HOLD_PIVOT_REVIEW", bottleneck:"validation threshold reached", action:"Perform SCALE/HOLD/PIVOT review before further autonomous growth changes."}
-                elif $r.authoritativeSinceBaseline.uploads > 0 and $r.authoritativeSinceBaseline.genuine == 0 then
-                  {status:"ACT", bottleneck:"quote submission -> genuine analysis", action:"Investigate the post-submission analysis-details and analyse action before adding acquisition or further upload changes. Preserve evidence guardrails and do not create QA analyses that could contaminate the genuine-analysis metric."}
-                elif $r.authoritativeSinceBaseline.cta > 0 and $r.authoritativeSinceBaseline.uploads == 0 then
+                elif $r.growthReport.total.uploads > 0 and $r.growthReport.total.genuine == 0 then
+                  {status:"ACT", bottleneck:"quote submission -> genuine analysis", action:"Investigate the post-submission analysis handoff before adding acquisition. Preserve evidence guardrails and do not create QA analyses that could contaminate the genuine-analysis metric."}
+                elif $r.growthReport.total.cta >= 5 and $r.growthReport.total.uploads == 0 then
                   {status:"ACT", bottleneck:"checker start -> quote submission", action:"Prioritise quote-intake friction and instrumentation; do not add acquisition pages merely to increase traffic."}
-                elif $r.authoritativeSinceBaseline.landings >= 15 and $r.authoritativeSinceBaseline.cta == 0 then
+                elif $r.growthReport.total.landings >= 15 and $r.growthReport.total.cta == 0 then
                   {status:"ACT", bottleneck:"landing -> checker start", action:"Prioritise message-match, trust and CTA clarity on existing landing/decision pages before expanding acquisition."}
                 else
-                  {status:"HOLD", bottleneck:"insufficient clean sample", action:"Do not churn production. Continue measurement and research until a downstream conversion event identifies the next actionable bottleneck."}
+                  {status:"HOLD", bottleneck:"insufficient clean durable sample", action:"Do not churn production. Continue measurement until durable downstream events identify the next actionable bottleneck."}
                 end
               )
-            ' \
-            > hqc-ops/live-metrics.json
+            ' > hqc-ops/live-metrics.json
           jq . hqc-ops/live-metrics.json
       - name: Commit snapshot
         shell: bash
@@ -95,5 +63,5 @@ jobs:
             echo 'No metric change to commit.'
             exit 0
           fi
-          git commit -m 'HQC: snapshot live validation metrics'
+          git commit -m 'HQC: snapshot durable validation metrics'
           git push
