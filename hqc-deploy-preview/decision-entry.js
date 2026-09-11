@@ -2,6 +2,27 @@
   const q=(s,r=document)=>r.querySelector(s);
   const qa=new URLSearchParams(location.search).get('qa')==='1';
   const isDecision=/\.html$/i.test(location.pathname||'');
+  const withAutoStart=(href)=>{
+    try{
+      const u=new URL(href,location.origin);
+      if(u.origin!==location.origin||u.pathname!=='/')return href;
+      u.searchParams.set('hqc_start','1');
+      return `${u.pathname}${u.search}${u.hash}`;
+    }catch{return href;}
+  };
+  if(isDecision){
+    // A visitor who clicks a decision-page CTA has already expressed checker intent.
+    // Deep-link every same-origin homepage CTA into quote intake so they are not
+    // forced through a redundant second homepage click. Existing source tags are
+    // preserved, keeping attribution intact.
+    [...document.querySelectorAll('a[href]')].forEach(a=>{
+      const href=a.getAttribute('href')||'';
+      const text=(a.textContent||'').trim();
+      if(!/check (?:my|your)|quote|free|upload/i.test(text))return;
+      const next=withAutoStart(href);
+      if(next!==href)a.setAttribute('href',next);
+    });
+  }
   if(isDecision&&!q('#hqc-decision-entry')){
     const bar=document.createElement('aside');
     bar.id='hqc-decision-entry';
