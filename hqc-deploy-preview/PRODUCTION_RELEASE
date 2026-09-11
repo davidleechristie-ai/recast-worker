@@ -1,10 +1,10 @@
-2026-09-11T13:02+01:00
-Promote direct PDF quote upload support and site-consistency hardening.
+2026-09-11T13:15+01:00
+Promote action-led Decision Case results UX.
 
-This release fixes the upload mismatch where the interface accepted PDF files but automatic extraction only handled JPG/PNG/WebP. PDFs are now rendered locally in the browser using a same-origin bundled PDF.js build, converted to a transient WebP image and passed into the existing quote-analysis flow. The original PDF is not uploaded separately or stored by this bridge.
+This release responds to live results usability feedback. The generic Evidence status panel is removed from the visible Decision Case because it explains methodology rather than helping the homeowner decide what to do. Key issues is renamed What to do next and each issue now carries a concrete Do this action. The installer-question panel is reframed as Your next action and explicitly tells the homeowner to obtain written answers before paying a deposit.
 
-The UI now accurately states that screenshots, photos and PDFs are supported. Up to the first 12 pages of a PDF are prepared for analysis, with progress and fallback messaging if conversion fails.
+A direct Send these questions action is added from the next-steps panel, while detailed evidence completeness and quote provenance remain available lower in the result for users who want the supporting detail.
 
-This promotion also preserves the live Stripe configuration and dashboard-managed Cloudflare secrets. The production consistency audit remains active for broken links, graphics, browser errors and responsive layout defects.
+PDF upload support and the existing live Stripe configuration are preserved.
 
-Product commit: feef72081905f6911c563e45bec117d7b9673146
+Product commit: 7daf7004b7a79a5c69c83d081bab9d76c14d8ac1
