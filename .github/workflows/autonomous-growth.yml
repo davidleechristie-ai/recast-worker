@@ -1,4 +1,4 @@
-name: Recast autonomous daily growth
+name: Recast autonomous growth every four hours
 
 # Updating this workflow intentionally triggers a self-test run on main.
 # 2026-09-08 self-test: persist the formal experiment registry and due readouts.
@@ -10,7 +10,7 @@ on:
     paths:
       - '.github/workflows/autonomous-growth.yml'
   schedule:
-    - cron: '20 6 * * *'
+    - cron: '20 */4 * * *'
   workflow_dispatch:
 
 permissions:
