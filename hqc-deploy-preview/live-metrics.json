@@ -1,7 +1,7 @@
 {
-  "fetchedAt": "2026-09-11T15:28:06.572059Z",
+  "fetchedAt": "2026-09-11T16:29:06.460656Z",
   "growthReport": {
-    "generatedAt": "2026-09-11T15:28:06.529Z",
+    "generatedAt": "2026-09-11T16:29:06.420Z",
     "loop": [
       "Acquire qualified homeowners",
       "Measure source funnels",
@@ -11,18 +11,17 @@
     ],
     "recommendations": [
       "Landing-to-CTA is weak: improve message match, trust proof and CTA prominence before adding more traffic.",
-      "Share loop is below the 20% validation threshold: strengthen Decision Case sharing and recipient conversion.",
       "No qualified organic cohort yet: keep expanding long-tail decision pages and internal links, then measure genuine analyses rather than clicks."
     ],
     "sources": [
       {
         "checkouts": 0,
-        "cta": 19,
-        "ctaToUpload": 26,
-        "genuine": 1,
-        "landingToCta": 6,
+        "cta": 15,
+        "ctaToUpload": 33,
+        "genuine": 0,
+        "landingToCta": 5,
         "landingToGenuine": 0,
-        "landings": 309,
+        "landings": 311,
         "shareIntent": 2,
         "shareOpens": 0,
         "source": "direct",
@@ -35,7 +34,7 @@
         "genuine": 0,
         "landingToCta": 0,
         "landingToGenuine": 0,
-        "landings": 22,
+        "landings": 21,
         "shareIntent": 0,
         "shareOpens": 0,
         "source": "organic_goodquote_static",
@@ -48,7 +47,7 @@
         "genuine": 0,
         "landingToCta": 0,
         "landingToGenuine": 0,
-        "landings": 19,
+        "landings": 18,
         "shareIntent": 0,
         "shareOpens": 0,
         "source": "organic_goodquote_static_bottom",
@@ -61,7 +60,7 @@
         "genuine": 0,
         "landingToCta": 0,
         "landingToGenuine": 0,
-        "landings": 12,
+        "landings": 15,
         "shareIntent": 0,
         "shareOpens": 0,
         "source": "organic_goodquote_static_compare",
@@ -122,9 +121,9 @@
     ],
     "total": {
       "checkouts": 0,
-      "cta": 21,
-      "genuine": 1,
-      "landings": 366,
+      "cta": 17,
+      "genuine": 0,
+      "landings": 369,
       "shareIntent": 2,
       "shareOpens": 0,
       "uploads": 5
@@ -138,7 +137,7 @@
         "scope": "Administrative product-list context only; not overall BUS eligibility; SCOP not assessed"
       }
     },
-    "genuineAnalyses": 1,
+    "genuineAnalyses": 0,
     "outboundClicks": 0,
     "shareOpens": 0,
     "targets": {
