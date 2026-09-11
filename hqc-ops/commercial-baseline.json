@@ -1,0 +1,17 @@
+{
+  "baselineAt": "2026-09-11T08:30:08Z",
+  "purpose": "Post-approved-layout commercial baseline. Use for fast-fail revenue/funnel iteration; do not treat historical QA/demo traffic as traction.",
+  "total": {
+    "landings": 263,
+    "cta": 72,
+    "uploads": 16,
+    "genuine": 2,
+    "shareIntent": 4,
+    "shareOpens": 0,
+    "checkouts": 0
+  },
+  "revenue": {
+    "available": false,
+    "note": "No authoritative payment revenue feed is connected yet. Do not infer revenue from checkout or intent events."
+  }
+}
