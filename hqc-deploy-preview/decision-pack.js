@@ -44,9 +44,13 @@
   };
   const render=()=>{
     if(!hasDecisionCase()&&!paid())return;
+    const nextState=paid()?'paid':'offer';
     let box=document.getElementById(OFFER_ID);
     if(!box){box=document.createElement('section');box.id=OFFER_ID;box.style.cssText='max-width:760px;margin:24px auto;padding:20px;border:1px solid #cfe3da;border-radius:16px;background:#f8fcfa;box-shadow:0 8px 24px rgba(20,62,49,.06)';const anchor=[...document.querySelectorAll('main,section,div')].find(el=>/your decision case/i.test(el.innerText||''));(anchor?.parentElement||document.querySelector('main')||document.body).appendChild(box);event('decision_pack_viewed',{price_gbp:19});}
-    box.innerHTML=paid()?unlockMarkup():offerMarkup();bind(box);
+    if(box.dataset.hqcState===nextState)return;
+    box.dataset.hqcState=nextState;
+    box.innerHTML=nextState==='paid'?unlockMarkup():offerMarkup();
+    bind(box);
   };
   const verifyReturn=async()=>{const p=new URLSearchParams(location.search),session=p.get('session_id');if(p.get('decision_pack')!=='success'||!session)return;try{const r=await fetch(`/api/decision-pack/status?session_id=${encodeURIComponent(session)}&case_id=${encodeURIComponent(caseId)}`);const d=await r.json();if(r.ok&&d.paid){setPaid(session);if(!localStorage.getItem(`hqcDecisionPackReported:${session}`)){localStorage.setItem(`hqcDecisionPackReported:${session}`,'1');event('decision_pack_payment_success',{amount_pence:d.amount_total||1900,currency:d.currency||'gbp'});}history.replaceState({},'',location.pathname);render();}}catch{}};
   verifyReturn();
