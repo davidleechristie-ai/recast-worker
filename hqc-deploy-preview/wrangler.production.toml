@@ -8,6 +8,7 @@ routes = [
 
 [vars]
 HQC_ENV = "production"
+STRIPE_DECISION_PACK_PRICE_ID = "price_1UER4fCnmTy7aZ0Hp1zMfDYT"
 
 [assets]
 directory = "./site"
