@@ -1,15 +1,20 @@
-2026-09-11T17:34+01:00
-Promote canary-verified stylesheet repair to HQC production.
+2026-09-11T17:44+01:00
+Promote canary-verified stylesheet hardening and PDF upload compatibility fix to HQC production.
 
-Root cause:
-- upstream HTML may contain absolute https://homequotecheck.co.uk asset URLs;
-- snapshot discovery previously accepted only the AppDeploy upstream origin;
-- the production-domain stylesheet reference was therefore preserved in index.html but omitted from the Cloudflare asset bundle;
-- Cloudflare SPA fallback returned HTML for the missing CSS path.
+Website repair status:
+- production stylesheet is healthy and returns 200 text/css;
+- snapshot discovery accepts configured target-origin asset URLs and refuses to deploy missing, empty or HTML-fallback stylesheets;
+- canary #167 passed snapshot, stylesheet validation, Cloudflare binding, domain verification and mobile quote intake.
 
-Fix:
-- snapshot discovery now treats both upstream and configured target origins as local asset references, while still fetching bytes from the upstream source;
-- every stylesheet referenced by index.html must be present, non-empty and non-HTML before deployment;
-- custom-domain canary run #163 passed snapshot, deployment/domain verification and both mobile quote-intake paths.
+PDF upload root cause:
+- pdfjs-dist 5.4 uses Map.getOrInsertComputed / Map.getOrInsert;
+- Chromium 140 used by the production regression test does not expose those helpers;
+- PDF loading succeeded but page rendering failed before conversion, leaving users on the upload step.
 
-Production release must preserve the existing hqc-production custom-domain routing and verify the restored stylesheet after cutover.
+PDF fix:
+- load a small compatibility shim before the HQC upload flow;
+- preserve local PDF.js and worker delivery with JavaScript MIME types;
+- dedicated canary PDF test converted a generated installer quote from application/pdf to image/webp and reported PDF ready in about two seconds;
+- no page errors were recorded during the successful conversion.
+
+Production release must preserve the existing hqc-production custom-domain routing and run the post-deploy site-consistency audit, including PDF conversion.
