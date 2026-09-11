@@ -24,33 +24,131 @@ jobs:
         run: |
           npm install --no-save playwright@1.55.0
           npx playwright install --with-deps chromium
-      - name: Crawl HTML pages, verify assets, responsive layouts and PDF upload
+      - name: Crawl HTML pages, verify loaded assets, responsive layouts and PDF upload
         shell: bash
         run: |
           set -euo pipefail
           node --input-type=module <<'NODE'
           import { chromium } from 'playwright';
+
           const base='https://homequotecheck.co.uk';
           const origin=new URL(base).origin;
           const failures=[],warnings=[];
           const browser=await chromium.launch({headless:true});
           const isPage=u=>{const p=new URL(u).pathname;return p==='/'||p.endsWith('.html')||(!/\.[a-z0-9]{1,8}$/i.test(p));};
           async function get(url){const r=await fetch(url,{redirect:'follow'});if(!r.ok)throw new Error(`${url} -> ${r.status}`);return r;}
+
+          // Build the page inventory from the sitemap plus same-origin page links.
           const sitemap=await (await get(`${base}/sitemap.xml`)).text();
           const queue=[`${base}/`,...[...sitemap.matchAll(/<loc>([^<]+)<\/loc>/g)].map(m=>m[1].trim())];
           const seen=new Set(),pages=[];
-          while(queue.length&&pages.length<80){const raw=queue.shift();let u;try{u=new URL(raw,base)}catch{continue}u.hash='';if(u.origin!==origin||seen.has(u.href)||!isPage(u.href))continue;seen.add(u.href);pages.push(u.href);try{const html=await (await get(u.href)).text();for(const m of html.matchAll(/href=["']([^"'#]+)["']/gi)){try{const x=new URL(m[1],u.href);x.hash='';if(x.origin===origin&&isPage(x.href)&&!seen.has(x.href))queue.push(x.href)}catch{}}}catch(e){failures.push(`HTTP ${u.href}: ${e.message}`)}}
-          const home=await (await get(`${base}/?qa=1&asset_probe=1`)).text();
-          const assetRefs=[...home.matchAll(/(?:src|href)=["']([^"']+)["']/gi)].map(m=>m[1]).filter(Boolean);
-          const targets=new Set([`${base}/resources/pdf.mjs`,`${base}/resources/pdf.worker.mjs`,...assetRefs.map(x=>{try{return new URL(x,base).href}catch{return null}}).filter(x=>x&&new URL(x).origin===origin)]);
-          for(const url of targets){try{const r=await get(url);const ct=(r.headers.get('content-type')||'').toLowerCase();const p=new URL(url).pathname;if(/\.(?:m?js)$/i.test(p)&&!/javascript|ecmascript/.test(ct))failures.push(`JavaScript MIME mismatch ${url}: ${ct||'missing'}`);if(/\.css$/i.test(p)&&!ct.includes('text/css'))failures.push(`CSS MIME mismatch ${url}: ${ct||'missing'}`)}catch(e){failures.push(`Broken internal target ${url}: ${e.message}`)}}
-          for(const vp of [{name:'mobile',width:390,height:844,isMobile:true,hasTouch:true},{name:'desktop',width:1440,height:1000,isMobile:false,hasTouch:false}]){
-            for(const pageUrl of pages){const page=await browser.newPage({viewport:{width:vp.width,height:vp.height},isMobile:vp.isMobile,hasTouch:vp.hasTouch});const errors=[],badModules=[];page.on('pageerror',e=>errors.push(String(e)));page.on('console',m=>{if(m.type()==='error'&&!/favicon/i.test(m.text()))errors.push(m.text())});page.on('response',r=>{try{const u=r.url(),ct=(r.headers()['content-type']||'').toLowerCase();if(new URL(u).origin===origin&&/\.(?:m?js)(?:\?|$)/i.test(u)&&!/javascript|ecmascript/.test(ct))badModules.push(`${u} -> ${r.status()} ${ct||'missing content-type'}`)}catch{}});try{const r=await page.goto(pageUrl,{waitUntil:'domcontentloaded',timeout:30000});if(!r||r.status()>=400)failures.push(`${vp.name} ${pageUrl}: HTTP ${r?.status()}`);await page.waitForLoadState('load',{timeout:10000}).catch(()=>{});await page.waitForTimeout(750);const state=await page.evaluate(()=>{const imgs=[...document.images].map(i=>({src:i.currentSrc||i.src,ok:i.complete&&i.naturalWidth>0&&i.naturalHeight>0,alt:i.alt,rect:i.getBoundingClientRect().toJSON()}));const overflow=Math.max(document.documentElement.scrollWidth,document.body?.scrollWidth||0)-innerWidth;const empty=[...document.querySelectorAll('a,button')].filter(el=>{const s=getComputedStyle(el),r=el.getBoundingClientRect();return s.display!=='none'&&s.visibility!=='hidden'&&r.width>1&&r.height>1&&!((el.textContent||'').trim()||el.getAttribute('aria-label')||el.querySelector('img[alt]'))}).length;return {title:document.title,overflow,empty,bad:imgs.filter(x=>!x.ok),visible:imgs.filter(x=>x.rect.width>4&&x.rect.height>4)}});if(badModules.length)failures.push(`${vp.name} ${pageUrl}: module MIME failures: ${[...new Set(badModules)].join(' | ')}`);else if(errors.length)failures.push(`${vp.name} ${pageUrl}: JS errors: ${errors.slice(0,4).join(' | ')}`);if(!state.title.trim())failures.push(`${vp.name} ${pageUrl}: missing title`);if(state.overflow>6)failures.push(`${vp.name} ${pageUrl}: horizontal overflow ${state.overflow}px`);if(state.empty)failures.push(`${vp.name} ${pageUrl}: ${state.empty} empty interactive control(s)`);if(state.bad.length)failures.push(`${vp.name} ${pageUrl}: broken graphics ${state.bad.map(x=>x.src).join(', ')}`);for(const i of state.visible)if(!i.alt.trim())warnings.push(`${vp.name} ${pageUrl}: visible image missing alt: ${i.src}`)}catch(e){failures.push(`${vp.name} ${pageUrl}: ${e.message}`)}await page.close()}
+          while(queue.length&&pages.length<80){
+            const raw=queue.shift();let u;
+            try{u=new URL(raw,base)}catch{continue}
+            u.hash='';
+            if(u.origin!==origin||seen.has(u.href)||!isPage(u.href))continue;
+            seen.add(u.href);pages.push(u.href);
+            try{
+              const html=await (await get(u.href)).text();
+              for(const m of html.matchAll(/href=["']([^"'#]+)["']/gi)){
+                try{const x=new URL(m[1],u.href);x.hash='';if(x.origin===origin&&isPage(x.href)&&!seen.has(x.href))queue.push(x.href)}catch{}
+              }
+            }catch(e){failures.push(`HTTP ${u.href}: ${e.message}`)}
           }
-          try{const make=await browser.newPage();await make.setContent('<h1>Eco Stream Heat Pump Quote</h1><p>Total £12,450</p><p>8kW heat pump</p><p>Design flow temperature 45 C</p>');const pdf=await make.pdf({format:'A4'});await make.close();const page=await browser.newPage({viewport:{width:390,height:844},isMobile:true,hasTouch:true});const errors=[];page.on('pageerror',e=>errors.push(String(e)));await page.goto(`${base}/?qa=1&pdf_probe=1`,{waitUntil:'domcontentloaded',timeout:30000});await page.getByRole('button',{name:/check my quote/i}).first().click();const input=page.locator('input[type="file"]').first();await input.waitFor({state:'attached',timeout:15000});await input.setInputFiles({name:'eco-stream-quote.pdf',mimeType:'application/pdf',buffer:pdf});await page.waitForFunction(()=>{const f=document.querySelector('input[type="file"]')?.files?.[0];return !!f&&f.type==='image/webp'},null,{timeout:45000});const converted=await input.evaluate(el=>({name:el.files?.[0]?.name,type:el.files?.[0]?.type}));const body=await page.locator('body').innerText();if(/Automatic extraction needs JPG, PNG or WebP/i.test(body))throw new Error('legacy PDF unsupported error still shown');if(converted.type!=='image/webp')throw new Error(`PDF was not converted for analysis: ${JSON.stringify(converted)}`);if(errors.length)throw new Error(errors.join(' | '));await page.close();console.log(`PDF_UPLOAD_REGRESSION_VERIFIED ${converted.name} ${converted.type}`)}catch(e){failures.push(`PDF upload regression: ${e.message}`)}
+
+          // Force-check the PDF runtime. Other assets are checked only when a browser actually loads them;
+          // this avoids treating arbitrary/stale href strings as active stylesheets or scripts.
+          const requiredRuntime=[`${base}/resources/pdf.mjs`,`${base}/resources/pdf.worker.mjs`];
+          for(const url of requiredRuntime){
+            try{
+              const r=await get(url),ct=(r.headers.get('content-type')||'').toLowerCase();
+              if(!/javascript|ecmascript/.test(ct))failures.push(`JavaScript MIME mismatch ${url}: ${ct||'missing'}`);
+            }catch(e){failures.push(`Broken required runtime ${url}: ${e.message}`)}
+          }
+
+          for(const vp of [{name:'mobile',width:390,height:844,isMobile:true,hasTouch:true},{name:'desktop',width:1440,height:1000,isMobile:false,hasTouch:false}]){
+            for(const pageUrl of pages){
+              const page=await browser.newPage({viewport:{width:vp.width,height:vp.height},isMobile:vp.isMobile,hasTouch:vp.hasTouch});
+              const errors=[],badAssets=[],apiResponses=[];
+              page.on('pageerror',e=>errors.push(String(e)));
+              page.on('console',m=>{
+                const text=m.text();
+                if(m.type()==='error'&&!/favicon/i.test(text)&&!/Failed to load resource:/i.test(text))errors.push(text);
+              });
+              page.on('response',r=>{
+                try{
+                  const u=r.url(),url=new URL(u),ct=(r.headers()['content-type']||'').toLowerCase(),type=r.request().resourceType(),status=r.status();
+                  if(url.origin!==origin)return;
+                  if(/\.(?:m?js)(?:\?|$)/i.test(u)&&!/javascript|ecmascript/.test(ct))badAssets.push(`${u} -> ${status} ${ct||'missing content-type'}`);
+                  if(/\.css(?:\?|$)/i.test(u)&&type==='stylesheet'&&!ct.includes('text/css'))badAssets.push(`${u} -> ${status} ${ct||'missing content-type'}`);
+                  if(status>=400){
+                    if(['document','script','stylesheet','image','font'].includes(type))badAssets.push(`${type} ${u} -> ${status}`);
+                    else if(type==='fetch'||type==='xhr')apiResponses.push(`${type} ${u} -> ${status}`);
+                  }
+                }catch{}
+              });
+              try{
+                const r=await page.goto(pageUrl,{waitUntil:'domcontentloaded',timeout:30000});
+                if(!r||r.status()>=400)failures.push(`${vp.name} ${pageUrl}: HTTP ${r?.status()}`);
+                await page.waitForLoadState('load',{timeout:10000}).catch(()=>{});
+                await page.waitForTimeout(750);
+                const state=await page.evaluate(()=>{
+                  const imgs=[...document.images].map(i=>({src:i.currentSrc||i.src,ok:i.complete&&i.naturalWidth>0&&i.naturalHeight>0,alt:i.alt,rect:i.getBoundingClientRect().toJSON()}));
+                  const overflow=Math.max(document.documentElement.scrollWidth,document.body?.scrollWidth||0)-innerWidth;
+                  const empty=[...document.querySelectorAll('a,button')].filter(el=>{const s=getComputedStyle(el),r=el.getBoundingClientRect();return s.display!=='none'&&s.visibility!=='hidden'&&r.width>1&&r.height>1&&!((el.textContent||'').trim()||el.getAttribute('aria-label')||el.querySelector('img[alt]'))}).length;
+                  return {title:document.title,overflow,empty,bad:imgs.filter(x=>!x.ok),visible:imgs.filter(x=>x.rect.width>4&&x.rect.height>4)};
+                });
+                if(badAssets.length)failures.push(`${vp.name} ${pageUrl}: loaded asset failures: ${[...new Set(badAssets)].join(' | ')}`);
+                if(errors.length)failures.push(`${vp.name} ${pageUrl}: JS errors: ${errors.slice(0,4).join(' | ')}`);
+                if(apiResponses.length)warnings.push(`${vp.name} ${pageUrl}: API responses during passive page load: ${[...new Set(apiResponses)].join(' | ')}`);
+                if(!state.title.trim())failures.push(`${vp.name} ${pageUrl}: missing title`);
+                if(state.overflow>6)failures.push(`${vp.name} ${pageUrl}: horizontal overflow ${state.overflow}px`);
+                if(state.empty)failures.push(`${vp.name} ${pageUrl}: ${state.empty} empty interactive control(s)`);
+                if(state.bad.length)failures.push(`${vp.name} ${pageUrl}: broken graphics ${state.bad.map(x=>x.src).join(', ')}`);
+                for(const i of state.visible)if(!i.alt.trim())warnings.push(`${vp.name} ${pageUrl}: visible image missing alt: ${i.src}`);
+              }catch(e){failures.push(`${vp.name} ${pageUrl}: ${e.message}`)}
+              await page.close();
+            }
+          }
+
+          // PDF regression: observe the converted change event itself. The app may immediately re-render
+          // the file input after conversion, so polling the current input can miss a successful conversion.
+          try{
+            const make=await browser.newPage();
+            await make.setContent('<h1>Eco Stream Heat Pump Quote</h1><p>Total £12,450</p><p>8kW heat pump</p><p>Design flow temperature 45 C</p>');
+            const pdf=await make.pdf({format:'A4'});await make.close();
+            const page=await browser.newPage({viewport:{width:390,height:844},isMobile:true,hasTouch:true});
+            const errors=[],badRuntime=[];
+            page.on('pageerror',e=>errors.push(String(e)));
+            page.on('response',r=>{try{const u=r.url(),ct=(r.headers()['content-type']||'').toLowerCase();if(new URL(u).origin===origin&&/\/resources\/pdf(?:\.worker)?\.mjs(?:\?|$)/i.test(u)&&(!r.ok()||!/javascript|ecmascript/.test(ct)))badRuntime.push(`${u} -> ${r.status()} ${ct||'missing content-type'}`)}catch{}});
+            await page.goto(`${base}/?qa=1&pdf_probe=1`,{waitUntil:'domcontentloaded',timeout:30000});
+            await page.getByRole('button',{name:/check my quote/i}).first().click();
+            const input=page.locator('input[type="file"]').first();
+            await input.waitFor({state:'attached',timeout:15000});
+            await page.evaluate(()=>{
+              window.__hqcPdfObserved=[];
+              document.addEventListener('change',ev=>{
+                const el=ev.target;
+                if(el instanceof HTMLInputElement&&el.type==='file'&&el.files?.[0])window.__hqcPdfObserved.push({name:el.files[0].name,type:el.files[0].type});
+              },true);
+            });
+            await input.setInputFiles({name:'eco-stream-quote.pdf',mimeType:'application/pdf',buffer:pdf});
+            await page.waitForFunction(()=>window.__hqcPdfObserved?.some(f=>f.type==='image/webp'),null,{timeout:45000});
+            const observed=await page.evaluate(()=>window.__hqcPdfObserved||[]);
+            const converted=[...observed].reverse().find(f=>f.type==='image/webp');
+            const body=await page.locator('body').innerText();
+            if(/Automatic extraction needs JPG, PNG or WebP/i.test(body))throw new Error('legacy PDF unsupported error still shown');
+            if(/We could not prepare this PDF automatically/i.test(body))throw new Error('PDF preparation fallback error shown');
+            if(!converted)throw new Error(`No WebP conversion event observed: ${JSON.stringify(observed)}`);
+            if(badRuntime.length)throw new Error(`PDF runtime failures: ${[...new Set(badRuntime)].join(' | ')}`);
+            if(errors.length)throw new Error(errors.join(' | '));
+            await page.close();
+            console.log(`PDF_UPLOAD_REGRESSION_VERIFIED ${converted.name} ${converted.type}`);
+          }catch(e){failures.push(`PDF upload regression: ${e.message}`)}
+
           await browser.close();
-          console.log(`Audited ${pages.length} HTML pages and ${targets.size} first-party assets.`);
+          console.log(`Audited ${pages.length} HTML pages plus required PDF runtime assets.`);
           if(warnings.length)console.log('WARNINGS\n'+[...new Set(warnings)].join('\n'));
           if(failures.length){console.error('FAILURES\n'+[...new Set(failures)].join('\n'));process.exit(1)}
-          console.log('HQC site consistency audit passed: HTML, assets/MIME types, graphics, JS, responsive layout and PDF upload are clean.');
+          console.log('HQC site consistency audit passed: HTML, actively loaded assets/MIME types, graphics, JS, responsive layout and PDF upload are clean.');
           NODE
