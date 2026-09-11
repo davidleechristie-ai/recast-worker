@@ -1,7 +1,7 @@
 {
-  "fetchedAt": "2026-09-11T08:30:08.359276Z",
+  "fetchedAt": "2026-09-11T09:28:38.973736Z",
   "growthReport": {
-    "generatedAt": "2026-09-11T08:30:08.288Z",
+    "generatedAt": "2026-09-11T09:28:38.947Z",
     "loop": [
       "Acquire qualified homeowners",
       "Measure source funnels",
@@ -22,7 +22,7 @@
         "genuine": 2,
         "landingToCta": 28,
         "landingToGenuine": 1,
-        "landings": 232,
+        "landings": 233,
         "shareIntent": 4,
         "shareOpens": 0,
         "source": "direct",
@@ -189,7 +189,7 @@
       "checkouts": 0,
       "cta": 72,
       "genuine": 2,
-      "landings": 263,
+      "landings": 264,
       "shareIntent": 4,
       "shareOpens": 0,
       "uploads": 16
