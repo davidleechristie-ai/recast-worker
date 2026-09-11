@@ -1,6 +1,10 @@
 name: HQC site consistency
 
 on:
+  push:
+    branches: [main]
+    paths:
+      - '.github/workflows/hqc-site-consistency.yml'
   workflow_run:
     workflows: ["HQC production deploy"]
     types: [completed]
