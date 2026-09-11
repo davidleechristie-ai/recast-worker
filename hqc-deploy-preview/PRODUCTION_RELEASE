@@ -1,21 +1,16 @@
-2026-09-11T14:33+01:00
-Promote acquisition-to-checker handoff optimisation.
+2026-09-11T14:46+01:00
+Promote consumer-readable Decision Case results UX.
 
-Measured hypothesis:
-- latest production snapshot: 346 landings -> 24 checker starts -> 11 uploads -> 3 genuine analyses;
-- the earliest/largest measured constraint is landing -> checker start;
-- several qualified organic cohorts are reaching the homepage from decision content but then recording zero checker starts.
+This release applies the agreed consumer-facing design rule: what have we found -> why does it matter -> what should I do.
 
-This release removes a redundant second click for visitors who have already chosen a decision-page "check my quote" CTA. Same-origin decision-page links back to the HQC homepage now preserve their source attribution and add hqc_start=1, which opens quote intake automatically on arrival.
+Changes:
+- replace 'Decision-critical evidence is still missing' with 'Important information is still missing';
+- remove the unexplained '8 unresolved evidence items remain' style count and replace it with plain-English context;
+- remove duplicate 'Next:' and 'Do this:' instructions;
+- provide one clear Next step and one primary action: Send questions to installer;
+- increase heading, body and question text sizes and spacing for desktop/mobile readability;
+- retain the balanced two-panel results layout;
+- improve Quote evidence completeness and Quote Facts typography without changing the underlying analysis;
+- preserve free comparison and the personalised £19 Decision Pack boundary.
 
-Guardrails:
-- no new personal-data collection;
-- no change to evidence, sizing, certification, MCS/BUS or grant-eligibility claims;
-- no payment boundary or Stripe change;
-- no DNS/routing change;
-- QA traffic remains excluded from traction metrics.
-
-Success measure: increased decision-content cohort checker starts and subsequent genuine analyses, not pageviews.
-
-Acquisition handoff commit: ee84d20dee535cc1f2ea2900a60b308032397017
-Canary run: 34604816866 (passed snapshot, custom-domain deploy, API/asset checks, QA exclusion and mobile upload/manual-entry browser paths).
+Results UX commit: 0b9bb331f265225e81db84293f8534a78604f26e
