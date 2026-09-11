@@ -1,0 +1,40 @@
+name: HQC event telemetry diagnostic
+
+on:
+  push:
+    branches: [main]
+    paths:
+      - '.github/workflows/hqc-event-diagnostic.yml'
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+jobs:
+  diagnose:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 22
+      - name: Install browser tooling
+        run: |
+          npm install --no-save playwright@1.55.0
+          npx playwright install --with-deps chromium
+      - name: Capture event requests and responses
+        shell: bash
+        run: |
+          node --input-type=module <<'NODE'
+          import { chromium } from 'playwright';
+          const browser=await chromium.launch({headless:true});
+          for(const target of ['https://homequotecheck.co.uk/','https://homequotecheck.co.uk/?source=organic_compare_quotes']){
+            const page=await browser.newPage({viewport:{width:390,height:844},isMobile:true,hasTouch:true});
+            page.on('request',r=>{if(new URL(r.url()).pathname==='/api/event')console.log('EVENT_REQUEST',target,r.method(),r.postData()||'');});
+            page.on('response',async r=>{if(new URL(r.url()).pathname==='/api/event'){let text='';try{text=await r.text()}catch{}console.log('EVENT_RESPONSE',target,r.status(),text.slice(0,1000));}});
+            await page.goto(target,{waitUntil:'domcontentloaded',timeout:30000});
+            await page.waitForTimeout(5000);
+            await page.close();
+          }
+          await browser.close();
+          NODE
