@@ -1,8 +1,10 @@
-2026-09-11T12:47+01:00
-Promote live Stripe webhook verification after Cloudflare signing-secret configuration.
+2026-09-11T13:02+01:00
+Promote direct PDF quote upload support and site-consistency hardening.
 
-This release keeps the existing £19 one-off Decision Pack and free initial evidence check unchanged. It preserves the current acquisition pages and production UI while hardening payment handling: Checkout Session creation is idempotent per quote case, Stripe metadata contains only an opaque case reference plus product marker, and signed webhook handling covers checkout.session.completed, checkout.session.async_payment_succeeded and checkout.session.async_payment_failed.
+This release fixes the upload mismatch where the interface accepted PDF files but automatic extraction only handled JPG/PNG/WebP. PDFs are now rendered locally in the browser using a same-origin bundled PDF.js build, converted to a transient WebP image and passed into the existing quote-analysis flow. The original PDF is not uploaded separately or stored by this bridge.
 
-The live webhook destination is https://homequotecheck.co.uk/api/stripe/webhook. STRIPE_WEBHOOK_SECRET has now been configured manually as an encrypted Cloudflare Worker secret. Production deployment and existing smoke checks will rerun against the current payment-hardened worker.
+The UI now accurately states that screenshots, photos and PDFs are supported. Up to the first 12 pages of a PDF are prepared for analysis, with progress and fallback messaging if conversion fails.
 
-Previous production deploy for payment hardening: workflow run 34593473381 (success).
+This promotion also preserves the live Stripe configuration and dashboard-managed Cloudflare secrets. The production consistency audit remains active for broken links, graphics, browser errors and responsive layout defects.
+
+Product commit: feef72081905f6911c563e45bec117d7b9673146
