@@ -1,11 +1,12 @@
-2026-09-11T13:46+01:00
-Redeploy the personalised £19 Decision Pack after fixing release-contract compatibility and forcing a fresh synchronized frontend asset snapshot.
+2026-09-11T13:51+01:00
+Promote the personalised £19 Decision Pack with the resilient quote-intake fix after the canary mobile intake checks passed.
 
 Free remains genuinely useful: multiple quote upload and comparison, extracted facts, material differences, evidence gaps and core next steps remain outside the paywall.
 
 Paid remains the personalised decision layer: detailed quote-by-quote analysis, installer-specific actions/questions, commercial scope cautions, explicit decision conditions and a printable Decision Pack after verified Stripe payment.
 
-This promotion also refreshes the production JavaScript/assets so the HTML and module bundle versions are deployed together, preserving PDF support and the existing Stripe configuration.
+The quote intake enhancement now recreates its accessible upload/manual controls whenever the upstream intake markup changes, while continuing to use the native file input and analysis flow underneath. This removes the previous #hqc-choose-file timeout and keeps PDF conversion in-browser.
 
+Canary-verified intake commit: 5894508beea06157a15246d99686d63e1f605b28
 Asset-sync commit: 1805bc47d4ceec5c1bcd348d315c45f4f9e09965
 Paid product commit: ee40d8424b6270f85f3e0f19beb5bffa647eeff5
