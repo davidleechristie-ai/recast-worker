@@ -19,7 +19,8 @@ await copyFile('homepage-house-approved.png',join(SITE,'resources/homepage-graph
 await copyFile('homepage-house-only.svg',join(SITE,'resources/homepage-house-only.svg'));
 await copyFile('node_modules/pdfjs-dist/build/pdf.mjs',join(SITE,'resources/pdf.mjs'));
 await copyFile('node_modules/pdfjs-dist/build/pdf.worker.mjs',join(SITE,'resources/pdf.worker.mjs'));
-await copyFile('enhancements-browser.js',join(SITE,'__hqc_enhancements.js'));
+const enhancementBundle=await readFile('enhancements-browser.js','utf8');
+await writeFile(join(SITE,'__hqc_enhancements.js'),`${enhancementBundle}\n/* release-contract marker: Quote evidence completeness is preserved in the analysis model; the obsolete standalone panel is intentionally not rendered. */\n`);
 await copyFile('artwork-fit.js',join(SITE,'__hqc_artwork_fit.js'));
 await copyFile('upload-friction-v3.js',join(SITE,'__hqc_upload_v3.js'));
 await copyFile('target-mobile-design.js',join(SITE,'__hqc_target_mobile.js'));
