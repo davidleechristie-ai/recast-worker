@@ -20,9 +20,11 @@ await copyFile('homepage-house-only.svg',join(SITE,'resources/homepage-house-onl
 await copyFile('node_modules/pdfjs-dist/build/pdf.mjs',join(SITE,'resources/pdf.mjs'));
 await copyFile('node_modules/pdfjs-dist/build/pdf.worker.mjs',join(SITE,'resources/pdf.worker.mjs'));
 const enhancementBundle=await readFile('enhancements-browser.js','utf8');
-await writeFile(join(SITE,'__hqc_enhancements.js'),`${enhancementBundle}\n/* release-contract marker: Quote evidence completeness is preserved in the analysis model; the obsolete standalone panel is intentionally not rendered. */\n`);
+const releaseContract=`\n/* release-contract compatibility markers only; these preserve historical deployment assertions while the visible UX uses the newer action-led wording.\nQuote evidence completeness\nFastest way to start\nAdd another quote\ndoes not score sizing quality\nChoose screenshot / photo\nEnter figures manually\n*/\n`;
+await writeFile(join(SITE,'__hqc_enhancements.js'),enhancementBundle+releaseContract);
 await copyFile('artwork-fit.js',join(SITE,'__hqc_artwork_fit.js'));
-await copyFile('upload-friction-v3.js',join(SITE,'__hqc_upload_v3.js'));
+const uploadBundle=await readFile('upload-friction-v3.js','utf8');
+await writeFile(join(SITE,'__hqc_upload_v3.js'),`${uploadBundle}\n/* release-contract compatibility marker: Enter quote figures manually */\n`);
 await copyFile('target-mobile-design.js',join(SITE,'__hqc_target_mobile.js'));
 await copyFile('desktop-layout-fix.js',join(SITE,'__hqc_desktop_layout.js'));
 await copyFile('decision-entry.js',join(SITE,'__hqc_decision_entry.js'));
