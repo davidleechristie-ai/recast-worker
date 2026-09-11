@@ -8,7 +8,6 @@ on:
     branches: [main]
     paths:
       - '.github/workflows/hqc-commercial-metrics.yml'
-      - 'hqc-ops/commercial-baseline.json'
 
 permissions:
   contents: write
@@ -24,43 +23,47 @@ jobs:
       - uses: actions/checkout@v4
         with:
           fetch-depth: 0
-      - name: Fetch authoritative production funnel
+      - name: Fetch authoritative durable production funnel
         shell: bash
         run: |
           set -euo pipefail
-          base='https://api-v2.appdeploy.ai/app/heat-pump-second-opinion-v43csv'
-          tmp=$(mktemp)
-          curl -fsS --max-time 30 "$base/api/growth-report" -o "$tmp"
+          base='https://homequotecheck.co.uk'
+          metrics=$(mktemp)
+          growth=$(mktemp)
+          curl -fsS --max-time 30 "$base/api/metrics" -o "$metrics"
+          curl -fsS --max-time 30 "$base/api/growth-report" -o "$growth"
+          jq -e '.durable == true and (.measurementStartedAt|length)>0' "$metrics" >/dev/null
+          jq -e '.durable == true and (.measurementStartedAt|length)>0' "$growth" >/dev/null
           jq -n \
             --arg fetchedAt "$(date -u +%Y-%m-%dT%H:%M:%SZ)" \
-            --slurpfile current "$tmp" \
-            --slurpfile baseline hqc-ops/commercial-baseline.json \
+            --slurpfile metrics "$metrics" \
+            --slurpfile growth "$growth" \
             '{
               fetchedAt:$fetchedAt,
-              northStar:{targetMonthlyRevenueGBP:500, revenueAvailable:false, note:"Authoritative payment revenue feed is not connected; never infer revenue from intent or checkout counts."},
-              baselineAt:$baseline[0].baselineAt,
-              total:$current[0].total,
-              sinceCommercialBaseline:{
-                landings:($current[0].total.landings-$baseline[0].total.landings),
-                cta:($current[0].total.cta-$baseline[0].total.cta),
-                uploads:($current[0].total.uploads-$baseline[0].total.uploads),
-                genuine:($current[0].total.genuine-$baseline[0].total.genuine),
-                shareIntent:($current[0].total.shareIntent-$baseline[0].total.shareIntent),
-                shareOpens:($current[0].total.shareOpens-$baseline[0].total.shareOpens),
-                checkouts:($current[0].total.checkouts-$baseline[0].total.checkouts)
+              durable:true,
+              measurementStartedAt:$metrics[0].measurementStartedAt,
+              northStar:{
+                genuineAnalyses:{current:$metrics[0].genuineAnalyses,target:100},
+                shareOpens:{current:$metrics[0].shareOpens,target:20},
+                outboundActions:{current:$metrics[0].outboundClicks,target:10},
+                note:"Cumulative Cloudflare-side validation counters. QA/demo/test traffic is excluded; payment intent is not treated as revenue."
               },
-              sources:$current[0].sources,
+              total:$growth[0].total,
+              sources:$growth[0].sources,
+              recommendations:$growth[0].recommendations,
               decision:(
-                if (($current[0].total.genuine-$baseline[0].total.genuine) > 0 and ($current[0].total.checkouts-$baseline[0].total.checkouts) == 0) then
-                  {priority:"commercial proposition", action:"Expose and test the smallest reversible paid Decision Pack proposition after a genuine result; measure explicit checkout intent without treating it as revenue."}
-                elif (($current[0].total.uploads-$baseline[0].total.uploads) > 0 and ($current[0].total.genuine-$baseline[0].total.genuine) == 0) then
-                  {priority:"analysis completion", action:"Fix submission-to-analysis friction before acquisition expansion."}
-                elif (($current[0].total.cta-$baseline[0].total.cta) > 0 and ($current[0].total.uploads-$baseline[0].total.uploads) == 0) then
-                  {priority:"quote intake", action:"Fix checker-start-to-upload friction."}
-                elif (($current[0].total.landings-$baseline[0].total.landings) > 0 and ($current[0].total.cta-$baseline[0].total.cta) == 0) then
-                  {priority:"landing conversion", action:"Continue fast-fail message-match/CTA iteration on existing qualified pages; do not add thin SEO pages."}
+                if $metrics[0].genuineAnalyses >= 100 then
+                  {priority:"validation review",action:"Perform SCALE/HOLD/PIVOT review before further autonomous growth changes."}
+                elif ($growth[0].total.uploads > 0 and $growth[0].total.genuine == 0) then
+                  {priority:"analysis completion",action:"Fix submission-to-analysis friction before acquisition expansion."}
+                elif ($growth[0].total.cta >= 5 and $growth[0].total.uploads == 0) then
+                  {priority:"quote intake",action:"Fix checker-start-to-upload friction before adding acquisition."}
+                elif ($growth[0].total.landings >= 15 and $growth[0].total.cta == 0) then
+                  {priority:"landing conversion",action:"Improve message match and CTA clarity on existing qualified pages before adding acquisition."}
+                elif ($growth[0].total.genuine > 0 and $growth[0].total.shareOpens == 0) then
+                  {priority:"share evidence",action:"Keep measuring the Decision Case share path; strengthen it only after enough genuine analyses establish a repeatable gap."}
                 else
-                  {priority:"measure", action:"No new authoritative downstream signal yet. Avoid speculative feature churn; research and prepare next reversible experiment."}
+                  {priority:"measure",action:"Clean durable sample is still small. Avoid speculative feature churn and keep measuring the full funnel."}
                 end
               )
             }' > hqc-ops/commercial-live.json
@@ -73,7 +76,7 @@ jobs:
           git config user.email 'actions@users.noreply.github.com'
           git add hqc-ops/commercial-live.json
           git diff --cached --quiet && exit 0
-          git commit -m 'HQC: snapshot commercial metrics'
+          git commit -m 'HQC: snapshot durable commercial metrics'
           for attempt in 1 2 3; do
             if git push; then exit 0; fi
             git fetch origin main
