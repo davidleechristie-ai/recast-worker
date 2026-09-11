@@ -1,16 +1,18 @@
-2026-09-11T18:36+01:00
-Promote canary-verified HQC growth-telemetry integrity repair to production.
+2026-09-11T19:34+01:00
+Promote canary-verified durable HQC validation metrics to production.
 
-Measurement repair:
-- production growth metrics currently operate over a 500-event backend window and were being polluted by automated headless browser audits;
-- Cloudflare now forces HeadlessChrome/Playwright event traffic to isTest=true, in addition to explicit qa/release/smoke markers;
+Measurement integrity repair:
+- the legacy AppDeploy metrics endpoint only reports a rolling 500-event window, so older genuine analyses can disappear as traffic accumulates;
+- Cloudflare now maintains cumulative non-test validation counters in a Durable Object and serves /api/metrics and /api/growth-report from that durable store;
+- genuine analyses and shared-case opens are de-duplicated by analysisId;
+- QA/demo/test traffic remains excluded, including HeadlessChrome/Playwright and explicit qa/release/smoke markers;
 - normal production browser traffic is not classified as QA merely because it is a site-owner visit;
-- genuine-analysis telemetry now has an idempotent reconciliation layer that re-emits analysis_qualified_real_quote from the saved real Decision Case using the same analysisId, so duplicate delivery cannot inflate the Set-based genuine metric but missed delivery can be repaired on results/page restore;
-- demo cases and non-real manual cases remain excluded.
+- legacy backend metrics remain available diagnostically with ?legacy=1;
+- no historic counts are invented or backfilled; the durable measurement epoch is explicit via measurementStartedAt.
 
-Verification:
-- custom-domain canary #174 completed successfully through snapshot, Cloudflare deployment, domain/API verification and mobile quote-intake smoke tests;
+Canary verification:
+- custom-domain canary #178 passed snapshot, Durable Object migration/binding, Cloudflare deployment, domain/API verification and both mobile quote-intake paths;
 - no AppDeploy deployment is involved;
 - preserve current custom-domain routing and same-origin /api proxy.
 
-Deploy via the existing guarded hqc-production workflow, then run the normal post-deploy site consistency audit.
+Deploy via the existing guarded hqc-production workflow and verify production before using the new counters for autonomous growth decisions.
