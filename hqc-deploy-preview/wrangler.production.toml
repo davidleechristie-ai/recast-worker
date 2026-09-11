@@ -14,6 +14,14 @@ STRIPE_DECISION_PACK_PRICE_ID = "price_1UER4fCnmTy7aZ0Hp1zMfDYT"
 [secrets]
 required = ["STRIPE_SECRET_KEY", "STRIPE_WEBHOOK_SECRET"]
 
+[[durable_objects.bindings]]
+name = "HQC_METRICS"
+class_name = "HqcMetrics"
+
+[[migrations]]
+tag = "v1"
+new_sqlite_classes = ["HqcMetrics"]
+
 [assets]
 directory = "./site"
 binding = "ASSETS"
