@@ -8,7 +8,7 @@ on:
   workflow_dispatch:
 
 permissions:
-  contents: read
+  contents: write
 
 jobs:
   diagnose:
@@ -22,7 +22,8 @@ jobs:
         shell: bash
         run: |
           set -u
-          report="$RUNNER_TEMP/hqc-stylesheet-diagnostic.txt"
+          mkdir -p diagnostics
+          report="diagnostics/hqc-stylesheet-diagnostic.txt"
           : > "$report"
           for base in 'https://heat-pump-second-opinion-v43csv.v2.appdeploy.ai' 'https://homequotecheck.co.uk'; do
             echo "=== $base ===" | tee -a "$report"
@@ -52,13 +53,16 @@ jobs:
           PY
           done
           cat "$report"
-      - name: Upload stylesheet diagnostic
-        if: always()
-        uses: actions/upload-artifact@v4
-        with:
-          name: hqc-stylesheet-diagnostic
-          path: ${{ runner.temp }}/hqc-stylesheet-diagnostic.txt
-          retention-days: 3
+      - name: Persist stylesheet diagnostic
+        shell: bash
+        run: |
+          git config user.name 'github-actions[bot]'
+          git config user.email '41898282+github-actions[bot]@users.noreply.github.com'
+          git add diagnostics/hqc-stylesheet-diagnostic.txt
+          if ! git diff --cached --quiet; then
+            git commit -m 'Update HQC stylesheet diagnostic'
+            git push
+          fi
       - name: Diagnose analysis request and result boundary
         working-directory: hqc-deploy-preview
         shell: bash
