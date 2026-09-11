@@ -1,11 +1,9 @@
 name: HQC site consistency
 
 on:
-  push:
-    branches: [main]
-    paths:
-      - 'hqc-deploy-preview/**'
-      - '.github/workflows/hqc-site-consistency.yml'
+  workflow_run:
+    workflows: ["HQC production deploy"]
+    types: [completed]
   workflow_dispatch:
   schedule:
     - cron: '17 7 * * *'
@@ -15,6 +13,7 @@ permissions:
 
 jobs:
   audit:
+    if: github.event_name != 'workflow_run' || github.event.workflow_run.conclusion == 'success'
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v4
