@@ -1,16 +1,19 @@
-2026-09-11T14:46+01:00
-Promote consumer-readable Decision Case results UX.
+2026-09-11T14:57+01:00
+Promote revised free/paid product boundary.
 
-This release applies the agreed consumer-facing design rule: what have we found -> why does it matter -> what should I do.
+Free:
+- analyse one quote;
+- extract key facts;
+- provide a simple readiness position and limited high-level concerns.
 
-Changes:
-- replace 'Decision-critical evidence is still missing' with 'Important information is still missing';
-- remove the unexplained '8 unresolved evidence items remain' style count and replace it with plain-English context;
-- remove duplicate 'Next:' and 'Do this:' instructions;
-- provide one clear Next step and one primary action: Send questions to installer;
-- increase heading, body and question text sizes and spacing for desktop/mobile readability;
-- retain the balanced two-panel results layout;
-- improve Quote evidence completeness and Quote Facts typography without changing the underlying analysis;
-- preserve free comparison and the personalised £19 Decision Pack boundary.
+£19 Decision Pack:
+- add and compare multiple competing quotes;
+- quote-by-quote personalised analysis;
+- which proposal appears strongest and why;
+- installer-specific questions and decision conditions;
+- printable Decision Pack.
 
-Results UX commit: 0b9bb331f265225e81db84293f8534a78604f26e
+Multi-quote comparison is now explicitly a paid case capability, not part of the free product. A customer pays once for the decision rather than per quote. Existing verified paid cases remain unlocked.
+
+Comparison gate commit: a4aa933c64af6be1c65f03990ad647c81085dd9d
+Snapshot injection commit: 4c61f5ed04507b24b039877cbe2cf01d5e72311f
