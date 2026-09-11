@@ -1,7 +1,7 @@
 {
-  "fetchedAt": "2026-09-11T17:26:51.349582Z",
+  "fetchedAt": "2026-09-11T18:31:11.919367Z",
   "growthReport": {
-    "generatedAt": "2026-09-11T17:26:51.299Z",
+    "generatedAt": "2026-09-11T18:31:11.883Z",
     "loop": [
       "Acquire qualified homeowners",
       "Measure source funnels",
@@ -16,12 +16,12 @@
     "sources": [
       {
         "checkouts": 0,
-        "cta": 15,
-        "ctaToUpload": 33,
+        "cta": 14,
+        "ctaToUpload": 36,
         "genuine": 0,
         "landingToCta": 5,
         "landingToGenuine": 0,
-        "landings": 305,
+        "landings": 296,
         "shareIntent": 2,
         "shareOpens": 0,
         "source": "direct",
@@ -34,7 +34,7 @@
         "genuine": 0,
         "landingToCta": 0,
         "landingToGenuine": 0,
-        "landings": 22,
+        "landings": 21,
         "shareIntent": 0,
         "shareOpens": 0,
         "source": "organic_goodquote_static",
@@ -121,9 +121,9 @@
     ],
     "total": {
       "checkouts": 0,
-      "cta": 17,
+      "cta": 16,
       "genuine": 0,
-      "landings": 359,
+      "landings": 349,
       "shareIntent": 2,
       "shareOpens": 0,
       "uploads": 5
