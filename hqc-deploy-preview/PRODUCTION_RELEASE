@@ -1,20 +1,16 @@
-2026-09-11T17:44+01:00
-Promote canary-verified stylesheet hardening and PDF upload compatibility fix to HQC production.
+2026-09-11T17:49+01:00
+Promote canary-verified HQC website repair and growth telemetry correction to production.
 
-Website repair status:
-- production stylesheet is healthy and returns 200 text/css;
-- snapshot discovery accepts configured target-origin asset URLs and refuses to deploy missing, empty or HTML-fallback stylesheets;
-- canary #167 passed snapshot, stylesheet validation, Cloudflare binding, domain verification and mobile quote intake.
+Website repair verified:
+- production stylesheet returns 200 text/css and snapshot guards prevent missing/HTML-fallback CSS from deploying;
+- PDF upload compatibility is restored for Chromium browsers via Map upsert compatibility helpers loaded before PDF.js rendering;
+- production deploy #74 succeeded;
+- post-deploy site consistency run #45 passed all 18 HTML pages on mobile and desktop, required runtime MIME checks, responsive layout checks and live PDF-to-WebP conversion.
 
-PDF upload root cause:
-- pdfjs-dist 5.4 uses Map.getOrInsertComputed / Map.getOrInsert;
-- Chromium 140 used by the production regression test does not expose those helpers;
-- PDF loading succeeded but page rendering failed before conversion, leaving users on the upload step.
+Growth telemetry correction:
+- diagnostic confirmed supported landing_view events return 200 and are recorded;
+- landing_variant_exposed is not supported by the existing metrics event vocabulary and returned 400;
+- remove the unsupported exposure event while preserving variant attribution on the supported checker_cta_clicked conversion event;
+- canary #169 passed snapshot, custom-domain verification and mobile quote-intake smoke tests.
 
-PDF fix:
-- load a small compatibility shim before the HQC upload flow;
-- preserve local PDF.js and worker delivery with JavaScript MIME types;
-- dedicated canary PDF test converted a generated installer quote from application/pdf to image/webp and reported PDF ready in about two seconds;
-- no page errors were recorded during the successful conversion.
-
-Production release must preserve the existing hqc-production custom-domain routing and run the post-deploy site-consistency audit, including PDF conversion.
+Deploy via the existing hqc-production guarded workflow and preserve the post-deploy site-consistency audit.
