@@ -1,20 +1,16 @@
-2026-09-11T17:08+01:00
-Re-run production verification after replacing the false network-idle browser gate with deterministic DOM/load checks.
+2026-09-11T17:28+01:00
+Emergency production repair: restore missing primary stylesheet on homequotecheck.co.uk.
 
-The previous production run successfully:
-- snapshotted the corrected frontend and transitive runtime modules;
-- deployed the hqc-production Worker to homequotecheck.co.uk;
-- uploaded notifications-runtime-DKZvfw3S.js as a real static JavaScript asset;
-- passed production HTTP/API verification.
+Incident observed on production:
+- index.html references /assets/index-CjgMTR3j.css;
+- Cloudflare asset bundle does not contain that stylesheet;
+- SPA fallback therefore returns index.html with content-type text/html for the CSS URL;
+- the browser renders the site largely unstyled.
 
-Its only failure was the final Playwright smoke test waiting for networkidle while the application intentionally maintains background traffic.
+Action for this release:
+- rebuild a fresh snapshot from the healthy upstream HQC app;
+- include all current transitive CSS/JS assets;
+- deploy to the existing hqc-production Cloudflare Worker;
+- verify the production homepage and runtime assets after cutover.
 
-This run also strengthens release verification for:
-- consumer-readable results layout;
-- Quote Facts wording;
-- £19 paid multi-quote comparison gate;
-- personalised Decision Pack asset;
-- PDF.js runtime resources;
-- JavaScript MIME types for transitive runtime modules.
-
-Production workflow fix: 02103120aa1af4bea35c7d33d3c9d9e7cd68e635
+Follow-up release gates will explicitly validate every stylesheet referenced by index.html before and after deployment.
