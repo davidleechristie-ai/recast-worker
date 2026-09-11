@@ -1,0 +1,82 @@
+name: HQC commercial metrics
+
+on:
+  schedule:
+    - cron: '17 * * * *'
+  workflow_dispatch:
+  push:
+    branches: [main]
+    paths:
+      - '.github/workflows/hqc-commercial-metrics.yml'
+      - 'hqc-ops/commercial-baseline.json'
+
+permissions:
+  contents: write
+
+concurrency:
+  group: hqc-commercial-metrics
+  cancel-in-progress: false
+
+jobs:
+  measure:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+      - name: Fetch authoritative production funnel
+        shell: bash
+        run: |
+          set -euo pipefail
+          base='https://api-v2.appdeploy.ai/app/heat-pump-second-opinion-v43csv'
+          tmp=$(mktemp)
+          curl -fsS --max-time 30 "$base/api/growth-report" -o "$tmp"
+          jq -n \
+            --arg fetchedAt "$(date -u +%Y-%m-%dT%H:%M:%SZ)" \
+            --slurpfile current "$tmp" \
+            --slurpfile baseline hqc-ops/commercial-baseline.json \
+            '{
+              fetchedAt:$fetchedAt,
+              northStar:{targetMonthlyRevenueGBP:500, revenueAvailable:false, note:"Authoritative payment revenue feed is not connected; never infer revenue from intent or checkout counts."},
+              baselineAt:$baseline[0].baselineAt,
+              total:$current[0].total,
+              sinceCommercialBaseline:{
+                landings:($current[0].total.landings-$baseline[0].total.landings),
+                cta:($current[0].total.cta-$baseline[0].total.cta),
+                uploads:($current[0].total.uploads-$baseline[0].total.uploads),
+                genuine:($current[0].total.genuine-$baseline[0].total.genuine),
+                shareIntent:($current[0].total.shareIntent-$baseline[0].total.shareIntent),
+                shareOpens:($current[0].total.shareOpens-$baseline[0].total.shareOpens),
+                checkouts:($current[0].total.checkouts-$baseline[0].total.checkouts)
+              },
+              sources:$current[0].sources,
+              decision:(
+                if (($current[0].total.genuine-$baseline[0].total.genuine) > 0 and ($current[0].total.checkouts-$baseline[0].total.checkouts) == 0) then
+                  {priority:"commercial proposition", action:"Expose and test the smallest reversible paid Decision Pack proposition after a genuine result; measure explicit checkout intent without treating it as revenue."}
+                elif (($current[0].total.uploads-$baseline[0].total.uploads) > 0 and ($current[0].total.genuine-$baseline[0].total.genuine) == 0) then
+                  {priority:"analysis completion", action:"Fix submission-to-analysis friction before acquisition expansion."}
+                elif (($current[0].total.cta-$baseline[0].total.cta) > 0 and ($current[0].total.uploads-$baseline[0].total.uploads) == 0) then
+                  {priority:"quote intake", action:"Fix checker-start-to-upload friction."}
+                elif (($current[0].total.landings-$baseline[0].total.landings) > 0 and ($current[0].total.cta-$baseline[0].total.cta) == 0) then
+                  {priority:"landing conversion", action:"Continue fast-fail message-match/CTA iteration on existing qualified pages; do not add thin SEO pages."}
+                else
+                  {priority:"measure", action:"No new authoritative downstream signal yet. Avoid speculative feature churn; research and prepare next reversible experiment."}
+                end
+              )
+            }' > hqc-ops/commercial-live.json
+          cat hqc-ops/commercial-live.json
+      - name: Persist snapshot safely
+        shell: bash
+        run: |
+          set -euo pipefail
+          git config user.name 'hqc-growth-bot'
+          git config user.email 'actions@users.noreply.github.com'
+          git add hqc-ops/commercial-live.json
+          git diff --cached --quiet && exit 0
+          git commit -m 'HQC: snapshot commercial metrics'
+          for attempt in 1 2 3; do
+            if git push; then exit 0; fi
+            git fetch origin main
+            git rebase origin/main
+          done
+          exit 1
