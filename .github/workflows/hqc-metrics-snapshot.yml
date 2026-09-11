@@ -1,5 +1,6 @@
 name: HQC North Star metrics snapshot
 
+# Post-deploy measurement trigger: 2026-09-12T00:35+01:00
 on:
   push:
     branches: [main]
