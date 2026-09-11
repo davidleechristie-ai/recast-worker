@@ -1,7 +1,7 @@
 const API_BASE='https://api-v2.appdeploy.ai/app/heat-pump-second-opinion-v43csv';
 const STRIPE_API='https://api.stripe.com/v1';
 const json=(data,status=200,extra={})=>new Response(JSON.stringify(data),{status,headers:{'content-type':'application/json','cache-control':'no-store',...extra}});
-const isQaRequest=(request,mode)=>{if(mode!=='production')return true;const ref=request.headers.get('referer')||'';return /[?&](upload_handoff_smoke|release_probe|qa)=/i.test(ref)||/[?&](upload_handoff_smoke|release_probe|qa)(?:&|$)/i.test(ref);};
+const isQaRequest=(request,mode)=>{if(mode!=='production')return true;const ref=request.headers.get('referer')||'';const ua=request.headers.get('user-agent')||'';return /HeadlessChrome|Playwright/i.test(ua)||/[?&](upload_handoff_smoke|release_probe|qa|pdf_probe|site_consistency)=/i.test(ref)||/[?&](upload_handoff_smoke|release_probe|qa|pdf_probe|site_consistency)(?:&|$)/i.test(ref);};
 const validCaseId=v=>typeof v==='string'&&/^[A-Za-z0-9_-]{8,80}$/.test(v);
 const safeEqual=(a,b)=>{if(a.length!==b.length)return false;let d=0;for(let i=0;i<a.length;i++)d|=a.charCodeAt(i)^b.charCodeAt(i);return d===0;};
 const hex=bytes=>[...new Uint8Array(bytes)].map(b=>b.toString(16).padStart(2,'0')).join('');
