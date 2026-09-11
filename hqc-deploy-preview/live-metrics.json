@@ -1,8 +1,8 @@
 {
-  "fetchedAt": "2026-09-11T18:34:59.535349Z",
+  "fetchedAt": "2026-09-11T19:25:56.290717Z",
   "growthReport": {
     "durable": true,
-    "generatedAt": "2026-09-11T18:34:59.498Z",
+    "generatedAt": "2026-09-11T19:25:56.248Z",
     "loop": [
       "Acquire qualified homeowners",
       "Measure source funnels",
@@ -11,22 +11,67 @@
       "Verify against genuine analyses, shares and anonymous outbound intent"
     ],
     "measurementStartedAt": "2026-09-11T18:33:07.244Z",
-    "recommendations": [],
-    "sources": [],
+    "recommendations": [
+      "Share loop is below the 20% validation threshold: strengthen Decision Case sharing and recipient conversion."
+    ],
+    "sources": [
+      {
+        "checkouts": 0,
+        "cta": 0,
+        "ctaToUpload": null,
+        "genuine": 1,
+        "landingToCta": 0,
+        "landingToGenuine": 17,
+        "landings": 6,
+        "outboundClicks": 0,
+        "shareIntent": 0,
+        "shareOpens": 0,
+        "source": "direct",
+        "uploads": 1
+      },
+      {
+        "checkouts": 0,
+        "cta": 0,
+        "ctaToUpload": null,
+        "genuine": 0,
+        "landingToCta": 0,
+        "landingToGenuine": 0,
+        "landings": 1,
+        "outboundClicks": 0,
+        "shareIntent": 0,
+        "shareOpens": 0,
+        "source": "organic_checklist",
+        "uploads": 0
+      },
+      {
+        "checkouts": 0,
+        "cta": 0,
+        "ctaToUpload": null,
+        "genuine": 0,
+        "landingToCta": 0,
+        "landingToGenuine": 0,
+        "landings": 1,
+        "outboundClicks": 0,
+        "shareIntent": 0,
+        "shareOpens": 0,
+        "source": "professional",
+        "uploads": 0
+      }
+    ],
     "total": {
       "checkouts": 0,
       "cta": 0,
-      "genuine": 0,
-      "landings": 0,
+      "genuine": 1,
+      "landings": 8,
       "outboundClicks": 0,
       "shareIntent": 0,
       "shareOpens": 0,
-      "uploads": 0
+      "uploads": 1
     }
   },
   "metrics": {
     "durable": true,
-    "genuineAnalyses": 0,
+    "genuineAnalyses": 1,
     "measurementStartedAt": "2026-09-11T18:33:07.244Z",
     "note": "Cumulative Cloudflare-side counters from measurementStartedAt; QA/demo/test events are excluded.",
     "outboundClicks": 0,
