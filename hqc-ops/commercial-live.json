@@ -1,5 +1,5 @@
 {
-  "fetchedAt": "2026-09-11T10:27:52Z",
+  "fetchedAt": "2026-09-11T11:26:30Z",
   "northStar": {
     "targetMonthlyRevenueGBP": 500,
     "revenueAvailable": false,
@@ -7,18 +7,18 @@
   },
   "baselineAt": "2026-09-11T08:30:08Z",
   "total": {
-    "landings": 261,
-    "cta": 72,
-    "uploads": 16,
+    "landings": 248,
+    "cta": 66,
+    "uploads": 15,
     "genuine": 2,
     "shareIntent": 3,
     "shareOpens": 0,
     "checkouts": 0
   },
   "sinceCommercialBaseline": {
-    "landings": -2,
-    "cta": 0,
-    "uploads": 0,
+    "landings": -15,
+    "cta": -6,
+    "uploads": -1,
     "genuine": 0,
     "shareIntent": -1,
     "shareOpens": 0,
@@ -27,15 +27,15 @@
   "sources": [
     {
       "source": "direct",
-      "landings": 229,
-      "cta": 66,
-      "uploads": 16,
+      "landings": 216,
+      "cta": 61,
+      "uploads": 15,
       "genuine": 2,
       "shareIntent": 3,
       "shareOpens": 0,
       "checkouts": 0,
-      "landingToCta": 29,
-      "ctaToUpload": 24,
+      "landingToCta": 28,
+      "ctaToUpload": 25,
       "landingToGenuine": 1
     },
     {
@@ -132,14 +132,14 @@
     {
       "source": "organic_sizing",
       "landings": 3,
-      "cta": 1,
+      "cta": 0,
       "uploads": 0,
       "genuine": 0,
       "shareIntent": 0,
       "shareOpens": 0,
       "checkouts": 0,
-      "landingToCta": 33,
-      "ctaToUpload": 0,
+      "landingToCta": 0,
+      "ctaToUpload": null,
       "landingToGenuine": 0
     },
     {
