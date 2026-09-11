@@ -18,6 +18,47 @@ jobs:
       - uses: actions/setup-node@v4
         with:
           node-version: 22
+      - name: Capture stylesheet boundary diagnostic
+        shell: bash
+        run: |
+          set -u
+          report="$RUNNER_TEMP/hqc-stylesheet-diagnostic.txt"
+          : > "$report"
+          for base in 'https://heat-pump-second-opinion-v43csv.v2.appdeploy.ai' 'https://homequotecheck.co.uk'; do
+            echo "=== $base ===" | tee -a "$report"
+            curl -L -sS --max-time 30 -D "$RUNNER_TEMP/headers.txt" "$base/?stylesheet_probe=${GITHUB_RUN_ID}" -o "$RUNNER_TEMP/home.html" || true
+            echo 'HOME_HEADERS' | tee -a "$report"
+            cat "$RUNNER_TEMP/headers.txt" | tee -a "$report"
+            python - "$base" "$RUNNER_TEMP/home.html" "$report" <<'PY'
+          import pathlib,re,sys,urllib.parse,subprocess
+          base,html_path,report_path=sys.argv[1:]
+          html=pathlib.Path(html_path).read_text(errors='replace') if pathlib.Path(html_path).exists() else ''
+          refs=[]
+          for tag in re.findall(r'<link\b[^>]*>',html,re.I):
+              if re.search(r'\brel=["\'][^"\']*stylesheet',tag,re.I):
+                  m=re.search(r'\bhref=["\']([^"\']+)',tag,re.I)
+                  if m: refs.append(m.group(1))
+          with open(report_path,'a',encoding='utf-8') as f:
+              f.write('STYLESHEETS '+repr(refs)+'\n')
+          for ref in refs:
+              url=urllib.parse.urljoin(base+'/',ref)
+              p=subprocess.run(['curl','-L','-sS','--max-time','30','-o','/tmp/css-body','-D','/tmp/css-head','-w','%{http_code} %{content_type} %{size_download}',url],capture_output=True,text=True)
+              body=pathlib.Path('/tmp/css-body').read_text(errors='replace')[:120] if pathlib.Path('/tmp/css-body').exists() else ''
+              heads=pathlib.Path('/tmp/css-head').read_text(errors='replace') if pathlib.Path('/tmp/css-head').exists() else ''
+              with open(report_path,'a',encoding='utf-8') as f:
+                  f.write(f'CSS {url} => {p.stdout.strip()}\n')
+                  f.write(heads+'\n')
+                  f.write('BODY_PREFIX '+repr(body)+'\n')
+          PY
+          done
+          cat "$report"
+      - name: Upload stylesheet diagnostic
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: hqc-stylesheet-diagnostic
+          path: ${{ runner.temp }}/hqc-stylesheet-diagnostic.txt
+          retention-days: 3
       - name: Diagnose analysis request and result boundary
         working-directory: hqc-deploy-preview
         shell: bash
