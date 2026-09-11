@@ -1,143 +1,34 @@
 {
-  "fetchedAt": "2026-09-11T17:38:48Z",
+  "fetchedAt": "2026-09-11T18:33:40Z",
   "metrics": {
     "genuineAnalyses": 0,
     "shareOpens": 0,
     "outboundClicks": 0,
+    "measurementStartedAt": "2026-09-11T18:33:07.244Z",
+    "durable": true,
     "targets": {
       "genuineAnalyses": 100,
       "shareOpens": 20,
       "outboundClicks": 10
     },
-    "evidence": {
-      "ofgemPel": {
-        "lastUpdated": "2026-07-23",
-        "scope": "Administrative product-list context only; not overall BUS eligibility; SCOP not assessed"
-      },
-      "mcs": "Authoritative deterministic quote-reference lookup not enabled"
-    }
+    "note": "Cumulative Cloudflare-side counters from measurementStartedAt; QA/demo/test events are excluded."
   },
   "growthReport": {
-    "generatedAt": "2026-09-11T17:38:48.757Z",
+    "generatedAt": "2026-09-11T18:33:40.798Z",
+    "measurementStartedAt": "2026-09-11T18:33:07.244Z",
+    "durable": true,
     "total": {
-      "landings": 349,
-      "cta": 16,
-      "uploads": 5,
+      "landings": 0,
+      "cta": 0,
+      "uploads": 0,
       "genuine": 0,
-      "shareIntent": 2,
+      "shareIntent": 0,
       "shareOpens": 0,
+      "outboundClicks": 0,
       "checkouts": 0
     },
-    "sources": [
-      {
-        "source": "direct",
-        "landings": 296,
-        "cta": 14,
-        "uploads": 5,
-        "genuine": 0,
-        "shareIntent": 2,
-        "shareOpens": 0,
-        "checkouts": 0,
-        "landingToCta": 5,
-        "ctaToUpload": 36,
-        "landingToGenuine": 0
-      },
-      {
-        "source": "organic_goodquote_static",
-        "landings": 21,
-        "cta": 0,
-        "uploads": 0,
-        "genuine": 0,
-        "shareIntent": 0,
-        "shareOpens": 0,
-        "checkouts": 0,
-        "landingToCta": 0,
-        "ctaToUpload": null,
-        "landingToGenuine": 0
-      },
-      {
-        "source": "organic_goodquote_static_compare",
-        "landings": 15,
-        "cta": 0,
-        "uploads": 0,
-        "genuine": 0,
-        "shareIntent": 0,
-        "shareOpens": 0,
-        "checkouts": 0,
-        "landingToCta": 0,
-        "ctaToUpload": null,
-        "landingToGenuine": 0
-      },
-      {
-        "source": "organic_goodquote_static_bottom",
-        "landings": 13,
-        "cta": 0,
-        "uploads": 0,
-        "genuine": 0,
-        "shareIntent": 0,
-        "shareOpens": 0,
-        "checkouts": 0,
-        "landingToCta": 0,
-        "ctaToUpload": null,
-        "landingToGenuine": 0
-      },
-      {
-        "source": "organic_compare",
-        "landings": 2,
-        "cta": 0,
-        "uploads": 0,
-        "genuine": 0,
-        "shareIntent": 0,
-        "shareOpens": 0,
-        "checkouts": 0,
-        "landingToCta": 0,
-        "ctaToUpload": null,
-        "landingToGenuine": 0
-      },
-      {
-        "source": "organic_flowtemp",
-        "landings": 1,
-        "cta": 1,
-        "uploads": 0,
-        "genuine": 0,
-        "shareIntent": 0,
-        "shareOpens": 0,
-        "checkouts": 0,
-        "landingToCta": 100,
-        "ctaToUpload": 0,
-        "landingToGenuine": 0
-      },
-      {
-        "source": "organic_goodquote",
-        "landings": 1,
-        "cta": 1,
-        "uploads": 0,
-        "genuine": 0,
-        "shareIntent": 0,
-        "shareOpens": 0,
-        "checkouts": 0,
-        "landingToCta": 100,
-        "ctaToUpload": 0,
-        "landingToGenuine": 0
-      },
-      {
-        "source": "shared_case",
-        "landings": 0,
-        "cta": 0,
-        "uploads": 0,
-        "genuine": 0,
-        "shareIntent": 0,
-        "shareOpens": 0,
-        "checkouts": 0,
-        "landingToCta": null,
-        "ctaToUpload": null,
-        "landingToGenuine": null
-      }
-    ],
-    "recommendations": [
-      "Landing-to-CTA is weak: improve message match, trust proof and CTA prominence before adding more traffic.",
-      "No qualified organic cohort yet: keep expanding long-tail decision pages and internal links, then measure genuine analyses rather than clicks."
-    ],
+    "sources": [],
+    "recommendations": [],
     "loop": [
       "Acquire qualified homeowners",
       "Measure source funnels",
@@ -146,95 +37,9 @@
       "Verify against genuine analyses, shares and anonymous outbound intent"
     ]
   },
-  "authoritativeSinceBaseline": {
-    "baselineAt": "2026-09-09T11:41:33Z",
-    "landings": 107,
-    "cta": -56,
-    "uploads": -11,
-    "genuine": -2,
-    "shareIntent": -2,
-    "shareOpens": 0,
-    "checkouts": 0
-  },
-  "authoritativeSourcesSinceBaseline": {
-    "baselineAt": "2026-09-09T11:41:33Z",
-    "note": "Source deltas start later than the global validation baseline and are directional only; do not sum them to infer the full clean funnel.",
-    "sources": [
-      {
-        "source": "direct",
-        "landings": 76,
-        "cta": -52,
-        "uploads": -11,
-        "genuine": -2,
-        "shareIntent": -2,
-        "shareOpens": 0,
-        "checkouts": 0
-      },
-      {
-        "source": "organic_goodquote_static",
-        "landings": 21,
-        "cta": 0,
-        "uploads": 0,
-        "genuine": 0,
-        "shareIntent": 0,
-        "shareOpens": 0,
-        "checkouts": 0
-      },
-      {
-        "source": "organic_goodquote_static_compare",
-        "landings": 15,
-        "cta": 0,
-        "uploads": 0,
-        "genuine": 0,
-        "shareIntent": 0,
-        "shareOpens": 0,
-        "checkouts": 0
-      },
-      {
-        "source": "organic_goodquote_static_bottom",
-        "landings": 13,
-        "cta": 0,
-        "uploads": 0,
-        "genuine": 0,
-        "shareIntent": 0,
-        "shareOpens": 0,
-        "checkouts": 0
-      },
-      {
-        "source": "organic_compare",
-        "landings": -2,
-        "cta": -1,
-        "uploads": 0,
-        "genuine": 0,
-        "shareIntent": 0,
-        "shareOpens": 0,
-        "checkouts": 0
-      },
-      {
-        "source": "organic_flowtemp",
-        "landings": -1,
-        "cta": 0,
-        "uploads": 0,
-        "genuine": 0,
-        "shareIntent": 0,
-        "shareOpens": 0,
-        "checkouts": 0
-      },
-      {
-        "source": "organic_goodquote",
-        "landings": 0,
-        "cta": -2,
-        "uploads": 0,
-        "genuine": 0,
-        "shareIntent": 0,
-        "shareOpens": 0,
-        "checkouts": 0
-      }
-    ]
-  },
   "autonomousDecisionGate": {
     "status": "HOLD",
-    "bottleneck": "insufficient clean sample",
-    "action": "Do not churn production. Continue measurement and research until a downstream conversion event identifies the next actionable bottleneck."
+    "bottleneck": "insufficient clean durable sample",
+    "action": "Do not churn production. Continue measurement until durable downstream events identify the next actionable bottleneck."
   }
 }
