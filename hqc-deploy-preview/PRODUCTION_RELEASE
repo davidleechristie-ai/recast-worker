@@ -1,16 +1,20 @@
-2026-09-11T19:36+01:00
-Promote canary-verified HQC CTA measurement integrity fix to production.
+2026-09-11T20:35+01:00
+Promote canary-verified extended HQC durable funnel measurement to production.
 
-Measurement integrity repair:
-- durable production metrics are the authoritative North Star source;
-- remove duplicate checker_cta_clicked emission from the landing-trust enhancement because the upstream application already emits the canonical CTA event with the `src` acquisition source;
-- this prevents future double-counting and conflicting source attribution while leaving the reassurance copy unchanged;
-- the scheduled commercial metrics workflow now reads only durable same-origin production metrics and refuses non-durable data;
-- QA/demo/test traffic remains excluded and no historical events are invented or backfilled.
+Measured hypothesis:
+- the clean durable sample is still too small to justify another acquisition or conversion-page change;
+- the current durable report does not cover several required funnel stages, so it cannot yet identify the earliest/largest bottleneck across multi-quote, Decision Case, installer-question/share and recipient-start progression.
+
+Low-risk measurement improvement:
+- retain the existing authoritative durable counters for landings, checker CTA, uploads, unique genuine analyses, share opens, outbound clicks and checkouts;
+- add privacy-safe cumulative counters for unique multi-quote analyses, unique Decision Cases, unique cases where installer questions are copied, and shared-case recipient checker starts;
+- expose aggregate funnel rates without adding personal data;
+- give the extended counters their own measurement start timestamp so no historical behaviour is invented or silently backfilled;
+- delay share/multi-quote optimisation recommendations until adequate sample sizes exist.
 
 Canary verification:
-- custom-domain canary #180 passed snapshot, Cloudflare deployment, domain/API verification and both mobile quote-intake paths;
+- custom-domain canary #182 passed snapshot, Cloudflare deployment, domain/API verification and both mobile quote-intake paths;
 - no AppDeploy deployment is involved;
 - preserve current custom-domain routing and same-origin /api proxy.
 
-Deploy via the existing guarded hqc-production workflow and verify production before using subsequent CTA ratios for growth decisions.
+Deploy via the existing guarded hqc-production workflow and verify production before using the extended funnel for growth decisions.
