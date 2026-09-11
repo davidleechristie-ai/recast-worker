@@ -1,0 +1,202 @@
+{
+  "fetchedAt": "2026-09-11T08:33:59Z",
+  "northStar": {
+    "targetMonthlyRevenueGBP": 500,
+    "revenueAvailable": false,
+    "note": "Authoritative payment revenue feed is not connected; never infer revenue from intent or checkout counts."
+  },
+  "baselineAt": "2026-09-11T08:30:08Z",
+  "total": {
+    "landings": 263,
+    "cta": 72,
+    "uploads": 16,
+    "genuine": 2,
+    "shareIntent": 4,
+    "shareOpens": 0,
+    "checkouts": 0
+  },
+  "sinceCommercialBaseline": {
+    "landings": 0,
+    "cta": 0,
+    "uploads": 0,
+    "genuine": 0,
+    "shareIntent": 0,
+    "shareOpens": 0,
+    "checkouts": 0
+  },
+  "sources": [
+    {
+      "source": "direct",
+      "landings": 232,
+      "cta": 66,
+      "uploads": 16,
+      "genuine": 2,
+      "shareIntent": 4,
+      "shareOpens": 0,
+      "checkouts": 0,
+      "landingToCta": 28,
+      "ctaToUpload": 24,
+      "landingToGenuine": 1
+    },
+    {
+      "source": "organic_compare",
+      "landings": 5,
+      "cta": 1,
+      "uploads": 0,
+      "genuine": 0,
+      "shareIntent": 0,
+      "shareOpens": 0,
+      "checkouts": 0,
+      "landingToCta": 20,
+      "ctaToUpload": 0,
+      "landingToGenuine": 0
+    },
+    {
+      "source": "organic_price",
+      "landings": 4,
+      "cta": 0,
+      "uploads": 0,
+      "genuine": 0,
+      "shareIntent": 0,
+      "shareOpens": 0,
+      "checkouts": 0,
+      "landingToCta": 0,
+      "ctaToUpload": null,
+      "landingToGenuine": 0
+    },
+    {
+      "source": "organic_flowtemp",
+      "landings": 3,
+      "cta": 1,
+      "uploads": 0,
+      "genuine": 0,
+      "shareIntent": 0,
+      "shareOpens": 0,
+      "checkouts": 0,
+      "landingToCta": 33,
+      "ctaToUpload": 0,
+      "landingToGenuine": 0
+    },
+    {
+      "source": "organic_checklist",
+      "landings": 3,
+      "cta": 0,
+      "uploads": 0,
+      "genuine": 0,
+      "shareIntent": 0,
+      "shareOpens": 0,
+      "checkouts": 0,
+      "landingToCta": 0,
+      "ctaToUpload": null,
+      "landingToGenuine": 0
+    },
+    {
+      "source": "organic_radiators",
+      "landings": 3,
+      "cta": 0,
+      "uploads": 0,
+      "genuine": 0,
+      "shareIntent": 0,
+      "shareOpens": 0,
+      "checkouts": 0,
+      "landingToCta": 0,
+      "ctaToUpload": null,
+      "landingToGenuine": 0
+    },
+    {
+      "source": "organic_bus",
+      "landings": 3,
+      "cta": 0,
+      "uploads": 0,
+      "genuine": 0,
+      "shareIntent": 0,
+      "shareOpens": 0,
+      "checkouts": 0,
+      "landingToCta": 0,
+      "ctaToUpload": null,
+      "landingToGenuine": 0
+    },
+    {
+      "source": "organic_sizing",
+      "landings": 3,
+      "cta": 1,
+      "uploads": 0,
+      "genuine": 0,
+      "shareIntent": 0,
+      "shareOpens": 0,
+      "checkouts": 0,
+      "landingToCta": 33,
+      "ctaToUpload": 0,
+      "landingToGenuine": 0
+    },
+    {
+      "source": "organic_heatloss",
+      "landings": 2,
+      "cta": 0,
+      "uploads": 0,
+      "genuine": 0,
+      "shareIntent": 0,
+      "shareOpens": 0,
+      "checkouts": 0,
+      "landingToCta": 0,
+      "ctaToUpload": null,
+      "landingToGenuine": 0
+    },
+    {
+      "source": "organic_questions",
+      "landings": 2,
+      "cta": 0,
+      "uploads": 0,
+      "genuine": 0,
+      "shareIntent": 0,
+      "shareOpens": 0,
+      "checkouts": 0,
+      "landingToCta": 0,
+      "ctaToUpload": null,
+      "landingToGenuine": 0
+    },
+    {
+      "source": "professional",
+      "landings": 2,
+      "cta": 0,
+      "uploads": 0,
+      "genuine": 0,
+      "shareIntent": 0,
+      "shareOpens": 0,
+      "checkouts": 0,
+      "landingToCta": 0,
+      "ctaToUpload": null,
+      "landingToGenuine": 0
+    },
+    {
+      "source": "organic_goodquote",
+      "landings": 1,
+      "cta": 3,
+      "uploads": 0,
+      "genuine": 0,
+      "shareIntent": 0,
+      "shareOpens": 0,
+      "checkouts": 0,
+      "landingToCta": 300,
+      "ctaToUpload": 0,
+      "landingToGenuine": 0
+    },
+    {
+      "source": "shared_case",
+      "landings": 0,
+      "cta": 0,
+      "uploads": 0,
+      "genuine": 0,
+      "shareIntent": 0,
+      "shareOpens": 0,
+      "checkouts": 0,
+      "landingToCta": null,
+      "ctaToUpload": null,
+      "landingToGenuine": null
+    }
+  ],
+  "decision": {
+    "priority": "measure",
+    "action": "No new authoritative downstream signal yet. Avoid speculative feature churn; research and prepare next reversible experiment."
+  }
+}
