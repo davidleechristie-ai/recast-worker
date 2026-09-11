@@ -1,113 +1,39 @@
 (()=>{
   // Release-gate compatibility marker: upload-friction-v3.3
-  const VERSION='upload-friction-v3.6', HANDOFF='hqc_analysis_handoff_pending';
+  const VERSION='upload-friction-v3.7', HANDOFF='hqc_analysis_handoff_pending';
   const qs=(s,r=document)=>r.querySelector(s);
   const qsa=(s,r=document)=>[...r.querySelectorAll(s)];
   const text=n=>(n?.textContent||'').replace(/\s+/g,' ').trim();
-  const cardFor=el=>el?.closest?.('.card')||qsa('.card').find(c=>/add your quotes/i.test(text(qs('h1,h2',c))))||document;
+  const uploadCard=()=>qsa('.card').find(c=>/add your quotes?|upload.*quote|quote.*upload/i.test(text(qs('h1,h2',c))||text(c).slice(0,220))&&qsa('input[type="file"]',c).length)||qsa('.card').find(c=>qsa('input[type="file"]',c).length)||null;
+  const cardFor=el=>el?.closest?.('.card')||uploadCard()||document;
   const scoreInput=(input,card)=>{let score=0;if(card!==document&&card.contains(input))score+=20;const accept=(input.getAttribute('accept')||'').toLowerCase();if(/image|pdf|png|jpe?g|webp/.test(accept))score+=8;if(!input.disabled)score+=4;return score;};
   const bestFileInput=card=>qsa('input[type="file"]').filter(i=>!i.disabled).sort((a,b)=>scoreInput(b,card)-scoreInput(a,card))[0]||null;
   const nativeUploadControl=card=>qsa('button,a,[role="button"]',card).find(n=>!/^hqc-/.test(n.id||'')&&/(upload|add (a )?quote|choose (a )?file|browse|select (a )?(file|photo|image))/i.test(text(n)))||null;
   const nativeManualControl=card=>qsa('button,a,[role="button"]',card).find(n=>!/^hqc-/.test(n.id||'')&&/(enter|add|type).*(manual|figure)|manual.*(entry|figure)/i.test(text(n)))||null;
   function status(help,message){let s=qs('#hqc-upload-v3-status',help);if(!s){s=document.createElement('div');s.id='hqc-upload-v3-status';s.setAttribute('role','status');s.style.cssText='margin-top:10px;padding:10px 12px;border-radius:8px;background:#fff;color:#07503b;font-size:12px;font-weight:800';help.appendChild(s);}s.textContent=message;}
+  function ensureControls(){
+    if(qs('#hqc-choose-file')&&qs('#hqc-upload-help'))return;
+    const card=uploadCard();if(!card)return;
+    const input=bestFileInput(card);if(!input)return;
+    let help=qs('#hqc-upload-help',card);
+    if(!help){help=document.createElement('section');help.id='hqc-upload-help';help.style.cssText='margin:14px 0;padding:18px;border:1px solid #cfe3da;border-radius:12px;background:#f5fbf8';help.innerHTML='<b>Add your quote — whichever way is easiest</b><p style="margin:6px 0 12px;line-height:1.45;color:#365b50">Upload one screenshot, photo or PDF, or type the key quote figures instead. PDFs are prepared securely in your browser before analysis.</p><button type="button" id="hqc-choose-file" class="primary">Upload screenshot / photo / PDF →</button><small style="display:block;margin-top:10px;color:#617187;line-height:1.45">No account or personal details required. Uploaded images are processed transiently and are not intentionally stored.</small>';const anchor=qs('.drop',card)||input;anchor.insertAdjacentElement('beforebegin',help);}
+    if(!qs('#hqc-choose-file',help)){const b=document.createElement('button');b.type='button';b.id='hqc-choose-file';b.className='primary';b.textContent='Upload screenshot / photo / PDF →';help.appendChild(b);}
+    const nativeManual=nativeManualControl(card);if(nativeManual&&!qs('#hqc-enter-manual',help)){const b=document.createElement('button');b.type='button';b.id='hqc-enter-manual';b.textContent='Prefer not to upload? Enter quote figures →';help.appendChild(b);}
+  }
   async function pdfToWebp(file,help){
     status(help,'PDF selected ✓  Preparing pages for automatic extraction…');
     const pdfjs=await import('/resources/pdf.mjs');
     pdfjs.GlobalWorkerOptions.workerSrc='/resources/pdf.worker.mjs';
     const pdf=await pdfjs.getDocument({data:new Uint8Array(await file.arrayBuffer())}).promise;
-    const pageCount=Math.min(pdf.numPages,12), rendered=[];
-    let totalHeight=0,maxWidth=0;
-    for(let i=1;i<=pageCount;i++){
-      status(help,`PDF selected ✓  Preparing page ${i} of ${pageCount}…`);
-      const page=await pdf.getPage(i), base=page.getViewport({scale:1});
-      const scale=Math.min(2,1400/base.width), viewport=page.getViewport({scale});
-      const canvas=document.createElement('canvas');canvas.width=Math.ceil(viewport.width);canvas.height=Math.ceil(viewport.height);
-      const ctx=canvas.getContext('2d',{alpha:false});ctx.fillStyle='#fff';ctx.fillRect(0,0,canvas.width,canvas.height);
-      await page.render({canvasContext:ctx,viewport}).promise;
-      rendered.push(canvas);maxWidth=Math.max(maxWidth,canvas.width);totalHeight+=canvas.height;
-    }
-    const combined=document.createElement('canvas');combined.width=maxWidth;combined.height=totalHeight;
-    const out=combined.getContext('2d',{alpha:false});out.fillStyle='#fff';out.fillRect(0,0,combined.width,combined.height);
-    let y=0;for(const canvas of rendered){out.drawImage(canvas,0,y);y+=canvas.height;}
-    const blob=await new Promise((resolve,reject)=>combined.toBlob(b=>b?resolve(b):reject(new Error('pdf_render_failed')),'image/webp',0.88));
-    const safe=(file.name||'quote').replace(/\.pdf$/i,'').replace(/[^a-z0-9._-]+/gi,'-').slice(0,80)||'quote';
-    const converted=new File([blob],`${safe}-pdf.webp`,{type:'image/webp',lastModified:Date.now()});
-    status(help,pdf.numPages>12?`PDF ready ✓  First 12 of ${pdf.numPages} pages prepared for automatic extraction.`:'PDF ready ✓  All pages prepared for automatic extraction.');
-    return converted;
+    const pageCount=Math.min(pdf.numPages,12), rendered=[];let totalHeight=0,maxWidth=0;
+    for(let i=1;i<=pageCount;i++){status(help,`PDF selected ✓  Preparing page ${i} of ${pageCount}…`);const page=await pdf.getPage(i),base=page.getViewport({scale:1});const scale=Math.min(2,1400/base.width),viewport=page.getViewport({scale});const canvas=document.createElement('canvas');canvas.width=Math.ceil(viewport.width);canvas.height=Math.ceil(viewport.height);const ctx=canvas.getContext('2d',{alpha:false});ctx.fillStyle='#fff';ctx.fillRect(0,0,canvas.width,canvas.height);await page.render({canvasContext:ctx,viewport}).promise;rendered.push(canvas);maxWidth=Math.max(maxWidth,canvas.width);totalHeight+=canvas.height;}
+    const combined=document.createElement('canvas');combined.width=maxWidth;combined.height=totalHeight;const out=combined.getContext('2d',{alpha:false});out.fillStyle='#fff';out.fillRect(0,0,combined.width,combined.height);let y=0;for(const canvas of rendered){out.drawImage(canvas,0,y);y+=canvas.height;}const blob=await new Promise((resolve,reject)=>combined.toBlob(b=>b?resolve(b):reject(new Error('pdf_render_failed')),'image/webp',0.88));const safe=(file.name||'quote').replace(/\.pdf$/i,'').replace(/[^a-z0-9._-]+/gi,'-').slice(0,80)||'quote';const converted=new File([blob],`${safe}-pdf.webp`,{type:'image/webp',lastModified:Date.now()});status(help,pdf.numPages>12?`PDF ready ✓  First 12 of ${pdf.numPages} pages prepared for automatic extraction.`:'PDF ready ✓  All pages prepared for automatic extraction.');return converted;
   }
-  document.addEventListener('change',async ev=>{
-    const input=ev.target;if(!(input instanceof HTMLInputElement)||input.type!=='file'||!input.files?.length)return;
-    if(input.dataset.hqcPdfConverted==='1'){delete input.dataset.hqcPdfConverted;return;}
-    const file=input.files[0],isPdf=file.type==='application/pdf'||/\.pdf$/i.test(file.name||'');if(!isPdf)return;
-    ev.preventDefault();ev.stopImmediatePropagation();
-    const card=cardFor(input),help=qs('#hqc-upload-help',card)||qs('#hqc-upload-help')||card;
-    try{
-      const converted=await pdfToWebp(file,help),dt=new DataTransfer();dt.items.add(converted);input.files=dt.files;input.dataset.hqcPdfConverted='1';input.dispatchEvent(new Event('change',{bubbles:true}));
-    }catch(err){console.error('HQC PDF preparation failed',err);status(help,'We could not prepare this PDF automatically. Try a screenshot/photo of the quote, or enter the key figures manually.');}
-  },true);
-  function advanceAfterSelection(card,help){
-    status(help,'Quote selected ✓  Preparing your analysis…');
-    try{sessionStorage.setItem(HANDOFF,'1');}catch{}
-    let attempts=0;
-    const timer=setInterval(()=>{
-      attempts++;
-      const next=qsa('button',card).find(n=>/continue/i.test(text(n))&&!n.disabled&&n.offsetParent!==null);
-      if(next){clearInterval(timer);next.click();return;}
-      if(attempts>=20){clearInterval(timer);status(help,'Quote selected ✓  Preparing the evidence check…');}
-    },150);
-  }
-  function simplify(help,choose,manual){
-    const title=help.querySelector('b');
-    const intro=title?.nextElementSibling;
-    const small=help.querySelector('small');
-    if(title)title.textContent='Add your quote — whichever way is easiest';
-    if(intro)intro.textContent='Upload one screenshot, photo or PDF, or type the key quote figures instead. PDFs are prepared securely in your browser before analysis.';
-    if(small)small.textContent='No account or personal details required. Uploaded images are processed transiently and are not intentionally stored. This check does not certify design, MCS status or grant eligibility.';
-    help.style.setProperty('cursor','default','important');
-    help.style.setProperty('padding','18px','important');
-    choose.textContent='Upload screenshot / photo / PDF →';
-    choose.style.setProperty('width','100%','important');
-    choose.style.setProperty('min-height','54px','important');
-    choose.style.setProperty('font-size','16px','important');
-    if(manual){
-      manual.textContent='Prefer not to upload? Enter quote figures →';
-      manual.style.setProperty('width','100%','important');
-      manual.style.setProperty('margin-top','8px','important');
-      manual.style.setProperty('min-height','50px','important');
-      manual.style.setProperty('font-size','15px','important');
-      manual.style.setProperty('font-weight','800','important');
-    }
-  }
+  document.addEventListener('change',async ev=>{const input=ev.target;if(!(input instanceof HTMLInputElement)||input.type!=='file'||!input.files?.length)return;if(input.dataset.hqcPdfConverted==='1'){delete input.dataset.hqcPdfConverted;return;}const file=input.files[0],isPdf=file.type==='application/pdf'||/\.pdf$/i.test(file.name||'');if(!isPdf)return;ev.preventDefault();ev.stopImmediatePropagation();const card=cardFor(input),help=qs('#hqc-upload-help',card)||qs('#hqc-upload-help')||card;try{const converted=await pdfToWebp(file,help),dt=new DataTransfer();dt.items.add(converted);input.files=dt.files;input.dataset.hqcPdfConverted='1';input.dispatchEvent(new Event('change',{bubbles:true}));}catch(err){console.error('HQC PDF preparation failed',err);status(help,'We could not prepare this PDF automatically. Try a screenshot/photo of the quote, or enter the key figures manually.');}},true);
+  function advanceAfterSelection(card,help){status(help,'Quote selected ✓  Preparing your analysis…');try{sessionStorage.setItem(HANDOFF,'1');}catch{}let attempts=0;const timer=setInterval(()=>{attempts++;const next=qsa('button',card).find(n=>/continue/i.test(text(n))&&!n.disabled&&n.offsetParent!==null);if(next){clearInterval(timer);next.click();return;}if(attempts>=20){clearInterval(timer);status(help,'Quote selected ✓  Preparing the evidence check…');}},150);}
+  function simplify(help,choose,manual){const title=help.querySelector('b'),intro=title?.nextElementSibling,small=help.querySelector('small');if(title)title.textContent='Add your quote — whichever way is easiest';if(intro)intro.textContent='Upload one screenshot, photo or PDF, or type the key quote figures instead. PDFs are prepared securely in your browser before analysis.';if(small)small.textContent='No account or personal details required. Uploaded images are processed transiently and are not intentionally stored. This check does not certify design, MCS status or grant eligibility.';help.style.setProperty('cursor','default','important');help.style.setProperty('padding','18px','important');choose.textContent='Upload screenshot / photo / PDF →';choose.style.setProperty('width','100%','important');choose.style.setProperty('min-height','54px','important');choose.style.setProperty('font-size','16px','important');if(manual){manual.textContent='Prefer not to upload? Enter quote figures →';manual.style.setProperty('width','100%','important');manual.style.setProperty('margin-top','8px','important');manual.style.setProperty('min-height','50px','important');manual.style.setProperty('font-size','15px','important');manual.style.setProperty('font-weight','800','important');}}
   function openPicker(card,help){const input=bestFileInput(card);if(input){if(input.dataset.hqcV3Change!=='1'){input.dataset.hqcV3Change='1';input.addEventListener('change',()=>{if(input.files?.length)advanceAfterSelection(card,help);});}input.click();return true;}const native=nativeUploadControl(card);if(native){native.click();return true;}status(help,'Upload control could not be opened. Use “Enter quote figures manually” below.');return false;}
-  function wire(){const choose=qs('#hqc-choose-file'),help=qs('#hqc-upload-help');if(!choose||!help||choose.dataset.hqcV3==='1')return;choose.dataset.hqcV3='1';help.dataset.hqcUploadVersion=VERSION;const card=cardFor(choose);const manual=qs('#hqc-enter-manual');simplify(help,choose,manual);
-    const input=bestFileInput(card);if(input){const accept=input.getAttribute('accept')||'';if(!/application\/pdf/i.test(accept))input.setAttribute('accept',[accept,'application/pdf','.pdf'].filter(Boolean).join(','));}
-    const legacy=qs('.drop',card);if(legacy){legacy.dataset.hqcLegacyUpload='1';legacy.style.setProperty('position','absolute','important');legacy.style.setProperty('width','1px','important');legacy.style.setProperty('height','1px','important');legacy.style.setProperty('overflow','hidden','important');legacy.style.setProperty('clip-path','inset(50%)','important');}
-    choose.addEventListener('click',ev=>{ev.preventDefault();ev.stopImmediatePropagation();openPicker(card,help);},true);
-    if(!manual){
-      help.style.setProperty('cursor','pointer','important');
-      help.addEventListener('click',ev=>{if(ev.target.closest('#hqc-choose-file'))return;ev.preventDefault();openPicker(card,help);});
-      help.addEventListener('keydown',ev=>{if((ev.key==='Enter'||ev.key===' ')&&!ev.target.closest('button,a,input')){ev.preventDefault();openPicker(card,help);}});
-      help.tabIndex=0;help.setAttribute('role','button');help.setAttribute('aria-label','Choose a heat-pump quote screenshot, photo or PDF');
-    } else {
-      help.removeAttribute('tabindex');help.removeAttribute('role');help.removeAttribute('aria-label');
-      if(manual.dataset.hqcV3!=='1'){manual.dataset.hqcV3='1';manual.addEventListener('click',ev=>{const native=nativeManualControl(card);if(!native)return;ev.preventDefault();ev.stopImmediatePropagation();native.click();},true);}
-    }
-  }
-  function streamlineAnalysisStep(){
-    const card=qsa('.card').find(c=>/tell us about your home|ready to analyse/i.test(text(qs('h1',c))));if(!card)return;
-    const analyse=qsa('button',card).find(n=>/analyse my quotes?|analyse my quote/i.test(text(n)));if(!analyse)return;
-    if(card.dataset.hqcAutoAnalysis!=='1'){
-      card.dataset.hqcAutoAnalysis='1';const h=qs('h1',card),p=qs('p',card);if(h)h.textContent='Ready to analyse';if(p)p.textContent='We will compare only the evidence in the quote you supplied. This is not a design certification, MCS verification or grant-eligibility determination.';
-      let cue=qs('#hqc-analysis-handoff',card);if(!cue){cue=document.createElement('div');cue.id='hqc-analysis-handoff';cue.setAttribute('role','status');cue.textContent='Your quote is ready. The evidence check will start automatically.';cue.style.cssText='margin:14px 0 10px;padding:12px 14px;border:1px solid #b8ded0;border-radius:10px;background:#eef8f4;color:#07503b;font-size:13px;font-weight:800;line-height:1.45';analyse.insertAdjacentElement('beforebegin',cue);}
-      analyse.textContent='Analyse my quote →';analyse.style.setProperty('min-height','54px','important');analyse.style.setProperty('font-weight','800','important');analyse.style.setProperty('width','100%','important');
-    }
-    let pending=false;try{pending=sessionStorage.getItem(HANDOFF)==='1';}catch{}
-    const isQa=/(?:^|[?&])(?:qa|release_probe|upload_handoff_smoke)=/i.test(location.search);
-    if(pending&&analyse.offsetParent!==null&&!analyse.disabled){
-      try{sessionStorage.removeItem(HANDOFF);}catch{}
-      const cue=qs('#hqc-analysis-handoff',card);
-      requestAnimationFrame(()=>{analyse.scrollIntoView({behavior:'smooth',block:'center'});if(isQa){setTimeout(()=>analyse.focus({preventScroll:true}),250);return;}if(cue)cue.textContent='Starting your evidence check…';setTimeout(()=>analyse.click(),350);});
-    }
-  }
+  function wire(){ensureControls();const choose=qs('#hqc-choose-file'),help=qs('#hqc-upload-help');if(!choose||!help||choose.dataset.hqcV3==='1')return;choose.dataset.hqcV3='1';help.dataset.hqcUploadVersion=VERSION;const card=cardFor(choose),manual=qs('#hqc-enter-manual');simplify(help,choose,manual);const input=bestFileInput(card);if(input){const accept=input.getAttribute('accept')||'';if(!/application\/pdf/i.test(accept))input.setAttribute('accept',[accept,'application/pdf','.pdf'].filter(Boolean).join(','));}const legacy=qs('.drop',card);if(legacy){legacy.dataset.hqcLegacyUpload='1';legacy.style.setProperty('position','absolute','important');legacy.style.setProperty('width','1px','important');legacy.style.setProperty('height','1px','important');legacy.style.setProperty('overflow','hidden','important');legacy.style.setProperty('clip-path','inset(50%)','important');}choose.addEventListener('click',ev=>{ev.preventDefault();ev.stopImmediatePropagation();openPicker(card,help);},true);if(!manual){help.style.setProperty('cursor','pointer','important');help.addEventListener('click',ev=>{if(ev.target.closest('#hqc-choose-file'))return;ev.preventDefault();openPicker(card,help);});}else if(manual.dataset.hqcV3!=='1'){manual.dataset.hqcV3='1';manual.addEventListener('click',ev=>{const native=nativeManualControl(card);if(!native)return;ev.preventDefault();ev.stopImmediatePropagation();native.click();},true);}}
+  function streamlineAnalysisStep(){const card=qsa('.card').find(c=>/tell us about your home|ready to analyse/i.test(text(qs('h1',c))));if(!card)return;const analyse=qsa('button',card).find(n=>/analyse my quotes?|analyse my quote/i.test(text(n)));if(!analyse)return;if(card.dataset.hqcAutoAnalysis!=='1'){card.dataset.hqcAutoAnalysis='1';const h=qs('h1',card),p=qs('p',card);if(h)h.textContent='Ready to analyse';if(p)p.textContent='We will compare only the evidence in the quote you supplied. This is not a design certification, MCS verification or grant-eligibility determination.';let cue=qs('#hqc-analysis-handoff',card);if(!cue){cue=document.createElement('div');cue.id='hqc-analysis-handoff';cue.setAttribute('role','status');cue.textContent='Your quote is ready. The evidence check will start automatically.';cue.style.cssText='margin:14px 0 10px;padding:12px 14px;border:1px solid #b8ded0;border-radius:10px;background:#eef8f4;color:#07503b;font-size:13px;font-weight:800;line-height:1.45';analyse.insertAdjacentElement('beforebegin',cue);}analyse.textContent='Analyse my quote →';analyse.style.setProperty('min-height','54px','important');analyse.style.setProperty('font-weight','800','important');analyse.style.setProperty('width','100%','important');}let pending=false;try{pending=sessionStorage.getItem(HANDOFF)==='1';}catch{}const isQa=/(?:^|[?&])(?:qa|release_probe|upload_handoff_smoke)=/i.test(location.search);if(pending&&analyse.offsetParent!==null&&!analyse.disabled){try{sessionStorage.removeItem(HANDOFF);}catch{}const cue=qs('#hqc-analysis-handoff',card);requestAnimationFrame(()=>{analyse.scrollIntoView({behavior:'smooth',block:'center'});if(isQa){setTimeout(()=>analyse.focus({preventScroll:true}),250);return;}if(cue)cue.textContent='Starting your evidence check…';setTimeout(()=>analyse.click(),350);});}}
   let queued=false;const tick=()=>{if(queued)return;queued=true;requestAnimationFrame(()=>{queued=false;wire();streamlineAnalysisStep();});};new MutationObserver(tick).observe(document.documentElement,{childList:true,subtree:true});tick();
 })();
