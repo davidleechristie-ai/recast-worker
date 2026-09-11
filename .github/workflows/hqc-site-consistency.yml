@@ -25,7 +25,7 @@ jobs:
         run: |
           npm install --no-save playwright@1.55.0
           npx playwright install --with-deps chromium
-      - name: Crawl links, graphics and responsive layouts
+      - name: Crawl links, graphics, responsive layouts and PDF upload
         shell: bash
         run: |
           set -euo pipefail
@@ -43,9 +43,6 @@ jobs:
             return await r.text();
           }
 
-          // Build the audit list from the production sitemap and then discover every
-          // same-origin link rendered on those pages. This catches routes that are
-          // omitted from a manually maintained checklist.
           const sitemap=await fetchText(`${base}/sitemap.xml`);
           const sitemapUrls=[...sitemap.matchAll(/<loc>([^<]+)<\/loc>/g)].map(m=>m[1].trim()).filter(Boolean);
           const queue=[base+'/',...sitemapUrls];
@@ -67,7 +64,6 @@ jobs:
             }catch(e){failures.push(`HTTP ${u.href}: ${e.message}`)}
           }
 
-          // HTTP/link integrity check for every discovered internal page/resource link.
           const linkTargets=new Set(pages);
           for(const pageUrl of pages){
             try{
@@ -79,6 +75,8 @@ jobs:
               }
             }catch{}
           }
+          linkTargets.add(`${base}/resources/pdf.mjs`);
+          linkTargets.add(`${base}/resources/pdf.worker.mjs`);
           for(const url of linkTargets){
             try{
               let r=await fetch(url,{method:'HEAD',redirect:'follow'});
@@ -122,9 +120,32 @@ jobs:
               await page.close();
             }
           }
+
+          // Regression check for the exact PDF failure that previously told users to
+          // switch to manual entry after selecting a PDF.
+          try{
+            const makePdf=await browser.newPage();
+            await makePdf.setContent('<html><body><h1>Eco Stream Heat Pump Quote</h1><p>Total £12,450</p><p>8kW heat pump</p><p>Design flow temperature 45 C</p></body></html>');
+            const pdf=await makePdf.pdf({format:'A4'});
+            await makePdf.close();
+            const page=await browser.newPage({viewport:{width:390,height:844},isMobile:true,hasTouch:true});
+            const errors=[];page.on('pageerror',e=>errors.push(String(e)));
+            await page.goto(`${base}/?qa=1&pdf_probe=1`,{waitUntil:'networkidle',timeout:60000});
+            await page.getByRole('button',{name:/check my quote/i}).first().click();
+            const input=page.locator('input[type="file"]').first();
+            await input.waitFor({state:'attached',timeout:15000});
+            await input.setInputFiles({name:'eco-stream-quote.pdf',mimeType:'application/pdf',buffer:pdf});
+            await page.getByText(/PDF ready|Ready to analyse|Tell us about your home/i).first().waitFor({state:'visible',timeout:30000});
+            const body=await page.locator('body').innerText();
+            if(/Automatic extraction needs JPG, PNG or WebP/i.test(body)) throw new Error('legacy PDF unsupported error still shown');
+            if(errors.length) throw new Error(`browser errors: ${errors.join(' | ')}`);
+            await page.close();
+            console.log('PDF_UPLOAD_REGRESSION_VERIFIED');
+          }catch(e){failures.push(`PDF upload regression: ${e.message}`)}
+
           await browser.close();
           console.log(`Audited ${pages.length} pages and ${linkTargets.size} internal targets across mobile + desktop.`);
           if(warnings.length) console.log('WARNINGS\n'+[...new Set(warnings)].join('\n'));
           if(failures.length){console.error('FAILURES\n'+[...new Set(failures)].join('\n'));process.exit(1)}
-          console.log('HQC site consistency audit passed: links, graphics, JS runtime and responsive layout are clean.');
+          console.log('HQC site consistency audit passed: links, graphics, JS runtime, responsive layout and PDF upload are clean.');
           NODE
