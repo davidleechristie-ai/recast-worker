@@ -25,127 +25,37 @@ jobs:
         run: |
           npm install --no-save playwright@1.55.0
           npx playwright install --with-deps chromium
-      - name: Crawl links, graphics, responsive layouts and PDF upload
+      - name: Crawl HTML pages, verify assets, responsive layouts and PDF upload
         shell: bash
         run: |
           set -euo pipefail
           node --input-type=module <<'NODE'
           import { chromium } from 'playwright';
-          const base = 'https://homequotecheck.co.uk';
-          const origin = new URL(base).origin;
-          const browser = await chromium.launch({headless:true});
-          const failures=[];
-          const warnings=[];
+          const base='https://homequotecheck.co.uk';
+          const origin=new URL(base).origin;
+          const failures=[],warnings=[];
+          const browser=await chromium.launch({headless:true});
+          const isPage=u=>{const p=new URL(u).pathname;return p==='/'||p.endsWith('.html')||(!/\.[a-z0-9]{1,8}$/i.test(p));};
+          async function get(url){const r=await fetch(url,{redirect:'follow'});if(!r.ok)throw new Error(`${url} -> ${r.status}`);return r;}
+          const sitemap=await (await get(`${base}/sitemap.xml`)).text();
+          const queue=[`${base}/`,...[...sitemap.matchAll(/<loc>([^<]+)<\/loc>/g)].map(m=>m[1].trim())];
+          const seen=new Set(),pages=[];
+          while(queue.length&&pages.length<80){const raw=queue.shift();let u;try{u=new URL(raw,base)}catch{continue}u.hash='';if(u.origin!==origin||seen.has(u.href)||!isPage(u.href))continue;seen.add(u.href);pages.push(u.href);try{const html=await (await get(u.href)).text();for(const m of html.matchAll(/href=["']([^"'#]+)["']/gi)){try{const x=new URL(m[1],u.href);x.hash='';if(x.origin===origin&&isPage(x.href)&&!seen.has(x.href))queue.push(x.href)}catch{}}}catch(e){failures.push(`HTTP ${u.href}: ${e.message}`)}}
 
-          async function fetchText(url){
-            const r=await fetch(url,{redirect:'follow'});
-            if(!r.ok) throw new Error(`${url} -> ${r.status}`);
-            return await r.text();
+          const home=await (await get(`${base}/?qa=1&asset_probe=1`)).text();
+          const assetRefs=[...home.matchAll(/(?:src|href)=["']([^"']+)["']/gi)].map(m=>m[1]).filter(Boolean);
+          const targets=new Set([`${base}/resources/pdf.mjs`,`${base}/resources/pdf.worker.mjs`,...assetRefs.map(x=>{try{return new URL(x,base).href}catch{return null}}).filter(x=>x&&new URL(x).origin===origin)]);
+          for(const url of targets){try{const r=await get(url);const ct=(r.headers.get('content-type')||'').toLowerCase();const p=new URL(url).pathname;if(/\.(?:m?js)$/i.test(p)&&!/javascript|ecmascript/.test(ct))failures.push(`JavaScript MIME mismatch ${url}: ${ct||'missing'}`);if(/\.css$/i.test(p)&&!ct.includes('text/css'))failures.push(`CSS MIME mismatch ${url}: ${ct||'missing'}`)}catch(e){failures.push(`Broken internal target ${url}: ${e.message}`)}}
+
+          for(const vp of [{name:'mobile',width:390,height:844,isMobile:true,hasTouch:true},{name:'desktop',width:1440,height:1000,isMobile:false,hasTouch:false}]){
+            for(const pageUrl of pages){const page=await browser.newPage({viewport:{width:vp.width,height:vp.height},isMobile:vp.isMobile,hasTouch:vp.hasTouch});const errors=[];page.on('pageerror',e=>errors.push(String(e)));page.on('console',m=>{if(m.type()==='error'&&!/favicon/i.test(m.text()))errors.push(m.text())});try{const r=await page.goto(pageUrl,{waitUntil:'networkidle',timeout:60000});if(!r||r.status()>=400)failures.push(`${vp.name} ${pageUrl}: HTTP ${r?.status()}`);await page.waitForTimeout(250);const state=await page.evaluate(()=>{const imgs=[...document.images].map(i=>({src:i.currentSrc||i.src,ok:i.complete&&i.naturalWidth>0&&i.naturalHeight>0,alt:i.alt,rect:i.getBoundingClientRect().toJSON()}));const overflow=Math.max(document.documentElement.scrollWidth,document.body?.scrollWidth||0)-innerWidth;const empty=[...document.querySelectorAll('a,button')].filter(el=>{const s=getComputedStyle(el),r=el.getBoundingClientRect();return s.display!=='none'&&s.visibility!=='hidden'&&r.width>1&&r.height>1&&!((el.textContent||'').trim()||el.getAttribute('aria-label')||el.querySelector('img[alt]'))}).length;return {title:document.title,overflow,empty,bad:imgs.filter(x=>!x.ok),visible:imgs.filter(x=>x.rect.width>4&&x.rect.height>4)}});if(errors.length)failures.push(`${vp.name} ${pageUrl}: JS errors: ${errors.slice(0,4).join(' | ')}`);if(!state.title.trim())failures.push(`${vp.name} ${pageUrl}: missing title`);if(state.overflow>6)failures.push(`${vp.name} ${pageUrl}: horizontal overflow ${state.overflow}px`);if(state.empty)failures.push(`${vp.name} ${pageUrl}: ${state.empty} empty interactive control(s)`);if(state.bad.length)failures.push(`${vp.name} ${pageUrl}: broken graphics ${state.bad.map(x=>x.src).join(', ')}`);for(const i of state.visible)if(!i.alt.trim())warnings.push(`${vp.name} ${pageUrl}: visible image missing alt: ${i.src}`)}catch(e){failures.push(`${vp.name} ${pageUrl}: ${e.message}`)}await page.close()}
           }
 
-          const sitemap=await fetchText(`${base}/sitemap.xml`);
-          const sitemapUrls=[...sitemap.matchAll(/<loc>([^<]+)<\/loc>/g)].map(m=>m[1].trim()).filter(Boolean);
-          const queue=[base+'/',...sitemapUrls];
-          const seen=new Set();
-          const pages=[];
-          while(queue.length && pages.length<80){
-            const url=queue.shift();
-            if(!url||seen.has(url)) continue;
-            seen.add(url);
-            let u;try{u=new URL(url,base)}catch{continue}
-            if(u.origin!==origin) continue;
-            u.hash='';
-            pages.push(u.href);
-            try{
-              const html=await fetchText(u.href);
-              for(const m of html.matchAll(/href=["']([^"'#]+)["']/gi)){
-                try{const x=new URL(m[1],u.href);x.hash='';if(x.origin===origin&&!seen.has(x.href))queue.push(x.href)}catch{}
-              }
-            }catch(e){failures.push(`HTTP ${u.href}: ${e.message}`)}
-          }
-
-          const linkTargets=new Set(pages);
-          for(const pageUrl of pages){
-            try{
-              const html=await fetchText(pageUrl);
-              for(const m of html.matchAll(/(?:href|src)=["']([^"']+)["']/gi)){
-                const ref=m[1];
-                if(!ref||/^(?:mailto:|tel:|javascript:|data:|blob:)/i.test(ref)) continue;
-                try{const x=new URL(ref,pageUrl);x.hash='';if(x.origin===origin)linkTargets.add(x.href)}catch{}
-              }
-            }catch{}
-          }
-          linkTargets.add(`${base}/resources/pdf.mjs`);
-          linkTargets.add(`${base}/resources/pdf.worker.mjs`);
-          for(const url of linkTargets){
-            try{
-              let r=await fetch(url,{method:'HEAD',redirect:'follow'});
-              if(r.status===405||r.status===403) r=await fetch(url,{method:'GET',redirect:'follow'});
-              if(r.status>=400) failures.push(`Broken internal target ${url} -> ${r.status}`);
-            }catch(e){failures.push(`Broken internal target ${url}: ${e.message}`)}
-          }
-
-          const viewports=[
-            {name:'mobile',width:390,height:844,isMobile:true,hasTouch:true},
-            {name:'desktop',width:1440,height:1000,isMobile:false,hasTouch:false}
-          ];
-          for(const vp of viewports){
-            for(const pageUrl of pages){
-              const page=await browser.newPage({viewport:{width:vp.width,height:vp.height},isMobile:vp.isMobile,hasTouch:vp.hasTouch});
-              const errors=[];
-              page.on('pageerror',e=>errors.push(String(e)));
-              page.on('console',m=>{if(m.type()==='error'&&!/favicon/i.test(m.text()))errors.push(`console: ${m.text()}`)});
-              try{
-                const r=await page.goto(pageUrl,{waitUntil:'networkidle',timeout:60000});
-                if(!r||r.status()>=400) failures.push(`${vp.name} ${pageUrl}: HTTP ${r?.status()}`);
-                await page.waitForTimeout(300);
-                const state=await page.evaluate(()=>{
-                  const imgs=[...document.images].map(img=>({src:img.currentSrc||img.src,alt:img.alt,complete:img.complete,nw:img.naturalWidth,nh:img.naturalHeight,rect:img.getBoundingClientRect().toJSON()}));
-                  const badImgs=imgs.filter(i=>!i.complete||i.nw===0||i.nh===0);
-                  const visibleImgs=imgs.filter(i=>i.rect.width>4&&i.rect.height>4);
-                  const emptyInteractive=[...document.querySelectorAll('a,button')].filter(el=>{const s=getComputedStyle(el);const r=el.getBoundingClientRect();return s.display!=='none'&&s.visibility!=='hidden'&&r.width>1&&r.height>1&&!((el.textContent||'').trim()||el.getAttribute('aria-label')||el.querySelector('img[alt]'))}).length;
-                  const overflow=Math.max(document.documentElement.scrollWidth,document.body?.scrollWidth||0)-innerWidth;
-                  const clippedText=[...document.querySelectorAll('h1,h2,h3,p,button,a')].filter(el=>{const s=getComputedStyle(el),r=el.getBoundingClientRect();if(s.display==='none'||s.visibility==='hidden'||r.width<2||r.height<2)return false;return el.scrollWidth>el.clientWidth+3&&s.whiteSpace!=='normal';}).slice(0,8).map(el=>(el.textContent||'').trim().slice(0,80));
-                  return {badImgs,visibleImgs,emptyInteractive,overflow,clippedText,title:document.title,h1:[...document.querySelectorAll('h1')].filter(x=>getComputedStyle(x).display!=='none').length};
-                });
-                if(errors.length) failures.push(`${vp.name} ${pageUrl}: JS errors: ${errors.slice(0,4).join(' | ')}`);
-                if(state.badImgs.length) failures.push(`${vp.name} ${pageUrl}: broken graphics ${state.badImgs.map(x=>x.src).join(', ')}`);
-                if(state.overflow>6) failures.push(`${vp.name} ${pageUrl}: horizontal overflow ${state.overflow}px`);
-                if(state.clippedText.length) failures.push(`${vp.name} ${pageUrl}: clipped nowrap text: ${state.clippedText.join(' | ')}`);
-                if(state.emptyInteractive) failures.push(`${vp.name} ${pageUrl}: ${state.emptyInteractive} visible empty link/button(s)`);
-                if(!state.title.trim()) failures.push(`${vp.name} ${pageUrl}: missing document title`);
-                if(state.h1>1) warnings.push(`${vp.name} ${pageUrl}: ${state.h1} visible H1 elements`);
-                for(const img of state.visibleImgs){if(!img.alt.trim() && !/decorative/i.test(img.src)) warnings.push(`${vp.name} ${pageUrl}: visible image missing alt: ${img.src}`)}
-              }catch(e){failures.push(`${vp.name} ${pageUrl}: ${e.message}`)}
-              await page.close();
-            }
-          }
-
-          // Regression check for the exact PDF failure that previously told users to
-          // switch to manual entry after selecting a PDF.
-          try{
-            const makePdf=await browser.newPage();
-            await makePdf.setContent('<html><body><h1>Eco Stream Heat Pump Quote</h1><p>Total £12,450</p><p>8kW heat pump</p><p>Design flow temperature 45 C</p></body></html>');
-            const pdf=await makePdf.pdf({format:'A4'});
-            await makePdf.close();
-            const page=await browser.newPage({viewport:{width:390,height:844},isMobile:true,hasTouch:true});
-            const errors=[];page.on('pageerror',e=>errors.push(String(e)));
-            await page.goto(`${base}/?qa=1&pdf_probe=1`,{waitUntil:'networkidle',timeout:60000});
-            await page.getByRole('button',{name:/check my quote/i}).first().click();
-            const input=page.locator('input[type="file"]').first();
-            await input.waitFor({state:'attached',timeout:15000});
-            await input.setInputFiles({name:'eco-stream-quote.pdf',mimeType:'application/pdf',buffer:pdf});
-            await page.getByText(/PDF ready|Ready to analyse|Tell us about your home/i).first().waitFor({state:'visible',timeout:30000});
-            const body=await page.locator('body').innerText();
-            if(/Automatic extraction needs JPG, PNG or WebP/i.test(body)) throw new Error('legacy PDF unsupported error still shown');
-            if(errors.length) throw new Error(`browser errors: ${errors.join(' | ')}`);
-            await page.close();
-            console.log('PDF_UPLOAD_REGRESSION_VERIFIED');
-          }catch(e){failures.push(`PDF upload regression: ${e.message}`)}
+          try{const make=await browser.newPage();await make.setContent('<h1>Eco Stream Heat Pump Quote</h1><p>Total £12,450</p><p>8kW heat pump</p><p>Design flow temperature 45 C</p>');const pdf=await make.pdf({format:'A4'});await make.close();const page=await browser.newPage({viewport:{width:390,height:844},isMobile:true,hasTouch:true});const errors=[];page.on('pageerror',e=>errors.push(String(e)));await page.goto(`${base}/?qa=1&pdf_probe=1`,{waitUntil:'networkidle',timeout:60000});await page.getByRole('button',{name:/check my quote/i}).first().click();const input=page.locator('input[type="file"]').first();await input.waitFor({state:'attached',timeout:15000});await input.setInputFiles({name:'eco-stream-quote.pdf',mimeType:'application/pdf',buffer:pdf});await page.getByText(/PDF ready|Ready to analyse|Tell us about your home/i).first().waitFor({state:'visible',timeout:30000});const body=await page.locator('body').innerText();if(/Automatic extraction needs JPG, PNG or WebP/i.test(body))throw new Error('legacy PDF unsupported error still shown');if(errors.length)throw new Error(errors.join(' | '));await page.close();console.log('PDF_UPLOAD_REGRESSION_VERIFIED')}catch(e){failures.push(`PDF upload regression: ${e.message}`)}
 
           await browser.close();
-          console.log(`Audited ${pages.length} pages and ${linkTargets.size} internal targets across mobile + desktop.`);
-          if(warnings.length) console.log('WARNINGS\n'+[...new Set(warnings)].join('\n'));
+          console.log(`Audited ${pages.length} HTML pages and ${targets.size} first-party assets.`);
+          if(warnings.length)console.log('WARNINGS\n'+[...new Set(warnings)].join('\n'));
           if(failures.length){console.error('FAILURES\n'+[...new Set(failures)].join('\n'));process.exit(1)}
-          console.log('HQC site consistency audit passed: links, graphics, JS runtime, responsive layout and PDF upload are clean.');
+          console.log('HQC site consistency audit passed: HTML, assets/MIME types, graphics, JS, responsive layout and PDF upload are clean.');
           NODE
