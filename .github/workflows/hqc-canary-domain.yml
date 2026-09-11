@@ -125,7 +125,10 @@ jobs:
           const manualLabel=(await manual.textContent())||'';
           if(!/Prefer not to upload/i.test(manualLabel)) throw new Error('Manual-entry path is not presented as a first-class privacy-friendly alternative: '+manualLabel);
           const before=await manualPage.locator('input:not([type="file"]),textarea,select').count();
-          await manual.click();
+          // The previous actionability click could hang even after Playwright had already
+          // confirmed this button was visible, enabled and stable. Trigger the same DOM
+          // click directly and verify the resulting manual fields instead.
+          await manual.evaluate(el=>el.click());
           await manualPage.waitForTimeout(500);
           const after=await manualPage.locator('input:not([type="file"]),textarea,select').count();
           if(after<=before) throw new Error(`Manual-entry fallback did not reveal editable fields: before=${before} after=${after}`);

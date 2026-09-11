@@ -1,0 +1,54 @@
+name: HQC Decision Pack live verification
+
+on:
+  push:
+    branches: [main]
+    paths:
+      - 'hqc-deploy-preview/PRODUCTION_RELEASE'
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+concurrency:
+  group: hqc-decision-pack-live-verification
+  cancel-in-progress: true
+
+jobs:
+  verify:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Verify Decision Pack production wiring without creating a Stripe session
+        shell: bash
+        run: |
+          set -euo pipefail
+          base='https://homequotecheck.co.uk'
+
+          ready=false
+          for attempt in 1 2 3 4 5 6 7 8 9 10 11 12; do
+            home="$(curl -L -sS --max-time 30 "$base/?release_probe=decision_pack_$attempt" || true)"
+            script_code="$(curl -L -sS -o /tmp/decision-pack.js -w '%{http_code}' --max-time 30 "$base/__hqc_decision_pack.js" || true)"
+            if [ "$script_code" = '200' ] && grep -q '__hqc_decision_pack.js' <<< "$home" && grep -q 'decision-pack/checkout' /tmp/decision-pack.js; then
+              ready=true
+              break
+            fi
+            sleep 5
+          done
+          test "$ready" = 'true'
+
+          # The production Worker checks Stripe configuration before validating the case ID.
+          # A deliberately invalid test-like case must therefore return 400 only when the
+          # live Stripe secret and configured Decision Pack Price ID are both present.
+          # The request is rejected before Stripe Checkout Session creation, so this probe
+          # cannot create a session, charge a customer, or count as genuine traction.
+          body_file="$(mktemp)"
+          status="$(curl -sS -o "$body_file" -w '%{http_code}' --max-time 30 \
+            -X POST "$base/api/decision-pack/checkout" \
+            -H 'content-type: application/json' \
+            -H 'referer: https://homequotecheck.co.uk/?release_probe=decision_pack_config' \
+            --data '{"caseId":"qa-release-probe"}')"
+          cat "$body_file"
+          test "$status" = '400'
+          grep -q 'Invalid Decision Pack case reference' "$body_file"
+
+          echo 'HQC Decision Pack live Stripe configuration verified without creating a Checkout Session.'
