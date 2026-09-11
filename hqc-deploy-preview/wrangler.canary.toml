@@ -6,6 +6,14 @@ routes = [
   { pattern = "cf-preview.homequotecheck.co.uk", custom_domain = true }
 ]
 
+[[durable_objects.bindings]]
+name = "HQC_METRICS"
+class_name = "HqcMetrics"
+
+[[migrations]]
+tag = "v1"
+new_sqlite_classes = ["HqcMetrics"]
+
 [assets]
 directory = "./site"
 binding = "ASSETS"
