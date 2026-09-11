@@ -1,7 +1,7 @@
 {
-  "fetchedAt": "2026-09-11T14:28:46.185702Z",
+  "fetchedAt": "2026-09-11T15:28:06.572059Z",
   "growthReport": {
-    "generatedAt": "2026-09-11T14:28:46.129Z",
+    "generatedAt": "2026-09-11T15:28:06.529Z",
     "loop": [
       "Acquire qualified homeowners",
       "Measure source funnels",
@@ -17,16 +17,16 @@
     "sources": [
       {
         "checkouts": 0,
-        "cta": 21,
-        "ctaToUpload": 38,
-        "genuine": 2,
-        "landingToCta": 7,
-        "landingToGenuine": 1,
-        "landings": 300,
+        "cta": 19,
+        "ctaToUpload": 26,
+        "genuine": 1,
+        "landingToCta": 6,
+        "landingToGenuine": 0,
+        "landings": 309,
         "shareIntent": 2,
         "shareOpens": 0,
         "source": "direct",
-        "uploads": 8
+        "uploads": 5
       },
       {
         "checkouts": 0,
@@ -35,7 +35,7 @@
         "genuine": 0,
         "landingToCta": 0,
         "landingToGenuine": 0,
-        "landings": 23,
+        "landings": 22,
         "shareIntent": 0,
         "shareOpens": 0,
         "source": "organic_goodquote_static",
@@ -48,7 +48,7 @@
         "genuine": 0,
         "landingToCta": 0,
         "landingToGenuine": 0,
-        "landings": 17,
+        "landings": 19,
         "shareIntent": 0,
         "shareOpens": 0,
         "source": "organic_goodquote_static_bottom",
@@ -122,12 +122,12 @@
     ],
     "total": {
       "checkouts": 0,
-      "cta": 23,
-      "genuine": 2,
-      "landings": 356,
+      "cta": 21,
+      "genuine": 1,
+      "landings": 366,
       "shareIntent": 2,
       "shareOpens": 0,
-      "uploads": 8
+      "uploads": 5
     }
   },
   "metrics": {
@@ -138,7 +138,7 @@
         "scope": "Administrative product-list context only; not overall BUS eligibility; SCOP not assessed"
       }
     },
-    "genuineAnalyses": 2,
+    "genuineAnalyses": 1,
     "outboundClicks": 0,
     "shareOpens": 0,
     "targets": {
