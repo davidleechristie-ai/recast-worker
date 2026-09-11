@@ -5,7 +5,7 @@ const isQaRequest=(request,mode)=>{if(mode!=='production')return true;const ref=
 const validCaseId=v=>typeof v==='string'&&/^[A-Za-z0-9_-]{8,80}$/.test(v);
 const safeEqual=(a,b)=>{if(a.length!==b.length)return false;let d=0;for(let i=0;i<a.length;i++)d|=a.charCodeAt(i)^b.charCodeAt(i);return d===0;};
 const hex=bytes=>[...new Uint8Array(bytes)].map(b=>b.toString(16).padStart(2,'0')).join('');
-const emptyTotals=()=>({landings:0,cta:0,uploads:0,genuine:0,shareIntent:0,shareOpens:0,outboundClicks:0,checkouts:0});
+const emptyTotals=()=>({landings:0,cta:0,uploads:0,genuine:0,multiQuoteAnalyses:0,decisionCases:0,installerQuestions:0,shareIntent:0,shareOpens:0,recipientStarts:0,outboundClicks:0,checkouts:0});
 const cleanSource=v=>String(v||'direct').slice(0,40).replace(/[^A-Za-z0-9_.:-]/g,'_')||'direct';
 
 export class HqcMetrics {
@@ -13,29 +13,39 @@ export class HqcMetrics {
   async snapshot(){
     let startedAt=await this.ctx.storage.get('meta:startedAt');
     if(!startedAt){startedAt=new Date().toISOString();await this.ctx.storage.put('meta:startedAt',startedAt);}
-    const total=(await this.ctx.storage.get('total'))||emptyTotals();
+    let extendedStartedAt=await this.ctx.storage.get('meta:extendedStartedAt');
+    if(!extendedStartedAt){extendedStartedAt=new Date().toISOString();await this.ctx.storage.put('meta:extendedStartedAt',extendedStartedAt);}
+    const total={...emptyTotals(),...((await this.ctx.storage.get('total'))||{})};
     const listed=await this.ctx.storage.list({prefix:'source:'});
-    const sources=[...listed.values()].sort((a,b)=>b.genuine-a.genuine||b.landings-a.landings);
-    return {measurementStartedAt:startedAt,total,sources};
+    const sources=[...listed.values()].map(r=>({...emptyTotals(),...r})).sort((a,b)=>b.genuine-a.genuine||b.landings-a.landings);
+    return {measurementStartedAt:startedAt,extendedMeasurementStartedAt:extendedStartedAt,total,sources};
   }
   async record(payload){
     if(!payload||payload.isTest===true)return this.snapshot();
     const event=String(payload.event||'');
     const source=cleanSource(payload.source);
-    const total=(await this.ctx.storage.get('total'))||emptyTotals();
+    const total={...emptyTotals(),...((await this.ctx.storage.get('total'))||{})};
     const key='source:'+source;
-    const row=(await this.ctx.storage.get(key))||{source,...emptyTotals()};
+    const row={source,...emptyTotals(),...((await this.ctx.storage.get(key))||{})};
     let changed=false;
     const inc=name=>{total[name]=(total[name]||0)+1;row[name]=(row[name]||0)+1;changed=true;};
     if(event==='landing_view')inc('landings');
-    else if(event==='checker_cta_clicked')inc('cta');
+    else if(event==='checker_cta_clicked'){inc('cta');if(source==='shared_case')inc('recipientStarts');}
     else if(event==='upload_started')inc('uploads');
     else if(event==='share_intent')inc('shareIntent');
     else if(event==='partner_outbound_click')inc('outboundClicks');
     else if(event==='detail_checkout_created'||event==='decision_pack_checkout_created')inc('checkouts');
     else if(event==='analysis_qualified_real_quote'&&payload.analysisId){
-      const id='analysis:'+String(payload.analysisId).slice(0,80);
+      const value=String(payload.analysisId).slice(0,80);
+      const id='analysis:'+value;
       if(!(await this.ctx.storage.get(id))){await this.ctx.storage.put(id,true);inc('genuine');}
+      if(Number(payload.quoteCount)>=2){const multi='multi:'+value;if(!(await this.ctx.storage.get(multi))){await this.ctx.storage.put(multi,true);inc('multiQuoteAnalyses');}}
+    } else if(event==='decision_case_generated'&&payload.analysisId){
+      const id='decision:'+String(payload.analysisId).slice(0,80);
+      if(!(await this.ctx.storage.get(id))){await this.ctx.storage.put(id,true);inc('decisionCases');}
+    } else if(event==='installer_questions_copied'&&payload.analysisId){
+      const id='questions:'+String(payload.analysisId).slice(0,80);
+      if(!(await this.ctx.storage.get(id))){await this.ctx.storage.put(id,true);inc('installerQuestions');}
     } else if(event==='share_opened'&&payload.analysisId){
       const id='share:'+String(payload.analysisId).slice(0,80);
       if(!(await this.ctx.storage.get(id))){await this.ctx.storage.put(id,true);inc('shareOpens');}
@@ -67,19 +77,23 @@ async function recordDurableMetric(env,payload){
 }
 async function durableMetricsResponse(env){
   const s=await metricsSnapshot(env),t=s.total;
-  return json({genuineAnalyses:t.genuine,shareOpens:t.shareOpens,outboundClicks:t.outboundClicks,measurementStartedAt:s.measurementStartedAt,durable:true,targets:{genuineAnalyses:100,shareOpens:20,outboundClicks:10},note:'Cumulative Cloudflare-side counters from measurementStartedAt; QA/demo/test events are excluded.'});
+  return json({genuineAnalyses:t.genuine,shareOpens:t.shareOpens,outboundClicks:t.outboundClicks,measurementStartedAt:s.measurementStartedAt,extendedMeasurementStartedAt:s.extendedMeasurementStartedAt,durable:true,targets:{genuineAnalyses:100,shareOpens:20,outboundClicks:10},note:'Cumulative Cloudflare-side counters from measurementStartedAt; QA/demo/test events are excluded. Extended funnel counters begin at extendedMeasurementStartedAt.'});
 }
 async function durableGrowthResponse(env){
   const s=await metricsSnapshot(env),t=s.total;
   const sources=s.sources.map(r=>({...r,landingToCta:r.landings?Math.round(r.cta/r.landings*100):null,ctaToUpload:r.cta?Math.round(r.uploads/r.cta*100):null,landingToGenuine:r.landings?Math.round(r.genuine/r.landings*100):null}));
+  const rates={landingToCta:t.landings?Math.round(t.cta/t.landings*100):null,ctaToUpload:t.cta?Math.round(t.uploads/t.cta*100):null,uploadToGenuine:t.uploads?Math.round(t.genuine/t.uploads*100):null,genuineToMultiQuote:t.genuine?Math.round(t.multiQuoteAnalyses/t.genuine*100):null,genuineToDecisionCase:t.genuine?Math.round(t.decisionCases/t.genuine*100):null,decisionCaseToShareIntent:t.decisionCases?Math.round(t.shareIntent/t.decisionCases*100):null,shareOpenToRecipientStart:t.shareOpens?Math.round(t.recipientStarts/t.shareOpens*100):null};
   const recommendations=[];
   if(t.landings>=15&&t.cta/Math.max(1,t.landings)<.3)recommendations.push('Landing-to-CTA is weak: improve message match, trust proof and CTA prominence before adding more traffic.');
   else if(t.cta>=5&&t.uploads/Math.max(1,t.cta)<.5)recommendations.push('CTA-to-upload is weak: reduce intake friction and clarify privacy/file requirements.');
-  else if(t.uploads>0&&t.genuine===0)recommendations.push('Quote submission is not reaching genuine analysis: diagnose the analysis handoff before adding acquisition.');
-  if(t.genuine>0&&t.shareOpens/t.genuine<.2)recommendations.push('Share loop is below the 20% validation threshold: strengthen Decision Case sharing and recipient conversion.');
+  else if(t.uploads>=3&&t.genuine===0)recommendations.push('Quote submission is not reaching genuine analysis: diagnose the analysis handoff before adding acquisition.');
+  if(t.genuine>=5&&t.multiQuoteAnalyses/t.genuine<.4)recommendations.push('Too few genuine users reach a second-quote comparison: strengthen multi-quote progression before expanding acquisition.');
+  if(t.decisionCases>=5&&t.shareIntent/Math.max(1,t.decisionCases)<.2)recommendations.push('Decision Cases are not progressing into sharing: improve the privacy-safe installer-question/share handoff.');
+  if(t.genuine>=5&&t.shareOpens/t.genuine<.2)recommendations.push('Share loop is below the 20% validation threshold: strengthen Decision Case sharing and recipient conversion.');
+  if(t.shareOpens>=5&&t.recipientStarts/Math.max(1,t.shareOpens)<.2)recommendations.push('Shared-case recipients are not starting their own checks: improve the recipient checker handoff.');
   if(t.genuine>=10&&t.outboundClicks/t.genuine<.1)recommendations.push('Commercial/outbound intent is weak: improve the clearly separated installer-finding action without changing comparison results.');
   if(!sources.some(x=>x.source.startsWith('organic_')&&x.genuine>0)&&t.landings>=15)recommendations.push('No qualified organic cohort yet: improve existing high-intent decision pages and internal handoff before expanding acquisition.');
-  return json({generatedAt:new Date().toISOString(),measurementStartedAt:s.measurementStartedAt,durable:true,total:t,sources:sources.slice(0,20),recommendations,loop:['Acquire qualified homeowners','Measure source funnels','Diagnose the largest constraint','Deploy one justified improvement','Verify against genuine analyses, shares and anonymous outbound intent']});
+  return json({generatedAt:new Date().toISOString(),measurementStartedAt:s.measurementStartedAt,extendedMeasurementStartedAt:s.extendedMeasurementStartedAt,durable:true,total:t,rates,sources:sources.slice(0,20),recommendations,loop:['Acquire qualified homeowners','Measure source funnels','Diagnose the largest constraint','Deploy one justified improvement','Verify against genuine analyses, shares and anonymous outbound intent']});
 }
 async function verifyStripeSignature(raw,header,secret){
   if(!header||!secret)return false;
