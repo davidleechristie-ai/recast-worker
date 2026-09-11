@@ -1,9 +1,9 @@
-2026-09-11T02:35+01:00
-Promote the first evidence-backed landing-to-checker conversion experiment after the clean post-integrity cohort reached 15 genuine landings with no new checker starts, uploads or analyses. The measured earliest funnel constraint is therefore landing/search-source to checker start.
+2026-09-11T09:07+01:00
+Promote the approved balanced HQC homepage layout before introducing any payment proposition.
 
-This release adds a low-risk reversible decision-page entry treatment: static decision articles get a compact persistent call-to-action that explicitly moves readers from general guidance to checking their actual quote. The CTA routes to the existing homepage checker with a one-time hqc_start parameter that invokes the existing start control rather than introducing a new analysis path. QA traffic is excluded from auto-start behaviour. No evidence, certification, grant-eligibility, personal-data, payment, DNS or backend logic is changed.
+This release fixes the desktop hero composition that was visibly poor in production: headline width/scale is constrained, copy and artwork use a balanced two-column layout, the house-only artwork is contained rather than aggressively cropped, and a concise three-step Upload → Check → Compare explainer sits with the artwork. The existing free checker CTA remains primary. Mobile remains separately responsive.
 
-Hypothesis: qualified search visitors landing on decision content are interested in evaluating a real quote but face unnecessary navigation friction before entering the checker. Reducing that handoff to one explicit action should produce the first clean checker starts without weakening product-independence guardrails.
+No payment, evidence, certification, grant-eligibility, personal-data, DNS or backend logic is changed.
 
-Product commits: 5179a5740d72ffbc5fabce07831bd6427a4440cb, 1ccabd4340351511be5e3b84e17cefef5692fd58
-Canary: HQC custom-domain canary run 34551087534 passed successfully, including snapshot, Cloudflare custom-domain deployment, production-style API proxy verification, QA-event exclusion and mobile intake smoke tests.
+Product commit: 2307d33f295804669cf1bef79c1072aa737b88d4
+Canary: HQC custom-domain canary run 34577392943 passed successfully, including snapshot, Cloudflare canary deployment, custom-domain verification, API proxy verification and mobile quote-intake smoke tests.
