@@ -1,12 +1,12 @@
-2026-09-11T13:51+01:00
-Promote the personalised £19 Decision Pack with the resilient quote-intake fix after the canary mobile intake checks passed.
+2026-09-11T13:56+01:00
+Promote the runtime asset/service-worker snapshot fix after the canary passed.
+
+This release keeps the personalised £19 Decision Pack and resilient quote intake, and additionally ensures runtime JavaScript dependencies and /sw.js are deployed as real JavaScript assets rather than falling through to the SPA HTML response.
 
 Free remains genuinely useful: multiple quote upload and comparison, extracted facts, material differences, evidence gaps and core next steps remain outside the paywall.
 
 Paid remains the personalised decision layer: detailed quote-by-quote analysis, installer-specific actions/questions, commercial scope cautions, explicit decision conditions and a printable Decision Pack after verified Stripe payment.
 
-The quote intake enhancement now recreates its accessible upload/manual controls whenever the upstream intake markup changes, while continuing to use the native file input and analysis flow underneath. This removes the previous #hqc-choose-file timeout and keeps PDF conversion in-browser.
-
-Canary-verified intake commit: 5894508beea06157a15246d99686d63e1f605b28
-Asset-sync commit: 1805bc47d4ceec5c1bcd348d315c45f4f9e09965
+Canary-verified runtime asset commit: 09e8663f29fe21f4c8c7112e61e5bc8095d35e1b
+Resilient intake commit: 5894508beea06157a15246d99686d63e1f605b28
 Paid product commit: ee40d8424b6270f85f3e0f19beb5bffa647eeff5
