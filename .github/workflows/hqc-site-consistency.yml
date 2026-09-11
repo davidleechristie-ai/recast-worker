@@ -1,0 +1,130 @@
+name: HQC site consistency
+
+on:
+  push:
+    branches: [main]
+    paths:
+      - 'hqc-deploy-preview/**'
+      - '.github/workflows/hqc-site-consistency.yml'
+  workflow_dispatch:
+  schedule:
+    - cron: '17 7 * * *'
+
+permissions:
+  contents: read
+
+jobs:
+  audit:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 22
+      - name: Install browser QA tooling
+        run: |
+          npm install --no-save playwright@1.55.0
+          npx playwright install --with-deps chromium
+      - name: Crawl links, graphics and responsive layouts
+        shell: bash
+        run: |
+          set -euo pipefail
+          node --input-type=module <<'NODE'
+          import { chromium } from 'playwright';
+          const base = 'https://homequotecheck.co.uk';
+          const origin = new URL(base).origin;
+          const browser = await chromium.launch({headless:true});
+          const failures=[];
+          const warnings=[];
+
+          async function fetchText(url){
+            const r=await fetch(url,{redirect:'follow'});
+            if(!r.ok) throw new Error(`${url} -> ${r.status}`);
+            return await r.text();
+          }
+
+          // Build the audit list from the production sitemap and then discover every
+          // same-origin link rendered on those pages. This catches routes that are
+          // omitted from a manually maintained checklist.
+          const sitemap=await fetchText(`${base}/sitemap.xml`);
+          const sitemapUrls=[...sitemap.matchAll(/<loc>([^<]+)<\/loc>/g)].map(m=>m[1].trim()).filter(Boolean);
+          const queue=[base+'/',...sitemapUrls];
+          const seen=new Set();
+          const pages=[];
+          while(queue.length && pages.length<80){
+            const url=queue.shift();
+            if(!url||seen.has(url)) continue;
+            seen.add(url);
+            let u;try{u=new URL(url,base)}catch{continue}
+            if(u.origin!==origin) continue;
+            u.hash='';
+            pages.push(u.href);
+            try{
+              const html=await fetchText(u.href);
+              for(const m of html.matchAll(/href=["']([^"'#]+)["']/gi)){
+                try{const x=new URL(m[1],u.href);x.hash='';if(x.origin===origin&&!seen.has(x.href))queue.push(x.href)}catch{}
+              }
+            }catch(e){failures.push(`HTTP ${u.href}: ${e.message}`)}
+          }
+
+          // HTTP/link integrity check for every discovered internal page/resource link.
+          const linkTargets=new Set(pages);
+          for(const pageUrl of pages){
+            try{
+              const html=await fetchText(pageUrl);
+              for(const m of html.matchAll(/(?:href|src)=["']([^"']+)["']/gi)){
+                const ref=m[1];
+                if(!ref||/^(?:mailto:|tel:|javascript:|data:|blob:)/i.test(ref)) continue;
+                try{const x=new URL(ref,pageUrl);x.hash='';if(x.origin===origin)linkTargets.add(x.href)}catch{}
+              }
+            }catch{}
+          }
+          for(const url of linkTargets){
+            try{
+              let r=await fetch(url,{method:'HEAD',redirect:'follow'});
+              if(r.status===405||r.status===403) r=await fetch(url,{method:'GET',redirect:'follow'});
+              if(r.status>=400) failures.push(`Broken internal target ${url} -> ${r.status}`);
+            }catch(e){failures.push(`Broken internal target ${url}: ${e.message}`)}
+          }
+
+          const viewports=[
+            {name:'mobile',width:390,height:844,isMobile:true,hasTouch:true},
+            {name:'desktop',width:1440,height:1000,isMobile:false,hasTouch:false}
+          ];
+          for(const vp of viewports){
+            for(const pageUrl of pages){
+              const page=await browser.newPage({viewport:{width:vp.width,height:vp.height},isMobile:vp.isMobile,hasTouch:vp.hasTouch});
+              const errors=[];
+              page.on('pageerror',e=>errors.push(String(e)));
+              page.on('console',m=>{if(m.type()==='error'&&!/favicon/i.test(m.text()))errors.push(`console: ${m.text()}`)});
+              try{
+                const r=await page.goto(pageUrl,{waitUntil:'networkidle',timeout:60000});
+                if(!r||r.status()>=400) failures.push(`${vp.name} ${pageUrl}: HTTP ${r?.status()}`);
+                await page.waitForTimeout(300);
+                const state=await page.evaluate(()=>{
+                  const imgs=[...document.images].map(img=>({src:img.currentSrc||img.src,alt:img.alt,complete:img.complete,nw:img.naturalWidth,nh:img.naturalHeight,rect:img.getBoundingClientRect().toJSON()}));
+                  const badImgs=imgs.filter(i=>!i.complete||i.nw===0||i.nh===0);
+                  const visibleImgs=imgs.filter(i=>i.rect.width>4&&i.rect.height>4);
+                  const emptyInteractive=[...document.querySelectorAll('a,button')].filter(el=>{const s=getComputedStyle(el);const r=el.getBoundingClientRect();return s.display!=='none'&&s.visibility!=='hidden'&&r.width>1&&r.height>1&&!((el.textContent||'').trim()||el.getAttribute('aria-label')||el.querySelector('img[alt]'))}).length;
+                  const overflow=Math.max(document.documentElement.scrollWidth,document.body?.scrollWidth||0)-innerWidth;
+                  const clippedText=[...document.querySelectorAll('h1,h2,h3,p,button,a')].filter(el=>{const s=getComputedStyle(el),r=el.getBoundingClientRect();if(s.display==='none'||s.visibility==='hidden'||r.width<2||r.height<2)return false;return el.scrollWidth>el.clientWidth+3&&s.whiteSpace!=='normal';}).slice(0,8).map(el=>(el.textContent||'').trim().slice(0,80));
+                  return {badImgs,visibleImgs,emptyInteractive,overflow,clippedText,title:document.title,h1:[...document.querySelectorAll('h1')].filter(x=>getComputedStyle(x).display!=='none').length};
+                });
+                if(errors.length) failures.push(`${vp.name} ${pageUrl}: JS errors: ${errors.slice(0,4).join(' | ')}`);
+                if(state.badImgs.length) failures.push(`${vp.name} ${pageUrl}: broken graphics ${state.badImgs.map(x=>x.src).join(', ')}`);
+                if(state.overflow>6) failures.push(`${vp.name} ${pageUrl}: horizontal overflow ${state.overflow}px`);
+                if(state.clippedText.length) failures.push(`${vp.name} ${pageUrl}: clipped nowrap text: ${state.clippedText.join(' | ')}`);
+                if(state.emptyInteractive) failures.push(`${vp.name} ${pageUrl}: ${state.emptyInteractive} visible empty link/button(s)`);
+                if(!state.title.trim()) failures.push(`${vp.name} ${pageUrl}: missing document title`);
+                if(state.h1>1) warnings.push(`${vp.name} ${pageUrl}: ${state.h1} visible H1 elements`);
+                for(const img of state.visibleImgs){if(!img.alt.trim() && !/decorative/i.test(img.src)) warnings.push(`${vp.name} ${pageUrl}: visible image missing alt: ${img.src}`)}
+              }catch(e){failures.push(`${vp.name} ${pageUrl}: ${e.message}`)}
+              await page.close();
+            }
+          }
+          await browser.close();
+          console.log(`Audited ${pages.length} pages and ${linkTargets.size} internal targets across mobile + desktop.`);
+          if(warnings.length) console.log('WARNINGS\n'+[...new Set(warnings)].join('\n'));
+          if(failures.length){console.error('FAILURES\n'+[...new Set(failures)].join('\n'));process.exit(1)}
+          console.log('HQC site consistency audit passed: links, graphics, JS runtime and responsive layout are clean.');
+          NODE
