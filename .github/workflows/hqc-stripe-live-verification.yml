@@ -61,3 +61,5 @@ jobs:
           grep -q '"paid":false' /tmp/status
 
           echo 'HQC live Stripe verification passed: webhook secret bound, live Checkout available, unpaid session remains locked.'
+
+# Verification is intentionally charge-free: it never submits payment details.
