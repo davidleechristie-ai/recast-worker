@@ -1,10 +1,11 @@
-2026-09-11T12:15+01:00
-Promote Home Quote Check Stripe Decision Pack hardening to production.
+2026-09-11T12:34+01:00
+Promote Home Quote Check comparison-guide acquisition experiment to production.
 
-Stripe live account verification confirms the active Decision Pack product is £19 GBP one-time using price_1UER4fCnmTy7aZ0Hp1zMfDYT. Checkout remains Stripe-hosted and quote contents are never sent to Stripe; only the opaque case reference and product marker are metadata.
+Hypothesis: qualified homeowners who are actively comparing installer proposals will convert better when the organic landing page directly teaches like-for-like evidence comparison and hands them into the existing free quote checker.
 
-This release adds a stable case-scoped idempotency key to Checkout Session creation, a signed Stripe webhook endpoint at /api/stripe/webhook with five-minute timestamp tolerance and constant-time signature comparison, and payment confirmation/failure event forwarding after signature and product/case validation. Existing server-side Checkout Session verification on the success return remains the customer unlock authority.
+This release publishes the substantive 'How to compare heat-pump quotes' decision page through the Cloudflare-controlled snapshot and sitemap after successful custom-domain canary verification. It does not change analysis logic, evidence claims, personal-data handling, Stripe checkout, DNS, backend routing or payment state.
 
-A live Stripe webhook endpoint has been created for checkout.session.completed, checkout.session.async_payment_succeeded and checkout.session.async_payment_failed. STRIPE_WEBHOOK_SECRET must be configured as a Cloudflare Worker secret before webhook delivery can complete successfully.
+Measurement: attribute page-to-checker progression to its dedicated organic source and judge the experiment on genuine checker starts, uploads and analyses rather than pageviews alone. QA/demo/release probes remain excluded.
 
-Product commit: 568f0b6a96a70031f73e45e024d253e824197ce4
+Product commit: 5c4d6c9fd4d5333f338bcd52e771f9786c549495
+Canary run: 34589536611 (success)
