@@ -1,16 +1,21 @@
-2026-09-11T20:39+01:00
-Promote canary-verified same-epoch extended HQC funnel measurement to production.
+2026-09-11T21:34+01:00
+Promote canary-verified checker-start instrumentation correction to production.
 
-Measurement integrity correction:
-- preserve cumulative authoritative North Star counters and their original measurement epoch;
-- keep new downstream funnel counters for multi-quote analysis, Decision Case, installer questions and recipient checker starts;
-- add an extendedGenuine denominator that begins with the extended funnel measurement epoch so multi-quote and Decision Case rates never mix historical and newly introduced counters;
-- use sample thresholds before downstream recommendations, avoiding false bottleneck diagnoses from tiny cohorts;
-- QA/demo/test traffic remains excluded, no personal data is added, and no historical values are invented or backfilled.
+Measured hypothesis:
+- durable funnel shows 8 genuine landings, 0 recorded checker starts, 1 upload and 1 genuine analysis;
+- inspection found the landing-page header "Get started" button changes React state but does not emit checker_cta_clicked, while the hero CTA already does;
+- this creates an impossible-looking landing -> CTA -> upload sequence and understates genuine checker starts for users who enter through the header.
+
+Change:
+- instrument only the otherwise-untracked header "Get started" route;
+- preserve canonical src attribution and same-origin /api/event delivery;
+- do not add another tracker to the hero CTA, avoiding double counting;
+- QA/demo/headless traffic remains excluded centrally;
+- no personal data is added and no product/evidence claims change.
 
 Canary verification:
-- custom-domain canary #184 passed snapshot, Cloudflare deployment, domain/API verification and both mobile quote-intake paths;
+- custom-domain canary #186 passed snapshot, Cloudflare deployment, domain/API verification and both mobile quote-intake paths;
 - no AppDeploy deployment is involved;
 - preserve current custom-domain routing and same-origin /api proxy.
 
-Deploy via the existing guarded hqc-production workflow and remeasure durable production metrics before making the next growth change.
+Deploy via the existing guarded hqc-production workflow, then allow durable metrics to measure genuine traffic with the corrected entry-stage instrumentation.
