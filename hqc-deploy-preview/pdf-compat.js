@@ -1,6 +1,7 @@
 (()=>{
   // pdfjs-dist 5.4 uses the newer Map upsert helpers. Provide a small compatibility
   // shim for browsers that do not expose them yet so client-side PDF rendering works.
+  // Release marker: pdf-compat-v1.1 — validated before pdf.mjs is dynamically imported.
   if(typeof Map.prototype.getOrInsertComputed!=='function'){
     Object.defineProperty(Map.prototype,'getOrInsertComputed',{
       configurable:true,
