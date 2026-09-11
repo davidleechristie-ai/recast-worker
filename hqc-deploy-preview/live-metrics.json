@@ -1,7 +1,7 @@
 {
-  "fetchedAt": "2026-09-11T13:28:55.066850Z",
+  "fetchedAt": "2026-09-11T14:28:46.185702Z",
   "growthReport": {
-    "generatedAt": "2026-09-11T13:28:55.022Z",
+    "generatedAt": "2026-09-11T14:28:46.129Z",
     "loop": [
       "Acquire qualified homeowners",
       "Measure source funnels",
@@ -17,16 +17,16 @@
     "sources": [
       {
         "checkouts": 0,
-        "cta": 22,
-        "ctaToUpload": 50,
-        "genuine": 3,
-        "landingToCta": 8,
+        "cta": 21,
+        "ctaToUpload": 38,
+        "genuine": 2,
+        "landingToCta": 7,
         "landingToGenuine": 1,
-        "landings": 290,
-        "shareIntent": 3,
+        "landings": 300,
+        "shareIntent": 2,
         "shareOpens": 0,
         "source": "direct",
-        "uploads": 11
+        "uploads": 8
       },
       {
         "checkouts": 0,
@@ -35,7 +35,7 @@
         "genuine": 0,
         "landingToCta": 0,
         "landingToGenuine": 0,
-        "landings": 19,
+        "landings": 23,
         "shareIntent": 0,
         "shareOpens": 0,
         "source": "organic_goodquote_static",
@@ -48,7 +48,7 @@
         "genuine": 0,
         "landingToCta": 0,
         "landingToGenuine": 0,
-        "landings": 15,
+        "landings": 17,
         "shareIntent": 0,
         "shareOpens": 0,
         "source": "organic_goodquote_static_bottom",
@@ -61,7 +61,7 @@
         "genuine": 0,
         "landingToCta": 0,
         "landingToGenuine": 0,
-        "landings": 14,
+        "landings": 12,
         "shareIntent": 0,
         "shareOpens": 0,
         "source": "organic_goodquote_static_compare",
@@ -78,19 +78,6 @@
         "shareIntent": 0,
         "shareOpens": 0,
         "source": "organic_compare",
-        "uploads": 0
-      },
-      {
-        "checkouts": 0,
-        "cta": 0,
-        "ctaToUpload": null,
-        "genuine": 0,
-        "landingToCta": 0,
-        "landingToGenuine": 0,
-        "landings": 2,
-        "shareIntent": 0,
-        "shareOpens": 0,
-        "source": "organic_price",
         "uploads": 0
       },
       {
@@ -124,32 +111,6 @@
         "cta": 0,
         "ctaToUpload": null,
         "genuine": 0,
-        "landingToCta": 0,
-        "landingToGenuine": 0,
-        "landings": 1,
-        "shareIntent": 0,
-        "shareOpens": 0,
-        "source": "organic_checklist",
-        "uploads": 0
-      },
-      {
-        "checkouts": 0,
-        "cta": 0,
-        "ctaToUpload": null,
-        "genuine": 0,
-        "landingToCta": 0,
-        "landingToGenuine": 0,
-        "landings": 1,
-        "shareIntent": 0,
-        "shareOpens": 0,
-        "source": "organic_radiators",
-        "uploads": 0
-      },
-      {
-        "checkouts": 0,
-        "cta": 0,
-        "ctaToUpload": null,
-        "genuine": 0,
         "landingToCta": null,
         "landingToGenuine": null,
         "landings": 0,
@@ -161,12 +122,12 @@
     ],
     "total": {
       "checkouts": 0,
-      "cta": 24,
-      "genuine": 3,
-      "landings": 346,
-      "shareIntent": 3,
+      "cta": 23,
+      "genuine": 2,
+      "landings": 356,
+      "shareIntent": 2,
       "shareOpens": 0,
-      "uploads": 11
+      "uploads": 8
     }
   },
   "metrics": {
@@ -177,7 +138,7 @@
         "scope": "Administrative product-list context only; not overall BUS eligibility; SCOP not assessed"
       }
     },
-    "genuineAnalyses": 3,
+    "genuineAnalyses": 2,
     "outboundClicks": 0,
     "shareOpens": 0,
     "targets": {
