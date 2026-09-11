@@ -25,8 +25,8 @@ jobs:
           mkdir -p hqc-ops
           curl -fsS --max-time 30 "$base/api/metrics" -o "$metrics"
           curl -fsS --max-time 30 "$base/api/growth-report" -o "$growth"
-          jq -e '.durable == true and (.measurementStartedAt|length)>0' "$metrics" >/dev/null
-          jq -e '.durable == true and (.measurementStartedAt|length)>0' "$growth" >/dev/null
+          jq -e '.durable == true and (.measurementStartedAt|length)>0 and (.extendedMeasurementStartedAt|length)>0' "$metrics" >/dev/null
+          jq -e '.durable == true and (.measurementStartedAt|length)>0 and (.extendedMeasurementStartedAt|length)>0' "$growth" >/dev/null
           jq -n \
             --arg fetchedAt "$(date -u +%Y-%m-%dT%H:%M:%SZ)" \
             --slurpfile metrics "$metrics" \
@@ -40,14 +40,24 @@ jobs:
             | .autonomousDecisionGate = (
                 if $r.metrics.genuineAnalyses >= 100 then
                   {status:"SCALE_HOLD_PIVOT_REVIEW", bottleneck:"validation threshold reached", action:"Perform SCALE/HOLD/PIVOT review before further autonomous growth changes."}
-                elif $r.growthReport.total.uploads > 0 and $r.growthReport.total.genuine == 0 then
-                  {status:"ACT", bottleneck:"quote submission -> genuine analysis", action:"Investigate the post-submission analysis handoff before adding acquisition. Preserve evidence guardrails and do not create QA analyses that could contaminate the genuine-analysis metric."}
-                elif $r.growthReport.total.cta >= 5 and $r.growthReport.total.uploads == 0 then
-                  {status:"ACT", bottleneck:"checker start -> quote submission", action:"Prioritise quote-intake friction and instrumentation; do not add acquisition pages merely to increase traffic."}
-                elif $r.growthReport.total.landings >= 15 and $r.growthReport.total.cta == 0 then
+                elif $r.growthReport.total.landings >= 15 and (($r.growthReport.total.cta / $r.growthReport.total.landings) < 0.30) then
                   {status:"ACT", bottleneck:"landing -> checker start", action:"Prioritise message-match, trust and CTA clarity on existing landing/decision pages before expanding acquisition."}
+                elif $r.growthReport.total.cta >= 5 and (($r.growthReport.total.uploads / $r.growthReport.total.cta) < 0.50) then
+                  {status:"ACT", bottleneck:"checker start -> quote submission", action:"Prioritise quote-intake friction and instrumentation; do not add acquisition pages merely to increase traffic."}
+                elif $r.growthReport.total.uploads >= 3 and $r.growthReport.total.genuine == 0 then
+                  {status:"ACT", bottleneck:"quote submission -> genuine analysis", action:"Investigate the post-submission analysis handoff before adding acquisition. Preserve evidence guardrails and do not create QA analyses that could contaminate the genuine-analysis metric."}
+                elif $r.growthReport.total.extendedGenuine >= 5 and (($r.growthReport.total.multiQuoteAnalyses / $r.growthReport.total.extendedGenuine) < 0.40) then
+                  {status:"ACT", bottleneck:"genuine analysis -> second quote/comparison", action:"Strengthen multi-quote progression without changing evidence or design-certification guardrails."}
+                elif $r.growthReport.total.extendedGenuine >= 5 and (($r.growthReport.total.decisionCases / $r.growthReport.total.extendedGenuine) < 0.80) then
+                  {status:"ACT", bottleneck:"genuine analysis -> Decision Case", action:"Diagnose the result-to-Decision-Case handoff before optimising sharing or acquisition."}
+                elif $r.growthReport.total.decisionCases >= 5 and (($r.growthReport.total.shareIntent / $r.growthReport.total.decisionCases) < 0.20) then
+                  {status:"ACT", bottleneck:"Decision Case -> installer questions/share", action:"Improve the privacy-safe installer-question and sharing handoff without adding customer identity collection."}
+                elif $r.growthReport.total.shareOpens >= 5 and (($r.growthReport.total.recipientStarts / $r.growthReport.total.shareOpens) < 0.20) then
+                  {status:"ACT", bottleneck:"share open -> recipient checker start", action:"Improve the shared-case recipient handoff into their own quote check."}
+                elif $r.growthReport.total.genuine >= 10 and (($r.growthReport.total.outboundClicks / $r.growthReport.total.genuine) < 0.10) then
+                  {status:"ACT", bottleneck:"genuine analysis -> commercial/outbound action", action:"Improve clearly separated outbound installer-finding intent without influencing comparison results."}
                 else
-                  {status:"HOLD", bottleneck:"insufficient clean durable sample", action:"Do not churn production. Continue measurement until durable downstream events identify the next actionable bottleneck."}
+                  {status:"HOLD", bottleneck:"insufficient clean durable sample", action:"Do not churn production. Continue measurement until the earliest adequately sampled funnel stage identifies a justified change."}
                 end
               )
             ' > hqc-ops/live-metrics.json
