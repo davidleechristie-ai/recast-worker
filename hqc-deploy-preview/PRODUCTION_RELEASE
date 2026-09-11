@@ -1,9 +1,13 @@
-2026-09-11T09:07+01:00
-Promote the approved balanced HQC homepage layout before introducing any payment proposition.
+2026-09-11T10:34+01:00
+Promote the next low-risk landing-to-checker conversion experiment after the approved homepage layout.
 
-This release fixes the desktop hero composition that was visibly poor in production: headline width/scale is constrained, copy and artwork use a balanced two-column layout, the house-only artwork is contained rather than aggressively cropped, and a concise three-step Upload → Check → Compare explainer sits with the artwork. The existing free checker CTA remains primary. Mobile remains separately responsive.
+Fresh measured state before this change: 264 total landings, 72 checker starts, 16 uploads, 2 historical genuine-analysis markers, 0 share opens and 0 checkouts. Against the post-layout baseline, traffic moved but checker starts, uploads and genuine analyses did not, so the earliest measured constraint remains landing/search source → checker start.
 
-No payment, evidence, certification, grant-eligibility, personal-data, DNS or backend logic is changed.
+Current UK search research shows many competing heat-pump journeys are installer-matching or quote-generation services, while decision content focuses on checklists and quote completeness. HQC's differentiator is therefore made explicit in the hero: “Independent quote check — not an installer lead form. We do not sell your details or match you to installers.” The supporting copy now starts with the user's existing quote and the existing free CTA remains primary.
 
-Product commit: 2307d33f295804669cf1bef79c1072aa737b88d4
-Canary: HQC custom-domain canary run 34577392943 passed successfully, including snapshot, Cloudflare canary deployment, custom-domain verification, API proxy verification and mobile quote-intake smoke tests.
+Hypothesis: qualified homeowners may mistake HQC for another lead-generation/comparison form and avoid starting. Making the independence and existing-quote proposition explicit should improve checker-start rate without adding acquisition spend, personal-data collection, installer incentives or regulatory risk.
+
+No payment, evidence, certification, grant-eligibility, DNS or backend logic is changed.
+
+Product commit: cf1427ea64e8a2b25c70520c5e3801d4fa96b490
+Canary: HQC custom-domain canary run 34584703218 passed successfully, including snapshot, Cloudflare canary deployment, custom-domain verification and mobile quote-intake smoke tests.
