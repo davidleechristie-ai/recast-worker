@@ -1,0 +1,63 @@
+name: HQC Stripe live verification
+
+on:
+  push:
+    branches: [main]
+    paths:
+      - '.github/workflows/hqc-stripe-live-verification.yml'
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+jobs:
+  verify:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Verify live Stripe checkout and webhook guards
+        shell: bash
+        run: |
+          set -euo pipefail
+          base='https://homequotecheck.co.uk'
+          case_id='stripe_healthcheck_20260911'
+
+          health=$(curl -L -sS --max-time 30 "$base/health")
+          grep -q 'production' <<< "$health"
+
+          # Missing/invalid Stripe signatures must be rejected. A 400 proves the
+          # webhook route is live and STRIPE_WEBHOOK_SECRET is configured; a 503
+          # would indicate the secret is still missing at runtime.
+          webhook_code=$(curl -sS --max-time 30 -o /tmp/webhook -w '%{http_code}' \
+            -X POST "$base/api/stripe/webhook" \
+            -H 'content-type: application/json' \
+            -H 'stripe-signature: t=1,v1=invalid' \
+            --data '{"id":"evt_hqc_healthcheck","type":"checkout.session.completed","data":{"object":{}}}')
+          echo "webhook invalid-signature status=$webhook_code body=$(cat /tmp/webhook)"
+          test "$webhook_code" = '400'
+          grep -q 'invalid_signature' /tmp/webhook
+
+          # Create one idempotent live Checkout Session without completing payment.
+          # This validates the production secret key, live £19 Price and redirect flow
+          # without charging a card. Re-runs reuse the same Stripe idempotency key.
+          checkout_code=$(curl -sS --max-time 30 -o /tmp/checkout -w '%{http_code}' \
+            -X POST "$base/api/decision-pack/checkout" \
+            -H 'content-type: application/json' \
+            --data "{\"caseId\":\"$case_id\"}")
+          echo "checkout status=$checkout_code"
+          test "$checkout_code" = '200'
+          grep -q 'https://checkout.stripe.com/' /tmp/checkout
+          session_id=$(python3 - <<'PY'
+          import json
+          print(json.load(open('/tmp/checkout'))['sessionId'])
+          PY
+          )
+          test -n "$session_id"
+
+          # An uncompleted session must not unlock the Decision Pack.
+          status_code=$(curl -sS --max-time 30 -o /tmp/status -w '%{http_code}' \
+            "$base/api/decision-pack/status?session_id=$session_id&case_id=$case_id")
+          echo "status check=$status_code body=$(cat /tmp/status)"
+          test "$status_code" = '200'
+          grep -q '"paid":false' /tmp/status
+
+          echo 'HQC live Stripe verification passed: webhook secret bound, live Checkout available, unpaid session remains locked.'
