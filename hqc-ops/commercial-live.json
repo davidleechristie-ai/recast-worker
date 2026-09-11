@@ -1,5 +1,5 @@
 {
-  "fetchedAt": "2026-09-11T12:32:36Z",
+  "fetchedAt": "2026-09-11T13:27:52Z",
   "northStar": {
     "targetMonthlyRevenueGBP": 500,
     "revenueAvailable": false,
@@ -7,19 +7,19 @@
   },
   "baselineAt": "2026-09-11T08:30:08Z",
   "total": {
-    "landings": 311,
-    "cta": 45,
-    "uploads": 14,
-    "genuine": 4,
+    "landings": 346,
+    "cta": 24,
+    "uploads": 11,
+    "genuine": 3,
     "shareIntent": 3,
     "shareOpens": 0,
     "checkouts": 0
   },
   "sinceCommercialBaseline": {
-    "landings": 48,
-    "cta": -27,
-    "uploads": -2,
-    "genuine": 2,
+    "landings": 83,
+    "cta": -48,
+    "uploads": -5,
+    "genuine": 1,
     "shareIntent": -1,
     "shareOpens": 0,
     "checkouts": 0
@@ -27,20 +27,20 @@
   "sources": [
     {
       "source": "direct",
-      "landings": 263,
-      "cta": 41,
-      "uploads": 14,
-      "genuine": 4,
+      "landings": 290,
+      "cta": 22,
+      "uploads": 11,
+      "genuine": 3,
       "shareIntent": 3,
       "shareOpens": 0,
       "checkouts": 0,
-      "landingToCta": 16,
-      "ctaToUpload": 34,
-      "landingToGenuine": 2
+      "landingToCta": 8,
+      "ctaToUpload": 50,
+      "landingToGenuine": 1
     },
     {
       "source": "organic_goodquote_static",
-      "landings": 13,
+      "landings": 19,
       "cta": 0,
       "uploads": 0,
       "genuine": 0,
@@ -53,7 +53,7 @@
     },
     {
       "source": "organic_goodquote_static_bottom",
-      "landings": 10,
+      "landings": 15,
       "cta": 0,
       "uploads": 0,
       "genuine": 0,
@@ -66,20 +66,7 @@
     },
     {
       "source": "organic_goodquote_static_compare",
-      "landings": 10,
-      "cta": 0,
-      "uploads": 0,
-      "genuine": 0,
-      "shareIntent": 0,
-      "shareOpens": 0,
-      "checkouts": 0,
-      "landingToCta": 0,
-      "ctaToUpload": null,
-      "landingToGenuine": 0
-    },
-    {
-      "source": "organic_price",
-      "landings": 4,
+      "landings": 14,
       "cta": 0,
       "uploads": 0,
       "genuine": 0,
@@ -92,7 +79,7 @@
     },
     {
       "source": "organic_compare",
-      "landings": 3,
+      "landings": 2,
       "cta": 0,
       "uploads": 0,
       "genuine": 0,
@@ -104,20 +91,7 @@
       "landingToGenuine": 0
     },
     {
-      "source": "organic_checklist",
-      "landings": 3,
-      "cta": 0,
-      "uploads": 0,
-      "genuine": 0,
-      "shareIntent": 0,
-      "shareOpens": 0,
-      "checkouts": 0,
-      "landingToCta": 0,
-      "ctaToUpload": null,
-      "landingToGenuine": 0
-    },
-    {
-      "source": "organic_radiators",
+      "source": "organic_price",
       "landings": 2,
       "cta": 0,
       "uploads": 0,
@@ -145,18 +119,31 @@
     {
       "source": "organic_goodquote",
       "landings": 1,
-      "cta": 3,
+      "cta": 1,
       "uploads": 0,
       "genuine": 0,
       "shareIntent": 0,
       "shareOpens": 0,
       "checkouts": 0,
-      "landingToCta": 300,
+      "landingToCta": 100,
       "ctaToUpload": 0,
       "landingToGenuine": 0
     },
     {
-      "source": "organic_heatloss",
+      "source": "organic_checklist",
+      "landings": 1,
+      "cta": 0,
+      "uploads": 0,
+      "genuine": 0,
+      "shareIntent": 0,
+      "shareOpens": 0,
+      "checkouts": 0,
+      "landingToCta": 0,
+      "ctaToUpload": null,
+      "landingToGenuine": 0
+    },
+    {
+      "source": "organic_radiators",
       "landings": 1,
       "cta": 0,
       "uploads": 0,
