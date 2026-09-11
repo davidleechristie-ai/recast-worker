@@ -1,12 +1,11 @@
-2026-09-11T13:28+01:00
-Promote the new free-to-paid value boundary and personalised £19 Decision Pack.
+2026-09-11T13:46+01:00
+Redeploy the personalised £19 Decision Pack after fixing release-contract compatibility and forcing a fresh synchronized frontend asset snapshot.
 
-Free remains genuinely useful: users can upload and compare multiple quotes, see extracted facts, material differences, evidence gaps and top next steps. Multi-quote comparison is explicitly not paywalled.
+Free remains genuinely useful: multiple quote upload and comparison, extracted facts, material differences, evidence gaps and core next steps remain outside the paywall.
 
-The £19 one-off Decision Pack now delivers a materially deeper decision layer after verified Stripe payment: personalised current position, quote/installer-specific material gaps, separate actions and questions for each installer, commercial price/scope caution, explicit decision conditions to resolve before choosing or paying a deposit, and a printable personalised Decision Pack.
+Paid remains the personalised decision layer: detailed quote-by-quote analysis, installer-specific actions/questions, commercial scope cautions, explicit decision conditions and a printable Decision Pack after verified Stripe payment.
 
-The paywall no longer claims that adding or comparing another quote is a paid benefit. Copy now sells detailed personalised decision support rather than repackaging the free comparison. No subscription is introduced.
+This promotion also refreshes the production JavaScript/assets so the HTML and module bundle versions are deployed together, preserving PDF support and the existing Stripe configuration.
 
-Existing server-side Stripe verification remains the unlock authority. PDF support and production secret preservation are unchanged.
-
-Product commit: ee40d8424b6270f85f3e0f19beb5bffa647eeff5
+Asset-sync commit: 1805bc47d4ceec5c1bcd348d315c45f4f9e09965
+Paid product commit: ee40d8424b6270f85f3e0f19beb5bffa647eeff5
