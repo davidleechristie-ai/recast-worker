@@ -1,0 +1,69 @@
+=== https://heat-pump-second-opinion-v43csv.v2.appdeploy.ai ===
+HOME_HEADERS
+HTTP/2 200 
+content-type: text/html
+content-length: 51829
+date: Fri, 11 Sep 2026 16:35:23 GMT
+last-modified: Sun, 06 Sep 2026 06:44:44 GMT
+etag: "2cd770008a3226c56fd3e4c85367e024"
+x-amz-server-side-encryption: AES256
+cache-control: no-cache, no-store, must-revalidate
+x-amz-meta-appdeploy-has-backend: 1
+accept-ranges: bytes
+server: AmazonS3
+via: 1.1 2c05225edb39737522cc9637414fe09c.cloudfront.net (CloudFront)
+vary: Origin
+link: <https://api-v2.appdeploy.ai/app/heat-pump-second-opinion-v43csv/_warmup>; rel=preload; as=fetch; crossorigin=use-credentials
+x-cache: Miss from cloudfront
+x-amz-cf-pop: PHX52-P3
+x-amz-cf-id: v6w99pxwUj46-n8Hwg8wZ8ptY0c2q0qLWElYN5w7iKG3fd4Qqf744w==
+
+STYLESHEETS ['https://heat-pump-second-opinion-v43csv.v2.appdeploy.ai/assets/index-CjgMTR3j.css']
+CSS https://heat-pump-second-opinion-v43csv.v2.appdeploy.ai/assets/index-CjgMTR3j.css => 200 text/css 19099
+HTTP/2 200 
+content-type: text/css
+content-length: 19099
+date: Fri, 11 Sep 2026 16:35:24 GMT
+last-modified: Sun, 06 Sep 2026 06:44:44 GMT
+etag: "4a5ba153e43b926687384eb5a69b564b"
+x-amz-server-side-encryption: AES256
+accept-ranges: bytes
+server: AmazonS3
+via: 1.1 5a6df92f738b41cec39c39029cc85606.cloudfront.net (CloudFront)
+vary: Origin
+x-cache: Miss from cloudfront
+x-amz-cf-pop: PHX52-P3
+x-amz-cf-id: 5IEMAZgf7s5b74Q3N5NqRUK8QvScp8J7C_akYFtj51uF3zmD0DzSQQ==
+
+
+BODY_PREFIX '*,:before,:after{--tw-border-spacing-x: 0;--tw-border-spacing-y: 0;--tw-translate-x: 0;--tw-translate-y: 0;--tw-rotate: '
+=== https://homequotecheck.co.uk ===
+HOME_HEADERS
+HTTP/2 200 
+date: Fri, 11 Sep 2026 16:35:23 GMT
+content-type: text/html
+cf-cache-status: HIT
+cache-control: public, max-age=0, must-revalidate
+nel: {"report_to":"cf-nel","success_fraction":0.0,"max_age":604800}
+report-to: {"group":"cf-nel","max_age":604800,"endpoints":[{"url":"https://a.nel.cloudflare.com/report/v4?s=ePErq8OBgwc%2FeepWVxvnMYcZ1ncskyvKnnkwCyRaoMQSfnqkyVIFXpSQ%2BcNxclmSXFhJtYufGfpHQitaf2fEQM4NBEZHLlljV%2BCZI8wizDF5Qpk43IDC8VddiKH51ILm5KomL9LD1w%3D%3D"}]}
+server: cloudflare
+cf-ray: a39815d9da18b384-MAN
+alt-svc: h3=":443"; ma=86400
+
+STYLESHEETS ['https://homequotecheck.co.uk/assets/index-CjgMTR3j.css']
+CSS https://homequotecheck.co.uk/assets/index-CjgMTR3j.css => 200 text/css 19099
+HTTP/2 200 
+date: Fri, 11 Sep 2026 16:35:24 GMT
+content-type: text/css
+content-length: 19099
+cf-cache-status: HIT
+cache-control: public, max-age=0, must-revalidate
+etag: "0eefc4ae816c837e68f2fd0229026bc7"
+report-to: {"group":"cf-nel","max_age":604800,"endpoints":[{"url":"https://a.nel.cloudflare.com/report/v4?s=8u4Z%2F5rsXOYU%2FZjGzRzQ6Mg8oNaz2G5wU44YCoDXTCwR7fgs%2FFfhZ5QDjCBdzhmHyWOi5TdzLpzGQY%2BMpjcsECeTTLgi7K0NN1XWR3QpZYZRfYcPPjnV6cyty6ypFGSFmG1HhAPcSg%3D%3D"}]}
+nel: {"report_to":"cf-nel","success_fraction":0.0,"max_age":604800}
+server: cloudflare
+cf-ray: a39815dbbd5db946-ATL
+alt-svc: h3=":443"; ma=86400
+
+
+BODY_PREFIX '*,:before,:after{--tw-border-spacing-x: 0;--tw-border-spacing-y: 0;--tw-translate-x: 0;--tw-translate-y: 0;--tw-rotate: '
