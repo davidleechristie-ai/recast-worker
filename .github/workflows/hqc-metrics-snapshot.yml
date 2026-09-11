@@ -9,7 +9,6 @@ on:
     - cron: '17 * * * *'
   workflow_dispatch:
 
-# Autonomous refresh trigger: 2026-09-10T23:34Z
 permissions:
   contents: write
 
@@ -20,7 +19,7 @@ jobs:
       - uses: actions/checkout@v4
         with:
           fetch-depth: 1
-      - name: Read production North Star metrics
+      - name: Read durable production North Star metrics
         shell: bash
         run: |
           set -euo pipefail
@@ -30,15 +29,18 @@ jobs:
           echo
           curl -fsSL --max-time 30 "$base/api/growth-report" | tee hqc-metrics/growth-report.json
           echo
+          jq -e '.durable == true and (.measurementStartedAt|length)>0' hqc-metrics/metrics.json >/dev/null
+          jq -e '.durable == true and (.measurementStartedAt|length)>0' hqc-metrics/growth-report.json >/dev/null
           python - <<'PY'
           import json, datetime
           m=json.load(open('hqc-metrics/metrics.json'))
           g=json.load(open('hqc-metrics/growth-report.json'))
           print('NORTH_STAR_METRICS')
+          print('measurementStartedAt='+str(m.get('measurementStartedAt')))
           for k in ('genuineAnalyses','shareOpens','outboundClicks'):
               print(f'{k}={m.get(k)}')
-          print('VALIDATION_TARGETS', json.dumps(m.get('validationTargets',{}), sort_keys=True))
-          print('GROWTH_RECOMMENDATION', g.get('recommendation'))
+          print('VALIDATION_TARGETS', json.dumps(m.get('targets',{}), sort_keys=True))
+          print('GROWTH_RECOMMENDATIONS', json.dumps(g.get('recommendations',[]), sort_keys=True))
           print('SOURCE_FUNNELS', json.dumps(g.get('sources',[]), sort_keys=True))
           payload={
             'fetchedAt': datetime.datetime.now(datetime.timezone.utc).isoformat().replace('+00:00','Z'),
@@ -69,7 +71,7 @@ jobs:
             fi
 
             git add "$snapshot_file"
-            git commit -m 'Update HQC live metrics snapshot'
+            git commit -m 'Update HQC durable live metrics snapshot'
             if git push origin HEAD:main; then
               exit 0
             fi
