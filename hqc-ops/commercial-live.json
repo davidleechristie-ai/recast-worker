@@ -1,5 +1,5 @@
 {
-  "fetchedAt": "2026-09-11T13:27:52Z",
+  "fetchedAt": "2026-09-11T14:27:47Z",
   "northStar": {
     "targetMonthlyRevenueGBP": 500,
     "revenueAvailable": false,
@@ -7,40 +7,40 @@
   },
   "baselineAt": "2026-09-11T08:30:08Z",
   "total": {
-    "landings": 346,
-    "cta": 24,
-    "uploads": 11,
-    "genuine": 3,
-    "shareIntent": 3,
+    "landings": 356,
+    "cta": 23,
+    "uploads": 8,
+    "genuine": 2,
+    "shareIntent": 2,
     "shareOpens": 0,
     "checkouts": 0
   },
   "sinceCommercialBaseline": {
-    "landings": 83,
-    "cta": -48,
-    "uploads": -5,
-    "genuine": 1,
-    "shareIntent": -1,
+    "landings": 93,
+    "cta": -49,
+    "uploads": -8,
+    "genuine": 0,
+    "shareIntent": -2,
     "shareOpens": 0,
     "checkouts": 0
   },
   "sources": [
     {
       "source": "direct",
-      "landings": 290,
-      "cta": 22,
-      "uploads": 11,
-      "genuine": 3,
-      "shareIntent": 3,
+      "landings": 300,
+      "cta": 21,
+      "uploads": 8,
+      "genuine": 2,
+      "shareIntent": 2,
       "shareOpens": 0,
       "checkouts": 0,
-      "landingToCta": 8,
-      "ctaToUpload": 50,
+      "landingToCta": 7,
+      "ctaToUpload": 38,
       "landingToGenuine": 1
     },
     {
       "source": "organic_goodquote_static",
-      "landings": 19,
+      "landings": 23,
       "cta": 0,
       "uploads": 0,
       "genuine": 0,
@@ -53,7 +53,7 @@
     },
     {
       "source": "organic_goodquote_static_bottom",
-      "landings": 15,
+      "landings": 17,
       "cta": 0,
       "uploads": 0,
       "genuine": 0,
@@ -66,7 +66,7 @@
     },
     {
       "source": "organic_goodquote_static_compare",
-      "landings": 14,
+      "landings": 12,
       "cta": 0,
       "uploads": 0,
       "genuine": 0,
@@ -79,19 +79,6 @@
     },
     {
       "source": "organic_compare",
-      "landings": 2,
-      "cta": 0,
-      "uploads": 0,
-      "genuine": 0,
-      "shareIntent": 0,
-      "shareOpens": 0,
-      "checkouts": 0,
-      "landingToCta": 0,
-      "ctaToUpload": null,
-      "landingToGenuine": 0
-    },
-    {
-      "source": "organic_price",
       "landings": 2,
       "cta": 0,
       "uploads": 0,
@@ -130,32 +117,6 @@
       "landingToGenuine": 0
     },
     {
-      "source": "organic_checklist",
-      "landings": 1,
-      "cta": 0,
-      "uploads": 0,
-      "genuine": 0,
-      "shareIntent": 0,
-      "shareOpens": 0,
-      "checkouts": 0,
-      "landingToCta": 0,
-      "ctaToUpload": null,
-      "landingToGenuine": 0
-    },
-    {
-      "source": "organic_radiators",
-      "landings": 1,
-      "cta": 0,
-      "uploads": 0,
-      "genuine": 0,
-      "shareIntent": 0,
-      "shareOpens": 0,
-      "checkouts": 0,
-      "landingToCta": 0,
-      "ctaToUpload": null,
-      "landingToGenuine": 0
-    },
-    {
       "source": "shared_case",
       "landings": 0,
       "cta": 0,
@@ -170,7 +131,7 @@
     }
   ],
   "decision": {
-    "priority": "commercial proposition",
-    "action": "Expose and test the smallest reversible paid Decision Pack proposition after a genuine result; measure explicit checkout intent without treating it as revenue."
+    "priority": "measure",
+    "action": "No new authoritative downstream signal yet. Avoid speculative feature churn; research and prepare next reversible experiment."
   }
 }
