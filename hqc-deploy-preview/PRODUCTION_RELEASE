@@ -1,18 +1,16 @@
-2026-09-11T19:34+01:00
-Promote canary-verified durable HQC validation metrics to production.
+2026-09-11T19:36+01:00
+Promote canary-verified HQC CTA measurement integrity fix to production.
 
 Measurement integrity repair:
-- the legacy AppDeploy metrics endpoint only reports a rolling 500-event window, so older genuine analyses can disappear as traffic accumulates;
-- Cloudflare now maintains cumulative non-test validation counters in a Durable Object and serves /api/metrics and /api/growth-report from that durable store;
-- genuine analyses and shared-case opens are de-duplicated by analysisId;
-- QA/demo/test traffic remains excluded, including HeadlessChrome/Playwright and explicit qa/release/smoke markers;
-- normal production browser traffic is not classified as QA merely because it is a site-owner visit;
-- legacy backend metrics remain available diagnostically with ?legacy=1;
-- no historic counts are invented or backfilled; the durable measurement epoch is explicit via measurementStartedAt.
+- durable production metrics are the authoritative North Star source;
+- remove duplicate checker_cta_clicked emission from the landing-trust enhancement because the upstream application already emits the canonical CTA event with the `src` acquisition source;
+- this prevents future double-counting and conflicting source attribution while leaving the reassurance copy unchanged;
+- the scheduled commercial metrics workflow now reads only durable same-origin production metrics and refuses non-durable data;
+- QA/demo/test traffic remains excluded and no historical events are invented or backfilled.
 
 Canary verification:
-- custom-domain canary #178 passed snapshot, Durable Object migration/binding, Cloudflare deployment, domain/API verification and both mobile quote-intake paths;
+- custom-domain canary #180 passed snapshot, Cloudflare deployment, domain/API verification and both mobile quote-intake paths;
 - no AppDeploy deployment is involved;
 - preserve current custom-domain routing and same-origin /api proxy.
 
-Deploy via the existing guarded hqc-production workflow and verify production before using the new counters for autonomous growth decisions.
+Deploy via the existing guarded hqc-production workflow and verify production before using subsequent CTA ratios for growth decisions.
