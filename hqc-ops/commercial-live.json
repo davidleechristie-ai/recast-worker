@@ -1,5 +1,5 @@
 {
-  "fetchedAt": "2026-09-11T08:33:59Z",
+  "fetchedAt": "2026-09-11T09:27:26Z",
   "northStar": {
     "targetMonthlyRevenueGBP": 500,
     "revenueAvailable": false,
@@ -7,7 +7,7 @@
   },
   "baselineAt": "2026-09-11T08:30:08Z",
   "total": {
-    "landings": 263,
+    "landings": 264,
     "cta": 72,
     "uploads": 16,
     "genuine": 2,
@@ -16,7 +16,7 @@
     "checkouts": 0
   },
   "sinceCommercialBaseline": {
-    "landings": 0,
+    "landings": 1,
     "cta": 0,
     "uploads": 0,
     "genuine": 0,
@@ -27,7 +27,7 @@
   "sources": [
     {
       "source": "direct",
-      "landings": 232,
+      "landings": 233,
       "cta": 66,
       "uploads": 16,
       "genuine": 2,
@@ -196,7 +196,7 @@
     }
   ],
   "decision": {
-    "priority": "measure",
-    "action": "No new authoritative downstream signal yet. Avoid speculative feature churn; research and prepare next reversible experiment."
+    "priority": "landing conversion",
+    "action": "Continue fast-fail message-match/CTA iteration on existing qualified pages; do not add thin SEO pages."
   }
 }
