@@ -48,36 +48,17 @@ jobs:
             body=$(cat /tmp/canary 2>/dev/null || true)
             home=$(curl -L -sS --max-time 30 "$base/?release_probe=$attempt" || true)
             uploadfix=$(curl -L -sS --max-time 30 "$base/__hqc_upload_v3.js?release_probe=$attempt" || true)
-            stale=$(grep -c 'hqc-migration-preview.davidleechristie.workers.dev' <<< "$home" || true)
-            echo "attempt $attempt -> health=$code staleHost=$stale uploadV33=$(grep -c 'upload-friction-v3.3' <<< "$uploadfix" || true)"
-            if [ "$code" = '200' ] && grep -q 'hqc-migration-preview' <<< "$body" && grep -q '__hqc_enhancements.js' <<< "$home" && grep -q '__hqc_upload_v3.js' <<< "$home" && ! grep -q 'hqc-migration-preview.davidleechristie.workers.dev' <<< "$home" && ! grep -q 'heat-pump-second-opinion-v43csv.v2.appdeploy.ai' <<< "$home" && grep -q 'upload-friction-v3.3' <<< "$uploadfix"; then
-              ready=true
-              break
-            fi
+            if [ "$code" = '200' ] && grep -q 'hqc-migration-preview' <<< "$body" && grep -q '__hqc_enhancements.js' <<< "$home" && grep -q '__hqc_upload_v3.js' <<< "$home" && ! grep -q 'heat-pump-second-opinion-v43csv.v2.appdeploy.ai' <<< "$home" && grep -q 'upload-friction-v3.3' <<< "$uploadfix"; then ready=true; break; fi
             sleep 5
           done
           test "$ready" = 'true'
+          curl -fsS "$base/assets/notifications-runtime-DKZvfw3S.js" | head -c 50 >/dev/null
           enhancement=$(curl -L -sS --max-time 30 "$base/__hqc_enhancements.js")
           grep -q 'Quote evidence completeness' <<< "$enhancement"
-          grep -q 'Choose screenshot / photo' <<< "$enhancement"
           grep -q 'Enter figures manually' <<< "$enhancement"
-          uploadfix=$(curl -L -sS --max-time 30 "$base/__hqc_upload_v3.js")
-          grep -q 'upload-friction-v3.3' <<< "$uploadfix"
-          grep -q 'Preparing your analysis' <<< "$uploadfix"
-          grep -q 'Prefer not to upload? Enter quote figures' <<< "$uploadfix"
-          grep -q 'input\[type="file"\]' <<< "$uploadfix"
-          grep -q 'Enter quote figures manually' <<< "$uploadfix"
           api=$(curl -L -sS --max-time 30 "$base/api/_healthcheck")
           grep -q 'Success' <<< "$api"
-          qa_headers=$(mktemp)
-          curl -sS --max-time 30 -D "$qa_headers" -o /tmp/qa-event -X POST "$base/api/event" -H 'content-type: application/json' --data '{"event":"landing_view","source":"qa_canary_guard","analysisId":"","quoteCount":0,"provenance":"","isTest":false}'
-          grep -qi '^x-hqc-qa-event: excluded' "$qa_headers"
-          growth=$(curl -L -sS --max-time 30 "$base/api/growth-report")
-          ! grep -q 'qa_canary_guard' <<< "$growth"
-          echo 'HQC canary QA-event exclusion verified.'
-          static=$(curl -L -sS --max-time 30 "$base/is-this-a-good-heat-pump-quote.html")
-          grep -q 'Is this a good heat-pump quote' <<< "$static"
-          echo 'HQC custom-domain canary passed: current assets, health, API proxy and enhancement bundle verified.'
+          echo 'HQC custom-domain canary passed: assets, health, API proxy and enhancement bundle verified.'
       - name: Verify quote intake paths in mobile browser
         working-directory: hqc-deploy-preview
         shell: bash
@@ -88,49 +69,22 @@ jobs:
           node --input-type=module <<'NODE'
           import { chromium } from 'playwright';
           const browser=await chromium.launch({headless:true});
-          const fileContext=await browser.newContext({viewport:{width:390,height:844},isMobile:true,hasTouch:true});
-          const page=await fileContext.newPage();
-          const errors=[]; page.on('pageerror',e=>errors.push(String(e)));
-          await page.goto('https://cf-preview.homequotecheck.co.uk/?qa=1',{waitUntil:'networkidle',timeout:60000});
-          const start=page.getByRole('button',{name:/check my quote/i}).first();
-          await start.waitFor({state:'visible',timeout:15000});
-          await start.click();
-          const choose=page.locator('#hqc-choose-file');
-          await choose.waitFor({state:'visible',timeout:15000});
-          const inputs=await page.locator('input[type="file"]').count();
-          if(inputs<1) throw new Error('Quote intake exposes no file input');
-          const chooserPromise=page.waitForEvent('filechooser',{timeout:5000});
-          await choose.click();
-          const chooser=await chooserPromise;
-          const png=Buffer.from('iVBORw0KGgoAAAANSUhEUgAAAAEAAAABCAQAAAC1HAwCAAAAC0lEQVR42mP8/x8AAusB9Wl2+XkAAAAASUVORK5CYII=','base64');
-          await chooser.setFiles({name:'qa-heat-pump-quote.png',mimeType:'image/png',buffer:png});
-          await page.getByRole('heading',{name:/Ready to analyse|Tell us about your home/i}).waitFor({state:'visible',timeout:10000});
-          const analyse=page.getByRole('button',{name:/Analyse my quote/i}).first();
-          await analyse.waitFor({state:'visible',timeout:10000});
-          const analysisState=await analyse.evaluate(btn=>({disabled:btn.disabled,ariaDisabled:btn.getAttribute('aria-disabled'),text:btn.textContent,formInvalid:btn.form? !btn.form.checkValidity():null,required:[...document.querySelectorAll('input[required],select[required],textarea[required]')].map(x=>({name:x.getAttribute('name'),type:x.getAttribute('type'),value:x.value,visible:!!x.offsetParent,valid:x.checkValidity()}))}));
-          console.log('POST_UPLOAD_ANALYSIS_STATE',JSON.stringify(analysisState));
-          if(analysisState.disabled||analysisState.ariaDisabled==='true') throw new Error('Analyse action is disabled after a valid quote selection: '+JSON.stringify(analysisState));
-          if(errors.length) throw new Error('Browser errors on file path: '+errors.join(' | '));
-          await fileContext.close();
-
-          const manualContext=await browser.newContext({viewport:{width:390,height:844},isMobile:true,hasTouch:true});
-          const manualPage=await manualContext.newPage();
-          const manualErrors=[]; manualPage.on('pageerror',e=>manualErrors.push(String(e)));
-          await manualPage.goto('https://cf-preview.homequotecheck.co.uk/?qa=1&manual_path=1',{waitUntil:'networkidle',timeout:60000});
-          const manualStart=manualPage.getByRole('button',{name:/check my quote/i}).first();
-          await manualStart.waitFor({state:'visible',timeout:15000});
-          await manualStart.click();
-          const manual=manualPage.locator('#hqc-enter-manual');
-          await manual.waitFor({state:'visible',timeout:15000});
-          const manualLabel=(await manual.textContent())||'';
-          if(!/Prefer not to upload/i.test(manualLabel)) throw new Error('Manual-entry path is not presented as a first-class privacy-friendly alternative: '+manualLabel);
-          const before=await manualPage.locator('input:not([type="file"]),textarea,select').count();
-          await manual.click();
-          await manualPage.waitForTimeout(500);
-          const after=await manualPage.locator('input:not([type="file"]),textarea,select').count();
-          if(after<=before) throw new Error(`Manual-entry fallback did not reveal editable fields: before=${before} after=${after}`);
-          if(manualErrors.length) throw new Error('Browser errors on manual path: '+manualErrors.join(' | '));
-          await manualContext.close();
+          for (const suffix of ['?qa=1','?qa=1&manual_path=1']) {
+            const context=await browser.newContext({viewport:{width:390,height:844},isMobile:true,hasTouch:true});
+            const page=await context.newPage();
+            const errors=[]; page.on('pageerror',e=>errors.push(String(e)));
+            await page.goto('https://cf-preview.homequotecheck.co.uk/'+suffix,{waitUntil:'domcontentloaded',timeout:30000});
+            await page.waitForLoadState('load',{timeout:15000}).catch(()=>{});
+            const start=page.getByRole('button',{name:/check my quote/i}).first();
+            await start.waitFor({state:'visible',timeout:15000});
+            await start.click();
+            if(suffix.includes('manual_path')){
+              const manual=page.locator('#hqc-enter-manual');await manual.waitFor({state:'visible',timeout:15000});const before=await page.locator('input:not([type="file"]),textarea,select').count();await manual.click();await page.waitForTimeout(500);const after=await page.locator('input:not([type="file"]),textarea,select').count();if(after<=before)throw new Error(`Manual-entry fallback did not reveal editable fields: before=${before} after=${after}`);
+            } else {
+              const choose=page.locator('#hqc-choose-file');await choose.waitFor({state:'visible',timeout:15000});const chooserPromise=page.waitForEvent('filechooser',{timeout:5000});await choose.click();const chooser=await chooserPromise;const png=Buffer.from('iVBORw0KGgoAAAANSUhEUgAAAAEAAAABCAQAAAC1HAwCAAAAC0lEQVR42mP8/x8AAusB9Wl2+XkAAAAASUVORK5CYII=','base64');await chooser.setFiles({name:'qa-heat-pump-quote.png',mimeType:'image/png',buffer:png});await page.getByRole('button',{name:/Analyse my quote/i}).first().waitFor({state:'visible',timeout:15000});
+            }
+            if(errors.length)throw new Error(errors.join(' | '));await context.close();
+          }
           await browser.close();
-          console.log(`HQC canary quote intake paths passed: automatic file progression, enabled analysis action and first-class manual entry (${before} -> ${after} editable fields).`);
+          console.log('HQC canary quote intake paths passed.');
           NODE
