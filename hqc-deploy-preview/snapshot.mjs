@@ -6,64 +6,9 @@ const DEFAULT_TARGET='https://hqc-migration-preview.davidleechristie.workers.dev
 const TARGET=(process.env.HQC_PUBLIC_ORIGIN||DEFAULT_TARGET).replace(/\/$/,'');
 const TARGET_HOST=new URL(TARGET).host;
 const SITE='site';
-await rm(SITE,{recursive:true,force:true});
-await mkdir(SITE,{recursive:true});
-const saved=new Set();
-function localPath(ref){
-  if(ref.startsWith(ORIGIN+'/'))return new URL(ref).pathname;
-  if(ref.startsWith(TARGET+'/'))return new URL(ref).pathname;
-  if(ref.startsWith('./'))return '/'+ref.slice(2);
-  if(ref.startsWith('/'))return ref;
-  return null;
-}
-function rewriteOrigins(body){
-  return body
-    .replaceAll('https://homequotecheck.co.uk',TARGET)
-    .replaceAll(API_ORIGIN,TARGET)
-    .replaceAll(ORIGIN,TARGET)
-    .replaceAll(DEFAULT_TARGET,TARGET)
-    .replaceAll('hqc-migration-preview.davidleechristie.workers.dev',TARGET_HOST);
-}
-function cleanHtml(body){
-  return rewriteOrigins(body)
-    .replace(/<script data-appdeploy-overlay-bootstrap>[\s\S]*?<\/script>/g,'')
-    .replace(/<script async src="https:\/\/v2\.appdeploy\.ai\/shared\/js\/overlay\.js"[\s\S]*?<\/script>/g,'')
-    .replace(/<script>window\.__APPDEPLOY_APP_ID[\s\S]*?<\/script>/g,'')
-    .replace(/<script data-appdeploy-network-hook>[\s\S]*?<\/script>/g,'')
-    .replace('</body>','<script src="/__hqc_enhancements.js" defer></script><script src="/__hqc_artwork_fit.js" defer></script><script src="/__hqc_upload_v3.js" defer></script><script src="/__hqc_target_mobile.js" defer></script><script src="/__hqc_desktop_layout.js" defer></script><script src="/__hqc_decision_entry.js" defer></script></body>');
-}
-async function save(path,binary=false){
-  if(saved.has(path))return;
-  saved.add(path);
-  const res=await fetch(ORIGIN+path,{redirect:'follow'});
-  if(!res.ok)throw new Error(`${path} -> ${res.status}`);
-  let body=binary?Buffer.from(await res.arrayBuffer()):await res.text();
-  if(!binary){
-    if(path==='/'||path.endsWith('.html'))body=cleanHtml(body);
-    else body=rewriteOrigins(body);
-    if(path==='/'||path.endsWith('.html')){
-      const refs=[...body.matchAll(/(?:src|href)=["']([^"']+)["']/g)].map(m=>m[1]);
-      for(const ref of refs){
-        const p=localPath(ref);
-        if(!p)continue;
-        if(p.startsWith('/assets/')||p==='/manifest.json'||p==='/sw.js')await save(p,false);
-      }
-    }
-  }
-  const filePath=join(SITE,path==='/'?'index.html':path.replace(/^\//,''));
-  await mkdir(dirname(filePath),{recursive:true});
-  await writeFile(filePath,body);
-  console.log(`snapshotted ${path}`);
-}
-await save('/');
-for(const path of ['/robots.txt','/sitemap.xml','/is-this-a-good-heat-pump-quote.html'])await save(path);
-await mkdir(join(SITE,'resources'),{recursive:true});
-await copyFile('homepage-house-approved.png',join(SITE,'resources/homepage-graphic.png'));
-await copyFile('homepage-house-only.svg',join(SITE,'resources/homepage-house-only.svg'));
-await copyFile('enhancements-browser.js',join(SITE,'__hqc_enhancements.js'));
-await copyFile('artwork-fit.js',join(SITE,'__hqc_artwork_fit.js'));
-await copyFile('upload-friction-v3.js',join(SITE,'__hqc_upload_v3.js'));
-await copyFile('target-mobile-design.js',join(SITE,'__hqc_target_mobile.js'));
-await copyFile('desktop-layout-fix.js',join(SITE,'__hqc_desktop_layout.js'));
-await copyFile('decision-entry.js',join(SITE,'__hqc_decision_entry.js'));
-console.log(`HQC frontend snapshot complete for ${TARGET}: ${saved.size} fetched files + same-origin browser API routing + house-only artwork + enhancements + upload handoff + safe mobile rollback + desktop layout repair + decision-page checker entry`);
+await rm(SITE,{recursive:true,force:true});await mkdir(SITE,{recursive:true});const saved=new Set();
+function localPath(ref){if(ref.startsWith(ORIGIN+'/'))return new URL(ref).pathname;if(ref.startsWith(TARGET+'/'))return new URL(ref).pathname;if(ref.startsWith('./'))return '/'+ref.slice(2);if(ref.startsWith('/'))return ref;return null;}
+function rewriteOrigins(body){return body.replaceAll('https://homequotecheck.co.uk',TARGET).replaceAll(API_ORIGIN,TARGET).replaceAll(ORIGIN,TARGET).replaceAll(DEFAULT_TARGET,TARGET).replaceAll('hqc-migration-preview.davidleechristie.workers.dev',TARGET_HOST);}
+function cleanHtml(body){return rewriteOrigins(body).replace(/<script data-appdeploy-overlay-bootstrap>[\s\S]*?<\/script>/g,'').replace(/<script async src="https:\/\/v2\.appdeploy\.ai\/shared\/js\/overlay\.js"[\s\S]*?<\/script>/g,'').replace(/<script>window\.__APPDEPLOY_APP_ID[\s\S]*?<\/script>/g,'').replace(/<script data-appdeploy-network-hook>[\s\S]*?<\/script>/g,'').replace('</body>','<script src="/__hqc_enhancements.js" defer></script><script src="/__hqc_artwork_fit.js" defer></script><script src="/__hqc_upload_v3.js" defer></script><script src="/__hqc_target_mobile.js" defer></script><script src="/__hqc_desktop_layout.js" defer></script><script src="/__hqc_decision_entry.js" defer></script><script src="/__hqc_approved_layout.js" defer></script></body>');}
+async function save(path,binary=false){if(saved.has(path))return;saved.add(path);const res=await fetch(ORIGIN+path,{redirect:'follow'});if(!res.ok)throw new Error(`${path} -> ${res.status}`);let body=binary?Buffer.from(await res.arrayBuffer()):await res.text();if(!binary){if(path==='/'||path.endsWith('.html'))body=cleanHtml(body);else body=rewriteOrigins(body);if(path==='/'||path.endsWith('.html')){const refs=[...body.matchAll(/(?:src|href)=["']([^"']+)["']/g)].map(m=>m[1]);for(const ref of refs){const p=localPath(ref);if(!p)continue;if(p.startsWith('/assets/')||p==='/manifest.json'||p==='/sw.js')await save(p,false);}}}const filePath=join(SITE,path==='/'?'index.html':path.replace(/^\//,''));await mkdir(dirname(filePath),{recursive:true});await writeFile(filePath,body);console.log(`snapshotted ${path}`);}
+await save('/');for(const path of ['/robots.txt','/sitemap.xml','/is-this-a-good-heat-pump-quote.html'])await save(path);await mkdir(join(SITE,'resources'),{recursive:true});await copyFile('homepage-house-approved.png',join(SITE,'resources/homepage-graphic.png'));await copyFile('homepage-house-only.svg',join(SITE,'resources/homepage-house-only.svg'));await copyFile('enhancements-browser.js',join(SITE,'__hqc_enhancements.js'));await copyFile('artwork-fit.js',join(SITE,'__hqc_artwork_fit.js'));await copyFile('upload-friction-v3.js',join(SITE,'__hqc_upload_v3.js'));await copyFile('target-mobile-design.js',join(SITE,'__hqc_target_mobile.js'));await copyFile('desktop-layout-fix.js',join(SITE,'__hqc_desktop_layout.js'));await copyFile('decision-entry.js',join(SITE,'__hqc_decision_entry.js'));await copyFile('approved-home-layout.js',join(SITE,'__hqc_approved_layout.js'));console.log(`HQC frontend snapshot complete for ${TARGET}: ${saved.size} fetched files + approved balanced homepage layout`);
