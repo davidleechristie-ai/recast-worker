@@ -14,4 +14,17 @@ async function save(path,binary=false){if(saved.has(path))return;saved.add(path)
 await save('/');for(const path of ['/robots.txt','/sitemap.xml','/is-this-a-good-heat-pump-quote.html'])await save(path);
 const compareGuide=(await readFile('compare-heat-pump-quotes.html','utf8')).replaceAll('https://homequotecheck.co.uk',TARGET);await writeFile(join(SITE,'compare-heat-pump-quotes.html'),compareGuide);
 const sitemapPath=join(SITE,'sitemap.xml');let sitemap=await readFile(sitemapPath,'utf8');const guideUrl=`${TARGET}/compare-heat-pump-quotes.html`;if(!sitemap.includes(guideUrl)){sitemap=sitemap.replace('</urlset>',`<url><loc>${guideUrl}</loc><changefreq>monthly</changefreq><priority>0.8</priority></url></urlset>`);await writeFile(sitemapPath,sitemap);}
-await mkdir(join(SITE,'resources'),{recursive:true});await copyFile('homepage-house-approved.png',join(SITE,'resources/homepage-graphic.png'));await copyFile('homepage-house-only.svg',join(SITE,'resources/homepage-house-only.svg'));await copyFile('enhancements-browser.js',join(SITE,'__hqc_enhancements.js'));await copyFile('artwork-fit.js',join(SITE,'__hqc_artwork_fit.js'));await copyFile('upload-friction-v3.js',join(SITE,'__hqc_upload_v3.js'));await copyFile('target-mobile-design.js',join(SITE,'__hqc_target_mobile.js'));await copyFile('desktop-layout-fix.js',join(SITE,'__hqc_desktop_layout.js'));await copyFile('decision-entry.js',join(SITE,'__hqc_decision_entry.js'));await copyFile('approved-home-layout.js',join(SITE,'__hqc_approved_layout.js'));await copyFile('decision-pack.js',join(SITE,'__hqc_decision_pack.js'));console.log(`HQC frontend snapshot complete for ${TARGET}: ${saved.size} fetched files + Decision Pack checkout + comparison guide`);
+await mkdir(join(SITE,'resources'),{recursive:true});
+await copyFile('homepage-house-approved.png',join(SITE,'resources/homepage-graphic.png'));
+await copyFile('homepage-house-only.svg',join(SITE,'resources/homepage-house-only.svg'));
+await copyFile('node_modules/pdfjs-dist/build/pdf.mjs',join(SITE,'resources/pdf.mjs'));
+await copyFile('node_modules/pdfjs-dist/build/pdf.worker.mjs',join(SITE,'resources/pdf.worker.mjs'));
+await copyFile('enhancements-browser.js',join(SITE,'__hqc_enhancements.js'));
+await copyFile('artwork-fit.js',join(SITE,'__hqc_artwork_fit.js'));
+await copyFile('upload-friction-v3.js',join(SITE,'__hqc_upload_v3.js'));
+await copyFile('target-mobile-design.js',join(SITE,'__hqc_target_mobile.js'));
+await copyFile('desktop-layout-fix.js',join(SITE,'__hqc_desktop_layout.js'));
+await copyFile('decision-entry.js',join(SITE,'__hqc_decision_entry.js'));
+await copyFile('approved-home-layout.js',join(SITE,'__hqc_approved_layout.js'));
+await copyFile('decision-pack.js',join(SITE,'__hqc_decision_pack.js'));
+console.log(`HQC frontend snapshot complete for ${TARGET}: ${saved.size} fetched files + Decision Pack checkout + comparison guide + local PDF rendering`);
