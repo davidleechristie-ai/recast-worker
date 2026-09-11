@@ -1,16 +1,22 @@
-2026-09-11T15:34+01:00
-Promote decision-page source attribution fix after successful custom-domain canary.
+2026-09-11T16:58+01:00
+Promote the canary-verified HQC consumer UX, paid boundary and runtime fixes to production.
 
-Hypothesis:
-- the earliest measured bottleneck is landing/search-source -> checker start;
-- decision-page CTA handoffs were losing their acquisition source and being misclassified as direct;
-- preserving the source through hqc_start makes organic cohort conversion measurable and removes a redundant attribution blind spot without changing the product or evidence logic.
+Verified canary:
+- workflow run 34618624661 completed successfully;
+- transitive runtime asset notifications-runtime-DKZvfw3S.js is included and served as JavaScript;
+- mobile quote intake browser checks pass;
+- current enhancement bundle and API proxy pass canary verification.
 
-Change:
-- retain explicit source/utm_source where present;
-- derive stable cohorts for the good-quote and comparison decision pages;
-- add source to the fixed decision-page CTA;
-- preserve source when deep-linking same-origin CTAs into quote intake.
+Production changes included:
+- clearer consumer results hierarchy with one primary next action;
+- remove unexplained unresolved-evidence counts and duplicate instructions;
+- larger, clearer results typography;
+- Quote Facts heading and plain-English verification wording;
+- free product limited to one quote;
+- multi-quote comparison gated behind the £19 Decision Pack;
+- personalised paid Decision Pack retained;
+- browser PDF preparation support and bundled PDF.js resources;
+- transitive runtime JavaScript assets snapshotted so module requests do not fall through to SPA HTML.
 
-Canary commit: 4d70e4714c41e1a1f5da1a68cdf055864afff7d0
-Canary workflow: 34610670021 (passed snapshot, custom-domain deployment, API/assets verification and mobile upload/manual-entry browser tests).
+Canary commit: 26b43ee65d8192de9923f24dbbca4a63fd2f27c5
+Canary workflow: 34618624661 (passed).
