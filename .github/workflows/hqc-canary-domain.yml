@@ -52,7 +52,8 @@ jobs:
             sleep 5
           done
           test "$ready" = 'true'
-          curl -fsS "$base/assets/notifications-runtime-DKZvfw3S.js" | head -c 50 >/dev/null
+          curl -fsS -o /tmp/notifications-runtime.js "$base/assets/notifications-runtime-DKZvfw3S.js"
+          test -s /tmp/notifications-runtime.js
           enhancement=$(curl -L -sS --max-time 30 "$base/__hqc_enhancements.js")
           grep -q 'Quote evidence completeness' <<< "$enhancement"
           grep -q 'Enter figures manually' <<< "$enhancement"
