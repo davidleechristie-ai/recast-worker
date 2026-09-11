@@ -1,21 +1,26 @@
-2026-09-11T21:34+01:00
-Promote canary-verified checker-start instrumentation correction to production.
+2026-09-12T00:33+01:00
+Promote canary-verified decision-page acquisition attribution and checker autostart correction to production.
 
 Measured hypothesis:
-- durable funnel shows 8 genuine landings, 0 recorded checker starts, 1 upload and 1 genuine analysis;
-- inspection found the landing-page header "Get started" button changes React state but does not emit checker_cta_clicked, while the hero CTA already does;
-- this creates an impossible-looking landing -> CTA -> upload sequence and understates genuine checker starts for users who enter through the header.
+- durable funnel still shows 8 genuine landings, 0 recorded checker starts, 1 upload and 1 genuine analysis;
+- the existing decision-page handoff used the non-canonical `source` query key while the upstream app records acquisition from `src`;
+- the homepage autostart could select the header `Get started` button before its supplemental telemetry listener was attached, producing upload/analysis with no recorded checker start;
+- the GitHub-controlled compare guide also sent CTA traffic to the homepage with `source=` and without checker autostart, adding avoidable friction and misclassifying qualified content traffic as direct.
 
 Change:
-- instrument only the otherwise-untracked header "Get started" route;
-- preserve canonical src attribution and same-origin /api/event delivery;
-- do not add another tracker to the hero CTA, avoiding double counting;
-- QA/demo/headless traffic remains excluded centrally;
-- no personal data is added and no product/evidence claims change.
+- use canonical `src` throughout decision-page handoffs;
+- prefer the already-instrumented hero CTA for hqc_start autostart;
+- deep-link both compare-guide CTAs directly into quote intake using hqc_start=1 and distinct organic_compare_static source cohorts;
+- preserve all independence/evidence guardrails and collect no additional personal data;
+- QA/demo/headless traffic remains excluded centrally.
+
+Research context:
+- current UK search results for heat-pump quote comparison/checklist intent continue to emphasise room-by-room heat loss, flow temperature, emitter scope and written evidence, supporting the existing evidence-first positioning;
+- no new acquisition page is added in this release because the clean sample remains too small to justify SEO content expansion.
 
 Canary verification:
-- custom-domain canary #186 passed snapshot, Cloudflare deployment, domain/API verification and both mobile quote-intake paths;
+- custom-domain canary #189 passed snapshot, Cloudflare deployment, domain/API verification and both mobile quote-intake paths;
 - no AppDeploy deployment is involved;
 - preserve current custom-domain routing and same-origin /api proxy.
 
-Deploy via the existing guarded hqc-production workflow, then allow durable metrics to measure genuine traffic with the corrected entry-stage instrumentation.
+Deploy via the existing guarded hqc-production workflow, then allow durable metrics to measure the corrected decision-page -> checker-start cohort.
