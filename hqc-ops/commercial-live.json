@@ -1,5 +1,5 @@
 {
-  "fetchedAt": "2026-09-11T18:30:35Z",
+  "fetchedAt": "2026-09-11T19:25:03Z",
   "northStar": {
     "targetMonthlyRevenueGBP": 500,
     "revenueAvailable": false,
@@ -7,7 +7,7 @@
   },
   "baselineAt": "2026-09-11T08:30:08Z",
   "total": {
-    "landings": 349,
+    "landings": 342,
     "cta": 16,
     "uploads": 5,
     "genuine": 0,
@@ -16,7 +16,7 @@
     "checkouts": 0
   },
   "sinceCommercialBaseline": {
-    "landings": 86,
+    "landings": 79,
     "cta": -56,
     "uploads": -11,
     "genuine": -2,
@@ -27,7 +27,7 @@
   "sources": [
     {
       "source": "direct",
-      "landings": 296,
+      "landings": 292,
       "cta": 14,
       "uploads": 5,
       "genuine": 0,
@@ -53,7 +53,7 @@
     },
     {
       "source": "organic_goodquote_static_compare",
-      "landings": 15,
+      "landings": 14,
       "cta": 0,
       "uploads": 0,
       "genuine": 0,
@@ -66,7 +66,7 @@
     },
     {
       "source": "organic_goodquote_static_bottom",
-      "landings": 13,
+      "landings": 11,
       "cta": 0,
       "uploads": 0,
       "genuine": 0,
