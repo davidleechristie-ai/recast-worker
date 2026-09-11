@@ -1,16 +1,16 @@
-2026-09-11T17:49+01:00
-Promote canary-verified HQC website repair and growth telemetry correction to production.
+2026-09-11T18:36+01:00
+Promote canary-verified HQC growth-telemetry integrity repair to production.
 
-Website repair verified:
-- production stylesheet returns 200 text/css and snapshot guards prevent missing/HTML-fallback CSS from deploying;
-- PDF upload compatibility is restored for Chromium browsers via Map upsert compatibility helpers loaded before PDF.js rendering;
-- production deploy #74 succeeded;
-- post-deploy site consistency run #45 passed all 18 HTML pages on mobile and desktop, required runtime MIME checks, responsive layout checks and live PDF-to-WebP conversion.
+Measurement repair:
+- production growth metrics currently operate over a 500-event backend window and were being polluted by automated headless browser audits;
+- Cloudflare now forces HeadlessChrome/Playwright event traffic to isTest=true, in addition to explicit qa/release/smoke markers;
+- normal production browser traffic is not classified as QA merely because it is a site-owner visit;
+- genuine-analysis telemetry now has an idempotent reconciliation layer that re-emits analysis_qualified_real_quote from the saved real Decision Case using the same analysisId, so duplicate delivery cannot inflate the Set-based genuine metric but missed delivery can be repaired on results/page restore;
+- demo cases and non-real manual cases remain excluded.
 
-Growth telemetry correction:
-- diagnostic confirmed supported landing_view events return 200 and are recorded;
-- landing_variant_exposed is not supported by the existing metrics event vocabulary and returned 400;
-- remove the unsupported exposure event while preserving variant attribution on the supported checker_cta_clicked conversion event;
-- canary #169 passed snapshot, custom-domain verification and mobile quote-intake smoke tests.
+Verification:
+- custom-domain canary #174 completed successfully through snapshot, Cloudflare deployment, domain/API verification and mobile quote-intake smoke tests;
+- no AppDeploy deployment is involved;
+- preserve current custom-domain routing and same-origin /api proxy.
 
-Deploy via the existing hqc-production guarded workflow and preserve the post-deploy site-consistency audit.
+Deploy via the existing guarded hqc-production workflow, then run the normal post-deploy site consistency audit.
