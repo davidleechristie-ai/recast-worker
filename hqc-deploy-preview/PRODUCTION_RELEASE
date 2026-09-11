@@ -1,12 +1,16 @@
-2026-09-11T13:56+01:00
-Promote the runtime asset/service-worker snapshot fix after the canary passed.
+2026-09-11T14:03+01:00
+Promote the approved action-led results layout fix.
 
-This release keeps the personalised £19 Decision Pack and resilient quote intake, and additionally ensures runtime JavaScript dependencies and /sw.js are deployed as real JavaScript assets rather than falling through to the SPA HTML response.
+This release keeps the personalised £19 Decision Pack, resilient quote intake and runtime asset/service-worker fixes, and corrects the Decision Case layout shown in production:
+- remove the empty third-column space left after Evidence status was hidden;
+- render What to do next and Questions to ask installers as a balanced two-column decision row on desktop and stacked cards on mobile;
+- fix the Do this action text that was collapsing into a one-word-wide implicit grid column;
+- present Do this actions as readable highlighted action boxes beneath each issue;
+- expand the primary send-questions action to match the approved design.
 
 Free remains genuinely useful: multiple quote upload and comparison, extracted facts, material differences, evidence gaps and core next steps remain outside the paywall.
+Paid remains the personalised decision layer after verified Stripe payment.
 
-Paid remains the personalised decision layer: detailed quote-by-quote analysis, installer-specific actions/questions, commercial scope cautions, explicit decision conditions and a printable Decision Pack after verified Stripe payment.
-
-Canary-verified runtime asset commit: 09e8663f29fe21f4c8c7112e61e5bc8095d35e1b
-Resilient intake commit: 5894508beea06157a15246d99686d63e1f605b28
-Paid product commit: ee40d8424b6270f85f3e0f19beb5bffa647eeff5
+Approved results layout script commit: 6c4a8526186193e5f4d11e89388b384cb84cb52a
+Snapshot injection commit: addbd41cc1b78e4e095448c32b6fde42fbdc16c3
+Runtime asset commit: 09e8663f29fe21f4c8c7112e61e5bc8095d35e1b
