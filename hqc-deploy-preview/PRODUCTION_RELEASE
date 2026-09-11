@@ -1,22 +1,20 @@
-2026-09-11T16:58+01:00
-Promote the canary-verified HQC consumer UX, paid boundary and runtime fixes to production.
+2026-09-11T17:08+01:00
+Re-run production verification after replacing the false network-idle browser gate with deterministic DOM/load checks.
 
-Verified canary:
-- workflow run 34618624661 completed successfully;
-- transitive runtime asset notifications-runtime-DKZvfw3S.js is included and served as JavaScript;
-- mobile quote intake browser checks pass;
-- current enhancement bundle and API proxy pass canary verification.
+The previous production run successfully:
+- snapshotted the corrected frontend and transitive runtime modules;
+- deployed the hqc-production Worker to homequotecheck.co.uk;
+- uploaded notifications-runtime-DKZvfw3S.js as a real static JavaScript asset;
+- passed production HTTP/API verification.
 
-Production changes included:
-- clearer consumer results hierarchy with one primary next action;
-- remove unexplained unresolved-evidence counts and duplicate instructions;
-- larger, clearer results typography;
-- Quote Facts heading and plain-English verification wording;
-- free product limited to one quote;
-- multi-quote comparison gated behind the £19 Decision Pack;
-- personalised paid Decision Pack retained;
-- browser PDF preparation support and bundled PDF.js resources;
-- transitive runtime JavaScript assets snapshotted so module requests do not fall through to SPA HTML.
+Its only failure was the final Playwright smoke test waiting for networkidle while the application intentionally maintains background traffic.
 
-Canary commit: 26b43ee65d8192de9923f24dbbca4a63fd2f27c5
-Canary workflow: 34618624661 (passed).
+This run also strengthens release verification for:
+- consumer-readable results layout;
+- Quote Facts wording;
+- £19 paid multi-quote comparison gate;
+- personalised Decision Pack asset;
+- PDF.js runtime resources;
+- JavaScript MIME types for transitive runtime modules.
+
+Production workflow fix: 02103120aa1af4bea35c7d33d3c9d9e7cd68e635
