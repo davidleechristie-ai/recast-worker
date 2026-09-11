@@ -1,7 +1,8 @@
 {
-  "fetchedAt": "2026-09-11T18:31:11.919367Z",
+  "fetchedAt": "2026-09-11T18:34:59.535349Z",
   "growthReport": {
-    "generatedAt": "2026-09-11T18:31:11.883Z",
+    "durable": true,
+    "generatedAt": "2026-09-11T18:34:59.498Z",
     "loop": [
       "Acquire qualified homeowners",
       "Measure source funnels",
@@ -9,135 +10,25 @@
       "Deploy one justified improvement",
       "Verify against genuine analyses, shares and anonymous outbound intent"
     ],
-    "recommendations": [
-      "Landing-to-CTA is weak: improve message match, trust proof and CTA prominence before adding more traffic.",
-      "No qualified organic cohort yet: keep expanding long-tail decision pages and internal links, then measure genuine analyses rather than clicks."
-    ],
-    "sources": [
-      {
-        "checkouts": 0,
-        "cta": 14,
-        "ctaToUpload": 36,
-        "genuine": 0,
-        "landingToCta": 5,
-        "landingToGenuine": 0,
-        "landings": 296,
-        "shareIntent": 2,
-        "shareOpens": 0,
-        "source": "direct",
-        "uploads": 5
-      },
-      {
-        "checkouts": 0,
-        "cta": 0,
-        "ctaToUpload": null,
-        "genuine": 0,
-        "landingToCta": 0,
-        "landingToGenuine": 0,
-        "landings": 21,
-        "shareIntent": 0,
-        "shareOpens": 0,
-        "source": "organic_goodquote_static",
-        "uploads": 0
-      },
-      {
-        "checkouts": 0,
-        "cta": 0,
-        "ctaToUpload": null,
-        "genuine": 0,
-        "landingToCta": 0,
-        "landingToGenuine": 0,
-        "landings": 15,
-        "shareIntent": 0,
-        "shareOpens": 0,
-        "source": "organic_goodquote_static_compare",
-        "uploads": 0
-      },
-      {
-        "checkouts": 0,
-        "cta": 0,
-        "ctaToUpload": null,
-        "genuine": 0,
-        "landingToCta": 0,
-        "landingToGenuine": 0,
-        "landings": 13,
-        "shareIntent": 0,
-        "shareOpens": 0,
-        "source": "organic_goodquote_static_bottom",
-        "uploads": 0
-      },
-      {
-        "checkouts": 0,
-        "cta": 0,
-        "ctaToUpload": null,
-        "genuine": 0,
-        "landingToCta": 0,
-        "landingToGenuine": 0,
-        "landings": 2,
-        "shareIntent": 0,
-        "shareOpens": 0,
-        "source": "organic_compare",
-        "uploads": 0
-      },
-      {
-        "checkouts": 0,
-        "cta": 1,
-        "ctaToUpload": 0,
-        "genuine": 0,
-        "landingToCta": 100,
-        "landingToGenuine": 0,
-        "landings": 1,
-        "shareIntent": 0,
-        "shareOpens": 0,
-        "source": "organic_flowtemp",
-        "uploads": 0
-      },
-      {
-        "checkouts": 0,
-        "cta": 1,
-        "ctaToUpload": 0,
-        "genuine": 0,
-        "landingToCta": 100,
-        "landingToGenuine": 0,
-        "landings": 1,
-        "shareIntent": 0,
-        "shareOpens": 0,
-        "source": "organic_goodquote",
-        "uploads": 0
-      },
-      {
-        "checkouts": 0,
-        "cta": 0,
-        "ctaToUpload": null,
-        "genuine": 0,
-        "landingToCta": null,
-        "landingToGenuine": null,
-        "landings": 0,
-        "shareIntent": 0,
-        "shareOpens": 0,
-        "source": "shared_case",
-        "uploads": 0
-      }
-    ],
+    "measurementStartedAt": "2026-09-11T18:33:07.244Z",
+    "recommendations": [],
+    "sources": [],
     "total": {
       "checkouts": 0,
-      "cta": 16,
+      "cta": 0,
       "genuine": 0,
-      "landings": 349,
-      "shareIntent": 2,
+      "landings": 0,
+      "outboundClicks": 0,
+      "shareIntent": 0,
       "shareOpens": 0,
-      "uploads": 5
+      "uploads": 0
     }
   },
   "metrics": {
-    "evidence": {
-      "mcs": "Authoritative deterministic quote-reference lookup not enabled",
-      "ofgemPel": {
-        "lastUpdated": "2026-07-23",
-        "scope": "Administrative product-list context only; not overall BUS eligibility; SCOP not assessed"
-      }
-    },
+    "durable": true,
     "genuineAnalyses": 0,
+    "measurementStartedAt": "2026-09-11T18:33:07.244Z",
+    "note": "Cumulative Cloudflare-side counters from measurementStartedAt; QA/demo/test events are excluded.",
     "outboundClicks": 0,
     "shareOpens": 0,
     "targets": {
