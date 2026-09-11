@@ -1,19 +1,16 @@
-2026-09-11T14:57+01:00
-Promote revised free/paid product boundary.
+2026-09-11T15:34+01:00
+Promote decision-page source attribution fix after successful custom-domain canary.
 
-Free:
-- analyse one quote;
-- extract key facts;
-- provide a simple readiness position and limited high-level concerns.
+Hypothesis:
+- the earliest measured bottleneck is landing/search-source -> checker start;
+- decision-page CTA handoffs were losing their acquisition source and being misclassified as direct;
+- preserving the source through hqc_start makes organic cohort conversion measurable and removes a redundant attribution blind spot without changing the product or evidence logic.
 
-£19 Decision Pack:
-- add and compare multiple competing quotes;
-- quote-by-quote personalised analysis;
-- which proposal appears strongest and why;
-- installer-specific questions and decision conditions;
-- printable Decision Pack.
+Change:
+- retain explicit source/utm_source where present;
+- derive stable cohorts for the good-quote and comparison decision pages;
+- add source to the fixed decision-page CTA;
+- preserve source when deep-linking same-origin CTAs into quote intake.
 
-Multi-quote comparison is now explicitly a paid case capability, not part of the free product. A customer pays once for the decision rather than per quote. Existing verified paid cases remain unlocked.
-
-Comparison gate commit: a4aa933c64af6be1c65f03990ad647c81085dd9d
-Snapshot injection commit: 4c61f5ed04507b24b039877cbe2cf01d5e72311f
+Canary commit: 4d70e4714c41e1a1f5da1a68cdf055864afff7d0
+Canary workflow: 34610670021 (passed snapshot, custom-domain deployment, API/assets verification and mobile upload/manual-entry browser tests).
