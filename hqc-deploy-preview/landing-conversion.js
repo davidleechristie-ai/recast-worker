@@ -1,9 +1,5 @@
 (()=>{
   const VARIANT='landing-trust-v1';
-  const EVENT_ENDPOINT='/api/event';
-  const isQa=/[?&](?:qa|release_probe|upload_handoff_smoke)=/i.test(location.search);
-  const source=()=>new URLSearchParams(location.search).get('source')||'homepage';
-  const emit=(name,extra={})=>{try{fetch(EVENT_ENDPOINT,{method:'POST',headers:{'content-type':'application/json'},body:JSON.stringify({event:name,source:source(),variant:VARIANT,isTest:isQa,...extra}),keepalive:true});}catch{}};
   const apply=()=>{
     const copy=document.querySelector('.copy');
     if(!copy)return;
@@ -18,9 +14,9 @@
       reassurance.style.cssText='margin:0 0 12px;max-width:520px;font-size:13px;line-height:1.45;color:#42566f';
       btn.insertAdjacentElement('beforebegin',reassurance);
     }
-    // The metrics API has a fixed event vocabulary. Keep variant attribution on the
-    // supported CTA event instead of emitting a separate unsupported exposure event.
-    btn.addEventListener('click',()=>emit('checker_cta_clicked',{placement:'homepage_hero'}),{once:true});
+    // The upstream application already emits checker_cta_clicked with the canonical
+    // `src` acquisition source. Do not attach another click tracker here: doing so
+    // would double-count starts and could attribute the duplicate to a different source.
   };
   new MutationObserver(apply).observe(document.documentElement,{childList:true,subtree:true});
   apply();
