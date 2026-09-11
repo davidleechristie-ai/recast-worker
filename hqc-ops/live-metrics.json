@@ -1,33 +1,107 @@
 {
-  "fetchedAt": "2026-09-11T18:33:40Z",
+  "fetchedAt": "2026-09-11T20:39:24Z",
   "metrics": {
-    "genuineAnalyses": 0,
+    "genuineAnalyses": 1,
     "shareOpens": 0,
     "outboundClicks": 0,
     "measurementStartedAt": "2026-09-11T18:33:07.244Z",
+    "extendedMeasurementStartedAt": "2026-09-11T20:34:24.536Z",
     "durable": true,
     "targets": {
       "genuineAnalyses": 100,
       "shareOpens": 20,
       "outboundClicks": 10
     },
-    "note": "Cumulative Cloudflare-side counters from measurementStartedAt; QA/demo/test events are excluded."
+    "note": "Cumulative Cloudflare-side counters from measurementStartedAt; QA/demo/test events are excluded. Extended funnel counters use their own same-epoch denominator from extendedMeasurementStartedAt."
   },
   "growthReport": {
-    "generatedAt": "2026-09-11T18:33:40.798Z",
+    "generatedAt": "2026-09-11T20:39:24.726Z",
     "measurementStartedAt": "2026-09-11T18:33:07.244Z",
+    "extendedMeasurementStartedAt": "2026-09-11T20:34:24.536Z",
     "durable": true,
     "total": {
-      "landings": 0,
+      "landings": 8,
       "cta": 0,
-      "uploads": 0,
-      "genuine": 0,
+      "uploads": 1,
+      "genuine": 1,
+      "extendedGenuine": 0,
+      "multiQuoteAnalyses": 0,
+      "decisionCases": 0,
+      "installerQuestions": 0,
       "shareIntent": 0,
       "shareOpens": 0,
+      "recipientStarts": 0,
       "outboundClicks": 0,
       "checkouts": 0
     },
-    "sources": [],
+    "rates": {
+      "landingToCta": 0,
+      "ctaToUpload": null,
+      "uploadToGenuine": 100,
+      "extendedGenuineToMultiQuote": null,
+      "extendedGenuineToDecisionCase": null,
+      "decisionCaseToShareIntent": null,
+      "shareOpenToRecipientStart": null
+    },
+    "sources": [
+      {
+        "landings": 6,
+        "cta": 0,
+        "uploads": 1,
+        "genuine": 1,
+        "extendedGenuine": 0,
+        "multiQuoteAnalyses": 0,
+        "decisionCases": 0,
+        "installerQuestions": 0,
+        "shareIntent": 0,
+        "shareOpens": 0,
+        "recipientStarts": 0,
+        "outboundClicks": 0,
+        "checkouts": 0,
+        "source": "direct",
+        "landingToCta": 0,
+        "ctaToUpload": null,
+        "landingToGenuine": 17
+      },
+      {
+        "landings": 1,
+        "cta": 0,
+        "uploads": 0,
+        "genuine": 0,
+        "extendedGenuine": 0,
+        "multiQuoteAnalyses": 0,
+        "decisionCases": 0,
+        "installerQuestions": 0,
+        "shareIntent": 0,
+        "shareOpens": 0,
+        "recipientStarts": 0,
+        "outboundClicks": 0,
+        "checkouts": 0,
+        "source": "organic_checklist",
+        "landingToCta": 0,
+        "ctaToUpload": null,
+        "landingToGenuine": 0
+      },
+      {
+        "landings": 1,
+        "cta": 0,
+        "uploads": 0,
+        "genuine": 0,
+        "extendedGenuine": 0,
+        "multiQuoteAnalyses": 0,
+        "decisionCases": 0,
+        "installerQuestions": 0,
+        "shareIntent": 0,
+        "shareOpens": 0,
+        "recipientStarts": 0,
+        "outboundClicks": 0,
+        "checkouts": 0,
+        "source": "professional",
+        "landingToCta": 0,
+        "ctaToUpload": null,
+        "landingToGenuine": 0
+      }
+    ],
     "recommendations": [],
     "loop": [
       "Acquire qualified homeowners",
@@ -40,6 +114,6 @@
   "autonomousDecisionGate": {
     "status": "HOLD",
     "bottleneck": "insufficient clean durable sample",
-    "action": "Do not churn production. Continue measurement until durable downstream events identify the next actionable bottleneck."
+    "action": "Do not churn production. Continue measurement until the earliest adequately sampled funnel stage identifies a justified change."
   }
 }
