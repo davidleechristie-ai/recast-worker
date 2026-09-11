@@ -22,11 +22,12 @@ jobs:
         run: |
           npm install --no-save playwright@1.55.0
           npx playwright install --with-deps chromium
-      - name: Diagnose production PDF conversion
+      - name: Verify canary PDF conversion
         shell: bash
         run: |
           node --input-type=module <<'NODE'
           import { chromium } from 'playwright';
+          const target='https://cf-preview.homequotecheck.co.uk';
           const browser=await chromium.launch({headless:true});
           const page=await browser.newPage({viewport:{width:390,height:844},isMobile:true,hasTouch:true});
           const consoleLines=[],pageErrors=[],responses=[];
@@ -37,19 +38,9 @@ jobs:
           await make.setContent('<h1>Eco Stream Heat Pump Quote</h1><p>Total £12,450</p><p>8kW heat pump</p><p>Design flow temperature 45 C</p>');
           const pdf=await make.pdf({format:'A4'});await make.close();
           console.log('PDF_BYTES',pdf.length);
-          await page.goto('https://homequotecheck.co.uk/?qa=1&pdf_diagnostic=1',{waitUntil:'domcontentloaded',timeout:30000});
+          await page.goto(`${target}/?qa=1&pdf_canary=1`,{waitUntil:'domcontentloaded',timeout:30000});
           await page.waitForLoadState('load',{timeout:15000}).catch(()=>{});
-          const direct=await page.evaluate(async bytes=>{
-            try{
-              const mod=await import('/resources/pdf.mjs');
-              mod.GlobalWorkerOptions.workerSrc='/resources/pdf.worker.mjs';
-              const doc=await mod.getDocument({data:new Uint8Array(bytes)}).promise;
-              const p=await doc.getPage(1);
-              const viewport=p.getViewport({scale:1});
-              return {ok:true,numPages:doc.numPages,width:viewport.width,height:viewport.height};
-            }catch(e){return {ok:false,error:String(e),stack:e?.stack||''};}
-          },[...pdf]);
-          console.log('DIRECT_PDFJS',JSON.stringify(direct));
+          console.log('COMPAT',await page.evaluate(()=>({computed:typeof Map.prototype.getOrInsertComputed,insert:typeof Map.prototype.getOrInsert})));
           const start=page.getByRole('button',{name:/check my quote/i}).first();
           await start.waitFor({state:'visible',timeout:15000});
           await start.click();
@@ -57,26 +48,27 @@ jobs:
           await input.waitFor({state:'attached',timeout:15000});
           await page.evaluate(()=>{
             window.__hqcPdfObserved=[];
-            window.__hqcInputStates=[];
             document.addEventListener('change',ev=>{
               const el=ev.target;
-              if(el instanceof HTMLInputElement&&el.type==='file'){
-                window.__hqcPdfObserved.push({connected:el.isConnected,name:el.files?.[0]?.name||'',type:el.files?.[0]?.type||'',dataset:{...el.dataset}});
-              }
+              if(el instanceof HTMLInputElement&&el.type==='file') window.__hqcPdfObserved.push({connected:el.isConnected,name:el.files?.[0]?.name||'',type:el.files?.[0]?.type||'',dataset:{...el.dataset}});
             },true);
           });
           await input.setInputFiles({name:'eco-stream-quote.pdf',mimeType:'application/pdf',buffer:pdf});
-          for(let i=0;i<15;i++){
+          let converted=false;
+          for(let i=0;i<20;i++){
             await page.waitForTimeout(1000);
             const state=await page.evaluate(()=>{
               const inputs=[...document.querySelectorAll('input[type="file"]')].map(el=>({connected:el.isConnected,name:el.files?.[0]?.name||'',type:el.files?.[0]?.type||'',dataset:{...el.dataset}}));
-              return {observed:window.__hqcPdfObserved||[],inputs,status:document.querySelector('#hqc-upload-v3-status')?.textContent||'',body:(document.body?.innerText||'').slice(0,2000)};
+              return {observed:window.__hqcPdfObserved||[],inputs,status:document.querySelector('#hqc-upload-v3-status')?.textContent||''};
             });
             console.log('PDF_TICK',i+1,JSON.stringify(state));
-            if(state.observed.some(x=>x.type==='image/webp')||state.inputs.some(x=>x.type==='image/webp')) break;
+            converted=state.observed.some(x=>x.type==='image/webp')||state.inputs.some(x=>x.type==='image/webp');
+            if(converted) break;
           }
           console.log('FINAL_CONSOLE',JSON.stringify(consoleLines));
           console.log('FINAL_PAGE_ERRORS',JSON.stringify(pageErrors));
           console.log('FINAL_PDF_RESPONSES',JSON.stringify(responses));
           await browser.close();
+          if(!converted) throw new Error('Canary PDF did not convert to WebP');
+          console.log('HQC_CANARY_PDF_TO_WEBP_OK');
           NODE
