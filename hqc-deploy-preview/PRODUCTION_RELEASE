@@ -1,13 +1,11 @@
-2026-09-11T11:02+01:00
-Promote the £19 Home Quote Check Decision Pack payment flow to production.
+2026-09-11T11:49+01:00
+Promote the safe compact-mobile Home Quote Check restoration to production.
 
-The implementation uses the existing live Stripe product price price_1UER4fCnmTy7aZ0Hp1zMfDYT and the STRIPE_SECRET_KEY stored as a Cloudflare Worker secret. Checkout is Stripe-hosted, one-off only, and associated to an opaque HQC case reference. Uploaded quote contents are not sent to Stripe.
+This release restores the compact mobile hero after the previous DOM-rewrite implementation was rolled back for a blank-screen regression. The replacement is deliberately style-only: it does not destructively replace the application DOM, keeps the existing Home Quote Check app and upload flow intact, and reduces mobile hero height while retaining the approved house-only artwork, independence messaging and the primary “Check my quote — free” action.
 
-Payment unlock is not trusted from the return URL: the Cloudflare Worker retrieves the Checkout Session from Stripe server-side and verifies payment status plus matching case/product metadata before the Decision Pack is marked paid. QA/non-production checkout is blocked and existing QA event exclusion remains in place.
+Mobile presentation now uses a single-column hero, a 1.94:1 artwork area capped at 250px, and hides the non-essential hero steps overlay on narrow screens so the quote-check action appears earlier without removing product or trust content.
 
-Paid Decision Pack actions currently expose second-quote progression, installer clarification questions and a printable Decision Case while retaining evidence guardrails: no design certification, installer approval or grant-eligibility confirmation.
+Product commit: c7b765f32a856c555aa6e8e631cb9451828b3286
+Canary: HQC custom-domain canary run 34590877192 passed successfully, including snapshot build, Cloudflare custom-domain deployment, API proxy checks, QA-event exclusion, automatic file-upload progression, enabled analysis action and manual-entry fallback in a mobile Chromium browser.
 
-A render-loop defect detected during canary verification was fixed before release by making Decision Pack rendering state-keyed and idempotent.
-
-Product commits: 06af542db23361720003a2fa91541b336b916324 and b7c46204ccd4b830e39bb5ceb4a1dd48a6d7b353
-Canary: HQC custom-domain canary run 34586970993 passed successfully, including snapshot, Cloudflare canary deployment, custom-domain verification, API proxy verification and mobile quote-intake smoke tests.
+This is a regression-tested UX restoration, not a new commercial experiment. The existing £19 Decision Pack, free initial evidence check and evidence/compliance guardrails remain unchanged.
