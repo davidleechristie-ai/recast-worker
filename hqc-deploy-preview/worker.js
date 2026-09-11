@@ -5,6 +5,82 @@ const isQaRequest=(request,mode)=>{if(mode!=='production')return true;const ref=
 const validCaseId=v=>typeof v==='string'&&/^[A-Za-z0-9_-]{8,80}$/.test(v);
 const safeEqual=(a,b)=>{if(a.length!==b.length)return false;let d=0;for(let i=0;i<a.length;i++)d|=a.charCodeAt(i)^b.charCodeAt(i);return d===0;};
 const hex=bytes=>[...new Uint8Array(bytes)].map(b=>b.toString(16).padStart(2,'0')).join('');
+const emptyTotals=()=>({landings:0,cta:0,uploads:0,genuine:0,shareIntent:0,shareOpens:0,outboundClicks:0,checkouts:0});
+const cleanSource=v=>String(v||'direct').slice(0,40).replace(/[^A-Za-z0-9_.:-]/g,'_')||'direct';
+
+export class HqcMetrics {
+  constructor(ctx){this.ctx=ctx;}
+  async snapshot(){
+    let startedAt=await this.ctx.storage.get('meta:startedAt');
+    if(!startedAt){startedAt=new Date().toISOString();await this.ctx.storage.put('meta:startedAt',startedAt);}
+    const total=(await this.ctx.storage.get('total'))||emptyTotals();
+    const listed=await this.ctx.storage.list({prefix:'source:'});
+    const sources=[...listed.values()].sort((a,b)=>b.genuine-a.genuine||b.landings-a.landings);
+    return {measurementStartedAt:startedAt,total,sources};
+  }
+  async record(payload){
+    if(!payload||payload.isTest===true)return this.snapshot();
+    const event=String(payload.event||'');
+    const source=cleanSource(payload.source);
+    const total=(await this.ctx.storage.get('total'))||emptyTotals();
+    const key='source:'+source;
+    const row=(await this.ctx.storage.get(key))||{source,...emptyTotals()};
+    let changed=false;
+    const inc=name=>{total[name]=(total[name]||0)+1;row[name]=(row[name]||0)+1;changed=true;};
+    if(event==='landing_view')inc('landings');
+    else if(event==='checker_cta_clicked')inc('cta');
+    else if(event==='upload_started')inc('uploads');
+    else if(event==='share_intent')inc('shareIntent');
+    else if(event==='partner_outbound_click')inc('outboundClicks');
+    else if(event==='detail_checkout_created'||event==='decision_pack_checkout_created')inc('checkouts');
+    else if(event==='analysis_qualified_real_quote'&&payload.analysisId){
+      const id='analysis:'+String(payload.analysisId).slice(0,80);
+      if(!(await this.ctx.storage.get(id))){await this.ctx.storage.put(id,true);inc('genuine');}
+    } else if(event==='share_opened'&&payload.analysisId){
+      const id='share:'+String(payload.analysisId).slice(0,80);
+      if(!(await this.ctx.storage.get(id))){await this.ctx.storage.put(id,true);inc('shareOpens');}
+    }
+    if(changed)await this.ctx.storage.put({total,[key]:row});
+    return this.snapshot();
+  }
+  async fetch(request){
+    const u=new URL(request.url);
+    if(request.method==='POST'&&u.pathname==='/event'){
+      let payload={};try{payload=await request.json();}catch{return json({error:'invalid_json'},400);}
+      return json(await this.record(payload));
+    }
+    if(request.method==='GET'&&u.pathname==='/snapshot')return json(await this.snapshot());
+    return json({error:'not_found'},404);
+  }
+}
+
+async function metricsSnapshot(env){
+  const stub=env.HQC_METRICS.getByName('global');
+  const r=await stub.fetch('https://hqc-metrics/snapshot');
+  if(!r.ok)throw new Error('durable metrics unavailable');
+  return r.json();
+}
+async function recordDurableMetric(env,payload){
+  const stub=env.HQC_METRICS.getByName('global');
+  const r=await stub.fetch('https://hqc-metrics/event',{method:'POST',headers:{'content-type':'application/json'},body:JSON.stringify(payload)});
+  if(!r.ok)throw new Error('durable metric write failed');
+}
+async function durableMetricsResponse(env){
+  const s=await metricsSnapshot(env),t=s.total;
+  return json({genuineAnalyses:t.genuine,shareOpens:t.shareOpens,outboundClicks:t.outboundClicks,measurementStartedAt:s.measurementStartedAt,durable:true,targets:{genuineAnalyses:100,shareOpens:20,outboundClicks:10},note:'Cumulative Cloudflare-side counters from measurementStartedAt; QA/demo/test events are excluded.'});
+}
+async function durableGrowthResponse(env){
+  const s=await metricsSnapshot(env),t=s.total;
+  const sources=s.sources.map(r=>({...r,landingToCta:r.landings?Math.round(r.cta/r.landings*100):null,ctaToUpload:r.cta?Math.round(r.uploads/r.cta*100):null,landingToGenuine:r.landings?Math.round(r.genuine/r.landings*100):null}));
+  const recommendations=[];
+  if(t.landings>=15&&t.cta/Math.max(1,t.landings)<.3)recommendations.push('Landing-to-CTA is weak: improve message match, trust proof and CTA prominence before adding more traffic.');
+  else if(t.cta>=5&&t.uploads/Math.max(1,t.cta)<.5)recommendations.push('CTA-to-upload is weak: reduce intake friction and clarify privacy/file requirements.');
+  else if(t.uploads>0&&t.genuine===0)recommendations.push('Quote submission is not reaching genuine analysis: diagnose the analysis handoff before adding acquisition.');
+  if(t.genuine>0&&t.shareOpens/t.genuine<.2)recommendations.push('Share loop is below the 20% validation threshold: strengthen Decision Case sharing and recipient conversion.');
+  if(t.genuine>=10&&t.outboundClicks/t.genuine<.1)recommendations.push('Commercial/outbound intent is weak: improve the clearly separated installer-finding action without changing comparison results.');
+  if(!sources.some(x=>x.source.startsWith('organic_')&&x.genuine>0)&&t.landings>=15)recommendations.push('No qualified organic cohort yet: improve existing high-intent decision pages and internal handoff before expanding acquisition.');
+  return json({generatedAt:new Date().toISOString(),measurementStartedAt:s.measurementStartedAt,durable:true,total:t,sources:sources.slice(0,20),recommendations,loop:['Acquire qualified homeowners','Measure source funnels','Diagnose the largest constraint','Deploy one justified improvement','Verify against genuine analyses, shares and anonymous outbound intent']});
+}
 async function verifyStripeSignature(raw,header,secret){
   if(!header||!secret)return false;
   const parts=header.split(',').map(x=>x.trim());
@@ -43,10 +119,12 @@ async function stripeWebhook(request,env,mode){
 }
 export default {async fetch(request,env){
   const incoming=new URL(request.url),mode=env.HQC_ENV||'preview',service=mode==='production'?'home-quote-check':'hqc-migration-preview';
-  if(incoming.pathname==='/health')return json({ok:true,service,environment:mode,frontend:'cloudflare-assets',apiBase:API_BASE,payments:mode==='production'?'configured-at-runtime':'disabled'});
+  if(incoming.pathname==='/health')return json({ok:true,service,environment:mode,frontend:'cloudflare-assets',apiBase:API_BASE,payments:mode==='production'?'configured-at-runtime':'disabled',durableMetrics:Boolean(env.HQC_METRICS)});
+  if(incoming.pathname==='/api/metrics'&&request.method==='GET'&&!incoming.searchParams.has('legacy'))return durableMetricsResponse(env);
+  if(incoming.pathname==='/api/growth-report'&&request.method==='GET'&&!incoming.searchParams.has('legacy'))return durableGrowthResponse(env);
   if(incoming.pathname==='/api/decision-pack/checkout'&&request.method==='POST')return createDecisionPackCheckout(request,env,mode,incoming);
   if(incoming.pathname==='/api/decision-pack/status'&&request.method==='GET')return decisionPackStatus(request,env,mode,incoming);
   if(incoming.pathname==='/api/stripe/webhook'&&request.method==='POST')return stripeWebhook(request,env,mode);
-  if(incoming.pathname.startsWith('/api/')){const target=API_BASE+incoming.pathname+incoming.search,headers=new Headers(request.headers);headers.delete('host');headers.delete('origin');let body,forcedTest=false;if(!['GET','HEAD'].includes(request.method)){if(incoming.pathname==='/api/event'&&request.method==='POST'){try{const payload=await request.clone().json();forcedTest=isQaRequest(request,mode);if(forcedTest)payload.isTest=true;body=JSON.stringify(payload);headers.set('content-type','application/json');}catch{body=request.body;}}else body=request.body;}const init={method:request.method,headers,redirect:'manual'};if(body!==undefined)init.body=body;const response=await fetch(target,init),outHeaders=new Headers(response.headers);outHeaders.set('x-hqc-cloudflare-edge',mode);if(forcedTest)outHeaders.set('x-hqc-qa-event','excluded');outHeaders.set('cache-control','no-store');return new Response(response.body,{status:response.status,statusText:response.statusText,headers:outHeaders});}
+  if(incoming.pathname.startsWith('/api/')){const target=API_BASE+incoming.pathname+incoming.search,headers=new Headers(request.headers);headers.delete('host');headers.delete('origin');let body,forcedTest=false,eventPayload=null;if(!['GET','HEAD'].includes(request.method)){if(incoming.pathname==='/api/event'&&request.method==='POST'){try{const payload=await request.clone().json();forcedTest=isQaRequest(request,mode);if(forcedTest)payload.isTest=true;eventPayload=payload;body=JSON.stringify(payload);headers.set('content-type','application/json');}catch{body=request.body;}}else body=request.body;}const init={method:request.method,headers,redirect:'manual'};if(body!==undefined)init.body=body;const response=await fetch(target,init),outHeaders=new Headers(response.headers);if(eventPayload&&response.ok&&!eventPayload.isTest){try{await recordDurableMetric(env,eventPayload);}catch(e){console.error('durable metrics write failed',e);outHeaders.set('x-hqc-metrics-write','failed');}}outHeaders.set('x-hqc-cloudflare-edge',mode);if(forcedTest)outHeaders.set('x-hqc-qa-event','excluded');outHeaders.set('cache-control','no-store');return new Response(response.body,{status:response.status,statusText:response.statusText,headers:outHeaders});}
   const response=await env.ASSETS.fetch(request),headers=new Headers(response.headers);headers.set('x-hqc-cloudflare-edge',mode);if(incoming.pathname==='/'||incoming.pathname.endsWith('.html'))headers.set('cache-control','no-store');return new Response(response.body,{status:response.status,statusText:response.statusText,headers});
 }};
