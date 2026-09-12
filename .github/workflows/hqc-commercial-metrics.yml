@@ -54,16 +54,26 @@ jobs:
               decision:(
                 if $metrics[0].genuineAnalyses >= 100 then
                   {priority:"validation review",action:"Perform SCALE/HOLD/PIVOT review before further autonomous growth changes."}
-                elif ($growth[0].total.uploads > 0 and $growth[0].total.genuine == 0) then
+                elif $growth[0].total.landings >= 15 and (($growth[0].total.cta / $growth[0].total.landings) < 0.30) then
+                  {priority:"landing conversion",action:"Improve message match, trust proof and CTA clarity on existing qualified pages before adding acquisition."}
+                elif $growth[0].total.cta >= 5 and (($growth[0].total.uploads / $growth[0].total.cta) < 0.50) then
+                  {priority:"quote intake",action:"Reduce checker-start-to-upload friction before adding acquisition."}
+                elif $growth[0].total.uploads >= 3 and $growth[0].total.genuine == 0 then
                   {priority:"analysis completion",action:"Fix submission-to-analysis friction before acquisition expansion."}
-                elif ($growth[0].total.cta >= 5 and $growth[0].total.uploads == 0) then
-                  {priority:"quote intake",action:"Fix checker-start-to-upload friction before adding acquisition."}
-                elif ($growth[0].total.landings >= 15 and $growth[0].total.cta == 0) then
-                  {priority:"landing conversion",action:"Improve message match and CTA clarity on existing qualified pages before adding acquisition."}
-                elif ($growth[0].total.genuine > 0 and $growth[0].total.shareOpens == 0) then
-                  {priority:"share evidence",action:"Keep measuring the Decision Case share path; strengthen it only after enough genuine analyses establish a repeatable gap."}
+                elif $growth[0].total.extendedGenuine >= 5 and (($growth[0].total.multiQuoteAnalyses / $growth[0].total.extendedGenuine) < 0.40) then
+                  {priority:"multi-quote progression",action:"Strengthen genuine analysis to second-quote progression before expanding acquisition."}
+                elif $growth[0].total.extendedGenuine >= 5 and (($growth[0].total.decisionCases / $growth[0].total.extendedGenuine) < 0.80) then
+                  {priority:"Decision Case completion",action:"Fix the genuine-analysis-to-Decision-Case handoff before optimising sharing."}
+                elif $growth[0].total.decisionCases >= 5 and (($growth[0].total.shareIntent / $growth[0].total.decisionCases) < 0.20) then
+                  {priority:"share progression",action:"Improve the privacy-safe installer-question and share handoff."}
+                elif $growth[0].total.shareOpens >= 5 and (($growth[0].total.recipientStarts / $growth[0].total.shareOpens) < 0.20) then
+                  {priority:"recipient conversion",action:"Improve the shared-case recipient handoff into their own quote check."}
+                elif $growth[0].total.genuine >= 10 and (($growth[0].total.outboundClicks / $growth[0].total.genuine) < 0.10) then
+                  {priority:"commercial intent",action:"Improve clearly separated installer-finding intent without influencing comparison results."}
+                elif $growth[0].total.landings >= 15 and ([ $growth[0].sources[] | select((.source|startswith("organic_")) and .genuine > 0) ] | length) == 0 then
+                  {priority:"qualified organic acquisition",action:"Improve existing high-intent decision pages and internal handoff before adding new acquisition pages."}
                 else
-                  {priority:"measure",action:"Clean durable sample is still small. Avoid speculative feature churn and keep measuring the full funnel."}
+                  {priority:"measure",action:"Clean durable sample is still below decision thresholds. Avoid speculative feature churn and keep measuring the full funnel."}
                 end
               )
             }' > hqc-ops/commercial-live.json
