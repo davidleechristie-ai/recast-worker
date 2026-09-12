@@ -3,13 +3,13 @@
     "north_star": "monthly_recurring_revenue_gbp",
     "target": 1000,
     "current": 0,
-    "evidence_date": "2026-09-11",
+    "evidence_date": "2026-09-12",
     "revenue_definition": "Genuine recurring revenue only: current subscription plus paid succeeded latest invoice charge, excluding fully refunded and inactive/cancelled subscriptions."
   },
   "funnel": {
-    "search_impressions": 1906,
-    "organic_clicks": 12,
-    "organic_ctr": 0.0062959076600209865,
+    "search_impressions": 1905,
+    "organic_clicks": 11,
+    "organic_ctr": 0.005774278215223097,
     "indexed_target_pages": null,
     "successful_tool_uses": 3,
     "workflow_starts": 0,
@@ -153,7 +153,7 @@
     "Successful-task rate awaits post-instrumentation tool_run_attempt traffic.",
     "Workflow completion rate awaits a workflow_start denominator."
   ],
-  "last_updated": "2026-09-11",
+  "last_updated": "2026-09-12",
   "measurement_rules": {
     "unknown_values": "Keep unavailable measurements as null; never estimate them as facts.",
     "follow_up_windows_days": [
@@ -182,10 +182,10 @@
   "sources": {
     "search_console": {
       "period_days": 28,
-      "clicks": 12,
-      "impressions": 1906,
-      "ctr": 0.0062959076600209865,
-      "average_position": 65.71038824763903,
+      "clicks": 11,
+      "impressions": 1905,
+      "ctr": 0.005774278215223097,
+      "average_position": 65.74383202099737,
       "top_pages": [
         {
           "clicks": 7,
@@ -200,13 +200,6 @@
           "ctr": 0.00816326530612245,
           "average_position": 65.7591836734694,
           "page": "https://tryrecast.app/tools/xml-diff.html"
-        },
-        {
-          "clicks": 1,
-          "impressions": 1,
-          "ctr": 1,
-          "average_position": 2,
-          "page": "http://tryrecast.app/"
         },
         {
           "clicks": 1,
@@ -3137,7 +3130,7 @@
           "query": "compare xml"
         }
       ],
-      "evidence_date": "2026-09-11"
+      "evidence_date": "2026-09-12"
     },
     "ga4": {
       "period_days": 28,
@@ -3179,7 +3172,7 @@
         "commercial_intent_rate": "organic users with commercial_intent / organic users with successful_tool_use",
         "returning_user_rate": "organic returning active users / organic active users"
       },
-      "evidence_date": "2026-09-11"
+      "evidence_date": "2026-09-12"
     },
     "stripe": {
       "active_subscription_customers": 0,
@@ -3187,7 +3180,7 @@
       "plan_counts": {},
       "excluded_non_genuine_subscriptions": 9,
       "measurement_rule": "Counts only active/trialing subscriptions backed by a paid, succeeded latest invoice charge that has not been fully refunded.",
-      "evidence_date": "2026-09-11"
+      "evidence_date": "2026-09-12"
     }
   },
   "refresh_warnings": [],
