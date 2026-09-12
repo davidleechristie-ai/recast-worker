@@ -1,9 +1,9 @@
 {
-  "fetchedAt": "2026-09-12T02:27:48.990752Z",
+  "fetchedAt": "2026-09-12T03:27:36.926393Z",
   "growthReport": {
     "durable": true,
     "extendedMeasurementStartedAt": "2026-09-11T20:34:24.536Z",
-    "generatedAt": "2026-09-12T02:27:48.932Z",
+    "generatedAt": "2026-09-12T03:27:36.894Z",
     "loop": [
       "Acquire qualified homeowners",
       "Measure source funnels",
@@ -32,8 +32,8 @@
         "genuine": 1,
         "installerQuestions": 0,
         "landingToCta": 0,
-        "landingToGenuine": 17,
-        "landings": 6,
+        "landingToGenuine": 14,
+        "landings": 7,
         "multiQuoteAnalyses": 0,
         "outboundClicks": 0,
         "recipientStarts": 0,
@@ -88,7 +88,7 @@
       "extendedGenuine": 0,
       "genuine": 1,
       "installerQuestions": 0,
-      "landings": 8,
+      "landings": 9,
       "multiQuoteAnalyses": 0,
       "outboundClicks": 0,
       "recipientStarts": 0,
