@@ -64,6 +64,8 @@ jobs:
                   {status:"ACT", bottleneck:"share open -> recipient checker start", action:"Improve the shared-case recipient handoff into their own quote check."}
                 elif $r.growthReport.total.genuine >= 10 and (($r.growthReport.total.outboundClicks / $r.growthReport.total.genuine) < 0.10) then
                   {status:"ACT", bottleneck:"genuine analysis -> commercial/outbound action", action:"Improve clearly separated outbound installer-finding intent without influencing comparison results."}
+                elif $r.growthReport.total.landings >= 15 and ([ $r.growthReport.sources[] | select((.source|startswith("organic_")) and .genuine > 0) ] | length) == 0 then
+                  {status:"ACT", bottleneck:"qualified non-brand organic acquisition", action:"Improve existing high-intent decision pages and internal handoff before adding new acquisition pages."}
                 else
                   {status:"HOLD", bottleneck:"insufficient clean durable sample", action:"Do not churn production. Continue measurement until the earliest adequately sampled funnel stage identifies a justified change."}
                 end
