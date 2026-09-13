@@ -1,6 +1,8 @@
 name: HQC live metrics snapshot
 
 on:
+  schedule:
+    - cron: '27 * * * *'
   push:
     branches: [main]
     paths:
@@ -10,11 +12,17 @@ on:
 permissions:
   contents: write
 
+concurrency:
+  group: hqc-live-metrics
+  cancel-in-progress: false
+
 jobs:
   metrics:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
       - name: Fetch durable production HQC metrics
         shell: bash
         run: |
@@ -74,4 +82,9 @@ jobs:
             exit 0
           fi
           git commit -m 'HQC: snapshot durable validation metrics'
-          git push
+          for attempt in 1 2 3; do
+            if git push; then exit 0; fi
+            git fetch origin main
+            git rebase origin/main
+          done
+          exit 1
