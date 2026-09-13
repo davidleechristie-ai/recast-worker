@@ -1,28 +1,37 @@
-# Home Quote Check commercial north star
+# Home Quote Check validation north star
 
-## Goal
-Reach at least £500/month of sustainable revenue with minimal ongoing human input and without materially increasing regulatory/compliance burden.
+## Validation goal
+Prove genuine homeowner demand before scaling monetisation: reach **100 genuine heat-pump quote analyses**, supported by at least **20 genuine shared-case opens**, **10 meaningful commercial/outbound actions**, and **sustained growth in qualified non-brand organic acquisition**.
 
-## Operating rule
-Use fast, reversible commercial experiments. Do not wait for arbitrary traffic or analysis thresholds when a low-risk test can produce useful evidence. Measure, ship the smallest test, keep/kill/refine, repeat.
+At 100 genuine analyses, perform an explicit **SCALE / HOLD / PIVOT** review before materially expanding acquisition, monetisation or product scope.
 
-## Current commercial hypothesis
-Keep the initial quote evidence check free. Test a £19 one-off Decision Pack as the first paid proposition. The pack should add multi-quote comparison, evidence-gap summary, installer clarification questions and a printable decision summary. It must remain an evidence/comparison product, not design certification, MCS verification, BUS/grant eligibility advice or an installer recommendation.
+## Operating loop
+Measure → Diagnose → Research → Prioritise → Build → Test → Commit → Deploy Preview/Canary → Verify → Deploy Production → Measure.
 
-At £19, £500/month requires 27 purchases/month (£513). This is a hypothesis, not a forecast.
+Treat genuine acquisition and conversion evidence as authoritative. QA, demo, Playwright, release-probe, smoke-test and other synthetic activity must never count as traction. Never invent unavailable metrics or backfill uncertain historical events.
 
-## Fast-fail sequence
-1. Confirm genuine users can complete the free evidence check.
-2. Expose the £19 Decision Pack proposition immediately after a genuine result and measure explicit purchase/checkout intent.
-3. If intent appears, enable a real one-off payment path and measure completed purchases.
-4. If intent is weak, test value/packaging before adding traffic. Do not spend weeks optimising the free funnel first.
-5. Compare £19 against a higher-value multi-quote proposition only after initial willingness-to-pay evidence.
+## Funnel priority
+Optimise the earliest adequately sampled constraint in this order:
+1. landing / search source → checker start
+2. checker start → quote upload or manual entry
+3. quote submission → genuine analysis
+4. genuine analysis → second quote / comparison
+5. genuine analysis → Decision Case
+6. Decision Case → installer questions / share
+7. share open → recipient checker start
+8. genuine analysis → meaningful commercial / outbound action
+9. qualified non-brand organic acquisition quality and sustained growth
 
-## Decision metrics
-Primary: monthly completed revenue and completed paid purchases.
-Secondary: paid-intent rate per genuine completed analysis, checkout completion rate, genuine analyses, second-quote additions, Decision Case shares, recipient starts and qualified non-brand organic acquisition.
+Do not churn production when the clean sample is below the configured decision threshold. Build only changes tied to a measurable hypothesis.
 
-QA/demo/release-probe activity must never count as commercial evidence.
+## Acquisition rule
+Research current search intent and competition before adding acquisition pages. Prefer improving substantive existing decision pages, metadata, schema, internal linking and crawl/index discoverability over thin programmatic SEO. Do not treat rankings, impressions or visits as validation unless they lead to qualified non-brand sessions and genuine product use.
 
-## Guardrails
-No installer recommendation/ranking for payment; no certification; no definitive MCS/BUS eligibility determination; no material expansion of personal-data collection; preserve clear independence; avoid referral economics until they can be introduced without compromising independence or adding disproportionate compliance burden.
+## Product and independence guardrails
+Home Quote Check is an independent evidence/comparison product. Do not turn nominal kW, installer claims, automated extraction, MCS references or BUS references into system-design certification, installer certification or grant-eligibility determinations. Do not materially expand personal-data collection merely to improve conversion. Keep installer-finding/referral actions clearly separated from quote analysis and never alter comparison results for commercial reasons.
+
+## Commercial evidence
+Meaningful commercial/outbound actions are supporting validation evidence, not permission to optimise prematurely for revenue. One-off paid products, checkout experiments or referral economics may be tested only when supported by genuine user behaviour and when they preserve independence, privacy and the product guardrails above.
+
+## Current deployment constraint
+Do not deploy through AppDeploy. The production frontend is served by Cloudflare Worker `hqc-production` on `homequotecheck.co.uk` / `www.homequotecheck.co.uk`, with same-origin `/api/*` proxying to the existing backend. Use the established GitHub/Cloudflare preview and canary path before material production releases; preserve the current custom-domain routing and do not recreate the retired AppDeploy DNS CNAMEs.
