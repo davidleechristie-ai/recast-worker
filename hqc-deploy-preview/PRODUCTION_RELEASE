@@ -1,16 +1,18 @@
-2026-09-13T10:43+01:00
-Promote canary-verified crawl-path improvement to production.
+2026-09-14T07:01+01:00
+Promote canary-verified HQC readability/commercialisation release to production.
 
-Change:
-- expose a normal crawl-visible internal link from frozen HQC HTML to /compare-heat-pump-quotes.html when not already present;
-- keep the existing substantive comparison guide and sitemap entry;
-- no new thin SEO page;
-- no personal-data, payment, certification, grant-eligibility or design-adequacy behaviour changes;
+Change set:
+- readability and commercial hierarchy improvements;
+- clearer deposit guidance and installer next actions;
+- Quote Evidence Completeness presentation;
+- stronger multi-quote progression and paid comparison gate;
+- updated landing CTA wording and mobile layout refinements;
+- preserve product-independence, privacy and evidence guardrails;
 - preserve current custom-domain routing and same-origin /api proxy.
 
-Canary verification:
-- custom-domain canary #192 completed successfully for commit 4deda164942fb6341b00724d3d59c85be0060134;
-- snapshot, canary deployment, domain/API verification and mobile quote-intake checks passed;
+Verification:
+- workers.dev preview run #118 passed exact deployed-asset byte verification;
+- cf-preview.homequotecheck.co.uk custom-domain canary #196 passed domain/API checks and mobile quote-intake browser tests;
 - no AppDeploy deployment involved.
 
-Deploy through the existing guarded hqc-production workflow and verify production before considering the release complete.
+Deploy through the guarded hqc-production workflow and verify production before considering the release complete.
