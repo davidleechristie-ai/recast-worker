@@ -1,0 +1,53 @@
+name: ScrapSignal Cloudflare bridge
+
+on:
+  push:
+    branches: [main]
+    paths:
+      - '.github/workflows/scrapsignal-cloudflare-bridge.yml'
+      - 'scrapsignal-preview/**'
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+concurrency:
+  group: scrapsignal-cloudflare-preview
+  cancel-in-progress: true
+
+jobs:
+  deploy:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 22
+      - name: Install
+        working-directory: scrapsignal-preview
+        run: npm install
+      - name: Deploy ScrapSignal preview worker
+        working-directory: scrapsignal-preview
+        run: npx wrangler deploy
+        env:
+          CLOUDFLARE_API_TOKEN: ${{ secrets.CLOUDFLARE_API_TOKEN }}
+          CLOUDFLARE_ACCOUNT_ID: ${{ secrets.CLOUDFLARE_ACCOUNT_ID }}
+      - name: Verify ScrapSignal preview
+        shell: bash
+        run: |
+          set -euo pipefail
+          base='https://scrapsignal-preview.davidleechristie.workers.dev'
+          ok=false
+          for attempt in 1 2 3 4 5; do
+            health=$(curl -L -sS --max-time 30 "$base/health" || true)
+            if grep -q 'scrapsignal-preview' <<< "$health"; then ok=true; break; fi
+            echo "Awaiting latest Worker version (attempt $attempt): $health"
+            sleep 3
+          done
+          test "$ok" = 'true'
+          home=$(curl -L -sS --max-time 30 "$base/")
+          grep -q 'Know which waste operators may be buying next' <<< "$home"
+          grep -q 'Founding access' <<< "$home"
+          status=$(curl -L -sS --max-time 30 "$base/status.json")
+          grep -q 'WAIT_FOR_MORE_EVIDENCE' <<< "$status"
+          echo 'ScrapSignal Cloudflare preview verification passed.'
