@@ -66,8 +66,11 @@ jobs:
           echo "css -> $css_code"
           test "$css_code" = '200'
           readability=$(curl -L -sS --max-time 30 "$base/__hqc_readability.js")
-          grep -q 'Don’t pay a deposit yet' <<< "$readability"
-          grep -q '16px' <<< "$readability"
+          # Match stable semantic fragments rather than typographic punctuation; the
+          # deployed JS may contain a Unicode apostrophe and grep/locale handling can
+          # otherwise turn a valid release into a false-negative verification failure.
+          grep -Fq 'pay a deposit yet' <<< "$readability"
+          grep -Fq 'font-size:16px' <<< "$readability"
           enhancement=$(curl -L -sS --max-time 30 "$base/__hqc_enhancements.js")
           grep -q 'Quote evidence completeness' <<< "$enhancement"
           grep -q 'Add another quote' <<< "$enhancement"
