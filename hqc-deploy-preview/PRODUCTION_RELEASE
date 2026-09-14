@@ -1,18 +1,20 @@
-2026-09-14T07:01+01:00
-Promote canary-verified HQC readability/commercialisation release to production.
+2026-09-14T17:11+01:00
+Promote canary-verified HQC landing-to-checker conversion intervention to production.
+
+Hypothesis:
+- durable production evidence reached 15 genuine landings with 0 recorded checker starts;
+- making the proposition explicitly match the homeowner's pre-deposit decision moment should increase genuine checker starts without adding acquisition spend.
 
 Change set:
-- readability and commercial hierarchy improvements;
-- clearer deposit guidance and installer next actions;
-- Quote Evidence Completeness presentation;
-- stronger multi-quote progression and paid comparison gate;
-- updated landing CTA wording and mobile layout refinements;
-- preserve product-independence, privacy and evidence guardrails;
-- preserve current custom-domain routing and same-origin /api proxy.
+- homepage proposition: check the installer quote before paying a deposit;
+- clearer explanation of heat-loss, flow-temperature, radiator and scope evidence checked;
+- trust proof: independent check, no account, screenshot/photo/PDF accepted;
+- primary CTA aligned to the pre-deposit decision moment on desktop and mobile;
+- no change to pricing, privacy, analysis logic, DNS or evidence/design-certification guardrails.
 
 Verification:
-- workers.dev preview run #118 passed exact deployed-asset byte verification;
-- cf-preview.homequotecheck.co.uk custom-domain canary #196 passed domain/API checks and mobile quote-intake browser tests;
+- cf-preview.homequotecheck.co.uk custom-domain canary #199 completed successfully for commit ffb4e4b38df7be1b75784ce46ae9df938c3f0151;
+- deploy only through guarded hqc-production Cloudflare workflow;
 - no AppDeploy deployment involved.
 
-Deploy through the guarded hqc-production workflow and verify production before considering the release complete.
+Post-release measure against the pre-change durable baseline of 15 genuine landings / 0 checker starts / 1 upload / 1 genuine analysis.
