@@ -1,9 +1,16 @@
-2026-09-14T17:11+01:00
-Promote canary-verified HQC landing-to-checker conversion intervention to production.
+2026-09-14T18:16+01:00
+Retry the canary-verified HQC landing-to-checker conversion intervention after correcting the production preflight gate.
 
 Hypothesis:
 - durable production evidence reached 15 genuine landings with 0 recorded checker starts;
-- making the proposition explicitly match the homeowner's pre-deposit decision moment should increase genuine checker starts without adding acquisition spend.
+- matching the proposition to the homeowner's pre-deposit decision moment should increase genuine checker starts without adding acquisition spend.
+
+Release state:
+- preview bridge passed;
+- cf-preview.homequotecheck.co.uk canary passed;
+- first production attempt #85 stopped safely at preflight because the workflow still asserted the previous CTA wording;
+- production Worker was not changed by that failed attempt;
+- production gate now verifies the intended deposit-stage CTA rather than the superseded CTA.
 
 Change set:
 - homepage proposition: check the installer quote before paying a deposit;
@@ -12,9 +19,5 @@ Change set:
 - primary CTA aligned to the pre-deposit decision moment on desktop and mobile;
 - no change to pricing, privacy, analysis logic, DNS or evidence/design-certification guardrails.
 
-Verification:
-- cf-preview.homequotecheck.co.uk custom-domain canary #199 completed successfully for commit ffb4e4b38df7be1b75784ce46ae9df938c3f0151;
-- deploy only through guarded hqc-production Cloudflare workflow;
-- no AppDeploy deployment involved.
-
+Deploy only through guarded hqc-production Cloudflare workflow. No AppDeploy deployment.
 Post-release measure against the pre-change durable baseline of 15 genuine landings / 0 checker starts / 1 upload / 1 genuine analysis.
