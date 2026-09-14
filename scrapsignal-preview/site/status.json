@@ -1,0 +1,11 @@
+{
+  "total_events": 3,
+  "surfaced_events": 1,
+  "useful_commercial_signals": 1,
+  "event_type_counts": {"NEW_OPERATOR": 1, "NEW_SITE": 1, "REMOVED_OR_CLOSED": 1},
+  "decision": "WAIT_FOR_MORE_EVIDENCE",
+  "precision_target": 0.8,
+  "minimum_signals": 5,
+  "estimated_precision": 1.0,
+  "build_gate_passed": false
+}
