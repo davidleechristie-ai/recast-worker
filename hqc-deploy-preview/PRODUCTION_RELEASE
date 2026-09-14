@@ -1,23 +1,29 @@
-2026-09-14T18:16+01:00
-Retry the canary-verified HQC landing-to-checker conversion intervention after correcting the production preflight gate.
+2026-09-14T18:46+01:00
+Promote canary-verified checker-start measurement integrity fix.
+
+Measured state before change:
+- Stripe live account: no PaymentIntents; authoritative genuine revenue remains £0;
+- durable production funnel: 16 landings / 0 checker starts / 1 upload / 1 genuine analysis / 0 checkouts;
+- QA/demo/headless/smoke activity excluded by durable metrics;
+- SEO evidence remains weak: no reliable HQC visibility returned for targeted site/search checks, while established competitors rank for heat-pump quote checklist and comparison intent.
+
+Diagnosis:
+- the funnel contained a measurement inconsistency: a genuine upload/analysis existed while checker-start remained zero;
+- landing-conversion.js assumed the upstream hero CTA always emitted checker_cta_clicked, so an upstream tracking miss could under-count the earliest funnel stage;
+- making another CRO change before fixing this would risk optimising against bad data.
 
 Hypothesis:
-- durable production evidence reached 15 genuine landings with 0 recorded checker starts;
-- matching the proposition to the homeowner's pre-deposit decision moment should increase genuine checker starts without adding acquisition spend.
+- a fallback checker-start beacon, emitted only when the app does not emit its own checker_cta_clicked event, will make the landing -> checker-start metric reliable without double-counting normal upstream events.
 
-Release state:
-- preview bridge passed;
-- cf-preview.homequotecheck.co.uk canary passed;
-- first production attempt #85 stopped safely at preflight because the workflow still asserted the previous CTA wording;
-- production Worker was not changed by that failed attempt;
-- production gate now verifies the intended deposit-stage CTA rather than the superseded CTA.
+Change:
+- observe outgoing /api/event calls for the existing checker_cta_clicked event;
+- attach fallback tracking to hero and header start controls;
+- wait 650ms after a click and emit only if no upstream checker-start event was observed;
+- no new personal data, no payment changes, no SEO page, no analysis/certification/eligibility changes, no DNS changes.
 
-Change set:
-- homepage proposition: check the installer quote before paying a deposit;
-- clearer explanation of heat-loss, flow-temperature, radiator and scope evidence checked;
-- trust proof: independent check, no account, screenshot/photo/PDF accepted;
-- primary CTA aligned to the pre-deposit decision moment on desktop and mobile;
-- no change to pricing, privacy, analysis logic, DNS or evidence/design-certification guardrails.
+Verification:
+- custom-domain canary #202 completed successfully;
+- canary domain verification and mobile quote-intake paths passed;
+- no AppDeploy deployment involved.
 
-Deploy only through guarded hqc-production Cloudflare workflow. No AppDeploy deployment.
-Post-release measure against the pre-change durable baseline of 15 genuine landings / 0 checker starts / 1 upload / 1 genuine analysis.
+Deploy only through guarded hqc-production Cloudflare workflow. Preserve homequotecheck.co.uk and www.homequotecheck.co.uk routing.
