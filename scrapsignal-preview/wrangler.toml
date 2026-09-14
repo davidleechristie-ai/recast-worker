@@ -1,0 +1,9 @@
+name = "scrapsignal-preview"
+main = "worker.js"
+compatibility_date = "2026-09-14"
+workers_dev = true
+
+[assets]
+directory = "./site"
+binding = "ASSETS"
+not_found_handling = "single-page-application"
