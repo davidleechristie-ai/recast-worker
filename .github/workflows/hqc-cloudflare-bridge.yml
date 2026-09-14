@@ -5,6 +5,7 @@ on:
     branches: [main]
     paths:
       - '.github/workflows/hqc-cloudflare-bridge.yml'
+      - 'hqc-deploy-preview/**'
   workflow_dispatch:
 
 permissions:
@@ -47,7 +48,7 @@ jobs:
             sleep 3
           done
           test "$ok" = 'true'
-          for path in / /api/_healthcheck /robots.txt /resources/homepage-graphic.png /is-this-a-good-heat-pump-quote.html /__hqc_enhancements.js /__hqc_target_mobile.js; do
+          for path in / /api/_healthcheck /robots.txt /resources/homepage-graphic.png /is-this-a-good-heat-pump-quote.html /__hqc_enhancements.js /__hqc_target_mobile.js /__hqc_readability.js; do
             code=$(curl -L -sS -o /tmp/hqc-check -w '%{http_code}' --max-time 30 "$base$path")
             echo "$path -> $code"
             test "$code" = '200'
@@ -56,19 +57,17 @@ jobs:
           grep -q 'root' <<< "$home"
           grep -q '__hqc_enhancements.js' <<< "$home"
           grep -q '__hqc_target_mobile.js' <<< "$home"
-          if grep -q 'heat-pump-second-opinion-v43csv.v2.appdeploy.ai' <<< "$home"; then
-            echo 'Frontend still references AppDeploy hosting origin'
-            exit 1
-          fi
-          if grep -q 'data-appdeploy-overlay-bootstrap' <<< "$home"; then
-            echo 'AppDeploy overlay bootstrap still present'
-            exit 1
-          fi
+          grep -q '__hqc_readability.js' <<< "$home"
+          if grep -q 'heat-pump-second-opinion-v43csv.v2.appdeploy.ai' <<< "$home"; then echo 'Frontend still references AppDeploy hosting origin'; exit 1; fi
+          if grep -q 'data-appdeploy-overlay-bootstrap' <<< "$home"; then echo 'AppDeploy overlay bootstrap still present'; exit 1; fi
           css_path=$(grep -oE '/assets/[^" ]+\.css' <<< "$home" | head -1 || true)
           test -n "$css_path"
           css_code=$(curl -L -sS -o /tmp/hqc-css -w '%{http_code}' --max-time 30 "$base$css_path")
           echo "css -> $css_code"
           test "$css_code" = '200'
+          readability=$(curl -L -sS --max-time 30 "$base/__hqc_readability.js")
+          grep -q 'Don’t pay a deposit yet' <<< "$readability"
+          grep -q '16px' <<< "$readability"
           enhancement=$(curl -L -sS --max-time 30 "$base/__hqc_enhancements.js")
           grep -q 'Quote evidence completeness' <<< "$enhancement"
           grep -q 'Add another quote' <<< "$enhancement"
@@ -85,7 +84,7 @@ jobs:
           grep -q 'Success' <<< "$api"
           static=$(curl -L -sS --max-time 30 "$base/is-this-a-good-heat-pump-quote.html")
           grep -q 'Is this a good heat-pump quote' <<< "$static"
-          echo 'HQC Cloudflare compact-mobile preview verification passed.'
+          echo 'HQC Cloudflare readability/commercial preview verification passed.'
       - name: Inspect current HQC production routing
         shell: bash
         run: |
