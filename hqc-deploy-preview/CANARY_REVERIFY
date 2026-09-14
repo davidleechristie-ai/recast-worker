@@ -1,2 +1,2 @@
-2026-09-09T10:38:00Z
-Reverify upload-friction-v3.5 after removing the preview-worker/custom-domain canary deployment race.
+2026-09-14T06:58:00Z
+Reverify readability/commercialisation release after workers.dev preview passed exact-asset verification. Require cf-preview.homequotecheck.co.uk canary to pass before production promotion.
