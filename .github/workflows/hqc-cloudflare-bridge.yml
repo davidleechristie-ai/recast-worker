@@ -65,25 +65,17 @@ jobs:
           css_code=$(curl -L -sS -o /tmp/hqc-css -w '%{http_code}' --max-time 30 "$base$css_path")
           echo "css -> $css_code"
           test "$css_code" = '200'
-          readability_headers=$(mktemp)
-          curl -L -sS -D "$readability_headers" -o /tmp/hqc-readability --max-time 30 "$base/__hqc_readability.js"
-          readability_ct=$(tr -d '\r' < "$readability_headers" | awk -F': ' 'tolower($1)=="content-type" {print tolower($2); exit}')
-          echo "readability content-type=$readability_ct"
-          grep -Eq 'javascript|ecmascript|text/plain' <<< "$readability_ct"
-          grep -Fq 'hqc-readability-commercial-style' /tmp/hqc-readability
-          grep -Fq 'data-hqc-plain-summary' /tmp/hqc-readability
-          grep -Fq 'font-size:16px' /tmp/hqc-readability
-          enhancement=$(curl -L -sS --max-time 30 "$base/__hqc_enhancements.js")
-          grep -Fq 'Quote evidence completeness' <<< "$enhancement"
-          grep -Fq 'Add another quote' <<< "$enhancement"
-          grep -Fq 'does not score sizing quality' <<< "$enhancement"
-          grep -Fq 'Got a heat-pump quote?' <<< "$enhancement"
-          grep -Fq 'Check my quote' <<< "$enhancement"
-          grep -Fq 'Fastest way to start' <<< "$enhancement"
-          mobile=$(curl -L -sS --max-time 30 "$base/__hqc_target_mobile.js")
-          grep -Fq 'Check my quote' <<< "$mobile"
-          grep -Fq 'aspect-ratio:1.94/1' <<< "$mobile"
-          grep -Fq 'grid-template-columns:1fr' <<< "$mobile"
+          for asset in __hqc_readability.js __hqc_enhancements.js __hqc_target_mobile.js; do
+            headers=$(mktemp)
+            curl -L -sS -D "$headers" -o "/tmp/$asset" --max-time 30 "$base/$asset"
+            ct=$(tr -d '\r' < "$headers" | awk -F': ' 'tolower($1)=="content-type" {print tolower($2); exit}')
+            echo "$asset content-type=$ct"
+            grep -Eq 'javascript|ecmascript|text/plain' <<< "$ct"
+            local_sha=$(sha256sum "hqc-deploy-preview/site/$asset" | awk '{print $1}')
+            live_sha=$(sha256sum "/tmp/$asset" | awk '{print $1}')
+            echo "$asset local=$local_sha live=$live_sha"
+            test "$local_sha" = "$live_sha"
+          done
           api=$(curl -L -sS --max-time 30 "$base/api/_healthcheck")
           echo "api=$api"
           grep -q 'Success' <<< "$api"
