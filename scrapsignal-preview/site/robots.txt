@@ -1,0 +1,4 @@
+User-agent: *
+Allow: /
+
+Sitemap: https://scrapsignal-preview.davidleechristie.workers.dev/sitemap.xml
