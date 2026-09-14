@@ -1,5 +1,5 @@
 {
-  "fetchedAt": "2026-09-14T06:59:49Z",
+  "fetchedAt": "2026-09-14T14:15:12Z",
   "metrics": {
     "genuineAnalyses": 1,
     "shareOpens": 0,
@@ -15,12 +15,12 @@
     "note": "Cumulative Cloudflare-side counters from measurementStartedAt; QA/demo/test events are excluded. Extended funnel counters use their own same-epoch denominator from extendedMeasurementStartedAt."
   },
   "growthReport": {
-    "generatedAt": "2026-09-14T06:59:49.613Z",
+    "generatedAt": "2026-09-14T14:15:12.171Z",
     "measurementStartedAt": "2026-09-11T18:33:07.244Z",
     "extendedMeasurementStartedAt": "2026-09-11T20:34:24.536Z",
     "durable": true,
     "total": {
-      "landings": 14,
+      "landings": 15,
       "cta": 0,
       "uploads": 1,
       "genuine": 1,
@@ -45,7 +45,7 @@
     },
     "sources": [
       {
-        "landings": 12,
+        "landings": 13,
         "cta": 0,
         "uploads": 1,
         "genuine": 1,
@@ -102,7 +102,10 @@
         "landingToGenuine": 0
       }
     ],
-    "recommendations": [],
+    "recommendations": [
+      "Landing-to-CTA is weak: improve message match, trust proof and CTA prominence before adding more traffic.",
+      "No qualified organic cohort yet: improve existing high-intent decision pages and internal handoff before expanding acquisition."
+    ],
     "loop": [
       "Acquire qualified homeowners",
       "Measure source funnels",
@@ -112,8 +115,8 @@
     ]
   },
   "autonomousDecisionGate": {
-    "status": "HOLD",
-    "bottleneck": "insufficient clean durable sample",
-    "action": "Do not churn production. Continue measurement until the earliest adequately sampled funnel stage identifies a justified change."
+    "status": "ACT",
+    "bottleneck": "landing -> checker start",
+    "action": "Prioritise message-match, trust and CTA clarity on existing landing/decision pages before expanding acquisition."
   }
 }
