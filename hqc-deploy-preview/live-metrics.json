@@ -1,9 +1,9 @@
 {
-  "fetchedAt": "2026-09-14T06:19:54.015981Z",
+  "fetchedAt": "2026-09-14T14:05:59.354204Z",
   "growthReport": {
     "durable": true,
     "extendedMeasurementStartedAt": "2026-09-11T20:34:24.536Z",
-    "generatedAt": "2026-09-14T06:19:53.984Z",
+    "generatedAt": "2026-09-14T14:05:59.323Z",
     "loop": [
       "Acquire qualified homeowners",
       "Measure source funnels",
@@ -21,7 +21,10 @@
       "shareOpenToRecipientStart": null,
       "uploadToGenuine": 100
     },
-    "recommendations": [],
+    "recommendations": [
+      "Landing-to-CTA is weak: improve message match, trust proof and CTA prominence before adding more traffic.",
+      "No qualified organic cohort yet: improve existing high-intent decision pages and internal handoff before expanding acquisition."
+    ],
     "sources": [
       {
         "checkouts": 0,
@@ -33,7 +36,7 @@
         "installerQuestions": 0,
         "landingToCta": 0,
         "landingToGenuine": 8,
-        "landings": 12,
+        "landings": 13,
         "multiQuoteAnalyses": 0,
         "outboundClicks": 0,
         "recipientStarts": 0,
@@ -88,7 +91,7 @@
       "extendedGenuine": 0,
       "genuine": 1,
       "installerQuestions": 0,
-      "landings": 14,
+      "landings": 15,
       "multiQuoteAnalyses": 0,
       "outboundClicks": 0,
       "recipientStarts": 0,
