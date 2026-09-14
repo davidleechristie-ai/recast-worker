@@ -1,5 +1,5 @@
 {
-  "fetchedAt": "2026-09-14T17:16:18Z",
+  "fetchedAt": "2026-09-14T17:47:07Z",
   "metrics": {
     "genuineAnalyses": 1,
     "shareOpens": 0,
@@ -15,12 +15,12 @@
     "note": "Cumulative Cloudflare-side counters from measurementStartedAt; QA/demo/test events are excluded. Extended funnel counters use their own same-epoch denominator from extendedMeasurementStartedAt."
   },
   "growthReport": {
-    "generatedAt": "2026-09-14T17:16:18.954Z",
+    "generatedAt": "2026-09-14T17:47:07.879Z",
     "measurementStartedAt": "2026-09-11T18:33:07.244Z",
     "extendedMeasurementStartedAt": "2026-09-11T20:34:24.536Z",
     "durable": true,
     "total": {
-      "landings": 16,
+      "landings": 17,
       "cta": 0,
       "uploads": 1,
       "genuine": 1,
@@ -45,7 +45,7 @@
     },
     "sources": [
       {
-        "landings": 14,
+        "landings": 15,
         "cta": 0,
         "uploads": 1,
         "genuine": 1,
