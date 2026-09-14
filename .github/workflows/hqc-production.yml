@@ -59,8 +59,8 @@ jobs:
           grep -q 'homepage-house-only.svg' hqc-deploy-preview/site/__hqc_artwork_fit.js
           grep -q 'Quote evidence completeness' hqc-deploy-preview/site/__hqc_enhancements.js
           grep -q 'Fastest way to start' hqc-deploy-preview/site/__hqc_enhancements.js
-          grep -q 'Check my quote — free' hqc-deploy-preview/site/__hqc_enhancements.js
-          grep -q 'Check my quote — free' hqc-deploy-preview/site/__hqc_target_mobile.js
+          grep -Fq 'Check my quote before I pay' hqc-deploy-preview/site/__hqc_enhancements.js
+          grep -Fq 'Check my quote before I pay' hqc-deploy-preview/site/__hqc_target_mobile.js
           grep -q 'aspect-ratio:1.94/1' hqc-deploy-preview/site/__hqc_target_mobile.js
           grep -q 'upload-friction-v3' hqc-deploy-preview/site/__hqc_upload_v3.js
           grep -q 'Compare your installers — £19' hqc-deploy-preview/site/__hqc_paid_comparison.js
@@ -122,7 +122,7 @@ jobs:
           ! grep -q 'qa_production_guard' <<< "$growth"
           enhancement=$(curl -L -sS --max-time 30 "$base/__hqc_enhancements.js")
           grep -q 'Quote evidence completeness' <<< "$enhancement"
-          grep -q 'Check my quote — free' <<< "$enhancement"
+          grep -Fq 'Check my quote before I pay' <<< "$enhancement"
           results=$(curl -L -sS --max-time 30 "$base/__hqc_results_layout.js")
           grep -q 'Important information is still missing' <<< "$results"
           facts=$(curl -L -sS --max-time 30 "$base/__hqc_quote_facts.js")
@@ -130,7 +130,7 @@ jobs:
           comparison=$(curl -L -sS --max-time 30 "$base/__hqc_paid_comparison.js")
           grep -q 'Compare your installers — £19' <<< "$comparison"
           mobile=$(curl -L -sS --max-time 30 "$base/__hqc_target_mobile.js")
-          grep -q 'Check my quote — free' <<< "$mobile"
+          grep -Fq 'Check my quote before I pay' <<< "$mobile"
           grep -q 'aspect-ratio:1.94/1' <<< "$mobile"
           artwork=$(curl -L -sS --max-time 30 "$base/__hqc_artwork_fit.js")
           grep -q 'homepage-house-only.svg' <<< "$artwork"
