@@ -46,13 +46,18 @@ jobs:
           done
           test "$ok" = 'true'
           home=$(curl -L -sS --max-time 30 "$base/")
-          grep -q 'Know <strong>who may need to buy</strong>' <<< "$home"
-          grep -q 'Founding access' <<< "$home"
-          grep -q 'Sample intelligence' <<< "$home"
+          grep -q 'Find businesses that may be' <<< "$home"
+          grep -q 'What are you paying for?' <<< "$home"
+          grep -q '£149/month' <<< "$home"
+          dashboard=$(curl -L -sS --max-time 30 "$base/dashboard-demo")
+          grep -q 'INTERACTIVE PRODUCT DEMO' <<< "$dashboard"
+          grep -q 'Latest opportunities' <<< "$dashboard"
+          grep -q 'Your alert settings' <<< "$dashboard"
+          grep -q 'What arrives in your inbox' <<< "$dashboard"
           methodology=$(curl -L -sS --max-time 30 "$base/methodology")
           grep -qi 'methodology' <<< "$methodology"
           sales=$(curl -L -sS --max-time 30 "$base/waste-sales-intelligence")
           grep -qi 'waste' <<< "$sales"
           status=$(curl -L -sS --max-time 30 "$base/status.json")
-          grep -q 'WAIT_FOR_MORE_EVIDENCE' <<< "$status"
+          grep -q 'BUILD_MVP' <<< "$status"
           echo 'ScrapSignal Cloudflare production verification passed.'
