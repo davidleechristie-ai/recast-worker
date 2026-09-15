@@ -53,6 +53,10 @@ jobs:
           check(){ local label="$1" body="$2" marker="$3"; if ! grep -q "$marker" <<< "$body"; then echo "VERIFY FAILED: $label missing marker: $marker"; echo "Response preview: ${body:0:500}"; exit 1; fi; echo "verified: $label"; }
           health=$(curl -L -sS --max-time 30 "$base/health")
           check health "$health" 'scrapsignal-preview'
+          check durable-analytics "$health" 'durable-kv'
+          metrics=$(curl -L -sS --max-time 30 "$base/api/metrics")
+          check metrics-storage "$metrics" '"storage":"kv"'
+          check metrics-total "$metrics" '"total"'
           home=$(curl -L -sS --max-time 30 "$base/")
           check homepage "$home" 'Find businesses that may be'
           dashboard=$(curl -L -sS --max-time 30 "$base/dashboard-demo")
