@@ -32,7 +32,7 @@ jobs:
           grep -q 'Opportunity feed' scrapsignal-preview/site/dashboard-demo.html
           grep -q 'Continue to secure checkout' scrapsignal-preview/site/start.html
           grep -q 'buy.stripe.com/bJeeVc0Sn0Wa2nLgOn2cg00' scrapsignal-preview/site/start.html
-          grep -q 'Payment confirmation is processed server-side' scrapsignal-preview/site/welcome.html
+          grep -q 'Stripe confirms your subscription payment securely' scrapsignal-preview/site/welcome.html
           grep -q 'Validated signals from the monitored register' scrapsignal-preview/site/live-signals.js
           grep -q 'signal.operator||signal.name' scrapsignal-preview/site/live-signals.js
           grep -q 'Mids Auto Services Limited' scrapsignal-preview/site/signals.json
@@ -45,6 +45,9 @@ jobs:
           grep -q 'not evidence that the operator intended to purchase' scrapsignal-preview/site/waste-compliance-sales-signals.html
           grep -q 'href="/start"' scrapsignal-preview/site/waste-compliance-sales-signals.html
           grep -q 'href="/start"' scrapsignal-preview/site/waste-sales-intelligence.html
+          grep -q 'href="/start"' scrapsignal-preview/site/digital-waste-tracking-sales-intelligence.html
+          grep -q 'href="/start"' scrapsignal-preview/site/new-waste-sites-september-2026.html
+          grep -q 'href="/start"' scrapsignal-preview/site/methodology.html
           if grep -R -q 'mailto:hello@scrapsignal.co.uk' scrapsignal-preview/site; then echo 'Commercial email CTA regression detected'; exit 1; fi
       - name: Install
         working-directory: scrapsignal-preview
@@ -89,8 +92,10 @@ jobs:
           signalpage=$(curl -L -sS --max-time 30 "$base/signals/new-waste-sites-september-2026")
           check public-signal-page "$signalpage" 'New licensed sites our monitor detected'
           check public-signal-proof "$signalpage" 'Mids Auto Services Limited'
+          check public-signal-checkout "$signalpage" 'href="/start"'
           dwt=$(curl -L -sS --max-time 30 "$base/digital-waste-tracking-sales-intelligence")
           check dwt-live-proof "$dwt" 'Current source-backed proof'
+          check dwt-checkout "$dwt" 'href="/start"'
           market=$(curl -L -sS --max-time 30 "$base/digital-waste-tracking-supplier-market-2026")
           check dwt-market "$market" 'The supplier market is crowded'
           compliance=$(curl -L -sS --max-time 30 "$base/waste-compliance-sales-signals")
@@ -99,6 +104,10 @@ jobs:
           check compliance-checkout "$compliance" 'href="/start"'
           wasteintel=$(curl -L -sS --max-time 30 "$base/waste-sales-intelligence")
           check waste-intel-checkout "$wasteintel" 'href="/start"'
+          method=$(curl -L -sS --max-time 30 "$base/methodology")
+          check methodology-checkout "$method" 'href="/start"'
+          welcome=$(curl -L -sS --max-time 30 "$base/welcome")
+          check welcome-payment-copy "$welcome" 'Stripe confirms your subscription payment securely'
           sitemap=$(curl -L -sS --max-time 30 "$base/sitemap.xml")
           check sitemap-proof "$sitemap" '/proof'
           livejs=$(curl -L -sS --max-time 30 "$base/live-signals.js")
