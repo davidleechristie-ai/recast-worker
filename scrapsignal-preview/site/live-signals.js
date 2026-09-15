@@ -15,7 +15,7 @@
       const response=await fetch('/signals.json',{cache:'no-store'});if(!response.ok)return;
       const payload=await response.json();const signals=payload.signals||[];if(!signals.length)return;
       const section=document.createElement('section');section.className='live-intel-section';section.dataset.liveFeed='true';
-      section.innerHTML=`<div class="section-head"><div><p class="eyebrow">LIVE VALIDATION FEED</p><h2>Genuine detected register changes</h2><p>These records come from accepted stable Environment Agency register changes. Commercial interpretation is clearly separated from source facts.</p></div><a class="btn" href="/proof">View validation evidence</a></div><div class="signal-list">${signals.map(render).join('')}</div>`;
+      section.innerHTML=`<div class="section-head"><div><p class="eyebrow">LIVE VALIDATION FEED</p><h2>Validated signals from the monitored register</h2><p>Genuine detected register changes accepted by the quality gate. Commercial interpretation is clearly separated from source facts.</p></div><a class="btn" href="/proof">View validation evidence</a></div><div class="signal-list">${signals.map(render).join('')}</div>`;
       stats.insertAdjacentElement('afterend',section);
       document.querySelectorAll('[data-live-signal] a').forEach(a=>a.addEventListener('click',()=>fetch('/api/event',{method:'POST',headers:{'content-type':'application/json'},body:JSON.stringify({event:'signal_open',path:location.pathname,meta:{signal:a.closest('[data-live-signal]')?.dataset.liveSignal||'',source:'live_validation_feed'},ts:new Date().toISOString()}),keepalive:true}).catch(()=>{})));
     }catch(_){/* Keep the demo usable if the feed is unavailable. */}
