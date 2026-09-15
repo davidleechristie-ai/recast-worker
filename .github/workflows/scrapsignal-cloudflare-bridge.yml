@@ -27,7 +27,7 @@ jobs:
         run: |
           node --check scrapsignal-preview/site/dashboard.js
           node --check scrapsignal-preview/site/live-signals.js
-      - name: Verify dashboard product surface
+      - name: Verify product surface
         shell: bash
         run: |
           set -euo pipefail
@@ -40,6 +40,8 @@ jobs:
           grep -q 'Validated signals from the monitored register' scrapsignal-preview/site/live-signals.js
           grep -q 'Mids Auto Services Limited' scrapsignal-preview/site/signals.json
           grep -q 'Mytum and Selby (Goole) Ltd' scrapsignal-preview/site/signals.json
+          grep -q 'Quality first' scrapsignal-preview/site/new-waste-sites-september-2026.html
+          grep -q 'WAIT_FOR_MORE_EVIDENCE' scrapsignal-preview/site/new-waste-sites-september-2026.html
       - name: Install
         working-directory: scrapsignal-preview
         run: npm install
@@ -72,9 +74,12 @@ jobs:
           signals=$(curl -L -sS --max-time 30 "$base/signals.json")
           grep -q 'Mids Auto Services Limited' <<< "$signals"
           grep -q 'Mytum and Selby (Goole) Ltd' <<< "$signals"
+          signalpage=$(curl -L -sS --max-time 30 "$base/signals/new-waste-sites-september-2026")
+          grep -q 'New licensed sites our monitor detected' <<< "$signalpage"
+          grep -q 'Mids Auto Services Limited' <<< "$signalpage"
           livejs=$(curl -L -sS --max-time 30 "$base/live-signals.js")
           grep -q 'Validated signals from the monitored register' <<< "$livejs"
           status=$(curl -L -sS --max-time 30 "$base/status.json")
           grep -q 'WAIT_FOR_MORE_EVIDENCE' <<< "$status"
           grep -q 'quality_gate' <<< "$status"
-          echo 'ScrapSignal quality-gated dashboard production verification passed.'
+          echo 'ScrapSignal quality-gated product production verification passed.'
