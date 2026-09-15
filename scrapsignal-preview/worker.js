@@ -10,9 +10,10 @@ const recordCommercialEvent=async(request,env,event)=>{if(!env.EVENTS||!isGenuin
 const commercialMetrics=async(env)=>{if(!env.EVENTS)return {storage:'unavailable',total:0,by_event:{},by_path:{},latest_event_at:null};let cursor;let pages=0;const rows=[];do{const page=await env.EVENTS.list({prefix:'evt:',limit:1000,cursor});rows.push(...page.keys);cursor=page.list_complete?undefined:page.cursor;pages+=1;}while(cursor&&pages<5);const byEvent={};const byPath={};let latest=0;for(const row of rows){const m=row.metadata||{};if(m.event)byEvent[m.event]=(byEvent[m.event]||0)+1;if(m.path)byPath[m.path]=(byPath[m.path]||0)+1;latest=Math.max(latest,Number(m.ts)||0);}return {storage:'kv',window_days:90,total:rows.length,by_event:byEvent,by_path:byPath,latest_event_at:latest?new Date(latest).toISOString():null,truncated:Boolean(cursor)};};
 export default {async fetch(request,env){
   const url=new URL(request.url);
-  if(url.pathname==='/health')return withHeaders(json({ok:true,service:'scrapsignal-preview',frontend:'cloudflare-assets',analytics:env.EVENTS?'durable-kv':'logs-only',customer_store:env.CUSTOMERS?'durable-kv':'unavailable',billing:billingConfigured(env)?'configured':'awaiting-independent-provider'}));
+  if(url.pathname==='/health')return withHeaders(json({ok:true,service:'scrapsignal-preview',frontend:'cloudflare-assets',analytics:env.EVENTS?'durable-kv':'logs-only',customer_store:env.CUSTOMERS?'durable-kv':'unavailable',billing:env.STRIPE_PAYMENT_LINK?'payment-link-active':billingConfigured(env)?'configured':'awaiting-independent-provider'}));
   if(url.pathname==='/api/metrics'&&request.method==='GET')return withHeaders(json(await commercialMetrics(env)));
   if(url.pathname==='/api/checkout'&&request.method==='POST'){
+    if(env.STRIPE_PAYMENT_LINK)return withHeaders(json({ok:true,url:env.STRIPE_PAYMENT_LINK,provider:'stripe-payment-link'},200));
     try{const result=await createCheckoutSession(request,env);if(result.body?.ok)await recordCommercialEvent(request,env,{event:'checkout_start',path:'/start',meta:{plan:'founding'}});return withHeaders(json(result.body,result.status));}catch(error){console.log(JSON.stringify({type:'checkout_error',message:safe(error?.message,160)}));return withHeaders(json({ok:false,code:'checkout_error'},500));}
   }
   if(url.pathname==='/api/stripe-webhook'&&request.method==='POST'){
