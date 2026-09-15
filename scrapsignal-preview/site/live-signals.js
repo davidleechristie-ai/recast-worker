@@ -1,19 +1,32 @@
 (()=>{
   const esc=(value)=>String(value??'').replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
   const badge=(type)=>String(type||'signal').replaceAll('_',' ');
+  const normalize=(signal,payload)=>({
+    id:signal.id||signal.licence_number||'signal',
+    event_type:signal.event_type||signal.event||'SIGNAL',
+    operator:signal.operator||signal.name||'Unknown operator',
+    location:signal.location||signal.address||signal.region||'',
+    score:Number(signal.score??signal.commercial_priority??0),
+    why_now:signal.why_now||signal.why||signal.commercial_assessment||'',
+    supplier_categories:signal.supplier_categories||signal.needs||[],
+    confidence:signal.confidence||'Source-backed',
+    source_name:signal.source_name||signal.source||payload.source||'Authoritative public source',
+    evidence_url:signal.evidence_url||signal.source_url||payload.source_url||'/proof',
+    research_url:signal.research_url||(String(signal.event_type||signal.event||'').toUpperCase().includes('COMPLIANCE')?'/waste-compliance-sales-signals':'/signals/new-waste-sites-september-2026')
+  });
   const render=(signal)=>`<article class="signal-card live-signal" data-live-signal="${esc(signal.id)}">
     <div class="signal-top"><div><div class="badges"><span class="badge high">${esc(badge(signal.event_type))}</span><span class="badge new">Source-backed</span></div><h3>${esc(signal.operator)}</h3><p class="location">${esc(signal.location)}</p></div><div class="score">${esc(signal.score)}<span>/100</span></div></div>
     <p class="reason"><strong>Why now:</strong> ${esc(signal.why_now)}</p>
     <div class="likely"><strong>Supplier categories</strong><div class="tags">${(signal.supplier_categories||[]).map(x=>`<span>${esc(x)}</span>`).join('')}</div></div>
     <p class="reason"><strong>Confidence:</strong> ${esc(signal.confidence)} · ${esc(signal.source_name)}</p>
-    <div class="signal-actions"><a class="btn btn-small" href="${esc(signal.evidence_url)}" target="_blank" rel="noopener">Open evidence ↗</a><a class="btn btn-small" href="/signals/new-waste-sites-september-2026">Research note</a></div>
+    <div class="signal-actions"><a class="btn btn-small" href="${esc(signal.evidence_url)}" target="_blank" rel="noopener">Open evidence ↗</a><a class="btn btn-small" href="${esc(signal.research_url)}">Research note</a></div>
   </article>`;
   const mount=async()=>{
     const stats=document.querySelector('#view-dashboard .stats');
     if(!stats||document.querySelector('[data-live-feed]'))return;
     try{
       const response=await fetch('/signals.json',{cache:'no-store'});if(!response.ok)return;
-      const payload=await response.json();const signals=payload.signals||[];if(!signals.length)return;
+      const payload=await response.json();const signals=(payload.signals||[]).map(s=>normalize(s,payload));if(!signals.length)return;
       const section=document.createElement('section');section.className='live-intel-section';section.dataset.liveFeed='true';
       section.innerHTML=`<div class="section-head"><div><p class="eyebrow">LIVE VALIDATION FEED</p><h2>Validated signals from the monitored register</h2><p>Genuine detected register changes accepted by the quality gate. Commercial interpretation is clearly separated from source facts.</p></div><a class="btn" href="/proof">View validation evidence</a></div><div class="signal-list">${signals.map(render).join('')}</div>`;
       stats.insertAdjacentElement('afterend',section);
