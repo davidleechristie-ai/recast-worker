@@ -1,10 +1,10 @@
 {
-  "fetchedAt": "2026-09-15T07:44:45Z",
+  "fetchedAt": "2026-09-15T13:33:41Z",
   "durable": true,
   "measurementStartedAt": "2026-09-11T18:33:07.244Z",
   "northStar": {
     "genuineAnalyses": {
-      "current": 1,
+      "current": 3,
       "target": 100
     },
     "shareOpens": {
@@ -18,15 +18,15 @@
     "note": "Cumulative Cloudflare-side validation counters. QA/demo/test traffic is excluded; payment intent is not treated as revenue."
   },
   "total": {
-    "landings": 20,
-    "cta": 0,
-    "uploads": 1,
-    "genuine": 1,
-    "extendedGenuine": 0,
+    "landings": 33,
+    "cta": 8,
+    "uploads": 3,
+    "genuine": 3,
+    "extendedGenuine": 2,
     "multiQuoteAnalyses": 0,
-    "decisionCases": 0,
+    "decisionCases": 2,
     "installerQuestions": 0,
-    "shareIntent": 0,
+    "shareIntent": 2,
     "shareOpens": 0,
     "recipientStarts": 0,
     "outboundClicks": 0,
@@ -34,10 +34,29 @@
   },
   "sources": [
     {
-      "landings": 16,
+      "landings": 25,
+      "cta": 8,
+      "uploads": 3,
+      "genuine": 3,
+      "extendedGenuine": 2,
+      "multiQuoteAnalyses": 0,
+      "decisionCases": 2,
+      "installerQuestions": 0,
+      "shareIntent": 2,
+      "shareOpens": 0,
+      "recipientStarts": 0,
+      "outboundClicks": 0,
+      "checkouts": 0,
+      "source": "direct",
+      "landingToCta": 32,
+      "ctaToUpload": 38,
+      "landingToGenuine": 12
+    },
+    {
+      "landings": 4,
       "cta": 0,
-      "uploads": 1,
-      "genuine": 1,
+      "uploads": 0,
+      "genuine": 0,
       "extendedGenuine": 0,
       "multiQuoteAnalyses": 0,
       "decisionCases": 0,
@@ -47,10 +66,10 @@
       "recipientStarts": 0,
       "outboundClicks": 0,
       "checkouts": 0,
-      "source": "direct",
+      "source": "results_compare",
       "landingToCta": 0,
       "ctaToUpload": null,
-      "landingToGenuine": 6
+      "landingToGenuine": 0
     },
     {
       "landings": 1,
