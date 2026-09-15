@@ -34,6 +34,7 @@ jobs:
           grep -q 'buy.stripe.com/bJeeVc0Sn0Wa2nLgOn2cg00' scrapsignal-preview/site/start.html
           grep -q 'Payment confirmation is processed server-side' scrapsignal-preview/site/welcome.html
           grep -q 'Validated signals from the monitored register' scrapsignal-preview/site/live-signals.js
+          grep -q 'signal.operator||signal.name' scrapsignal-preview/site/live-signals.js
           grep -q 'Mids Auto Services Limited' scrapsignal-preview/site/signals.json
           grep -q 'Mytum and Selby (Goole) Ltd' scrapsignal-preview/site/signals.json
           grep -q 'Real changes. Source linked. Noise filtered.' scrapsignal-preview/site/proof.html
@@ -42,6 +43,9 @@ jobs:
           grep -q 'The supplier market is crowded' scrapsignal-preview/site/digital-waste-tracking-supplier-market-2026.html
           grep -q 'Global Metal Recycling Ltd' scrapsignal-preview/site/waste-compliance-sales-signals.html
           grep -q 'not evidence that the operator intended to purchase' scrapsignal-preview/site/waste-compliance-sales-signals.html
+          grep -q 'href="/start"' scrapsignal-preview/site/waste-compliance-sales-signals.html
+          grep -q 'href="/start"' scrapsignal-preview/site/waste-sales-intelligence.html
+          if grep -R -q 'mailto:hello@scrapsignal.co.uk' scrapsignal-preview/site; then echo 'Commercial email CTA regression detected'; exit 1; fi
       - name: Install
         working-directory: scrapsignal-preview
         run: npm install
@@ -92,10 +96,14 @@ jobs:
           compliance=$(curl -L -sS --max-time 30 "$base/waste-compliance-sales-signals")
           check compliance-intelligence "$compliance" 'Global Metal Recycling Ltd'
           check compliance-caveat "$compliance" 'not evidence that the operator intended to purchase'
+          check compliance-checkout "$compliance" 'href="/start"'
+          wasteintel=$(curl -L -sS --max-time 30 "$base/waste-sales-intelligence")
+          check waste-intel-checkout "$wasteintel" 'href="/start"'
           sitemap=$(curl -L -sS --max-time 30 "$base/sitemap.xml")
           check sitemap-proof "$sitemap" '/proof'
           livejs=$(curl -L -sS --max-time 30 "$base/live-signals.js")
           check live-feed-renderer "$livejs" 'Validated signals from the monitored register'
+          check live-feed-schema "$livejs" 'signal.operator||signal.name'
           status=$(curl -L -sS --max-time 30 "$base/status.json")
           check validation-state "$status" 'WAIT_FOR_MORE_EVIDENCE'
           check quality-gate "$status" 'quality_gate'
