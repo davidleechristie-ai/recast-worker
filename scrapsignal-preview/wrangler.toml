@@ -8,4 +8,4 @@ directory = "./site"
 binding = "ASSETS"
 html_handling = "none"
 not_found_handling = "single-page-application"
-run_worker_first = [ "/api/*", "/health", "/dashboard-demo", "!/dashboard-demo.html", "/signals/*", "/methodology", "!/methodology.html", "/waste-sales-intelligence", "!/waste-sales-intelligence.html", "/digital-waste-tracking-sales-intelligence", "!/digital-waste-tracking-sales-intelligence.html" ]
+run_worker_first = [ "/api/*", "/health", "/dashboard-demo", "!/dashboard-demo.html", "/signals/*", "/methodology", "!/methodology.html", "/waste-sales-intelligence", "!/waste-sales-intelligence.html", "/digital-waste-tracking-sales-intelligence", "!/digital-waste-tracking-sales-intelligence.html", "/digital-waste-tracking-supplier-market-2026", "!/digital-waste-tracking-supplier-market-2026.html" ]
