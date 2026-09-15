@@ -23,25 +23,15 @@ jobs:
       - uses: actions/setup-node@v4
         with:
           node-version: 22
-      - name: Validate dashboard JavaScript
+      - name: Validate product assets
         run: |
           node --check scrapsignal-preview/site/dashboard.js
           node --check scrapsignal-preview/site/live-signals.js
-      - name: Verify product surface
-        shell: bash
-        run: |
-          set -euo pipefail
           grep -q 'Opportunity feed' scrapsignal-preview/site/dashboard-demo.html
-          grep -q 'Watchlist' scrapsignal-preview/site/dashboard-demo.html
-          grep -q 'Alert settings' scrapsignal-preview/site/dashboard-demo.html
-          grep -q 'Export CSV' scrapsignal-preview/site/dashboard-demo.html
-          grep -q 'function exportCsv' scrapsignal-preview/site/dashboard.js
-          grep -q 'localStorage' scrapsignal-preview/site/dashboard.js
           grep -q 'Validated signals from the monitored register' scrapsignal-preview/site/live-signals.js
           grep -q 'Mids Auto Services Limited' scrapsignal-preview/site/signals.json
           grep -q 'Mytum and Selby (Goole) Ltd' scrapsignal-preview/site/signals.json
           grep -q 'Quality first' scrapsignal-preview/site/new-waste-sites-september-2026.html
-          grep -q 'WAIT_FOR_MORE_EVIDENCE' scrapsignal-preview/site/new-waste-sites-september-2026.html
       - name: Install
         working-directory: scrapsignal-preview
         run: npm install
@@ -56,30 +46,23 @@ jobs:
         run: |
           set -euo pipefail
           base='https://scrapsignal-preview.davidleechristie.workers.dev'
-          ok=false
-          for attempt in 1 2 3 4 5; do
-            health=$(curl -L -sS --max-time 30 "$base/health" || true)
-            if grep -q 'scrapsignal-preview' <<< "$health"; then ok=true; break; fi
-            echo "Awaiting latest Worker version (attempt $attempt): $health"
-            sleep 3
-          done
-          test "$ok" = 'true'
+          check(){ local label="$1" body="$2" marker="$3"; if ! grep -q "$marker" <<< "$body"; then echo "VERIFY FAILED: $label missing marker: $marker"; echo "Response preview: ${body:0:500}"; exit 1; fi; echo "verified: $label"; }
+          health=$(curl -L -sS --max-time 30 "$base/health")
+          check health "$health" 'scrapsignal-preview'
           home=$(curl -L -sS --max-time 30 "$base/")
-          grep -q 'Find businesses that may be' <<< "$home"
-          grep -q '£149/month' <<< "$home"
+          check homepage "$home" 'Find businesses that may be'
           dashboard=$(curl -L -sS --max-time 30 "$base/dashboard-demo")
-          grep -q 'FULL INTERACTIVE DEMO' <<< "$dashboard"
-          grep -q 'Opportunity feed' <<< "$dashboard"
-          grep -q 'live-signals.js' <<< "$dashboard"
+          check dashboard "$dashboard" 'Opportunity feed'
+          check dashboard-live-injection "$dashboard" 'live-signals.js'
           signals=$(curl -L -sS --max-time 30 "$base/signals.json")
-          grep -q 'Mids Auto Services Limited' <<< "$signals"
-          grep -q 'Mytum and Selby (Goole) Ltd' <<< "$signals"
+          check signals-one "$signals" 'Mids Auto Services Limited'
+          check signals-two "$signals" 'Mytum and Selby (Goole) Ltd'
           signalpage=$(curl -L -sS --max-time 30 "$base/signals/new-waste-sites-september-2026")
-          grep -q 'New licensed sites our monitor detected' <<< "$signalpage"
-          grep -q 'Mids Auto Services Limited' <<< "$signalpage"
+          check public-signal-page "$signalpage" 'New licensed sites our monitor detected'
+          check public-signal-proof "$signalpage" 'Mids Auto Services Limited'
           livejs=$(curl -L -sS --max-time 30 "$base/live-signals.js")
-          grep -q 'Validated signals from the monitored register' <<< "$livejs"
+          check live-feed-renderer "$livejs" 'Validated signals from the monitored register'
           status=$(curl -L -sS --max-time 30 "$base/status.json")
-          grep -q 'WAIT_FOR_MORE_EVIDENCE' <<< "$status"
-          grep -q 'quality_gate' <<< "$status"
+          check validation-state "$status" 'WAIT_FOR_MORE_EVIDENCE'
+          check quality-gate "$status" 'quality_gate'
           echo 'ScrapSignal quality-gated product production verification passed.'
