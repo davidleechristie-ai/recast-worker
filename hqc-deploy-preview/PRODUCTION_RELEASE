@@ -1,30 +1,30 @@
-2026-09-14T23:25+01:00
-Promote canary-verified high-intent comparison guide update.
+2026-09-15T12:28+01:00
+Promote canary-verified simplified consumer journey.
 
 Measured state before change:
-- Stripe live account: no PaymentIntents; authoritative genuine revenue remains £0;
-- latest durable production snapshot: 17 landings / 0 checker starts / 1 upload / 1 genuine analysis / 0 checkouts;
-- sources include 15 direct, 1 organic_checklist, 1 professional; QA/demo/headless/smoke activity excluded by durable metrics;
-- targeted search checks return no reliable HQC visibility for “compare heat pump quotes” or “is this a good heat pump quote”; established competitors currently dominate these intents.
+- Stripe live account: latest authoritative check found no PaymentIntents; cumulative genuine revenue remains £0.
+- latest durable production snapshot available to the programme: 20 genuine landings / 0 checker starts / 1 upload / 1 genuine analysis / 0 multi-quote analyses / 0 Decision Cases / 0 checkouts; QA/demo/headless/smoke activity excluded.
+- earliest measured funnel bottleneck remains landing -> checker start.
+- available organic acquisition remains sparse; prior qualified source labels include organic_bus, organic_checklist and organic_compare_static, with no reliable sustained ranking evidence.
 
 Diagnosis:
-- acquisition remains extremely thin and the earliest measured funnel bottleneck remains landing -> checker start;
-- the existing substantive comparison guide is safer to improve than creating another thin SEO page;
-- competitors match explicit checklist/comparison intent strongly, while lead-generation services compete on “compare quotes” but do not offer HQC’s evidence-checking proposition.
+- the generic entry action and immediate post-upload Decision Case presentation create unnecessary cognitive load for a homeowner.
+- customers need to declare one of two simple intents before upload: check one quote or compare quotes.
 
 Hypothesis:
-- stronger exact-intent title/meta/H1 wording plus deposit-stage CTA language and FAQ structured data on the existing substantive comparison guide will improve qualified search match and increase handoff into the checker without changing analysis, payments or personal-data collection.
+- presenting Check a single quote / Compare quotes as the first decision, then replacing internal Decision Case language with a simple quote-check/comparison result and one obvious next action, will increase checker starts and multi-quote progression without weakening evidence guardrails.
 
 Change:
-- title/meta/H1 now explicitly target UK heat-pump quote comparison and the pre-deposit decision moment;
-- CTA now reads “Check my quote before I pay — free” and retains source attribution parameters;
-- added concise FAQPage structured data using claims already supported by the page;
-- preserved the evidence guardrail that missing evidence does not prove a design is wrong and that HQC does not certify design or grant eligibility;
-- no new page, no payment change, no DNS change, no personal-data expansion.
+- homepage presents explicit single-quote and comparison paths;
+- session retains comparison intent;
+- post-analysis presentation uses Your quote check / Your quote comparison and prioritises installer questions or adding another quote;
+- Decision Pack remains a later £4.99 commercial action after free comparison value is demonstrated;
+- no DNS, personal-data, design-certification, grant-eligibility or payment-provider change.
 
-Verification:
-- Cloudflare preview run #127 completed successfully;
-- custom-domain canary #204 completed successfully, including domain/API and mobile quote-intake checks;
+Verification before promotion:
+- Cloudflare preview deployment succeeded;
+- cf-preview.homequotecheck.co.uk canary succeeded after browser regression was updated for the intentional new CTA labels;
+- mobile single-quote intake path passed;
 - no AppDeploy deployment involved.
 
 Deploy only through guarded hqc-production Cloudflare workflow. Preserve homequotecheck.co.uk and www.homequotecheck.co.uk routing.
