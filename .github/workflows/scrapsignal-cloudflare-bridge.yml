@@ -24,7 +24,9 @@ jobs:
         with:
           node-version: 22
       - name: Validate dashboard JavaScript
-        run: node --check scrapsignal-preview/site/dashboard.js
+        run: |
+          node --check scrapsignal-preview/site/dashboard.js
+          node --check scrapsignal-preview/site/live-signals.js
       - name: Verify dashboard product surface
         shell: bash
         run: |
@@ -33,11 +35,11 @@ jobs:
           grep -q 'Watchlist' scrapsignal-preview/site/dashboard-demo.html
           grep -q 'Alert settings' scrapsignal-preview/site/dashboard-demo.html
           grep -q 'Export CSV' scrapsignal-preview/site/dashboard-demo.html
-          grep -q 'CONFIRMED FACT' scrapsignal-preview/site/dashboard-demo.html
-          grep -q 'SCRAPSIGNAL ASSESSMENT' scrapsignal-preview/site/dashboard-demo.html
           grep -q 'function exportCsv' scrapsignal-preview/site/dashboard.js
           grep -q 'localStorage' scrapsignal-preview/site/dashboard.js
-          grep -q 'signal_open' scrapsignal-preview/site/dashboard.js
+          grep -q 'Validated signals from the monitored register' scrapsignal-preview/site/live-signals.js
+          grep -q 'Mids Auto Services Limited' scrapsignal-preview/site/signals.json
+          grep -q 'Mytum and Selby (Goole) Ltd' scrapsignal-preview/site/signals.json
       - name: Install
         working-directory: scrapsignal-preview
         run: npm install
@@ -66,11 +68,13 @@ jobs:
           dashboard=$(curl -L -sS --max-time 30 "$base/dashboard-demo")
           grep -q 'FULL INTERACTIVE DEMO' <<< "$dashboard"
           grep -q 'Opportunity feed' <<< "$dashboard"
-          grep -q 'Watchlist' <<< "$dashboard"
-          grep -q 'Alert settings' <<< "$dashboard"
-          js=$(curl -L -sS --max-time 30 "$base/dashboard.js")
-          grep -q 'function exportCsv' <<< "$js"
-          grep -q 'watchlist_toggle' <<< "$js"
+          grep -q 'live-signals.js' <<< "$dashboard"
+          signals=$(curl -L -sS --max-time 30 "$base/signals.json")
+          grep -q 'Mids Auto Services Limited' <<< "$signals"
+          grep -q 'Mytum and Selby (Goole) Ltd' <<< "$signals"
+          livejs=$(curl -L -sS --max-time 30 "$base/live-signals.js")
+          grep -q 'Validated signals from the monitored register' <<< "$livejs"
           status=$(curl -L -sS --max-time 30 "$base/status.json")
-          grep -q 'BUILD_MVP' <<< "$status"
-          echo 'ScrapSignal full dashboard production verification passed.'
+          grep -q 'WAIT_FOR_MORE_EVIDENCE' <<< "$status"
+          grep -q 'quality_gate' <<< "$status"
+          echo 'ScrapSignal quality-gated dashboard production verification passed.'
