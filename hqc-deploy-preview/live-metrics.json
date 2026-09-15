@@ -1,9 +1,9 @@
 {
-  "fetchedAt": "2026-09-15T07:47:01.910545Z",
+  "fetchedAt": "2026-09-15T13:35:15.651621Z",
   "growthReport": {
     "durable": true,
     "extendedMeasurementStartedAt": "2026-09-11T20:34:24.536Z",
-    "generatedAt": "2026-09-15T07:47:01.881Z",
+    "generatedAt": "2026-09-15T13:35:15.615Z",
     "loop": [
       "Acquire qualified homeowners",
       "Measure source funnels",
@@ -13,11 +13,11 @@
     ],
     "measurementStartedAt": "2026-09-11T18:33:07.244Z",
     "rates": {
-      "ctaToUpload": null,
-      "decisionCaseToShareIntent": null,
-      "extendedGenuineToDecisionCase": null,
-      "extendedGenuineToMultiQuote": null,
-      "landingToCta": 0,
+      "ctaToUpload": 38,
+      "decisionCaseToShareIntent": 100,
+      "extendedGenuineToDecisionCase": 100,
+      "extendedGenuineToMultiQuote": 0,
+      "landingToCta": 24,
       "shareOpenToRecipientStart": null,
       "uploadToGenuine": 100
     },
@@ -28,22 +28,41 @@
     "sources": [
       {
         "checkouts": 0,
+        "cta": 8,
+        "ctaToUpload": 38,
+        "decisionCases": 2,
+        "extendedGenuine": 2,
+        "genuine": 3,
+        "installerQuestions": 0,
+        "landingToCta": 32,
+        "landingToGenuine": 12,
+        "landings": 25,
+        "multiQuoteAnalyses": 0,
+        "outboundClicks": 0,
+        "recipientStarts": 0,
+        "shareIntent": 2,
+        "shareOpens": 0,
+        "source": "direct",
+        "uploads": 3
+      },
+      {
+        "checkouts": 0,
         "cta": 0,
         "ctaToUpload": null,
         "decisionCases": 0,
         "extendedGenuine": 0,
-        "genuine": 1,
+        "genuine": 0,
         "installerQuestions": 0,
         "landingToCta": 0,
-        "landingToGenuine": 6,
-        "landings": 16,
+        "landingToGenuine": 0,
+        "landings": 4,
         "multiQuoteAnalyses": 0,
         "outboundClicks": 0,
         "recipientStarts": 0,
         "shareIntent": 0,
         "shareOpens": 0,
-        "source": "direct",
-        "uploads": 1
+        "source": "results_compare",
+        "uploads": 0
       },
       {
         "checkouts": 0,
@@ -124,24 +143,24 @@
     ],
     "total": {
       "checkouts": 0,
-      "cta": 0,
-      "decisionCases": 0,
-      "extendedGenuine": 0,
-      "genuine": 1,
+      "cta": 8,
+      "decisionCases": 2,
+      "extendedGenuine": 2,
+      "genuine": 3,
       "installerQuestions": 0,
-      "landings": 20,
+      "landings": 33,
       "multiQuoteAnalyses": 0,
       "outboundClicks": 0,
       "recipientStarts": 0,
-      "shareIntent": 0,
+      "shareIntent": 2,
       "shareOpens": 0,
-      "uploads": 1
+      "uploads": 3
     }
   },
   "metrics": {
     "durable": true,
     "extendedMeasurementStartedAt": "2026-09-11T20:34:24.536Z",
-    "genuineAnalyses": 1,
+    "genuineAnalyses": 3,
     "measurementStartedAt": "2026-09-11T18:33:07.244Z",
     "note": "Cumulative Cloudflare-side counters from measurementStartedAt; QA/demo/test events are excluded. Extended funnel counters use their own same-epoch denominator from extendedMeasurementStartedAt.",
     "outboundClicks": 0,
