@@ -3,10 +3,6 @@ main = "worker.js"
 compatibility_date = "2026-09-14"
 workers_dev = true
 
-[[analytics_engine_datasets]]
-binding = "ANALYTICS"
-dataset = "scrapsignal_commercial_events"
-
 [assets]
 directory = "./site"
 binding = "ASSETS"
