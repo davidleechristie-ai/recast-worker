@@ -7,9 +7,11 @@
   };
   send('page_view');
   document.addEventListener('click',e=>{
-    const link=e.target.closest('a'); if(!link)return;
-    const label=(link.textContent||'').trim().slice(0,80);
-    if(link.classList.contains('primary')||/founding|join|access|pricing/i.test(label)) send('commercial_cta_click',{label,href:link.getAttribute('href')});
-    else if(/methodology|signal model|waste sales intelligence/i.test(label)) send('evidence_click',{label,href:link.getAttribute('href')});
+    const target=e.target.closest('a,button'); if(!target)return;
+    const label=(target.textContent||'').trim().slice(0,80);
+    const href=target.getAttribute('href');
+    if(target.matches('.filter,.detail,#editSettings')) send('dashboard_demo_interaction',{label,filter:target.dataset.filter||null});
+    if(target.classList.contains('primary')||/founding|join|access|pricing/i.test(label)) send('commercial_cta_click',{label,href});
+    else if(/methodology|signal model|waste sales intelligence/i.test(label)) send('evidence_click',{label,href});
   });
 })();
