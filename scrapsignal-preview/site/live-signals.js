@@ -1,20 +1,24 @@
 (()=>{
-const esc=s=>String(s??'').replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
-const track=(meta={})=>fetch('/api/event',{method:'POST',headers:{'content-type':'application/json'},body:JSON.stringify({event:'dashboard_demo_interaction',path:location.pathname,meta:{action:'validated_signal_open',...meta},ts:new Date().toISOString()}),keepalive:true}).catch(()=>{});
-async function init(){
-  const anchor=document.querySelector('#opportunities');
-  if(!anchor)return;
-  try{
-    const response=await fetch('/signals.json',{cache:'no-store'});
-    if(!response.ok)throw new Error('feed unavailable');
-    const feed=await response.json();
-    const section=document.createElement('section');
-    section.className='card';section.id='validated-signals';
-    const cards=(feed.signals||[]).map(s=>`<article style="padding:16px;border:1px solid #dce5e1;border-radius:12px;background:#fff"><div style="display:flex;justify-content:space-between;gap:10px;align-items:flex-start"><div><span class="badge new">VALIDATED · ${esc(s.event)}</span><h3 style="margin:9px 0 3px">${esc(s.name)}</h3><div class="sub">${esc(s.address)}</div></div><div class="priority p90">${esc(s.score)}</div></div><div style="margin-top:13px;font-size:12px"><b>What we know</b><p style="margin:4px 0 10px;color:#526071">${esc(s.fact)}</p><b>Why a supplier may care</b><p style="margin:4px 0 10px;color:#526071">${esc(s.why)}</p><div>${(s.needs||[]).map(n=>`<span class="need">${esc(n)}</span>`).join('')}</div><p style="margin:12px 0 0"><b>Suggested opener:</b> ${esc(s.opener)}</p><p style="margin:10px 0 0"><a class="button small live-evidence" data-id="${esc(s.id)}" href="${esc(s.source_url)}" target="_blank" rel="noopener">View authoritative source ↗</a></p></div></article>`).join('');
-    section.innerHTML=`<div class="cardhead"><div><h2>Validated signals from the monitored register</h2><p>These are real detected register changes, not demo organisations. Commercial requirements are clearly shown as ScrapSignal assessment rather than fact.</p></div><span class="activepill">${feed.signal_count||0} validated</span></div><div style="padding:18px 20px"><div class="notice" style="margin-top:0"><strong>Quality gate active.</strong> ${esc(feed.quality_note||'Only source-quality-approved changes are shown.')}</div><div style="display:grid;grid-template-columns:repeat(auto-fit,minmax(300px,1fr));gap:12px">${cards||'<div class="empty">No validated signals currently available.</div>'}</div></div>`;
-    anchor.parentNode.insertBefore(section,anchor);
-    section.querySelectorAll('.live-evidence').forEach(a=>a.addEventListener('click',()=>track({id:a.dataset.id})));
-  }catch(err){console.warn('Validated feed unavailable',err)}
-}
-document.readyState==='loading'?document.addEventListener('DOMContentLoaded',init):init();
+  const esc=(value)=>String(value??'').replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
+  const badge=(type)=>String(type||'signal').replaceAll('_',' ');
+  const render=(signal)=>`<article class="signal-card live-signal" data-live-signal="${esc(signal.id)}">
+    <div class="signal-top"><div><div class="badges"><span class="badge high">${esc(badge(signal.event_type))}</span><span class="badge new">Source-backed</span></div><h3>${esc(signal.operator)}</h3><p class="location">${esc(signal.location)}</p></div><div class="score">${esc(signal.score)}<span>/100</span></div></div>
+    <p class="reason"><strong>Why now:</strong> ${esc(signal.why_now)}</p>
+    <div class="likely"><strong>Supplier categories</strong><div class="tags">${(signal.supplier_categories||[]).map(x=>`<span>${esc(x)}</span>`).join('')}</div></div>
+    <p class="reason"><strong>Confidence:</strong> ${esc(signal.confidence)} · ${esc(signal.source_name)}</p>
+    <div class="signal-actions"><a class="btn btn-small" href="${esc(signal.evidence_url)}" target="_blank" rel="noopener">Open evidence ↗</a><a class="btn btn-small" href="/signals/new-waste-sites-september-2026">Research note</a></div>
+  </article>`;
+  const mount=async()=>{
+    const stats=document.querySelector('#view-dashboard .stats');
+    if(!stats||document.querySelector('[data-live-feed]'))return;
+    try{
+      const response=await fetch('/signals.json',{cache:'no-store'});if(!response.ok)return;
+      const payload=await response.json();const signals=payload.signals||[];if(!signals.length)return;
+      const section=document.createElement('section');section.className='live-intel-section';section.dataset.liveFeed='true';
+      section.innerHTML=`<div class="section-head"><div><p class="eyebrow">LIVE VALIDATION FEED</p><h2>Genuine detected register changes</h2><p>These records come from accepted stable Environment Agency register changes. Commercial interpretation is clearly separated from source facts.</p></div><a class="btn" href="/proof">View validation evidence</a></div><div class="signal-list">${signals.map(render).join('')}</div>`;
+      stats.insertAdjacentElement('afterend',section);
+      document.querySelectorAll('[data-live-signal] a').forEach(a=>a.addEventListener('click',()=>fetch('/api/event',{method:'POST',headers:{'content-type':'application/json'},body:JSON.stringify({event:'signal_open',path:location.pathname,meta:{signal:a.closest('[data-live-signal]')?.dataset.liveSignal||'',source:'live_validation_feed'},ts:new Date().toISOString()}),keepalive:true}).catch(()=>{})));
+    }catch(_){/* Keep the demo usable if the feed is unavailable. */}
+  };
+  if(document.readyState==='loading')document.addEventListener('DOMContentLoaded',mount);else mount();
 })();
