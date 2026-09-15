@@ -1,0 +1,69 @@
+const enc=new TextEncoder();
+const safe=(v,n=240)=>String(v??'').slice(0,n);
+const emailOk=(v)=>/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(String(v||''));
+const hex=(buffer)=>[...new Uint8Array(buffer)].map(b=>b.toString(16).padStart(2,'0')).join('');
+const timingSafe=(a,b)=>{if(a.length!==b.length)return false;let out=0;for(let i=0;i<a.length;i++)out|=a.charCodeAt(i)^b.charCodeAt(i);return out===0;};
+
+export const billingConfigured=(env)=>Boolean(env.STRIPE_SECRET_KEY&&env.STRIPE_PRICE_ID&&env.STRIPE_WEBHOOK_SECRET&&env.CUSTOMERS);
+
+export async function createCheckoutSession(request,env){
+  if(!env.STRIPE_SECRET_KEY||!env.STRIPE_PRICE_ID||!env.CUSTOMERS)return {status:503,body:{ok:false,code:'billing_not_configured'}};
+  const body=await request.json();
+  const email=safe(body.email,320).trim().toLowerCase();
+  if(!emailOk(email))return {status:400,body:{ok:false,code:'invalid_email'}};
+  const state=crypto.randomUUID();
+  const preferences={cadence:['instant','daily','weekly'].includes(body.cadence)?body.cadence:'daily',regions:Array.isArray(body.regions)?body.regions.map(v=>safe(v,80)).slice(0,12):[],product_focus:Array.isArray(body.product_focus)?body.product_focus.map(v=>safe(v,80)).slice(0,12):[],minimum_priority:Math.max(0,Math.min(100,Number(body.minimum_priority)||70)),recipients:[email]};
+  await env.CUSTOMERS.put(`pending:${state}`,JSON.stringify({email,preferences,created_at:new Date().toISOString()}),{expirationTtl:86400});
+  const origin=new URL(request.url).origin;
+  const form=new URLSearchParams();
+  form.set('mode','subscription');
+  form.set('customer_email',email);
+  form.set('client_reference_id',state);
+  form.set('line_items[0][price]',env.STRIPE_PRICE_ID);
+  form.set('line_items[0][quantity]','1');
+  form.set('success_url',`${origin}/welcome?session_id={CHECKOUT_SESSION_ID}`);
+  form.set('cancel_url',`${origin}/?checkout=cancelled`);
+  form.set('subscription_data[metadata][scrapsignal_state]',state);
+  form.set('metadata[scrapsignal_state]',state);
+  const response=await fetch('https://api.stripe.com/v1/checkout/sessions',{method:'POST',headers:{authorization:`Bearer ${env.STRIPE_SECRET_KEY}`,'content-type':'application/x-www-form-urlencoded'},body:form});
+  const session=await response.json();
+  if(!response.ok||!session.url){await env.CUSTOMERS.delete(`pending:${state}`);return {status:502,body:{ok:false,code:'checkout_provider_error'}};}
+  return {status:200,body:{ok:true,url:session.url}};
+}
+
+export async function verifyStripeSignature(raw,header,secret,now=Math.floor(Date.now()/1000)){
+  if(!header||!secret)return false;
+  const parts=Object.fromEntries(header.split(',').map(part=>part.split('=',2)));
+  const timestamp=Number(parts.t);
+  const signature=parts.v1||'';
+  if(!timestamp||Math.abs(now-timestamp)>300)return false;
+  const key=await crypto.subtle.importKey('raw',enc.encode(secret),{name:'HMAC',hash:'SHA-256'},false,['sign']);
+  const digest=await crypto.subtle.sign('HMAC',key,enc.encode(`${timestamp}.${raw}`));
+  return timingSafe(hex(digest),signature);
+}
+
+const entitledStatus=(status)=>['active','trialing'].includes(status);
+const customerKey=async(email)=>{const digest=await crypto.subtle.digest('SHA-256',enc.encode(email.toLowerCase()));return `customer:${hex(digest)}`;};
+
+export async function handleStripeWebhook(request,env){
+  if(!env.STRIPE_WEBHOOK_SECRET||!env.CUSTOMERS)return {status:503,body:{ok:false,code:'billing_not_configured'}};
+  const raw=await request.text();
+  if(!await verifyStripeSignature(raw,request.headers.get('stripe-signature'),env.STRIPE_WEBHOOK_SECRET))return {status:400,body:{ok:false,code:'invalid_signature'}};
+  const event=JSON.parse(raw);const object=event?.data?.object||{};
+  if(event.type==='checkout.session.completed'){
+    const state=object.client_reference_id||object.metadata?.scrapsignal_state;
+    const pending=state?await env.CUSTOMERS.get(`pending:${state}`,'json'):null;
+    const email=safe(object.customer_details?.email||object.customer_email||pending?.email,320).trim().toLowerCase();
+    if(emailOk(email)){
+      const record={email,stripe_customer_id:safe(object.customer,120),subscription_id:safe(object.subscription,120),status:'active',entitled:true,plan:'founding',amount_gbp_monthly:149,preferences:pending?.preferences||{cadence:'daily',regions:[],product_focus:[],minimum_priority:70,recipients:[email]},updated_at:new Date().toISOString()};
+      await env.CUSTOMERS.put(await customerKey(email),JSON.stringify(record));
+      if(state)await env.CUSTOMERS.delete(`pending:${state}`);
+    }
+  }
+  if(['customer.subscription.updated','customer.subscription.deleted'].includes(event.type)){
+    const subscriptionId=safe(object.id,120);const customerId=safe(object.customer,120);const status=safe(object.status,40);
+    const page=await env.CUSTOMERS.list({prefix:'customer:',limit:1000});
+    for(const key of page.keys){const record=await env.CUSTOMERS.get(key.name,'json');if(record&&(record.subscription_id===subscriptionId||record.stripe_customer_id===customerId)){record.status=status;record.entitled=entitledStatus(status);record.updated_at=new Date().toISOString();await env.CUSTOMERS.put(key.name,JSON.stringify(record));break;}}
+  }
+  return {status:200,body:{received:true}};
+}
