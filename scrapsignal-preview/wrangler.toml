@@ -3,6 +3,10 @@ main = "worker.js"
 compatibility_date = "2026-09-14"
 workers_dev = true
 
+[[kv_namespaces]]
+binding = "EVENTS"
+id = "1640efc271994c03ab4623f754521ed8"
+
 [assets]
 directory = "./site"
 binding = "ASSETS"
