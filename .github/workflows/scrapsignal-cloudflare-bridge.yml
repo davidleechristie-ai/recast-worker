@@ -34,6 +34,8 @@ jobs:
           grep -q 'Quality first' scrapsignal-preview/site/new-waste-sites-september-2026.html
           grep -q 'Current source-backed proof' scrapsignal-preview/site/digital-waste-tracking-sales-intelligence.html
           grep -q 'The supplier market is crowded' scrapsignal-preview/site/digital-waste-tracking-supplier-market-2026.html
+          grep -q 'Global Metal Recycling Ltd' scrapsignal-preview/site/waste-compliance-sales-signals.html
+          grep -q 'not evidence that the operator intended to purchase' scrapsignal-preview/site/waste-compliance-sales-signals.html
       - name: Install
         working-directory: scrapsignal-preview
         run: npm install
@@ -66,6 +68,11 @@ jobs:
           check dwt-live-proof "$dwt" 'Current source-backed proof'
           market=$(curl -L -sS --max-time 30 "$base/digital-waste-tracking-supplier-market-2026")
           check dwt-market "$market" 'The supplier market is crowded'
+          compliance=$(curl -L -sS --max-time 30 "$base/waste-compliance-sales-signals")
+          check compliance-intelligence "$compliance" 'Global Metal Recycling Ltd'
+          check compliance-caveat "$compliance" 'not evidence that the operator intended to purchase'
+          sitemap=$(curl -L -sS --max-time 30 "$base/sitemap.xml")
+          check sitemap-compliance "$sitemap" 'waste-compliance-sales-signals'
           livejs=$(curl -L -sS --max-time 30 "$base/live-signals.js")
           check live-feed-renderer "$livejs" 'Validated signals from the monitored register'
           status=$(curl -L -sS --max-time 30 "$base/status.json")
