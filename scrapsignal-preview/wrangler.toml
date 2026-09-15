@@ -7,9 +7,13 @@ workers_dev = true
 binding = "EVENTS"
 id = "1640efc271994c03ab4623f754521ed8"
 
+[[kv_namespaces]]
+binding = "CUSTOMERS"
+id = "ea5276a7c30b40a18a2bef6f38cc1674"
+
 [assets]
 directory = "./site"
 binding = "ASSETS"
 html_handling = "none"
 not_found_handling = "single-page-application"
-run_worker_first = [ "/api/*", "/health", "/dashboard-demo", "!/dashboard-demo.html", "/signals/*", "/methodology", "!/methodology.html", "/waste-sales-intelligence", "!/waste-sales-intelligence.html", "/waste-compliance-sales-signals", "!/waste-compliance-sales-signals.html", "/digital-waste-tracking-sales-intelligence", "!/digital-waste-tracking-sales-intelligence.html", "/digital-waste-tracking-supplier-market-2026", "!/digital-waste-tracking-supplier-market-2026.html" ]
+run_worker_first = [ "/api/*", "/health", "/dashboard-demo", "!/dashboard-demo.html", "/signals/*", "/methodology", "!/methodology.html", "/waste-sales-intelligence", "!/waste-sales-intelligence.html", "/waste-compliance-sales-signals", "!/waste-compliance-sales-signals.html", "/digital-waste-tracking-sales-intelligence", "!/digital-waste-tracking-sales-intelligence.html", "/digital-waste-tracking-supplier-market-2026", "!/digital-waste-tracking-supplier-market-2026.html", "/start", "!/start.html", "/welcome", "!/welcome.html" ]
