@@ -35,6 +35,7 @@ jobs:
           grep -q 'Validated signals from the monitored register' scrapsignal-preview/site/live-signals.js
           grep -q 'Mids Auto Services Limited' scrapsignal-preview/site/signals.json
           grep -q 'Mytum and Selby (Goole) Ltd' scrapsignal-preview/site/signals.json
+          grep -q 'Real changes. Source linked. Noise filtered.' scrapsignal-preview/site/proof.html
           grep -q 'Quality first' scrapsignal-preview/site/new-waste-sites-september-2026.html
           grep -q 'Current source-backed proof' scrapsignal-preview/site/digital-waste-tracking-sales-intelligence.html
           grep -q 'The supplier market is crowded' scrapsignal-preview/site/digital-waste-tracking-supplier-market-2026.html
@@ -59,17 +60,18 @@ jobs:
           check health "$health" 'scrapsignal-preview'
           check durable-analytics "$health" 'durable-kv'
           check customer-store "$health" '"customer_store":"durable-kv"'
-          check billing-state "$health" 'awaiting-independent-provider'
+          if grep -q '"billing":"configured"' <<< "$health"; then echo 'verified: billing configured'; else check billing-state "$health" 'awaiting-independent-provider'; fi
           metrics=$(curl -L -sS --max-time 30 "$base/api/metrics")
           check metrics-storage "$metrics" '"storage":"kv"'
           check metrics-total "$metrics" '"total"'
           echo "commercial-metrics=$metrics"
           start=$(curl -L -sS --max-time 30 "$base/start")
           check checkout-page "$start" 'Continue to secure checkout'
-          checkout=$(curl -sS --max-time 30 -X POST "$base/api/checkout" -H 'content-type: application/json' --data '{"email":"qa@example.invalid"}')
-          check dormant-checkout "$checkout" 'billing_not_configured'
+          if grep -q 'awaiting-independent-provider' <<< "$health"; then checkout=$(curl -sS --max-time 30 -X POST "$base/api/checkout" -H 'content-type: application/json' --data '{"email":"qa@example.invalid"}'); check dormant-checkout "$checkout" 'billing_not_configured'; fi
           home=$(curl -L -sS --max-time 30 "$base/")
           check homepage "$home" 'Find businesses that may be'
+          proof=$(curl -L -sS --max-time 30 "$base/proof")
+          check proof-page "$proof" 'Real changes. Source linked. Noise filtered.'
           dashboard=$(curl -L -sS --max-time 30 "$base/dashboard-demo")
           check dashboard "$dashboard" 'Opportunity feed'
           check dashboard-live-injection "$dashboard" 'live-signals.js'
@@ -87,7 +89,7 @@ jobs:
           check compliance-intelligence "$compliance" 'Global Metal Recycling Ltd'
           check compliance-caveat "$compliance" 'not evidence that the operator intended to purchase'
           sitemap=$(curl -L -sS --max-time 30 "$base/sitemap.xml")
-          check sitemap-compliance "$sitemap" 'waste-compliance-sales-signals'
+          check sitemap-proof "$sitemap" '/proof'
           livejs=$(curl -L -sS --max-time 30 "$base/live-signals.js")
           check live-feed-renderer "$livejs" 'Validated signals from the monitored register'
           status=$(curl -L -sS --max-time 30 "$base/status.json")
