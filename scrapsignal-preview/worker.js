@@ -30,7 +30,8 @@ export default {
 
     const cleanRoutes={
       '/methodology':'/methodology.html',
-      '/waste-sales-intelligence':'/waste-sales-intelligence.html'
+      '/waste-sales-intelligence':'/waste-sales-intelligence.html',
+      '/digital-waste-tracking-sales-intelligence':'/digital-waste-tracking-sales-intelligence.html'
     };
     if(cleanRoutes[url.pathname]){
       const assetUrl=new URL(request.url);
@@ -38,7 +39,7 @@ export default {
       return withHeaders(await env.ASSETS.fetch(new Request(assetUrl,request)));
     }
 
-    if(url.pathname==='/methodology.html' || url.pathname==='/waste-sales-intelligence.html'){
+    if(Object.values(cleanRoutes).includes(url.pathname)){
       url.pathname=url.pathname.replace(/\.html$/,'');
       return Response.redirect(url.toString(),308);
     }
