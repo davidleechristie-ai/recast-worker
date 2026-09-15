@@ -4,13 +4,14 @@ on:
   push:
     branches:
       - adhoc-ui-consistency
+      - growth-rendered-visual-gate
   workflow_dispatch:
 
 permissions:
   contents: read
 
 concurrency:
-  group: adhoc-ui-consistency
+  group: adhoc-ui-consistency-${{ github.ref }}
   cancel-in-progress: true
 
 jobs:
@@ -18,15 +19,13 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v5
-        with:
-          ref: adhoc-ui-consistency
       - uses: actions/setup-node@v4
         with:
-          node-version: 20
+          node-version: 22
       - name: Install dependencies
         working-directory: recast-worker
-        run: npm install --no-package-lock
-      - name: Full regression and UI consistency tests
+        run: npm ci --no-audit --no-fund
+      - name: Full regression and structural UI consistency tests
         working-directory: recast-worker
         run: npm test
       - name: Wrangler build validation
@@ -39,4 +38,13 @@ jobs:
           test -f public/ui-consistency.js
           test -f src/worker-ui.js
           grep -q 'src/worker-ui.js' wrangler.jsonc
-          echo 'Ad-hoc UI consistency gate passed.'
+      - name: Install Playwright Chromium
+        working-directory: recast-worker
+        run: |
+          npm install --no-save --no-package-lock playwright@1.55.0
+          npx playwright install --with-deps chromium
+      - name: Rendered production visual integrity sweep
+        working-directory: recast-worker
+        env:
+          RECAST_VISUAL_BASE_URL: https://tryrecast.app
+        run: node scripts/rendered-visual-integrity.mjs
