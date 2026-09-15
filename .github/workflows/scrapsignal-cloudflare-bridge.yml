@@ -25,9 +25,13 @@ jobs:
           node-version: 22
       - name: Validate product assets
         run: |
+          node --check scrapsignal-preview/worker.js
+          node --check scrapsignal-preview/billing.js
           node --check scrapsignal-preview/site/dashboard.js
           node --check scrapsignal-preview/site/live-signals.js
           grep -q 'Opportunity feed' scrapsignal-preview/site/dashboard-demo.html
+          grep -q 'Continue to secure checkout' scrapsignal-preview/site/start.html
+          grep -q 'Payment confirmation is processed server-side' scrapsignal-preview/site/welcome.html
           grep -q 'Validated signals from the monitored register' scrapsignal-preview/site/live-signals.js
           grep -q 'Mids Auto Services Limited' scrapsignal-preview/site/signals.json
           grep -q 'Mytum and Selby (Goole) Ltd' scrapsignal-preview/site/signals.json
@@ -54,9 +58,16 @@ jobs:
           health=$(curl -L -sS --max-time 30 "$base/health")
           check health "$health" 'scrapsignal-preview'
           check durable-analytics "$health" 'durable-kv'
+          check customer-store "$health" '"customer_store":"durable-kv"'
+          check billing-state "$health" 'awaiting-independent-provider'
           metrics=$(curl -L -sS --max-time 30 "$base/api/metrics")
           check metrics-storage "$metrics" '"storage":"kv"'
           check metrics-total "$metrics" '"total"'
+          echo "commercial-metrics=$metrics"
+          start=$(curl -L -sS --max-time 30 "$base/start")
+          check checkout-page "$start" 'Continue to secure checkout'
+          checkout=$(curl -sS --max-time 30 -X POST "$base/api/checkout" -H 'content-type: application/json' --data '{"email":"qa@example.invalid"}')
+          check dormant-checkout "$checkout" 'billing_not_configured'
           home=$(curl -L -sS --max-time 30 "$base/")
           check homepage "$home" 'Find businesses that may be'
           dashboard=$(curl -L -sS --max-time 30 "$base/dashboard-demo")
