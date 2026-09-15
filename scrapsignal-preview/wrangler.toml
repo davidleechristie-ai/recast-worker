@@ -5,6 +5,7 @@ workers_dev = true
 
 [vars]
 STRIPE_PRICE_ID = "price_1UG126Cc7A9hsVb3wA4mkWoT"
+STRIPE_PAYMENT_LINK = "https://buy.stripe.com/bJeeVc0Sn0Wa2nLgOn2cg00"
 
 [[kv_namespaces]]
 binding = "EVENTS"
