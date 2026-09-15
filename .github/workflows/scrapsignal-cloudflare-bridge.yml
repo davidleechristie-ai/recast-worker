@@ -32,6 +32,8 @@ jobs:
           grep -q 'Mids Auto Services Limited' scrapsignal-preview/site/signals.json
           grep -q 'Mytum and Selby (Goole) Ltd' scrapsignal-preview/site/signals.json
           grep -q 'Quality first' scrapsignal-preview/site/new-waste-sites-september-2026.html
+          grep -q 'Current source-backed proof' scrapsignal-preview/site/digital-waste-tracking-sales-intelligence.html
+          grep -q 'The supplier market is crowded' scrapsignal-preview/site/digital-waste-tracking-supplier-market-2026.html
       - name: Install
         working-directory: scrapsignal-preview
         run: npm install
@@ -60,6 +62,10 @@ jobs:
           signalpage=$(curl -L -sS --max-time 30 "$base/signals/new-waste-sites-september-2026")
           check public-signal-page "$signalpage" 'New licensed sites our monitor detected'
           check public-signal-proof "$signalpage" 'Mids Auto Services Limited'
+          dwt=$(curl -L -sS --max-time 30 "$base/digital-waste-tracking-sales-intelligence")
+          check dwt-live-proof "$dwt" 'Current source-backed proof'
+          market=$(curl -L -sS --max-time 30 "$base/digital-waste-tracking-supplier-market-2026")
+          check dwt-market "$market" 'The supplier market is crowded'
           livejs=$(curl -L -sS --max-time 30 "$base/live-signals.js")
           check live-feed-renderer "$livejs" 'Validated signals from the monitored register'
           status=$(curl -L -sS --max-time 30 "$base/status.json")
