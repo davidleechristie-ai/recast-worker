@@ -1,12 +1,14 @@
 {
-  "total_events": 117,
-  "surfaced_events": 13,
-  "useful_commercial_signals": 13,
-  "event_type_counts": {"NEW_OPERATOR": 16, "NEW_SITE": 43, "REMOVED_OR_CLOSED": 58},
-  "decision": "BUILD_MVP",
+  "total_events": 5,
+  "surfaced_events": 2,
+  "useful_commercial_signals": 2,
+  "event_type_counts": {"NEW_OPERATOR": 1, "NEW_SITE": 2, "REMOVED_OR_CLOSED": 2},
+  "decision": "WAIT_FOR_MORE_EVIDENCE",
   "precision_target": 0.8,
   "minimum_signals": 5,
   "estimated_precision": 1.0,
-  "build_gate_passed": true,
-  "latest_snapshot_pair": "2026-09-15T11-46-14Z.json->2026-09-15T13-27-10Z.json"
+  "build_gate_passed": false,
+  "quality_gate": "active",
+  "quarantined_snapshot_pairs": 2,
+  "latest_stable_snapshot_pair": "2026-09-13T06-35-15Z.json->2026-09-14T05-51-42Z.json"
 }
