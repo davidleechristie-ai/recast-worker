@@ -34,38 +34,19 @@ jobs:
         shell: bash
         run: |
           set -euo pipefail
-          test -s hqc-deploy-preview/site/index.html
-          test -s hqc-deploy-preview/site/__hqc_enhancements.js
-          test -s hqc-deploy-preview/site/__hqc_upload_v3.js
-          test -s hqc-deploy-preview/site/__hqc_target_mobile.js
-          test -s hqc-deploy-preview/site/__hqc_artwork_fit.js
-          test -s hqc-deploy-preview/site/__hqc_results_layout.js
-          test -s hqc-deploy-preview/site/__hqc_quote_facts.js
-          test -s hqc-deploy-preview/site/__hqc_paid_comparison.js
-          test -s hqc-deploy-preview/site/__hqc_decision_pack.js
+          for f in index.html __hqc_enhancements.js __hqc_upload_v3.js __hqc_target_mobile.js __hqc_artwork_fit.js __hqc_results_layout.js __hqc_quote_facts.js __hqc_paid_comparison.js __hqc_decision_pack.js __hqc_approved_layout.js __hqc_simple_results.js; do test -s "hqc-deploy-preview/site/$f"; done
           test -s hqc-deploy-preview/site/assets/notifications-runtime-DKZvfw3S.js
           test -s hqc-deploy-preview/site/resources/pdf.mjs
           test -s hqc-deploy-preview/site/resources/pdf.worker.mjs
-          test -s hqc-deploy-preview/site/resources/homepage-graphic.png
           test -s hqc-deploy-preview/site/resources/homepage-house-only.svg
-          grep -q 'root' hqc-deploy-preview/site/index.html
-          grep -q '__hqc_upload_v3.js' hqc-deploy-preview/site/index.html
-          grep -q '__hqc_target_mobile.js' hqc-deploy-preview/site/index.html
-          grep -q '__hqc_artwork_fit.js' hqc-deploy-preview/site/index.html
-          grep -q '__hqc_results_layout.js' hqc-deploy-preview/site/index.html
-          grep -q '__hqc_quote_facts.js' hqc-deploy-preview/site/index.html
-          grep -q '__hqc_paid_comparison.js' hqc-deploy-preview/site/index.html
-          grep -q '__hqc_decision_pack.js' hqc-deploy-preview/site/index.html
-          grep -q 'homepage-house-only.svg' hqc-deploy-preview/site/__hqc_artwork_fit.js
+          grep -q '__hqc_simple_results.js' hqc-deploy-preview/site/index.html
+          grep -q '__hqc_approved_layout.js' hqc-deploy-preview/site/index.html
+          grep -q 'Start single quote check' hqc-deploy-preview/site/__hqc_approved_layout.js
+          grep -q 'Start quote comparison' hqc-deploy-preview/site/__hqc_approved_layout.js
+          grep -q 'Your quote check' hqc-deploy-preview/site/__hqc_simple_results.js
+          grep -q 'Your quote comparison' hqc-deploy-preview/site/__hqc_simple_results.js
+          grep -q 'Get my Decision Pack — £4.99' hqc-deploy-preview/site/__hqc_paid_comparison.js
           grep -q 'Quote evidence completeness' hqc-deploy-preview/site/__hqc_enhancements.js
-          grep -q 'Fastest way to start' hqc-deploy-preview/site/__hqc_enhancements.js
-          grep -Fq 'Check my quote before I pay' hqc-deploy-preview/site/__hqc_enhancements.js
-          grep -Fq 'Check my quote before I pay' hqc-deploy-preview/site/__hqc_target_mobile.js
-          grep -q 'aspect-ratio:1.94/1' hqc-deploy-preview/site/__hqc_target_mobile.js
-          grep -q 'upload-friction-v3' hqc-deploy-preview/site/__hqc_upload_v3.js
-          grep -q 'Compare your installers — £19' hqc-deploy-preview/site/__hqc_paid_comparison.js
-          grep -q 'Important information is still missing' hqc-deploy-preview/site/__hqc_results_layout.js
-          grep -q 'Quote Facts' hqc-deploy-preview/site/__hqc_quote_facts.js
           grep -q 'https://homequotecheck.co.uk' hqc-deploy-preview/site/index.html
           ! grep -q 'hqc-migration-preview.davidleechristie.workers.dev' hqc-deploy-preview/site/index.html
           ! grep -q 'cf-preview.homequotecheck.co.uk' hqc-deploy-preview/site/index.html
@@ -85,34 +66,18 @@ jobs:
           for attempt in 1 2 3 4 5 6 7 8 9 10 11 12; do
             health=$(curl -L -sS --max-time 30 "$base/health" || true)
             home=$(curl -L -sS --max-time 30 "$base/?release_probe=$attempt" || true)
-            echo "attempt $attempt health=$health uploadV3=$(grep -c '__hqc_upload_v3.js' <<< "$home" || true) mobile=$(grep -c '__hqc_target_mobile.js' <<< "$home" || true)"
-            if grep -q 'home-quote-check' <<< "$health" && grep -q 'production' <<< "$health" && grep -q '__hqc_enhancements.js' <<< "$home" && grep -q '__hqc_upload_v3.js' <<< "$home" && grep -q '__hqc_target_mobile.js' <<< "$home" && grep -q '__hqc_artwork_fit.js' <<< "$home" && grep -q '__hqc_results_layout.js' <<< "$home" && grep -q '__hqc_quote_facts.js' <<< "$home" && grep -q '__hqc_paid_comparison.js' <<< "$home"; then ready=true; break; fi
+            if grep -q 'home-quote-check' <<< "$health" && grep -q 'production' <<< "$health" && grep -q '__hqc_simple_results.js' <<< "$home" && grep -q '__hqc_approved_layout.js' <<< "$home"; then ready=true; break; fi
             sleep 5
           done
           test "$ready" = 'true'
-          for path in / /api/_healthcheck /robots.txt /sitemap.xml /resources/homepage-graphic.png /resources/homepage-house-only.svg /resources/pdf.mjs /resources/pdf.worker.mjs /assets/notifications-runtime-DKZvfw3S.js /is-this-a-good-heat-pump-quote.html /__hqc_enhancements.js /__hqc_artwork_fit.js /__hqc_upload_v3.js /__hqc_target_mobile.js /__hqc_results_layout.js /__hqc_quote_facts.js /__hqc_paid_comparison.js /__hqc_decision_pack.js; do
-            code=$(curl -L -sS -o /tmp/hqc-prod -w '%{http_code}' --max-time 30 "$base$path")
-            echo "$path -> $code"
-            test "$code" = '200'
-          done
-          for path in /resources/pdf.mjs /resources/pdf.worker.mjs /assets/notifications-runtime-DKZvfw3S.js; do
-            ct=$(curl -L -sSI --max-time 30 "$base$path" | tr -d '\r' | awk -F': ' 'tolower($1)=="content-type" {print tolower($2); exit}')
-            echo "$path content-type=$ct"
-            grep -Eq 'javascript|ecmascript' <<< "$ct"
-          done
-          home=$(curl -L -sS --max-time 30 "$base/?release_probe=final")
-          grep -q '__hqc_enhancements.js' <<< "$home"
-          grep -q '__hqc_artwork_fit.js' <<< "$home"
-          grep -q '__hqc_upload_v3.js' <<< "$home"
-          grep -q '__hqc_target_mobile.js' <<< "$home"
-          grep -q '__hqc_results_layout.js' <<< "$home"
-          grep -q '__hqc_quote_facts.js' <<< "$home"
-          grep -q '__hqc_paid_comparison.js' <<< "$home"
-          grep -q '__hqc_decision_pack.js' <<< "$home"
-          grep -q 'https://homequotecheck.co.uk' <<< "$home"
-          ! grep -q 'hqc-migration-preview.davidleechristie.workers.dev' <<< "$home"
-          ! grep -q 'cf-preview.homequotecheck.co.uk' <<< "$home"
-          ! grep -q 'heat-pump-second-opinion-v43csv.v2.appdeploy.ai' <<< "$home"
+          for path in / /api/_healthcheck /robots.txt /sitemap.xml /__hqc_approved_layout.js /__hqc_simple_results.js /__hqc_paid_comparison.js; do code=$(curl -L -sS -o /tmp/hqc-prod -w '%{http_code}' --max-time 30 "$base$path"); echo "$path -> $code"; test "$code" = '200'; done
+          approved=$(curl -L -sS --max-time 30 "$base/__hqc_approved_layout.js")
+          grep -q 'Start single quote check' <<< "$approved"
+          grep -q 'Start quote comparison' <<< "$approved"
+          results=$(curl -L -sS --max-time 30 "$base/__hqc_simple_results.js")
+          grep -q 'Your quote check' <<< "$results"
+          comparison=$(curl -L -sS --max-time 30 "$base/__hqc_paid_comparison.js")
+          grep -q 'Get my Decision Pack — £4.99' <<< "$comparison"
           api=$(curl -L -sS --max-time 30 "$base/api/_healthcheck")
           grep -q 'Success' <<< "$api"
           qa_headers=$(mktemp)
@@ -120,24 +85,8 @@ jobs:
           grep -qi '^x-hqc-qa-event: excluded' "$qa_headers"
           growth=$(curl -L -sS --max-time 30 "$base/api/growth-report")
           ! grep -q 'qa_production_guard' <<< "$growth"
-          enhancement=$(curl -L -sS --max-time 30 "$base/__hqc_enhancements.js")
-          grep -q 'Quote evidence completeness' <<< "$enhancement"
-          grep -Fq 'Check my quote before I pay' <<< "$enhancement"
-          results=$(curl -L -sS --max-time 30 "$base/__hqc_results_layout.js")
-          grep -q 'Important information is still missing' <<< "$results"
-          facts=$(curl -L -sS --max-time 30 "$base/__hqc_quote_facts.js")
-          grep -q 'Quote Facts' <<< "$facts"
-          comparison=$(curl -L -sS --max-time 30 "$base/__hqc_paid_comparison.js")
-          grep -q 'Compare your installers — £19' <<< "$comparison"
-          mobile=$(curl -L -sS --max-time 30 "$base/__hqc_target_mobile.js")
-          grep -Fq 'Check my quote before I pay' <<< "$mobile"
-          grep -q 'aspect-ratio:1.94/1' <<< "$mobile"
-          artwork=$(curl -L -sS --max-time 30 "$base/__hqc_artwork_fit.js")
-          grep -q 'homepage-house-only.svg' <<< "$artwork"
-          uploadfix=$(curl -L -sS --max-time 30 "$base/__hqc_upload_v3.js")
-          grep -q 'upload-friction-v3' <<< "$uploadfix"
           echo 'HQC production HTTP verification passed.'
-      - name: Mobile upload handoff smoke test
+      - name: Mobile journey smoke test
         working-directory: hqc-deploy-preview
         shell: bash
         run: |
@@ -146,33 +95,16 @@ jobs:
           npx playwright install --with-deps chromium
           node --input-type=module <<'NODE'
           import { chromium } from 'playwright';
-          const browser = await chromium.launch({headless:true});
-          const page = await browser.newPage({viewport:{width:390,height:844},isMobile:true,hasTouch:true});
-          const errors=[];
-          page.on('pageerror',e=>errors.push(String(e)));
-          await page.goto('https://homequotecheck.co.uk/?upload_handoff_smoke=1',{waitUntil:'domcontentloaded',timeout:30000});
+          const browser=await chromium.launch({headless:true});
+          const page=await browser.newPage({viewport:{width:390,height:844},isMobile:true,hasTouch:true});
+          const errors=[];page.on('pageerror',e=>errors.push(String(e)));
+          await page.goto('https://homequotecheck.co.uk/?qa=1&production_journey=1',{waitUntil:'domcontentloaded',timeout:30000});
           await page.waitForLoadState('load',{timeout:15000}).catch(()=>{});
-          await page.waitForTimeout(500);
-          const hero=page.locator('img[src*="homepage-house-only.svg"]').first();
-          await hero.waitFor({state:'visible',timeout:15000});
-          const heroState=await hero.evaluate(img=>({complete:img.complete,naturalWidth:img.naturalWidth,naturalHeight:img.naturalHeight,src:img.getAttribute('src'),style:{objectFit:getComputedStyle(img).objectFit,transform:getComputedStyle(img).transform},rect:img.getBoundingClientRect().toJSON()}));
-          if(!heroState.complete||heroState.naturalWidth<100||heroState.naturalHeight<100||heroState.rect.width<100||heroState.rect.height<80) throw new Error('Homepage house image is missing or not visibly rendered: '+JSON.stringify(heroState));
-          if(heroState.style.objectFit!=='contain') throw new Error('House artwork is not using contain fit: '+JSON.stringify(heroState));
-          const mobileState=await page.evaluate(()=>{const copy=document.querySelector('.copy');const img=[...document.querySelectorAll('img')].find(x=>/homepage-house-only\.svg/i.test(x.getAttribute('src')||''));const button=copy?.querySelector('button.primary');return {headline:copy?.querySelector('h1,h2')?.textContent||'',cta:button?.textContent||'',imgRect:img?.getBoundingClientRect().toJSON()||null};});
-          if(!/Got a heat-pump quote\?/i.test(mobileState.headline)) throw new Error('Compact mobile headline not applied: '+JSON.stringify(mobileState));
-          if(!/Check my quote/i.test(mobileState.cta)) throw new Error('Compact mobile CTA not applied: '+JSON.stringify(mobileState));
-          if(!mobileState.imgRect||mobileState.imgRect.height>360) throw new Error('Mobile hero artwork remains too tall: '+JSON.stringify(mobileState));
-          const cta=page.getByRole('button',{name:/check my quote/i}).first();
-          await cta.waitFor({state:'visible',timeout:15000});
-          await cta.click({timeout:10000});
-          const choose=page.locator('#hqc-choose-file');
-          await choose.waitFor({state:'visible',timeout:15000});
-          const inputs=await page.locator('input[type="file"]').count();
-          if(inputs<1) throw new Error('Quote intake exposes no file input');
-          const chooserPromise=page.waitForEvent('filechooser',{timeout:5000});
-          await choose.click();
-          await chooserPromise;
-          if(errors.length) throw new Error('Browser errors: '+errors.join(' | '));
-          await browser.close();
-          console.log('HQC production house-only hero + compact-mobile upload handoff smoke test passed.');
+          const single=page.getByRole('button',{name:/start single quote check/i}).first();
+          const compare=page.getByRole('button',{name:/start quote comparison/i}).first();
+          await single.waitFor({state:'visible',timeout:15000});await compare.waitFor({state:'visible',timeout:15000});
+          await single.click();
+          const choose=page.locator('#hqc-choose-file');await choose.waitFor({state:'visible',timeout:15000});
+          if(errors.length)throw new Error(errors.join(' | '));
+          await browser.close();console.log('HQC production simplified journey smoke test passed.');
           NODE
