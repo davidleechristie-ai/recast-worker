@@ -5,6 +5,16 @@
     if(navigator.sendBeacon){navigator.sendBeacon(endpoint,new Blob([payload],{type:'application/json'}));return;}
     fetch(endpoint,{method:'POST',headers:{'content-type':'application/json'},body:payload,keepalive:true}).catch(()=>{});
   };
+  if(location.pathname==='/'||location.pathname==='/index.html'){
+    const nav=document.querySelector('.navright');
+    if(nav&&!nav.querySelector('[href="/dashboard-demo"]')){
+      const a=document.createElement('a');a.className='navlink';a.href='/dashboard-demo';a.textContent='Dashboard demo';nav.prepend(a);
+    }
+    const heroCta=document.querySelector('.hero .cta');
+    if(heroCta&&!heroCta.querySelector('[href="/dashboard-demo"]')){
+      const a=document.createElement('a');a.className='btn';a.href='/dashboard-demo';a.textContent='Explore the dashboard →';heroCta.appendChild(a);
+    }
+  }
   send('page_view');
   document.addEventListener('click',e=>{
     const target=e.target.closest('a,button'); if(!target)return;
@@ -12,6 +22,6 @@
     const href=target.getAttribute('href');
     if(target.matches('.filter,.detail,#editSettings')) send('dashboard_demo_interaction',{label,filter:target.dataset.filter||null});
     if(target.classList.contains('primary')||/founding|join|access|pricing/i.test(label)) send('commercial_cta_click',{label,href});
-    else if(/methodology|signal model|waste sales intelligence/i.test(label)) send('evidence_click',{label,href});
+    else if(/methodology|signal model|waste sales intelligence|dashboard demo/i.test(label)) send('evidence_click',{label,href});
   });
 })();
