@@ -21,7 +21,7 @@ export default {
     if(url.pathname==='/api/event' && request.method==='POST'){
       try{
         const event=await request.json();
-        const allowed=new Set(['page_view','commercial_cta_click','evidence_click']);
+        const allowed=new Set(['page_view','commercial_cta_click','evidence_click','dashboard_demo_interaction']);
         if(!allowed.has(event.event)) return withHeaders(json({ok:false},400));
         console.log(JSON.stringify({type:'commercial_event',event:event.event,path:String(event.path||'').slice(0,160),referrer:String(event.referrer||'').slice(0,300),meta:event.meta||{},ts:event.ts||new Date().toISOString()}));
         return withHeaders(json({ok:true},202));
@@ -31,7 +31,8 @@ export default {
     const cleanRoutes={
       '/methodology':'/methodology.html',
       '/waste-sales-intelligence':'/waste-sales-intelligence.html',
-      '/digital-waste-tracking-sales-intelligence':'/digital-waste-tracking-sales-intelligence.html'
+      '/digital-waste-tracking-sales-intelligence':'/digital-waste-tracking-sales-intelligence.html',
+      '/dashboard-demo':'/dashboard-demo.html'
     };
     if(cleanRoutes[url.pathname]){
       const assetUrl=new URL(request.url);
