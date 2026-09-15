@@ -31,6 +31,7 @@ jobs:
           node --check scrapsignal-preview/site/live-signals.js
           grep -q 'Opportunity feed' scrapsignal-preview/site/dashboard-demo.html
           grep -q 'Continue to secure checkout' scrapsignal-preview/site/start.html
+          grep -q 'buy.stripe.com/bJeeVc0Sn0Wa2nLgOn2cg00' scrapsignal-preview/site/start.html
           grep -q 'Payment confirmation is processed server-side' scrapsignal-preview/site/welcome.html
           grep -q 'Validated signals from the monitored register' scrapsignal-preview/site/live-signals.js
           grep -q 'Mids Auto Services Limited' scrapsignal-preview/site/signals.json
@@ -60,16 +61,19 @@ jobs:
           check health "$health" 'scrapsignal-preview'
           check durable-analytics "$health" 'durable-kv'
           check customer-store "$health" '"customer_store":"durable-kv"'
-          if grep -q '"billing":"configured"' <<< "$health"; then echo 'verified: billing configured'; else check billing-state "$health" 'awaiting-independent-provider'; fi
+          check billing-state "$health" 'payment-link-active'
           metrics=$(curl -L -sS --max-time 30 "$base/api/metrics")
           check metrics-storage "$metrics" '"storage":"kv"'
           check metrics-total "$metrics" '"total"'
           echo "commercial-metrics=$metrics"
           start=$(curl -L -sS --max-time 30 "$base/start")
           check checkout-page "$start" 'Continue to secure checkout'
-          if grep -q 'awaiting-independent-provider' <<< "$health"; then checkout=$(curl -sS --max-time 30 -X POST "$base/api/checkout" -H 'content-type: application/json' --data '{"email":"qa@example.invalid"}'); check dormant-checkout "$checkout" 'billing_not_configured'; fi
+          check checkout-link "$start" 'buy.stripe.com/bJeeVc0Sn0Wa2nLgOn2cg00'
+          checkout=$(curl -sS --max-time 30 -X POST "$base/api/checkout" -H 'content-type: application/json' --data '{}')
+          check checkout-api "$checkout" 'stripe-payment-link'
           home=$(curl -L -sS --max-time 30 "$base/")
           check homepage "$home" 'Find businesses that may be'
+          check homepage-subscription "$home" 'Founding subscriptions are now open'
           proof=$(curl -L -sS --max-time 30 "$base/proof")
           check proof-page "$proof" 'Real changes. Source linked. Noise filtered.'
           dashboard=$(curl -L -sS --max-time 30 "$base/dashboard-demo")
@@ -95,4 +99,4 @@ jobs:
           status=$(curl -L -sS --max-time 30 "$base/status.json")
           check validation-state "$status" 'WAIT_FOR_MORE_EVIDENCE'
           check quality-gate "$status" 'quality_gate'
-          echo 'ScrapSignal quality-gated product production verification passed.'
+          echo 'ScrapSignal commercial production verification passed.'
