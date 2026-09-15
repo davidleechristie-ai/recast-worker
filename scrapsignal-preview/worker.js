@@ -1,3 +1,4 @@
+import {billingConfigured,createCheckoutSession,handleStripeWebhook} from './billing.js';
 const json=(data,status=200)=>new Response(JSON.stringify(data),{status,headers:{'content-type':'application/json','cache-control':'no-store'}});
 const SECURITY_HEADERS={'x-content-type-options':'nosniff','referrer-policy':'strict-origin-when-cross-origin','permissions-policy':'camera=(), microphone=(), geolocation=()','x-frame-options':'DENY'};
 const withHeaders=(response)=>{const next=new Response(response.body,response);for(const [key,value] of Object.entries(SECURITY_HEADERS))next.headers.set(key,value);return next;};
@@ -5,31 +6,22 @@ const ALLOWED_EVENTS=new Set(['page_view','commercial_cta_click','evidence_click
 const BOT_RE=/(bot|crawler|spider|slurp|headless|lighthouse|pagespeed|monitor|synthetic|uptime|playwright|puppeteer|curl|wget)/i;
 const safe=(value,max=240)=>String(value||'').slice(0,max);
 const isGenuine=(request,event)=>!BOT_RE.test(request.headers.get('user-agent')||'')&&event?.meta?.synthetic!==true&&event?.meta?.qa!==true;
-const recordCommercialEvent=async(request,env,event)=>{
-  if(!env.EVENTS||!isGenuine(request,event))return false;
-  const cf=request.cf||{};
-  const ts=Date.now();
-  const key=`evt:${String(ts).padStart(13,'0')}:${crypto.randomUUID()}`;
-  const metadata={event:safe(event.event,64),path:safe(event.path,180),referrer:safe(event.referrer,260),country:safe(cf.country,8),region:safe(cf.region,80),source:safe(event.meta?.source,80),plan:safe(event.meta?.plan,40),ts};
-  await env.EVENTS.put(key,'1',{expirationTtl:7776000,metadata});
-  return true;
-};
-const commercialMetrics=async(env)=>{
-  if(!env.EVENTS)return {storage:'unavailable',total:0,by_event:{},by_path:{},latest_event_at:null};
-  let cursor;let pages=0;const rows=[];
-  do{const page=await env.EVENTS.list({prefix:'evt:',limit:1000,cursor});rows.push(...page.keys);cursor=page.list_complete?undefined:page.cursor;pages+=1;}while(cursor&&pages<5);
-  const byEvent={};const byPath={};let latest=0;
-  for(const row of rows){const m=row.metadata||{};if(m.event)byEvent[m.event]=(byEvent[m.event]||0)+1;if(m.path)byPath[m.path]=(byPath[m.path]||0)+1;latest=Math.max(latest,Number(m.ts)||0);}
-  return {storage:'kv',window_days:90,total:rows.length,by_event:byEvent,by_path:byPath,latest_event_at:latest?new Date(latest).toISOString():null,truncated:Boolean(cursor)};
-};
+const recordCommercialEvent=async(request,env,event)=>{if(!env.EVENTS||!isGenuine(request,event))return false;const cf=request.cf||{};const ts=Date.now();const key=`evt:${String(ts).padStart(13,'0')}:${crypto.randomUUID()}`;const metadata={event:safe(event.event,64),path:safe(event.path,180),referrer:safe(event.referrer,260),country:safe(cf.country,8),region:safe(cf.region,80),source:safe(event.meta?.source,80),plan:safe(event.meta?.plan,40),ts};await env.EVENTS.put(key,'1',{expirationTtl:7776000,metadata});return true;};
+const commercialMetrics=async(env)=>{if(!env.EVENTS)return {storage:'unavailable',total:0,by_event:{},by_path:{},latest_event_at:null};let cursor;let pages=0;const rows=[];do{const page=await env.EVENTS.list({prefix:'evt:',limit:1000,cursor});rows.push(...page.keys);cursor=page.list_complete?undefined:page.cursor;pages+=1;}while(cursor&&pages<5);const byEvent={};const byPath={};let latest=0;for(const row of rows){const m=row.metadata||{};if(m.event)byEvent[m.event]=(byEvent[m.event]||0)+1;if(m.path)byPath[m.path]=(byPath[m.path]||0)+1;latest=Math.max(latest,Number(m.ts)||0);}return {storage:'kv',window_days:90,total:rows.length,by_event:byEvent,by_path:byPath,latest_event_at:latest?new Date(latest).toISOString():null,truncated:Boolean(cursor)};};
 export default {async fetch(request,env){
   const url=new URL(request.url);
-  if(url.pathname==='/health')return withHeaders(json({ok:true,service:'scrapsignal-preview',frontend:'cloudflare-assets',analytics:env.EVENTS?'durable-kv':'logs-only'}));
+  if(url.pathname==='/health')return withHeaders(json({ok:true,service:'scrapsignal-preview',frontend:'cloudflare-assets',analytics:env.EVENTS?'durable-kv':'logs-only',customer_store:env.CUSTOMERS?'durable-kv':'unavailable',billing:billingConfigured(env)?'configured':'awaiting-independent-provider'}));
   if(url.pathname==='/api/metrics'&&request.method==='GET')return withHeaders(json(await commercialMetrics(env)));
+  if(url.pathname==='/api/checkout'&&request.method==='POST'){
+    try{const result=await createCheckoutSession(request,env);if(result.body?.ok)await recordCommercialEvent(request,env,{event:'checkout_start',path:'/start',meta:{plan:'founding'}});return withHeaders(json(result.body,result.status));}catch(error){console.log(JSON.stringify({type:'checkout_error',message:safe(error?.message,160)}));return withHeaders(json({ok:false,code:'checkout_error'},500));}
+  }
+  if(url.pathname==='/api/stripe-webhook'&&request.method==='POST'){
+    try{const result=await handleStripeWebhook(request,env);return withHeaders(json(result.body,result.status));}catch(error){console.log(JSON.stringify({type:'stripe_webhook_error',message:safe(error?.message,160)}));return withHeaders(json({ok:false},400));}
+  }
   if(url.pathname==='/api/event'&&request.method==='POST'){
     try{const event=await request.json();if(!ALLOWED_EVENTS.has(event.event))return withHeaders(json({ok:false},400));const persisted=await recordCommercialEvent(request,env,event);console.log(JSON.stringify({type:'commercial_event',persisted,event:event.event,path:safe(event.path,160),ts:event.ts||new Date().toISOString()}));return withHeaders(json({ok:true,persisted},202));}catch(error){console.log(JSON.stringify({type:'commercial_event_error',message:safe(error?.message,160)}));return withHeaders(json({ok:false},400));}
   }
-  const cleanRoutes={'/methodology':'/methodology.html','/waste-sales-intelligence':'/waste-sales-intelligence.html','/waste-compliance-sales-signals':'/waste-compliance-sales-signals.html','/digital-waste-tracking-sales-intelligence':'/digital-waste-tracking-sales-intelligence.html','/digital-waste-tracking-supplier-market-2026':'/digital-waste-tracking-supplier-market-2026.html','/dashboard-demo':'/dashboard-demo.html','/signals/new-waste-sites-september-2026':'/new-waste-sites-september-2026.html','/signals/global-metal-recycling-compliance':'/global-metal-recycling-compliance-signal.html'};
+  const cleanRoutes={'/methodology':'/methodology.html','/waste-sales-intelligence':'/waste-sales-intelligence.html','/waste-compliance-sales-signals':'/waste-compliance-sales-signals.html','/digital-waste-tracking-sales-intelligence':'/digital-waste-tracking-sales-intelligence.html','/digital-waste-tracking-supplier-market-2026':'/digital-waste-tracking-supplier-market-2026.html','/dashboard-demo':'/dashboard-demo.html','/signals/new-waste-sites-september-2026':'/new-waste-sites-september-2026.html','/signals/global-metal-recycling-compliance':'/global-metal-recycling-compliance-signal.html','/start':'/start.html','/welcome':'/welcome.html'};
   if(cleanRoutes[url.pathname]){const assetUrl=new URL(request.url);assetUrl.pathname=cleanRoutes[url.pathname];const asset=await env.ASSETS.fetch(new Request(assetUrl,request));if(url.pathname==='/dashboard-demo'&&asset.ok){const html=await asset.text();const enhanced=html.replace('</body>','<script src="/live-signals.js"></script></body>');return withHeaders(new Response(enhanced,{status:asset.status,headers:asset.headers}));}return withHeaders(asset);}
   if(Object.values(cleanRoutes).includes(url.pathname)){const match=Object.entries(cleanRoutes).find(([,file])=>file===url.pathname);url.pathname=match?match[0]:url.pathname.replace(/\.html$/,'');return Response.redirect(url.toString(),308);}
   return withHeaders(await env.ASSETS.fetch(request));
