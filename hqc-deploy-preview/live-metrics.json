@@ -1,9 +1,9 @@
 {
-  "fetchedAt": "2026-09-15T01:29:58.379984Z",
+  "fetchedAt": "2026-09-15T07:47:01.910545Z",
   "growthReport": {
     "durable": true,
     "extendedMeasurementStartedAt": "2026-09-11T20:34:24.536Z",
-    "generatedAt": "2026-09-15T01:29:58.341Z",
+    "generatedAt": "2026-09-15T07:47:01.881Z",
     "loop": [
       "Acquire qualified homeowners",
       "Measure source funnels",
@@ -35,8 +35,8 @@
         "genuine": 1,
         "installerQuestions": 0,
         "landingToCta": 0,
-        "landingToGenuine": 7,
-        "landings": 15,
+        "landingToGenuine": 6,
+        "landings": 16,
         "multiQuoteAnalyses": 0,
         "outboundClicks": 0,
         "recipientStarts": 0,
@@ -44,6 +44,25 @@
         "shareOpens": 0,
         "source": "direct",
         "uploads": 1
+      },
+      {
+        "checkouts": 0,
+        "cta": 0,
+        "ctaToUpload": null,
+        "decisionCases": 0,
+        "extendedGenuine": 0,
+        "genuine": 0,
+        "installerQuestions": 0,
+        "landingToCta": 0,
+        "landingToGenuine": 0,
+        "landings": 1,
+        "multiQuoteAnalyses": 0,
+        "outboundClicks": 0,
+        "recipientStarts": 0,
+        "shareIntent": 0,
+        "shareOpens": 0,
+        "source": "organic_bus",
+        "uploads": 0
       },
       {
         "checkouts": 0,
@@ -80,6 +99,25 @@
         "recipientStarts": 0,
         "shareIntent": 0,
         "shareOpens": 0,
+        "source": "organic_compare_static",
+        "uploads": 0
+      },
+      {
+        "checkouts": 0,
+        "cta": 0,
+        "ctaToUpload": null,
+        "decisionCases": 0,
+        "extendedGenuine": 0,
+        "genuine": 0,
+        "installerQuestions": 0,
+        "landingToCta": 0,
+        "landingToGenuine": 0,
+        "landings": 1,
+        "multiQuoteAnalyses": 0,
+        "outboundClicks": 0,
+        "recipientStarts": 0,
+        "shareIntent": 0,
+        "shareOpens": 0,
         "source": "professional",
         "uploads": 0
       }
@@ -91,7 +129,7 @@
       "extendedGenuine": 0,
       "genuine": 1,
       "installerQuestions": 0,
-      "landings": 17,
+      "landings": 20,
       "multiQuoteAnalyses": 0,
       "outboundClicks": 0,
       "recipientStarts": 0,
