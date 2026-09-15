@@ -1,9 +1,16 @@
 (()=>{
  const qs=(s,r=document)=>r.querySelector(s),qsa=(s,r=document)=>[...r.querySelectorAll(s)];
  const read=()=>{try{return JSON.parse(localStorage.getItem('hqc_case')||'[]')}catch{return[]}};
- function addQuote(){sessionStorage.setItem('hqc_add_second','1');sessionStorage.setItem('hqc_pending_quotes',JSON.stringify(read()));const home=[...qsa('button,a')].find(x=>/check another|add another|new quote|upload/i.test(x.textContent||''));if(home)home.click();else location.href='/?hqc_start=1&src=results_compare';}
+ function addQuote(){
+  sessionStorage.setItem('hqc_journey_mode','compare');sessionStorage.setItem('hqc_compare_intent','1');sessionStorage.setItem('hqc_add_second','1');sessionStorage.setItem('hqc_pending_quotes',JSON.stringify(read()));
+  // Results are rendered inside the upstream SPA. Searching for a generic "upload"
+  // control can select the completed Upload step and leave the customer on Results.
+  // Navigate explicitly to the homepage intake route; decision-entry performs the
+  // instrumented autostart there and upload-friction restores the comparison state.
+  location.assign('/?hqc_start=1&src=results_compare&add_quote=1');
+ }
  function apply(){const top=qs('.resultsTop');if(!top)return;const quotes=read(),count=Math.max(1,quotes.length),compare=sessionStorage.getItem('hqc_journey_mode')==='compare'||sessionStorage.getItem('hqc_compare_intent')==='1';
-  const main=qs('main')||document.body;if(qs('#hqc-simple-summary'))return;
+  if(qs('#hqc-simple-summary'))return;
   qsa('h1,h2',top).forEach(h=>{if(/decision case/i.test(h.textContent||''))h.textContent=count>1?'Your quote comparison':'Your quote check'});
   const oldStatus=qsa('.panel,.card,section').find(x=>/not ready to choose|ready to choose/i.test(x.innerText||''));if(oldStatus)oldStatus.style.setProperty('display','none','important');
   const summary=document.createElement('section');summary.id='hqc-simple-summary';summary.style.cssText='margin:18px 0;padding:20px;border:1px solid #d8e8e1;border-radius:14px;background:#f8fcfa;color:#17352d';
