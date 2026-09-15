@@ -1,5 +1,5 @@
 {
-  "fetchedAt": "2026-09-15T01:34:47Z",
+  "fetchedAt": "2026-09-15T07:52:57Z",
   "metrics": {
     "genuineAnalyses": 1,
     "shareOpens": 0,
@@ -15,12 +15,12 @@
     "note": "Cumulative Cloudflare-side counters from measurementStartedAt; QA/demo/test events are excluded. Extended funnel counters use their own same-epoch denominator from extendedMeasurementStartedAt."
   },
   "growthReport": {
-    "generatedAt": "2026-09-15T01:34:47.455Z",
+    "generatedAt": "2026-09-15T07:52:57.395Z",
     "measurementStartedAt": "2026-09-11T18:33:07.244Z",
     "extendedMeasurementStartedAt": "2026-09-11T20:34:24.536Z",
     "durable": true,
     "total": {
-      "landings": 17,
+      "landings": 20,
       "cta": 0,
       "uploads": 1,
       "genuine": 1,
@@ -45,7 +45,7 @@
     },
     "sources": [
       {
-        "landings": 15,
+        "landings": 16,
         "cta": 0,
         "uploads": 1,
         "genuine": 1,
@@ -61,7 +61,26 @@
         "source": "direct",
         "landingToCta": 0,
         "ctaToUpload": null,
-        "landingToGenuine": 7
+        "landingToGenuine": 6
+      },
+      {
+        "landings": 1,
+        "cta": 0,
+        "uploads": 0,
+        "genuine": 0,
+        "extendedGenuine": 0,
+        "multiQuoteAnalyses": 0,
+        "decisionCases": 0,
+        "installerQuestions": 0,
+        "shareIntent": 0,
+        "shareOpens": 0,
+        "recipientStarts": 0,
+        "outboundClicks": 0,
+        "checkouts": 0,
+        "source": "organic_bus",
+        "landingToCta": 0,
+        "ctaToUpload": null,
+        "landingToGenuine": 0
       },
       {
         "landings": 1,
@@ -78,6 +97,25 @@
         "outboundClicks": 0,
         "checkouts": 0,
         "source": "organic_checklist",
+        "landingToCta": 0,
+        "ctaToUpload": null,
+        "landingToGenuine": 0
+      },
+      {
+        "landings": 1,
+        "cta": 0,
+        "uploads": 0,
+        "genuine": 0,
+        "extendedGenuine": 0,
+        "multiQuoteAnalyses": 0,
+        "decisionCases": 0,
+        "installerQuestions": 0,
+        "shareIntent": 0,
+        "shareOpens": 0,
+        "recipientStarts": 0,
+        "outboundClicks": 0,
+        "checkouts": 0,
+        "source": "organic_compare_static",
         "landingToCta": 0,
         "ctaToUpload": null,
         "landingToGenuine": 0
