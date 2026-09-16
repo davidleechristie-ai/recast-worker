@@ -1,5 +1,5 @@
 {
-  "fetchedAt": "2026-09-16T16:55:38Z",
+  "fetchedAt": "2026-09-16T20:07:41Z",
   "durable": true,
   "measurementStartedAt": "2026-09-11T18:33:07.244Z",
   "northStar": {
@@ -18,7 +18,7 @@
     "note": "Cumulative Cloudflare-side validation counters. QA/demo/test traffic is excluded; payment intent is not treated as revenue."
   },
   "total": {
-    "landings": 37,
+    "landings": 38,
     "cta": 12,
     "uploads": 5,
     "genuine": 5,
@@ -34,7 +34,7 @@
   },
   "sources": [
     {
-      "landings": 28,
+      "landings": 29,
       "cta": 12,
       "uploads": 5,
       "genuine": 5,
@@ -48,9 +48,9 @@
       "outboundClicks": 0,
       "checkouts": 0,
       "source": "direct",
-      "landingToCta": 43,
+      "landingToCta": 41,
       "ctaToUpload": 42,
-      "landingToGenuine": 18
+      "landingToGenuine": 17
     },
     {
       "landings": 5,
