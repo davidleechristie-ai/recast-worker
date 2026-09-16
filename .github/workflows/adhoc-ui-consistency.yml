@@ -37,7 +37,23 @@ jobs:
           test -f public/ui-consistency.css
           test -f public/ui-consistency.js
           test -f src/worker-ui.js
-          grep -q 'src/worker-ui.js' wrangler.jsonc
+          node - <<'NODE'
+          const fs = require('fs');
+          const wrangler = fs.readFileSync('wrangler.jsonc', 'utf8');
+          const main = wrangler.match(/"main"\s*:\s*"src\/([^"]+)"/);
+          if (!main) throw new Error('Wrangler main entry not found');
+          let active = main[1];
+          let reachedUi = active === 'worker-ui.js';
+          for (let depth = 0; !reachedUi && depth < 8; depth += 1) {
+            const source = fs.readFileSync(`src/${active}`, 'utf8');
+            const lower = source.match(/from ['"]\.\/(worker-[^'"]+\.js)['"]/);
+            if (!lower) throw new Error(`${active} does not delegate to a lower worker wrapper`);
+            active = lower[1];
+            reachedUi = active === 'worker-ui.js';
+          }
+          if (!reachedUi) throw new Error('Active Worker wrapper chain does not preserve worker-ui.js');
+          console.log('Active Worker wrapper chain preserves worker-ui.js');
+          NODE
       - name: Install Playwright Chromium
         working-directory: recast-worker
         run: |
