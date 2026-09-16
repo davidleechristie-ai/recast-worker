@@ -7,9 +7,9 @@
     "revenue_definition": "Genuine recurring revenue only: current subscription plus paid succeeded latest invoice charge, excluding fully refunded and inactive/cancelled subscriptions."
   },
   "funnel": {
-    "search_impressions": 1731,
+    "search_impressions": 1744,
     "organic_clicks": 10,
-    "organic_ctr": 0.005777007510109763,
+    "organic_ctr": 0.005733944954128441,
     "indexed_target_pages": null,
     "successful_tool_uses": 3,
     "workflow_starts": 0,
@@ -201,15 +201,15 @@
     "search_console": {
       "period_days": 28,
       "clicks": 10,
-      "impressions": 1731,
-      "ctr": 0.005777007510109763,
-      "average_position": 65.33564413633738,
+      "impressions": 1744,
+      "ctr": 0.005733944954128441,
+      "average_position": 65.33658256880734,
       "top_pages": [
         {
           "clicks": 6,
-          "impressions": 61,
-          "ctr": 0.09836065573770492,
-          "average_position": 26.721311475409838,
+          "impressions": 62,
+          "ctr": 0.0967741935483871,
+          "average_position": 26.370967741935484,
           "page": "https://tryrecast.app/"
         },
         {
@@ -235,9 +235,9 @@
         },
         {
           "clicks": 1,
-          "impressions": 308,
-          "ctr": 0.003246753246753247,
-          "average_position": 70.96103896103897,
+          "impressions": 310,
+          "ctr": 0.0032258064516129032,
+          "average_position": 70.99354838709678,
           "page": "https://tryrecast.app/tools/json-diff.html"
         },
         {
@@ -270,16 +270,16 @@
         },
         {
           "clicks": 0,
-          "impressions": 40,
+          "impressions": 41,
           "ctr": 0,
-          "average_position": 75.975,
+          "average_position": 76.1219512195122,
           "page": "https://tryrecast.app/blog/compare-json-files.html"
         },
         {
           "clicks": 0,
-          "impressions": 113,
+          "impressions": 120,
           "ctr": 0,
-          "average_position": 65.63716814159292,
+          "average_position": 65.70833333333333,
           "page": "https://tryrecast.app/blog/compare-xml-files.html"
         },
         {
@@ -354,9 +354,9 @@
         },
         {
           "clicks": 0,
-          "impressions": 106,
+          "impressions": 107,
           "ctr": 0,
-          "average_position": 54.632075471698116,
+          "average_position": 54.74766355140187,
           "page": "https://tryrecast.app/tools/csv-diff.html"
         },
         {
@@ -410,9 +410,9 @@
         },
         {
           "clicks": 0,
-          "impressions": 85,
+          "impressions": 86,
           "ctr": 0,
-          "average_position": 62.49411764705882,
+          "average_position": 62.66279069767442,
           "page": "https://tryrecast.app/tools/json-validator.html"
         },
         {
@@ -559,9 +559,9 @@
         },
         {
           "clicks": 0,
-          "impressions": 2,
+          "impressions": 3,
           "ctr": 0,
-          "average_position": 64.5,
+          "average_position": 65.33333333333333,
           "query": "compare csv"
         },
         {
@@ -580,9 +580,9 @@
         },
         {
           "clicks": 0,
-          "impressions": 23,
+          "impressions": 24,
           "ctr": 0,
-          "average_position": 79.47826086956522,
+          "average_position": 79.58333333333333,
           "query": "compare json"
         },
         {
@@ -965,9 +965,9 @@
         },
         {
           "clicks": 0,
-          "impressions": 15,
+          "impressions": 16,
           "ctr": 0,
-          "average_position": 65.4,
+          "average_position": 65.6875,
           "query": "diff json"
         },
         {
@@ -1205,9 +1205,9 @@
         },
         {
           "clicks": 0,
-          "impressions": 5,
+          "impressions": 6,
           "ctr": 0,
-          "average_position": 81.2,
+          "average_position": 81.33333333333333,
           "page": "https://tryrecast.app/blog/compare-json-files.html",
           "query": "compare json"
         },
@@ -1565,19 +1565,27 @@
         },
         {
           "clicks": 0,
-          "impressions": 20,
+          "impressions": 21,
           "ctr": 0,
-          "average_position": 68.2,
+          "average_position": 68.85714285714286,
           "page": "https://tryrecast.app/blog/compare-xml-files.html",
           "query": "xml compare"
         },
         {
           "clicks": 0,
-          "impressions": 8,
+          "impressions": 10,
           "ctr": 0,
-          "average_position": 59.125,
+          "average_position": 59.9,
           "page": "https://tryrecast.app/blog/compare-xml-files.html",
           "query": "xml compare online"
+        },
+        {
+          "clicks": 0,
+          "impressions": 1,
+          "ctr": 0,
+          "average_position": 65,
+          "page": "https://tryrecast.app/blog/compare-xml-files.html",
+          "query": "xml compare tool"
         },
         {
           "clicks": 0,
@@ -1645,11 +1653,27 @@
         },
         {
           "clicks": 0,
-          "impressions": 1,
+          "impressions": 2,
           "ctr": 0,
-          "average_position": 72,
+          "average_position": 64.5,
           "page": "https://tryrecast.app/blog/compare-xml-files.html",
           "query": "xml online compare"
+        },
+        {
+          "clicks": 0,
+          "impressions": 1,
+          "ctr": 0,
+          "average_position": 73,
+          "page": "https://tryrecast.app/blog/compare-xml-files.html",
+          "query": "xsd compare"
+        },
+        {
+          "clicks": 0,
+          "impressions": 1,
+          "ctr": 0,
+          "average_position": 65,
+          "page": "https://tryrecast.app/blog/compare-xml-files.html",
+          "query": "xsd compare online"
         },
         {
           "clicks": 0,
@@ -1813,9 +1837,9 @@
         },
         {
           "clicks": 0,
-          "impressions": 2,
+          "impressions": 3,
           "ctr": 0,
-          "average_position": 64.5,
+          "average_position": 65.33333333333333,
           "page": "https://tryrecast.app/tools/csv-diff.html",
           "query": "compare csv"
         },
@@ -2181,9 +2205,9 @@
         },
         {
           "clicks": 0,
-          "impressions": 14,
+          "impressions": 15,
           "ctr": 0,
-          "average_position": 64.07142857142857,
+          "average_position": 64.46666666666667,
           "page": "https://tryrecast.app/tools/json-diff.html",
           "query": "diff json"
         },
@@ -2333,9 +2357,9 @@
         },
         {
           "clicks": 0,
-          "impressions": 4,
+          "impressions": 5,
           "ctr": 0,
-          "average_position": 74.5,
+          "average_position": 76,
           "page": "https://tryrecast.app/tools/json-diff.html",
           "query": "json diff online"
         },
@@ -2909,9 +2933,9 @@
         },
         {
           "clicks": 0,
-          "impressions": 3,
+          "impressions": 4,
           "ctr": 0,
-          "average_position": 71.66666666666667,
+          "average_position": 73,
           "page": "https://tryrecast.app/tools/json-validator.html",
           "query": "json validate"
         },
@@ -3122,30 +3146,6 @@
           "average_position": 70,
           "page": "https://tryrecast.app/tools/xml-diff.html",
           "query": "compare 2 xml files"
-        },
-        {
-          "clicks": 0,
-          "impressions": 1,
-          "ctr": 0,
-          "average_position": 64,
-          "page": "https://tryrecast.app/tools/xml-diff.html",
-          "query": "compare 2 xml files for differences"
-        },
-        {
-          "clicks": 0,
-          "impressions": 3,
-          "ctr": 0,
-          "average_position": 68,
-          "page": "https://tryrecast.app/tools/xml-diff.html",
-          "query": "compare 2 xml files online"
-        },
-        {
-          "clicks": 0,
-          "impressions": 1,
-          "ctr": 0,
-          "average_position": 57,
-          "page": "https://tryrecast.app/tools/xml-diff.html",
-          "query": "compare 2 xml online"
         }
       ],
       "evidence_date": "2026-09-16"
