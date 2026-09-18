@@ -1,5 +1,5 @@
 {
-  "fetchedAt": "2026-09-18T16:33:35Z",
+  "fetchedAt": "2026-09-18T19:44:35Z",
   "metrics": {
     "genuineAnalyses": 5,
     "shareOpens": 0,
@@ -15,12 +15,12 @@
     "note": "Cumulative Cloudflare-side counters from measurementStartedAt; QA/demo/test events are excluded. Extended funnel counters use their own same-epoch denominator from extendedMeasurementStartedAt."
   },
   "growthReport": {
-    "generatedAt": "2026-09-18T16:33:35.739Z",
+    "generatedAt": "2026-09-18T19:44:35.942Z",
     "measurementStartedAt": "2026-09-11T18:33:07.244Z",
     "extendedMeasurementStartedAt": "2026-09-11T20:34:24.536Z",
     "durable": true,
     "total": {
-      "landings": 41,
+      "landings": 42,
       "cta": 12,
       "uploads": 5,
       "genuine": 5,
@@ -154,6 +154,25 @@
         "outboundClicks": 0,
         "checkouts": 0,
         "source": "organic_flowtemp",
+        "landingToCta": 0,
+        "ctaToUpload": null,
+        "landingToGenuine": 0
+      },
+      {
+        "landings": 1,
+        "cta": 0,
+        "uploads": 0,
+        "genuine": 0,
+        "extendedGenuine": 0,
+        "multiQuoteAnalyses": 0,
+        "decisionCases": 0,
+        "installerQuestions": 0,
+        "shareIntent": 0,
+        "shareOpens": 0,
+        "recipientStarts": 0,
+        "outboundClicks": 0,
+        "checkouts": 0,
+        "source": "organic_radiators",
         "landingToCta": 0,
         "ctaToUpload": null,
         "landingToGenuine": 0
