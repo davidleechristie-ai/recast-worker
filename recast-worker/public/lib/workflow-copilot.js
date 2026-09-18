@@ -187,7 +187,7 @@
     if (automation && unique.length) notes.push('Automation detected. Test the workflow first; after deployment you can configure its schedule, HTTPS input, credentials and optional webhook delivery.');
 
     const name = comparison ? comparison.label+' workflow' : conversion ? conversion.label+' workflow' : directAction ? directAction.label : 'Recast workflow';
-    return {name,steps:unique,notes,requiresConfiguration,automation,directAction,matched:unique.length>0 || !!directAction};
+    return normalizeDefinition({name,steps:unique,notes,requiresConfiguration,automation,directAction,matched:unique.length>0 || !!directAction},prompt);
   }
 
 
@@ -204,7 +204,7 @@
       err.code=data.code || 'ai_unavailable';
       throw err;
     }
-    return data.definition;
+    return normalizeDefinition(data.definition, prompt);
   }
 
   function render(def) {
@@ -221,7 +221,7 @@
       };
       const p=s.params||{};
       const detail = p.paths ? p.paths.join(', ') : p.from ? `${p.from} → ${p.to}` : p.path ? p.path : s.mode==='transformFilter'?`${p.field} ${p.condition} ${p.value??''}`:s.mode==='transformSort'?`${p.field||'choose field'} (${p.direction||'asc'})`:s.mode==='transformConvertType'?`${p.field} → ${p.type}`:s.mode==='transformAddField'?`${p.field} = ${p.value}`:s.mode==='transformCombine'?`${p.template} → ${p.newField}`:s.mode==='compareStep'?`${(p.format||'json').toUpperCase()} inputs → ${(p.outputFormat||'text').toUpperCase()} differences · reference required`:s.mode==='apiRequestStep'?`${p.method} ${p.url}`:'';
-      return `<div class="wc-step"><span class="wc-step-num">${i+1}</span><div><strong>${esc(labels[s.mode]||s.mode)}</strong>${detail?`<small>${esc(detail)}</small>`:''}</div></div>`;
+      return `<div class="wc-step"><span class="wc-step-num">${i+1}</span><div><strong>${esc(s.label||labels[s.mode]||s.mode)}</strong>${detail?`<small>${esc(detail)}</small>`:(s.description?`<small>${esc(s.description)}</small>`:'')}</div></div>`;
     }).join('<span class="wc-arrow">↓</span>');
   }
 
@@ -292,7 +292,7 @@
       if(openComparisonWorkbench(definition))return;
       if(window.RecastRecipeBuilder2?.openWithDefinition){window.RecastRecipeBuilder2.openWithDefinition(definition);const panel=$('recipeBuilder2Panel');if(panel)panel.scrollIntoView({behavior:'smooth',block:'start'});}
     });
-    $('wcRunBtn').addEventListener('click',()=>{if(!definition||!definition.steps.length||definition.directAction)return;if(openComparisonWorkbench(definition)){window.showToastSafe?.('Add the original and modified files, then choose Compare.');return;}if(!window.RecastRecipeBuilder2)return;window.RecastRecipeBuilder2.openWithDefinition(definition);const panel=$('recipeBuilder2Panel');panel?.scrollIntoView({behavior:'smooth',block:'start'});if(definition.requiresConfiguration){window.showToastSafe?.('Workflow opened — add the required reference or field, then choose Run recipe.');return;}const run=$('rb2RunBtn');if(run)setTimeout(()=>run.click(),100);});
+    $('wcRunBtn').addEventListener('click',()=>{if(!definition||!definition.steps.length||definition.directAction)return;if(openComparisonWorkbench(definition)){window.showToastSafe?.('Add the original and modified files, then choose Compare.');return;}if(!window.RecastRecipeBuilder2)return;window.RecastRecipeBuilder2.openWithDefinition(definition,{run:true});const panel=$('recipeBuilder2Panel');panel?.scrollIntoView({behavior:'smooth',block:'start'});if(definition.requiresConfiguration)window.showToastSafe?.('Workflow opened — add the required reference or field, then choose Run recipe.');});
     $('wcApiBtn')?.addEventListener('click',e=>{e.preventDefault();if(!definition||!definition.steps.length)return;const saved=window.RecastWorkflowLibrary?.save(definition);if(!saved){window.showToastSafe?.('Save the workflow before deploying it.');return;}if(definition.requiresConfiguration){window.RecastRecipeBuilder2?.openWithDefinition(definition);$('recipeBuilder2Panel')?.scrollIntoView({behavior:'smooth',block:'start'});window.showToastSafe?.('Finish the highlighted workflow setup before API deployment.');return;}if(window.RecastWorkflowAutomation?.deploy)window.RecastWorkflowAutomation.deploy(saved);else{window.showToastSafe?.('Workflow saved. Open Deploy & automate to publish its API.');window.RecastHomeDepth?.activate('automation',true);}});
   }
   if(document.readyState==='loading')document.addEventListener('DOMContentLoaded',init);else init();
