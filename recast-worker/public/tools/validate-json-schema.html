@@ -4,8 +4,8 @@
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <script>(function(){try{if(localStorage.getItem('recast_theme')==='light')document.documentElement.setAttribute('data-theme','light');}catch(e){}})();</script>
-<title>JSON Schema Validator – Validate JSON Against a Schema | Recast</title>
-<meta name="description" content="Validate JSON against a JSON Schema online. Paste your JSON and schema to find structural, type and required-field validation errors in your browser.">
+<title>Validate JSON Against JSON Schema Online | Recast</title>
+<meta name="description" content="Validate JSON against a JSON Schema online. Find type, required-field and structural errors with exact paths and messages directly in your browser.">
 <meta property="og:type" content="website">
 <meta property="og:title" content="Validate JSON Against a Schema — online | Recast">
 <meta property="og:description" content="Check whether JSON data matches a JSON Schema (draft-07 subset), with exact violation paths and messages. Runs in your browser — also available as a CLI for CI pipelines.">
@@ -27,7 +27,7 @@
 {
   "@context": "https://schema.org",
   "@type": "SoftwareApplication",
-  "name": "Recast",
+  "name": "JSON Schema Validator",
   "url": "https://tryrecast.app/tools/validate-json-schema.html",
   "applicationCategory": "DeveloperApplication",
   "operatingSystem": "Any (runs in browser)",
@@ -294,7 +294,7 @@
 <main>
   <section class="hero" id="tool">
     <p class="eyebrow">Your private data workbench</p>
-    <h1>JSON Schema Validator</h1>
+    <h1>Validate JSON Against JSON Schema</h1>
     <p class="sub">Paste a JSON Schema and a data payload to check whether the data actually conforms — get back the exact path and reason for every violation (<code>user.age: must be &gt;= 0</code>), not just pass/fail. The same engine is available as a <a href="https://www.npmjs.com/package/recast-cli">CLI</a> with a proper exit code, for gating a CI pipeline on schema conformance. <a href="../blog/json-schema-validation-guide.html">Read the full guide →</a></p>
     <p style="font-size:13px;"><a href="../index.html" style="color:#B9CBDA;">← Full toolkit (all 23 tools)</a></p>
 
