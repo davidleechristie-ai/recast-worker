@@ -1,5 +1,5 @@
 {
-  "fetchedAt": "2026-09-18T05:55:35Z",
+  "fetchedAt": "2026-09-18T11:15:14Z",
   "durable": true,
   "measurementStartedAt": "2026-09-11T18:33:07.244Z",
   "northStar": {
@@ -18,7 +18,7 @@
     "note": "Cumulative Cloudflare-side validation counters. QA/demo/test traffic is excluded; payment intent is not treated as revenue."
   },
   "total": {
-    "landings": 38,
+    "landings": 41,
     "cta": 12,
     "uploads": 5,
     "genuine": 5,
@@ -34,7 +34,7 @@
   },
   "sources": [
     {
-      "landings": 29,
+      "landings": 31,
       "cta": 12,
       "uploads": 5,
       "genuine": 5,
@@ -48,9 +48,9 @@
       "outboundClicks": 0,
       "checkouts": 0,
       "source": "direct",
-      "landingToCta": 41,
+      "landingToCta": 39,
       "ctaToUpload": 42,
-      "landingToGenuine": 17
+      "landingToGenuine": 16
     },
     {
       "landings": 5,
@@ -142,6 +142,25 @@
       "recipientStarts": 0,
       "outboundClicks": 0,
       "checkouts": 0,
+      "source": "organic_flowtemp",
+      "landingToCta": 0,
+      "ctaToUpload": null,
+      "landingToGenuine": 0
+    },
+    {
+      "landings": 1,
+      "cta": 0,
+      "uploads": 0,
+      "genuine": 0,
+      "extendedGenuine": 0,
+      "multiQuoteAnalyses": 0,
+      "decisionCases": 0,
+      "installerQuestions": 0,
+      "shareIntent": 0,
+      "shareOpens": 0,
+      "recipientStarts": 0,
+      "outboundClicks": 0,
+      "checkouts": 0,
       "source": "professional",
       "landingToCta": 0,
       "ctaToUpload": null,
@@ -149,12 +168,12 @@
     }
   ],
   "recommendations": [
-    "CTA-to-upload is weak: reduce intake friction and clarify privacy/file requirements.",
+    "Landing-to-CTA is weak: improve message match, trust proof and CTA prominence before adding more traffic.",
     "Share loop is below the 20% validation threshold: strengthen Decision Case sharing and recipient conversion.",
     "No qualified organic cohort yet: improve existing high-intent decision pages and internal handoff before expanding acquisition."
   ],
   "decision": {
-    "priority": "quote intake",
-    "action": "Reduce checker-start-to-upload friction before adding acquisition."
+    "priority": "landing conversion",
+    "action": "Improve message match, trust proof and CTA clarity on existing qualified pages before adding acquisition."
   }
 }
