@@ -249,6 +249,7 @@
     async function buildNow() {
       const prompt=$('wcPrompt').value.trim();
       if(!prompt){$('wcPrompt').focus();return;}
+      window.RecastFunnel?.track('pipeline_prompt_submitted', { source:'copilot' });
       const button=$('wcBuildBtn');
       const previous=button?.innerHTML;
       if(button){button.disabled=true;button.textContent='Thinking…';}
@@ -271,6 +272,12 @@
 
       render(definition);
       setButtonState(definition);
+      window.RecastFunnel?.track('pipeline_built', {
+        source: definition.source || (usedFallback ? 'local-fallback' : 'copilot'),
+        step_count: definition.steps?.length || 0,
+        requires_configuration: !!definition.requiresConfiguration,
+        direct_tool: !!definition.directAction
+      });
       $('wcResultTitle').textContent=definition.directAction?(definition.directAction.fallback?'Choose the closest supported tool':'Ready to open the dedicated tool'):(definition.requiresConfiguration?'Workflow built — add the highlighted input':'Workflow ready to run');
       $('wcResultMeta').textContent=(definition.steps.length?definition.steps.length+' step'+(definition.steps.length===1?'':'s'):'direct tool')+(definition.source==='ai'?' · AI':'');
       const privacy = definition.source==='ai'
@@ -292,8 +299,49 @@
       if(openComparisonWorkbench(definition))return;
       if(window.RecastRecipeBuilder2?.openWithDefinition){window.RecastRecipeBuilder2.openWithDefinition(definition);const panel=$('recipeBuilder2Panel');if(panel)panel.scrollIntoView({behavior:'smooth',block:'start'});}
     });
-    $('wcRunBtn').addEventListener('click',()=>{if(!definition||!definition.steps.length||definition.directAction)return;if(openComparisonWorkbench(definition)){window.showToastSafe?.('Add the original and modified files, then choose Compare.');return;}if(!window.RecastRecipeBuilder2)return;window.RecastRecipeBuilder2.openWithDefinition(definition,{run:true});const panel=$('recipeBuilder2Panel');panel?.scrollIntoView({behavior:'smooth',block:'start'});if(definition.requiresConfiguration)window.showToastSafe?.('Workflow opened — add the required reference or field, then choose Run recipe.');});
-    $('wcApiBtn')?.addEventListener('click',e=>{e.preventDefault();if(!definition||!definition.steps.length)return;const saved=window.RecastWorkflowLibrary?.save(definition);if(!saved){window.showToastSafe?.('Save the workflow before deploying it.');return;}if(definition.requiresConfiguration){window.RecastRecipeBuilder2?.openWithDefinition(definition);$('recipeBuilder2Panel')?.scrollIntoView({behavior:'smooth',block:'start'});window.showToastSafe?.('Finish the highlighted workflow setup before API deployment.');return;}if(window.RecastWorkflowAutomation?.deploy)window.RecastWorkflowAutomation.deploy(saved);else{window.showToastSafe?.('Workflow saved. Open Deploy & automate to publish its API.');window.RecastHomeDepth?.activate('automation',true);}});
+    $('wcRunBtn').addEventListener('click',async()=>{
+      if(!definition||!definition.steps.length||definition.directAction)return;
+      window.RecastFunnel?.track('pipeline_run', { step_count:definition.steps.length, requires_configuration:!!definition.requiresConfiguration });
+      if(openComparisonWorkbench(definition)){window.showToastSafe?.('Add the original and modified files, then choose Compare.');return;}
+      if(!window.RecastRecipeBuilder2)return;
+      if(definition.requiresConfiguration){
+        window.RecastRecipeBuilder2.openWithDefinition(definition);
+        $('recipeBuilder2Panel')?.scrollIntoView({behavior:'smooth',block:'start'});
+        window.showToastSafe?.('Pipeline needs one more input — complete the highlighted setup, then run it.');
+        return;
+      }
+      const btn=$('wcRunBtn'), previous=btn?.textContent;
+      if(btn){btn.disabled=true;btn.textContent='Running…';}
+      try {
+        const result=await window.RecastRecipeBuilder2.executeDefinition(definition);
+        let output=$('wcRunOutput');
+        if(!output){
+          output=document.createElement('pre');
+          output.id='wcRunOutput';
+          output.style.cssText='margin:16px 0 0;max-height:360px;overflow:auto;white-space:pre-wrap;word-break:break-word;padding:16px;border:1px solid var(--border);border-radius:12px;background:var(--surface-2);font-size:13px;';
+          $('wcNote')?.insertAdjacentElement('afterend',output);
+        }
+        if(result?.ok){
+          output.textContent=String(result.finalOutput ?? '');
+          output.hidden=false;
+          $('wcResultTitle').textContent='Pipeline complete';
+          $('wcResultMeta').textContent=definition.steps.length+' step'+(definition.steps.length===1?'':'s')+' · result ready';
+          window.RecastFunnel?.track('pipeline_run_success', { step_count:definition.steps.length });
+        } else {
+          output.textContent=result?.error || 'Pipeline could not run.';
+          output.hidden=false;
+          $('wcResultTitle').textContent='Pipeline needs attention';
+          window.RecastFunnel?.track('pipeline_run_failed', { step_count:definition.steps.length, code:result?.code || 'execution_error' });
+        }
+        output.scrollIntoView({behavior:'smooth',block:'nearest'});
+      } catch(e) {
+        window.showToastSafe?.(e?.message || 'Pipeline could not run.');
+        window.RecastFunnel?.track('pipeline_run_failed', { step_count:definition.steps.length, code:'exception' });
+      } finally {
+        if(btn){btn.disabled=false;btn.textContent=previous||'Run pipeline →';}
+      }
+    });
+    $('wcApiBtn')?.addEventListener('click',e=>{e.preventDefault();if(!definition||!definition.steps.length)return;window.RecastFunnel?.track('pipeline_deploy_clicked',{step_count:definition.steps.length});const saved=window.RecastWorkflowLibrary?.save(definition);if(!saved){window.showToastSafe?.('Save the workflow before deploying it.');return;}if(definition.requiresConfiguration){window.RecastRecipeBuilder2?.openWithDefinition(definition);$('recipeBuilder2Panel')?.scrollIntoView({behavior:'smooth',block:'start'});window.showToastSafe?.('Finish the highlighted workflow setup before API deployment.');return;}if(window.RecastWorkflowAutomation?.deploy)window.RecastWorkflowAutomation.deploy(saved);else{window.showToastSafe?.('Workflow saved. Open Deploy & automate to publish its API.');window.RecastHomeDepth?.activate('automation',true);}});
   }
   if(document.readyState==='loading')document.addEventListener('DOMContentLoaded',init);else init();
   window.RecastWorkflowCopilot={build,buildWithAi};
