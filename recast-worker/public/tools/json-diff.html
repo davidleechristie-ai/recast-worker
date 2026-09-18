@@ -4,8 +4,8 @@
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <script>(function(){try{if(localStorage.getItem('recast_theme')==='light')document.documentElement.setAttribute('data-theme','light');}catch(e){}})();</script>
-<title>JSON Diff – Compare Two JSON Files Online | Recast</title>
-<meta name="description" content="Compare two JSON files online and find added, removed and changed values. Recast performs structural JSON comparison and can match arrays by ID-like fields.">
+<title>Compare JSON Files Online — JSON Diff | Recast</title>
+<meta name="description" content="Compare two JSON files online and find added, removed and changed values. Structural diff can match array objects by ID to avoid false changes from reordering.">
 <meta property="og:type" content="website">
 <meta property="og:title" content="JSON Diff — compare two JSON files online | Recast">
 <meta property="og:description" content="Compare two JSON files or objects online. Matches array items by ID instead of position, so a reordered array doesn't show as a false change. Runs in your browser.">
@@ -27,7 +27,7 @@
 {
   "@context": "https://schema.org",
   "@type": "SoftwareApplication",
-  "name": "Recast",
+  "name": "JSON Diff",
   "url": "https://tryrecast.app/tools/json-diff.html",
   "applicationCategory": "DeveloperApplication",
   "operatingSystem": "Any (runs in browser)",
@@ -334,7 +334,7 @@
 <main>
   <section class="hero" id="tool">
     <p class="eyebrow">Your private data workbench</p>
-    <h1>JSON Diff</h1>
+    <h1>Compare JSON Files Online</h1>
     <p class="sub">Compares two JSON documents and shows exactly what was added, removed, or changed. Unlike most JSON diff tools, array items are matched by an ID-like field (<code>id</code>, <code>uuid</code>, <code>slug</code>...) when one exists, so an array that was simply reordered doesn't show every item as “changed”. <a href="../blog/csv-diff-explained.html">Why this matters →</a></p>
     <p style="font-size:13px;"><a href="../index.html" style="color:#B9CBDA;">← Full toolkit (all 23 tools)</a></p>
 
