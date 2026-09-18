@@ -1,9 +1,9 @@
 {
-  "fetchedAt": "2026-09-18T05:56:41.185592Z",
+  "fetchedAt": "2026-09-18T11:18:26.805410Z",
   "growthReport": {
     "durable": true,
     "extendedMeasurementStartedAt": "2026-09-11T20:34:24.536Z",
-    "generatedAt": "2026-09-18T05:56:41.152Z",
+    "generatedAt": "2026-09-18T11:18:26.775Z",
     "loop": [
       "Acquire qualified homeowners",
       "Measure source funnels",
@@ -17,12 +17,12 @@
       "decisionCaseToShareIntent": 50,
       "extendedGenuineToDecisionCase": 100,
       "extendedGenuineToMultiQuote": 0,
-      "landingToCta": 32,
+      "landingToCta": 29,
       "shareOpenToRecipientStart": null,
       "uploadToGenuine": 100
     },
     "recommendations": [
-      "CTA-to-upload is weak: reduce intake friction and clarify privacy/file requirements.",
+      "Landing-to-CTA is weak: improve message match, trust proof and CTA prominence before adding more traffic.",
       "Share loop is below the 20% validation threshold: strengthen Decision Case sharing and recipient conversion.",
       "No qualified organic cohort yet: improve existing high-intent decision pages and internal handoff before expanding acquisition."
     ],
@@ -35,9 +35,9 @@
         "extendedGenuine": 4,
         "genuine": 5,
         "installerQuestions": 0,
-        "landingToCta": 41,
-        "landingToGenuine": 17,
-        "landings": 29,
+        "landingToCta": 39,
+        "landingToGenuine": 16,
+        "landings": 31,
         "multiQuoteAnalyses": 0,
         "outboundClicks": 0,
         "recipientStarts": 0,
@@ -138,6 +138,25 @@
         "recipientStarts": 0,
         "shareIntent": 0,
         "shareOpens": 0,
+        "source": "organic_flowtemp",
+        "uploads": 0
+      },
+      {
+        "checkouts": 0,
+        "cta": 0,
+        "ctaToUpload": null,
+        "decisionCases": 0,
+        "extendedGenuine": 0,
+        "genuine": 0,
+        "installerQuestions": 0,
+        "landingToCta": 0,
+        "landingToGenuine": 0,
+        "landings": 1,
+        "multiQuoteAnalyses": 0,
+        "outboundClicks": 0,
+        "recipientStarts": 0,
+        "shareIntent": 0,
+        "shareOpens": 0,
         "source": "professional",
         "uploads": 0
       }
@@ -149,7 +168,7 @@
       "extendedGenuine": 4,
       "genuine": 5,
       "installerQuestions": 0,
-      "landings": 38,
+      "landings": 41,
       "multiQuoteAnalyses": 0,
       "outboundClicks": 0,
       "recipientStarts": 0,
