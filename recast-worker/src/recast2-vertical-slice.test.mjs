@@ -1,0 +1,14 @@
+import fs from 'node:fs'; import assert from 'node:assert/strict';
+const copilot=fs.readFileSync(new URL('../public/lib/workflow-copilot.js',import.meta.url),'utf8');
+const builder=fs.readFileSync(new URL('../public/lib/recipe-builder-2.js',import.meta.url),'utf8');
+const home=fs.readFileSync(new URL('../public/app/index.html',import.meta.url),'utf8');
+assert.match(copilot,/function normalizeDefinition/);
+assert.match(copilot,/out\.version=2/);
+assert.match(copilot,/out\.goal=/);
+assert.match(copilot,/description:s\.description/);
+assert.match(copilot,/openWithDefinition\(definition,\{run:true\}\)/);
+assert.match(builder,/function openWithDefinition\(definition, options\)/);
+assert.match(home,/id="wcBuildBtn">Build pipeline/);
+assert.match(home,/id="wcRunBtn"[^>]*>Run pipeline/);
+assert.match(home,/id="wcOpenBtn"[^>]*>Edit pipeline/);
+console.log('Recast 2A vertical-slice wiring passed');
