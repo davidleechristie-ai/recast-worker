@@ -1,5 +1,5 @@
 {
-  "fetchedAt": "2026-09-18T15:01:10Z",
+  "fetchedAt": "2026-09-18T18:29:07Z",
   "durable": true,
   "measurementStartedAt": "2026-09-11T18:33:07.244Z",
   "northStar": {
@@ -18,7 +18,7 @@
     "note": "Cumulative Cloudflare-side validation counters. QA/demo/test traffic is excluded; payment intent is not treated as revenue."
   },
   "total": {
-    "landings": 41,
+    "landings": 42,
     "cta": 12,
     "uploads": 5,
     "genuine": 5,
@@ -143,6 +143,25 @@
       "outboundClicks": 0,
       "checkouts": 0,
       "source": "organic_flowtemp",
+      "landingToCta": 0,
+      "ctaToUpload": null,
+      "landingToGenuine": 0
+    },
+    {
+      "landings": 1,
+      "cta": 0,
+      "uploads": 0,
+      "genuine": 0,
+      "extendedGenuine": 0,
+      "multiQuoteAnalyses": 0,
+      "decisionCases": 0,
+      "installerQuestions": 0,
+      "shareIntent": 0,
+      "shareOpens": 0,
+      "recipientStarts": 0,
+      "outboundClicks": 0,
+      "checkouts": 0,
+      "source": "organic_radiators",
       "landingToCta": 0,
       "ctaToUpload": null,
       "landingToGenuine": 0
