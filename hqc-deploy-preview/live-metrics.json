@@ -1,9 +1,9 @@
 {
-  "fetchedAt": "2026-09-18T16:25:58.461603Z",
+  "fetchedAt": "2026-09-18T19:38:04.492443Z",
   "growthReport": {
     "durable": true,
     "extendedMeasurementStartedAt": "2026-09-11T20:34:24.536Z",
-    "generatedAt": "2026-09-18T16:25:58.417Z",
+    "generatedAt": "2026-09-18T19:38:04.457Z",
     "loop": [
       "Acquire qualified homeowners",
       "Measure source funnels",
@@ -157,6 +157,25 @@
         "recipientStarts": 0,
         "shareIntent": 0,
         "shareOpens": 0,
+        "source": "organic_radiators",
+        "uploads": 0
+      },
+      {
+        "checkouts": 0,
+        "cta": 0,
+        "ctaToUpload": null,
+        "decisionCases": 0,
+        "extendedGenuine": 0,
+        "genuine": 0,
+        "installerQuestions": 0,
+        "landingToCta": 0,
+        "landingToGenuine": 0,
+        "landings": 1,
+        "multiQuoteAnalyses": 0,
+        "outboundClicks": 0,
+        "recipientStarts": 0,
+        "shareIntent": 0,
+        "shareOpens": 0,
         "source": "professional",
         "uploads": 0
       }
@@ -168,7 +187,7 @@
       "extendedGenuine": 4,
       "genuine": 5,
       "installerQuestions": 0,
-      "landings": 41,
+      "landings": 42,
       "multiQuoteAnalyses": 0,
       "outboundClicks": 0,
       "recipientStarts": 0,
