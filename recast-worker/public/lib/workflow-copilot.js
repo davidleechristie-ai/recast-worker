@@ -39,6 +39,39 @@
     return String(prompt || '').toLowerCase().replace(/[’]/g,"'").replace(/\s+/g,' ').trim();
   }
 
+  const OP_META = {
+    apiRequestStep:['API Request','Fetch data from an API as a pipeline step.'],
+    json2csv:['JSON → CSV','Convert JSON records to CSV.'], csv2json:['CSV → JSON','Convert CSV rows to JSON.'],
+    json2xml:['JSON → XML','Convert JSON to XML.'], xml2json:['XML → JSON','Convert XML to JSON.'],
+    json2yaml:['JSON → YAML','Convert JSON to YAML.'], yaml2json:['YAML → JSON','Convert YAML to JSON.'],
+    json2markdown:['JSON → Markdown','Convert JSON to Markdown.'], markdown2json:['Markdown → JSON','Convert Markdown to JSON.'],
+    flatten:['Flatten nested objects','Flatten nested data into path-based fields.'], unflatten:['Unflatten fields','Rebuild nested data from flattened paths.'],
+    transformRemove:['Remove fields','Remove selected fields.'], transformRename:['Rename field','Rename a field without changing its value.'],
+    transformSelect:['Select fields','Keep only selected fields.'], transformFilter:['Filter records','Keep records matching a condition.'],
+    transformSort:['Sort records','Sort records by a field.'], sortJson:['Sort object keys','Sort JSON object keys.'],
+    transformConvertType:['Convert field type','Convert a field to another data type.'], transformAddField:['Add / default field','Add a field with a value.'],
+    transformCombine:['Combine fields','Build a new field from existing values.'], jsonPath:['Extract with JSONPath','Extract matching data using JSONPath.'],
+    validateJsonStep:['Validate JSON','Check that the input is valid JSON.'], validateXmlStep:['Validate XML','Check that the input is valid XML.'],
+    formatJson:['Format JSON','Pretty-print JSON.'], compareStep:['Compare files → differences','Compare two inputs and return their differences.']
+  };
+
+  function normalizeDefinition(def, prompt) {
+    const out = Object.assign({}, def || {});
+    out.version = 2;
+    out.goal = String(prompt || out.goal || out.name || '').trim();
+    out.input = out.input || {type:'auto'};
+    out.steps = Array.isArray(out.steps) ? out.steps.map((s,i) => {
+      const meta=OP_META[s.mode] || [s.mode || 'Step','Run this pipeline step.'];
+      return Object.assign({},s,{
+        id:s.id || 'step-'+(i+1),
+        label:s.label || meta[0],
+        description:s.description || meta[1],
+        params:s.params || {}
+      });
+    }) : [];
+    return out;
+  }
+
   function findConversion(t) {
     for (const [from,to,mode,label] of CONVERSIONS) {
       if ((new RegExp('\\b'+from+'\\b')).test(t) && (new RegExp('\\b(?:to|into|as|->|→)\\s*'+to+'\\b')).test(t)) return {mode,label};
