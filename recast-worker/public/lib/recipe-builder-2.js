@@ -498,6 +498,19 @@
     renderSavedRecipes();
     runFullPreview();
   }
+  async function executeDefinition(definition) {
+    const incoming = definition && Array.isArray(definition.steps) ? definition.steps : [];
+    const executable = incoming.slice(0, window.RecastRecipes.MAX_STEPS).map((s) => ({
+      mode: s.mode,
+      params: s.params || {}
+    })).filter((s) => window.RecastRecipes.isStepSupported(s.mode));
+    const inputEl = $('input');
+    const text = inputEl ? inputEl.value : '';
+    if (!text.trim()) return { ok:false, code:'missing_input', error:'Add data to the workbench input first.', stepResults:[] };
+    if (!executable.length) return { ok:false, code:'empty_pipeline', error:'This pipeline has no executable steps.', stepResults:[] };
+    return await window.RecastRecipes.runRecipe(text, executable, {});
+  }
+
   function openWithDefinition(definition, options) {
     options = options || {};
     const incoming = definition && Array.isArray(definition.steps) ? definition.steps : [];
@@ -515,11 +528,11 @@
     renderSidePanel();
     renderSavedRecipes();
     runFullPreview();
-    if (options.run && !definition.requiresConfiguration) setTimeout(() => runFullPreview(), 20);
   }
   window.RecastRecipeBuilder2 = {
     openWithApiRequestStep: openWithApiRequestStep,
-    openWithDefinition: openWithDefinition
+    openWithDefinition: openWithDefinition,
+    executeDefinition: executeDefinition
   };
 })();
 
