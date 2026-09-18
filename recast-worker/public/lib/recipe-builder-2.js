@@ -498,7 +498,8 @@
     renderSavedRecipes();
     runFullPreview();
   }
-  function openWithDefinition(definition) {
+  function openWithDefinition(definition, options) {
+    options = options || {};
     const incoming = definition && Array.isArray(definition.steps) ? definition.steps : [];
     steps = incoming.slice(0, window.RecastRecipes.MAX_STEPS).map((s) => ({
       id: newStepId(),
@@ -514,6 +515,7 @@
     renderSidePanel();
     renderSavedRecipes();
     runFullPreview();
+    if (options.run && !definition.requiresConfiguration) setTimeout(() => runFullPreview(), 20);
   }
   window.RecastRecipeBuilder2 = {
     openWithApiRequestStep: openWithApiRequestStep,
