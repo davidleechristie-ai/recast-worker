@@ -56,3 +56,13 @@ Append concise dated run records here. Record only observed evidence and complet
 - Learning: content is publicly discoverable beyond the direct reader, but Google volume remains negligible; additional content is not yet justified.
 - Expected impact: protects attribution and prevents low-evidence polish/content work while the agent seeks first-purchase evidence and qualified distribution.
 - Next: retry authoritative payment/funnel evidence first; progress privacy-safe aggregate observability or non-confounding qualified distribution when independently verifiable.
+
+
+## 2026-09-19 23:00 Europe/London — revenue acceleration reset
+- Revenue: authoritative live Stripe account `Home Quote Check` refreshed directly. PaymentIntents list returned 0 objects and `has_more=false`; genuine production revenue = £0 and paying customers = 0.
+- Milestone: first genuine £4.99 purchase remains the immediate target; £100 validation and £1,000/month North Star remain unachieved.
+- Diagnosis: commercial validation/distribution is the binding constraint. Search visibility remains extremely small; low-evidence product polish is deprioritised.
+- Work completed: upgraded the scheduled HQC agent from every 3 hours to every hour; changed it to a revenue-acceleration mandate; added parallel non-confounding acquisition, activation, comparison, checkout, sharing, observability and reliability workstreams; updated persistent autonomous prompt and current state on main.
+- Verification: scheduled automation is enabled hourly. Persistent vault updates committed on main (`952b905be61064ed94c6537f1f3d3ca594be56a4`, `85d951da13f27c9f6f4fb7f20679a5e96eba7380`).
+- Expected impact: triples autonomous execution cadence and prevents idle waiting on SEO/funnel evidence while keeping overlapping experiments isolated; prioritises fastest evidence path to first purchase.
+- Next: each hourly run refreshes live Stripe first, then executes the highest-value independently verifiable revenue task. Restore aggregate funnel observability and verify the £4.99 purchase path while qualified distribution continues.
