@@ -44,3 +44,15 @@ Append concise dated run records here. Record only observed evidence and complet
 - Verification: no production/UI change; no unsupported visual or runtime verification claim.
 - Learning: no meaningful commercial/search movement is measurable this run; evidence access remains the limiting dependency.
 - Next: retry authoritative payment/funnel/runtime health first; only ship aggregate ops observability when preview/canary/production verification is available.
+
+## 2026-09-19 22:48 Europe/London
+- Revenue: Stripe account selection requires interactive user input in this runtime; authoritative successful non-refunded production payments and paying customers remain unavailable/null, not assumed zero.
+- Funnel: durable synthetic-excluded counters remain unavailable/null; no stale counts promoted to fresh evidence.
+- SEO: Search Console API refreshed through 17 Sep. Sitemap 13 URLs, 2 with impressions; homepage 2 impressions / 0 clicks / position 3.5; good-quote page 2 / 0 / 5.5. No GSC movement.
+- Discovery/health: fresh public web search retrieves production homepage plus compare, radiator, price-difference, heat-loss, flow-temperature, questions and sizing content. This confirms crawlable production HTML but is not treated as Google ranking evidence. Direct `/ops` remains inaccessible.
+- Bottleneck: first-customer acquisition/conversion remains commercial objective; evidence observability limits evidence-backed optimisation.
+- Experiment: preserved current SEO and comparison attribution; no overlapping content/UI experiment started.
+- Work: refreshed payment availability, GSC, public discovery and production crawl evidence; updated vault. No product release because no fresh funnel hypothesis and no rendered UI verification path.
+- Learning: content is publicly discoverable beyond the direct reader, but Google volume remains negligible; additional content is not yet justified.
+- Expected impact: protects attribution and prevents low-evidence polish/content work while the agent seeks first-purchase evidence and qualified distribution.
+- Next: retry authoritative payment/funnel evidence first; progress privacy-safe aggregate observability or non-confounding qualified distribution when independently verifiable.
