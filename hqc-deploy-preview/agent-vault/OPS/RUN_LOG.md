@@ -33,3 +33,14 @@ Append concise dated run records here. Record only observed evidence and complet
 - Verification: no production change, so no unsupported runtime or visual verification claim.
 - Learning: search discovery has started, but machine-readable payment/funnel evidence remains the limiting input for revenue optimisation.
 - Next: retry payment/funnel/runtime health; continue settled GSC measurement; ship aggregate-only ops observability only when preview/canary/production verification is available.
+
+## 2026-09-19 19:56 Europe/London
+- Evidence: Search Console API refreshed for 1–16 Sep: 13 sitemap URLs, 2 with impressions; homepage 2 impressions / 0 clicks / position 3.5 and good-quote page 2 / 0 / 5.5. Other 11 sitemap URLs remain at zero impressions. GA4 ecommerce remains `notConfigured` / `no_scope`; authoritative revenue and durable funnel unavailable, so no values asserted.
+- Health: direct production and `/ops` remain inaccessible via available web reader; GitHub/vault healthy.
+- Bottleneck: observability reliability remains earliest actionable constraint; SEO signal is unchanged and too sparse for a new content/CTR experiment.
+- SOP: loaded only `SOPS/RELIABILITY_INCIDENT.md`.
+- Experiment: preserved comparison-flow and SEO attribution; no overlapping experiment started.
+- Work: retried production health, Search Console and ecommerce evidence; updated current state and run log.
+- Verification: no production/UI change; no unsupported visual or runtime verification claim.
+- Learning: no meaningful commercial/search movement is measurable this run; evidence access remains the limiting dependency.
+- Next: retry authoritative payment/funnel/runtime health first; only ship aggregate ops observability when preview/canary/production verification is available.
