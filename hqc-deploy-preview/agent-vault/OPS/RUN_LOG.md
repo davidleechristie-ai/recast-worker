@@ -76,3 +76,14 @@ Append concise dated run records here. Record only observed evidence and complet
 - Verification: no production UI change was deployed this run; therefore no unsupported visual QA claim. State update commit `a17e2472dbbdd2507bbea7cf5d4068b3a018686c`.
 - Expected impact: restores evidence-backed hourly prioritisation and prevents wasted cycles on already-solved observability or low-evidence feature polish.
 - Next: measure post-release comparison movement, verify checkout safely, and progress qualified distribution while preserving current SEO experiment.
+
+## 2026-09-20 00:49 Europe/London
+- Revenue: authoritative live Stripe refreshed: 0 PaymentIntents, `has_more=false`; £0 genuine revenue / £1,000 monthly North Star; £0 / £100 validation; 0 paying customers.
+- Funnel: durable snapshot refreshed at 23:15Z and remains 47 landings → 12 starts → 5 uploads → 5 genuine analyses; extended 4 analyses → 0 comparisons → 4 Decision Cases → 2 share intents → 0 share opens → 0 checkouts. QA/demo/test excluded.
+- SEO/search: no new reliable ranking evidence this runtime; retained settled Search Console evidence rather than inventing movement.
+- Bottleneck: landing→checker start remains earliest adequately sampled weakness (26%); acquisition scale remains extremely low; comparison remains a downstream zero.
+- Engineering diagnosis: inspected Decision Pack frontend and Worker checkout implementation. Durable metrics increments `checkouts` for `decision_pack_checkout_created`, but frontend emits `decision_pack_checkout_started` and the inspected checkout creation path does not visibly record the created event. Also found a stale webhook fallback amount of 1900 pence versus current £4.99 offer. These are instrumentation/correctness defects, not evidence of a payment failure.
+- Work completed: recorded the checkout instrumentation defect and stale fallback as the next backend-only release target; updated persistent state. No UI change stacked onto the active homepage/comparison experiment.
+- Verification: no production release this run; no unsupported rendered-QA claim. State commit `06eea90cb2507a1cb9fe63fd0c380c372fe6ad92`.
+- Expected impact: fixing checkout-created observability will make first-purchase funnel diagnosis reliable without changing customer-facing behaviour; correcting the stale fallback removes misleading payment telemetry risk.
+- Next: patch/test the backend instrumentation through guarded preview/canary, verify £4.99 checkout creation safely, then continue qualified distribution and measurement.
