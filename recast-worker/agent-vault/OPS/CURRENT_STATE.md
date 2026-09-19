@@ -1,28 +1,34 @@
 # Current state
 
-Updated: 2026-09-19 19:52 Europe/London
+Updated: 2026-09-19 22:45 Europe/London
 North star: ≥ £1,000 genuine MRR.
+Current milestone: first genuine paying customer.
 
 ## Evidence refreshed
-- Authoritative repository scoreboard still records £0 genuine MRR and 0 genuine paid customers under the strict successful/non-refunded latest-invoice definition; no fresh payment-provider connector was available in this run, so revenue was not re-estimated.
-- Search Console remains settled only through 2026-09-16. Latest recorded acquisition baseline remains 29 of 78 sitemap URLs with impressions in the current 28-day window; this is impression coverage, not URL Inspection/index status.
-- Fresh production checks on 2026-09-19 19:52 Europe/London confirm the homepage, Flatten JSON and JSON Schema Generator are reachable and expose the intended free-tool → workflow/API/paid progression. Homepage pricing remains Free £0, Pro £9/month, Automation £29/month and API £29/month.
-- Fresh rendered-text production evidence shows Flatten JSON retains its aligned title/H1 and JSON Schema Generator retains its experiment content; no production regression was observed in those target pages.
-- GA4 ecommerce/product analytics remains unavailable through the connected GSC account, so no analytics or ecommerce values were invented.
+- Authoritative repository scoreboard records £0 genuine MRR and 0 genuine paid customers under the strict successful/non-refunded latest-invoice definition. No fresh payment-provider connector was available in this run, so revenue was not re-estimated.
+- Scoreboard acquisition baseline remains 1,575 Search Console impressions and 4 organic clicks in its current 28-day evidence, with 3 successful tool uses, 0 workflow starts and 0 commercial-intent events. Downstream denominators remain incomplete, so unavailable rates are not inferred.
+- Fresh production checks on 2026-09-19 confirm the homepage, Automation hub and API page are reachable. The homepage clearly positions free tools → repeatable workflow → Automation/API and currently presents Free £0, Pro £9/month, Automation £29/month and API £29/month.
+- Production Automation currently exposes recurring API/JSON/CSV use cases. The API page documents authenticated conversion endpoints and hosted-workflow execution/scheduling. This confirms the recurring-job product surface exists; it does not prove willingness to pay.
+- GA4/product ecommerce evidence and fresh payment-provider evidence are unavailable in the current tool set, so no new conversion/revenue values were invented.
 
-## Earliest measured bottleneck
-Search visibility remains the earliest measured constraint. The sitemap evidence also shows a broad discovery/visibility gap: only 29 of 78 submitted sitemap URLs received any GSC impressions in the current 28-day window. This is actionable measurement evidence but does not by itself prove the other URLs are unindexed.
+## Earliest revenue bottleneck
+The immediate commercial milestone is customer #1. Search visibility is still the earliest *measured* funnel constraint, but £0 MRR plus zero recorded workflow starts/commercial-intent events means the operating priority is now first-customer validation rather than waiting on SEO alone. Existing SEO experiments remain protected while independent pipeline, commercial-path, instrumentation and high-intent use-case work proceeds.
 
 ## Active experiments / attribution guardrail
 - JSON Schema Generator content-consolidation experiment remains active; 28-day review due 2026-09-29.
 - Flatten JSON search-intent alignment remains active; 14-day review due 2026-09-22 and 28-day review due 2026-10-06.
-- No overlapping SEO edit launched in this run.
+- Do not edit those targets before their fixed review unless fixing a defect.
 
-## Product/reliability observation
-Production is healthy on the homepage and both active SEO target pages. With no newly settled Search Console window and no product analytics connector, a new acquisition or conversion experiment would not have an evidence-backed baseline and could contaminate active attribution. The correct intervention this run was reliability verification rather than speculative change.
+## Work completed this run
+- Corrected durable vault policy that still described a once-daily, globally single-experiment growth agent. `AGENTS.md` now makes first genuine revenue the immediate milestone, treats SEO as one channel, permits independent non-confounding revenue workstreams and requires revenue-impact scoring.
+- Updated `AUTONOMOUS_RUN_PROMPT.md` so frequent runs accelerate pipeline/commercial-path/instrumentation/reliability work rather than waiting for SEO readouts or manufacturing changes.
+- No production UI change was made, so no rendered deployment gate was required.
 
-## Blockers / measurement gaps
-Google URL Inspection/index-status evidence remains unavailable; 29/78 is an impression-coverage measure, not an index count. Successful-task rate still lacks a usable tool_run_attempt denominator and workflow completion lacks workflow_start traffic. GA4 is not connected to the authenticated GSC Wizard account, so fresh product-event/ecommerce evidence is unavailable through that connector.
+## Expected revenue impact
+This is operating-system work rather than a customer-facing experiment. It removes a control-plane conflict that was causing the faster agent to remain biased toward waiting on SEO. Expected effect: more autonomous capacity directed toward proving reusable-pipeline willingness to pay and reaching customer #1, while preserving SEO attribution.
 
-## Next decision
-On 2026-09-22 perform the fixed Flatten JSON 14-day readout from authoritative page/query Search Console evidence. Before then preserve both active SEO experiments; use the sitemap impression-coverage baseline (29/78) for non-confounding discovery diagnostics and continue production/measurement reliability checks rather than manufacturing another SEO edit.
+## Measurement gaps / blockers
+Fresh payment-provider and GA4/product-event connectors are unavailable in this run. Successful-task rate still lacks a usable tool_run_attempt denominator; workflow completion lacks workflow_start traffic. Search Console experiment windows have not reached the next fixed review.
+
+## Next autonomous execution
+Preserve active SEO targets. Inspect the existing pipeline → save/repeat → Automation/API → checkout path for the earliest independently fixable first-customer friction. Prioritise recurring API→CSV and related repeatable developer jobs already represented in production. Implement only evidence-backed changes; UI deployment remains blocked unless the mandatory rendered visual sweep can be completed.
