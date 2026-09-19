@@ -57,7 +57,6 @@ Append concise dated run records here. Record only observed evidence and complet
 - Expected impact: protects attribution and prevents low-evidence polish/content work while the agent seeks first-purchase evidence and qualified distribution.
 - Next: retry authoritative payment/funnel evidence first; progress privacy-safe aggregate observability or non-confounding qualified distribution when independently verifiable.
 
-
 ## 2026-09-19 23:00 Europe/London — revenue acceleration reset
 - Revenue: authoritative live Stripe account `Home Quote Check` refreshed directly. PaymentIntents list returned 0 objects and `has_more=false`; genuine production revenue = £0 and paying customers = 0.
 - Milestone: first genuine £4.99 purchase remains the immediate target; £100 validation and £1,000/month North Star remain unachieved.
@@ -66,3 +65,14 @@ Append concise dated run records here. Record only observed evidence and complet
 - Verification: scheduled automation is enabled hourly. Persistent vault updates committed on main (`952b905be61064ed94c6537f1f3d3ca594be56a4`, `85d951da13f27c9f6f4fb7f20679a5e96eba7380`).
 - Expected impact: triples autonomous execution cadence and prevents idle waiting on SEO/funnel evidence while keeping overlapping experiments isolated; prioritises fastest evidence path to first purchase.
 - Next: each hourly run refreshes live Stripe first, then executes the highest-value independently verifiable revenue task. Restore aggregate funnel observability and verify the £4.99 purchase path while qualified distribution continues.
+
+## 2026-09-19 23:58 Europe/London
+- Revenue: authoritative live Stripe refreshed: 0 PaymentIntents, `has_more=false`; £0 genuine revenue; 0 paying customers.
+- Funnel: recovered the durable Cloudflare snapshot instead of treating funnel evidence as unavailable. 47 genuine landings → 12 starts → 5 uploads → 5 genuine analyses; extended cohort 4 analyses → 0 comparisons → 4 Decision Cases → 2 share intents → 0 share opens → 0 checkouts. QA/demo/test excluded by the production counter contract.
+- SEO: Search Console settled window 1–16 Sep: 13 sitemap URLs, 2 with impressions; 4 total impressions across homepage and good-quote page, 0 clicks. No qualified organic conversion in durable source cohorts.
+- Research: current quote-comparison SERPs remain dominated by free installer matching/lead-generation propositions; evidence/checklist content exists but is less common. HQC should retain its existing-quote independent-check position rather than imitate lead-gen or add thin location pages.
+- Bottleneck: earliest adequately sampled stage is landing→checker start at 26%; start→upload is 42%. Comparison remains 0%, including 5 `results_compare` landings with zero starts, but smaller sample. Upload→analysis remains 100%.
+- Work: corrected persistent agent state so future runs consume `hqc-ops/live-metrics.json`; removed the false observability blocker; preserved existing homepage/comparison experiment rather than stacking an unrendered UI change.
+- Verification: no production UI change was deployed this run; therefore no unsupported visual QA claim. State update commit `a17e2472dbbdd2507bbea7cf5d4068b3a018686c`.
+- Expected impact: restores evidence-backed hourly prioritisation and prevents wasted cycles on already-solved observability or low-evidence feature polish.
+- Next: measure post-release comparison movement, verify checkout safely, and progress qualified distribution while preserving current SEO experiment.
