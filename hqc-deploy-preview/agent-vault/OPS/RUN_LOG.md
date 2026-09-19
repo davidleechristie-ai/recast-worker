@@ -22,3 +22,14 @@ Append concise dated run records here. Record only observed evidence and complet
 - Verification: no production change made; therefore no unsupported visual/runtime verification claim.
 - Learning: without an authoritative machine-readable aggregate snapshot, non-interactive runs can be prevented from making evidence-backed growth decisions even when the product repository is healthy.
 - Next: retry authoritative evidence/health first; if deployment verification is available, implement aggregate-only synthetic-excluded observability without exposing customer/payment data.
+
+## 2026-09-19 16:54 Europe/London
+- Evidence: Search Console became authoritative/retrievable through settled 2026-09-16. Sitemap: 13 URLs, 2 with impressions. Homepage 2 impressions / 0 clicks / position 3.5; good-quote page 2 / 0 / 5.5. One query-page row: `what questions to ask when buying a heat pump`, 1 impression / 0 clicks / position 98. Revenue and durable funnel remain unavailable; GA4 ecommerce reports `notConfigured` / `no_scope`, so no substitute revenue claim made.
+- Health: production and `/ops` remain inaccessible through the web reader; GitHub/vault healthy.
+- Bottleneck: observability reliability remains earliest operational constraint; SEO volume is too sparse for another acquisition-content experiment.
+- SOP: loaded only `SOPS/RELIABILITY_INCIDENT.md`.
+- Experiment: preserved comparison-flow and current SEO attribution; no overlapping material experiment started.
+- Work: retried production health, GSC and ecommerce; restored authoritative search evidence; updated vault state.
+- Verification: no production change, so no unsupported runtime or visual verification claim.
+- Learning: search discovery has started, but machine-readable payment/funnel evidence remains the limiting input for revenue optimisation.
+- Next: retry payment/funnel/runtime health; continue settled GSC measurement; ship aggregate-only ops observability only when preview/canary/production verification is available.
