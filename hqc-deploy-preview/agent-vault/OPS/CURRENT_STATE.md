@@ -1,23 +1,24 @@
 # Current state
 
-Updated: 2026-09-19 19:56 Europe/London
+Updated: 2026-09-19 22:48 Europe/London
 
-North star: Validate demand with at least £100 cumulative genuine customer revenue in the first three months, then grow sustainable revenue.
+North star: Sustain at least £1,000 genuine monthly revenue. Immediate milestone: first genuine £4.99 purchase, then £100 cumulative validation revenue within the original three-month window.
 
 ## Evidence refreshed
-- Revenue: authoritative payment evidence remains unavailable in this run. GA4 ecommerce cannot substitute: connected GSC Wizard reports Analytics `notConfigured` / `no_scope`. No revenue value asserted.
-- Durable funnel: unavailable in this run; no authoritative production counter source exposed. No funnel counts asserted or carried forward as fresh evidence.
-- SEO/search: authoritative Search Console API refreshed for 2026-09-01..16. Sitemap still has 13 URLs and only 2 with impressions. Homepage: 2 impressions, 0 clicks, avg position 3.5. `/is-this-a-good-heat-pump-quote.html`: 2 impressions, 0 clicks, avg position 5.5. Remaining 11 sitemap URLs have no GSC impressions in the window. Search volume remains too small for CTR/content conclusions.
-- Production health: direct production and `/ops` remain inaccessible through available web reader. GitHub main/vault reachable. Runtime health unknown, not asserted failed.
+- Revenue: authoritative Stripe production evidence is unavailable in this non-interactive run. The connected Stripe account selector requires user input, so no revenue or paying-customer value is asserted. GA4 ecommerce remains unsuitable as a substitute because it is not configured for this property.
+- Durable funnel: authoritative synthetic-excluded production counters remain unavailable to this runtime; no funnel counts are asserted or carried forward as fresh evidence.
+- SEO/search: authoritative Search Console API refreshed for 2026-09-01..17. Sitemap has 13 URLs; 2 have impressions. Homepage: 2 impressions, 0 clicks, avg position 3.5. `/is-this-a-good-heat-pump-quote.html`: 2 impressions, 0 clicks, avg position 5.5. Remaining 11 sitemap URLs have no GSC impressions. No measurable GSC movement versus the prior settled window.
+- Public discovery: fresh web search can retrieve the production homepage plus substantive compare, radiator, price-difference, heat-loss, flow-temperature, installer-questions and sizing content. This is useful crawl/discovery evidence but is not treated as Google indexing/ranking evidence.
+- Production health: search crawler successfully retrieved current production HTML including the homepage and good-quote page. Direct URL reader and `/ops` remain inaccessible through the available reader, so interactive runtime health is not claimed fully verified.
 
 ## Bottleneck / experiment
-Observability reliability remains the earliest operational constraint because authoritative revenue and durable synthetic-excluded funnel evidence cannot be refreshed non-interactively. SEO discovery remains sparse and unchanged; no additional acquisition experiment justified.
+The immediate commercial bottleneck remains first-customer acquisition/conversion, but autonomous optimisation is constrained by missing authoritative revenue and durable funnel evidence. Search discovery exists, while GSC volume remains extremely sparse. Do not add another overlapping SEO content experiment yet; progress independent distribution, payment observability and funnel observability work when verifiable.
 
 ## Action
-Loaded only reliability SOP. Retried production `/ops`, Search Console and GA4 ecommerce. Search Console remains available and unchanged; payment/funnel/runtime remain unavailable. No UI/product release because rendered verification is unavailable and production cannot be verified. Preserved comparison-flow and SEO attribution.
+Refreshed Stripe availability, Search Console, public discovery and production crawl evidence first. Stripe cannot be selected non-interactively. Search Console is unchanged through 17 Sep. Public search now surfaces multiple substantive HQC pages, so content is crawlable/discoverable outside the direct reader. No UI release: rendered verification is unavailable and no fresh funnel evidence supports a specific UI hypothesis.
 
 ## Blockers
-Machine-readable authoritative payment and durable funnel evidence are not exposed to this runtime; GA4 is not connected to the authenticated GSC Wizard account. Production URL verification through web reader remains unavailable. No owner escalation yet because no independently verifiable safe production change is available in this runtime.
+Authoritative Stripe selection requires interactive account context in this runtime. Durable synthetic-excluded funnel counters are not exposed through an accessible machine-readable endpoint. Direct `/ops` remains unavailable to the web reader.
 
 ## Next decision
-Retry authoritative payment/funnel and production health first. Continue settled Search Console measurement. If a verifiable deployment/runtime path becomes available, ship aggregate-only privacy-safe synthetic-excluded ops snapshot under SHIP_CHANGE. Avoid additional SEO content until current pages accumulate enough impressions to diagnose intent/ranking rather than discovery noise.
+Retry payment and funnel evidence first. Preserve the current SEO experiment while settled data matures. Highest-value autonomous engineering remains a privacy-safe aggregate synthetic-excluded revenue/funnel observability path that can be verified through preview/canary without exposing customer/payment data; otherwise progress non-confounding qualified distribution work rather than product polish.
