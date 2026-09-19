@@ -1,24 +1,27 @@
 # Current state
 
-Updated: 2026-09-19 22:48 Europe/London
+Updated: 2026-09-19 23:00 Europe/London
 
 North star: Sustain at least £1,000 genuine monthly revenue. Immediate milestone: first genuine £4.99 purchase, then £100 cumulative validation revenue within the original three-month window.
 
 ## Evidence refreshed
-- Revenue: authoritative Stripe production evidence is unavailable in this non-interactive run. The connected Stripe account selector requires user input, so no revenue or paying-customer value is asserted. GA4 ecommerce remains unsuitable as a substitute because it is not configured for this property.
-- Durable funnel: authoritative synthetic-excluded production counters remain unavailable to this runtime; no funnel counts are asserted or carried forward as fresh evidence.
-- SEO/search: authoritative Search Console API refreshed for 2026-09-01..17. Sitemap has 13 URLs; 2 have impressions. Homepage: 2 impressions, 0 clicks, avg position 3.5. `/is-this-a-good-heat-pump-quote.html`: 2 impressions, 0 clicks, avg position 5.5. Remaining 11 sitemap URLs have no GSC impressions. No measurable GSC movement versus the prior settled window.
-- Public discovery: fresh web search can retrieve the production homepage plus substantive compare, radiator, price-difference, heat-loss, flow-temperature, installer-questions and sizing content. This is useful crawl/discovery evidence but is not treated as Google indexing/ranking evidence.
-- Production health: search crawler successfully retrieved current production HTML including the homepage and good-quote page. Direct URL reader and `/ops` remain inaccessible through the available reader, so interactive runtime health is not claimed fully verified.
+- Revenue: authoritative Stripe production account `Home Quote Check` (`livemode=true`) returned 0 PaymentIntents across the complete first page with `has_more=false`. Genuine live revenue = £0; paying customers = 0. This supersedes the prior runtime claim that Stripe required interactive selection.
+- Durable funnel: authoritative synthetic-excluded production counters are not currently exposed to this runtime; no stale funnel counts are promoted to fresh evidence.
+- SEO/search: latest authoritative Search Console evidence remains 2026-09-01..17. Sitemap has 13 URLs; 2 have impressions. Homepage: 2 impressions, 0 clicks, avg position 3.5. `/is-this-a-good-heat-pump-quote.html`: 2 impressions, 0 clicks, avg position 5.5. Remaining 11 sitemap URLs have no GSC impressions.
+- Production/discovery: latest public crawl evidence shows the homepage and substantive decision pages are retrievable. Interactive production health and aggregate /ops counters remain a verification gap.
 
-## Bottleneck / experiment
-The immediate commercial bottleneck remains first-customer acquisition/conversion, but autonomous optimisation is constrained by missing authoritative revenue and durable funnel evidence. Search discovery exists, while GSC volume remains extremely sparse. Do not add another overlapping SEO content experiment yet; progress independent distribution, payment observability and funnel observability work when verifiable.
+## Commercial diagnosis
+Commercial validation is not achieved. The binding objective is FIRST GENUINE PURCHASE, not further low-evidence product polish. Search volume is negligible and no live payment exists. Distribution + commercial conversion therefore outrank broad feature work. Existing SEO/indexing experiments remain live but must not stall independent work.
 
-## Action
-Refreshed Stripe availability, Search Console, public discovery and production crawl evidence first. Stripe cannot be selected non-interactively. Search Console is unchanged through 17 Sep. Public search now surfaces multiple substantive HQC pages, so content is crawlable/discoverable outside the direct reader. No UI release: rendered verification is unavailable and no fresh funnel evidence supports a specific UI hypothesis.
+## Accelerated execution policy
+Run independent, non-confounding workstreams in parallel: qualified distribution; existing-page SEO/indexing; single-quote activation; multi-quote progression; Decision Pack/checkout reliability; privacy-safe sharing/referral; aggregate observability; production reliability. One-experiment-at-a-time applies only to overlapping hypotheses. Complete multiple safe tasks per run when they do not contaminate each other's measurement.
 
-## Blockers
-Authoritative Stripe selection requires interactive account context in this runtime. Durable synthetic-excluded funnel counters are not exposed through an accessible machine-readable endpoint. Direct `/ops` remains unavailable to the web reader.
+## Next actions
+1. Refresh Stripe first every run using the live Home Quote Check account and count only successful non-refunded genuine payments.
+2. Restore durable synthetic-excluded funnel observability so first-customer optimisation is evidence-backed.
+3. Push qualified distribution and first-purchase conversion rather than adding generic features or thin content.
+4. Verify the £4.99 Decision Pack and checkout path end-to-end whenever a safe production-equivalent verification path is available.
+5. Preserve current SEO experiment while Search Console data matures; optimise existing high-intent pages before expanding page count unless new research demonstrates a materially better opportunity.
 
-## Next decision
-Retry payment and funnel evidence first. Preserve the current SEO experiment while settled data matures. Highest-value autonomous engineering remains a privacy-safe aggregate synthetic-excluded revenue/funnel observability path that can be verified through preview/canary without exposing customer/payment data; otherwise progress non-confounding qualified distribution work rather than product polish.
+## Guardrails
+Use GitHub + Cloudflare only; never AppDeploy. UI-affecting production changes require rendered verification. Preserve independence, privacy and evidence/certification guardrails.
