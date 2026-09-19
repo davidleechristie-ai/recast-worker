@@ -1,13 +1,19 @@
 # Home Quote Check
 
 ## Objective
-Validate demand with at least £100 cumulative genuine customer revenue in the first three months, then grow sustainable revenue.
+Build a sustainable independent consumer quote-checking business reaching at least **£1,000 genuine monthly revenue**. Immediate validation path: first genuine £4.99 purchase → £100 cumulative revenue in the original three-month window → £250/month → £500/month → £1,000/month sustained.
 
-## Product context
-Consumer quote-checking product for simple single-quote checking and multi-quote comparison. Preserve independence/evidence guardrails. Automated analysis is not design certification or grant eligibility. Avoid materially expanding personal-data collection.
+## Positioning
+For UK homeowners who already have one or more heat-pump quotes and need to understand or compare them before committing. HQC checks evidence and differences in the written proposals; it does not sell installer quotes and does not certify system design or grant eligibility.
+
+## Commercial model
+Free single-quote analysis and free multi-quote comparison demonstrate value. The current paid boundary is a one-off **£4.99 Decision Pack** with personalised installer questions, decision conditions and a printable decision record. No subscription is required for this offer.
 
 ## Commercial journey
-acquisition → checker start → quote upload/manual entry → genuine analysis → comparison/Decision Case → share/commercial action → genuine purchase.
+qualified acquisition → understands independent value → checker start → quote upload/manual entry → genuine analysis → comparison → Decision Pack value → checkout → genuine purchase → privacy-safe share/referral.
+
+## Guardrails
+Preserve independence and privacy. Do not infer design certification, MCS status or BUS eligibility from automated extraction or installer claims. Avoid material PII expansion. Commercial relationships must not influence analysis or comparison results.
 
 ## Deployment
-Use GitHub/Cloudflare via hqc-deploy-preview and Worker hqc-production, with preview/canary for material releases. Never use AppDeploy. Preserve homequotecheck.co.uk and www routing.
+Use GitHub/Cloudflare via hqc-deploy-preview and Worker hqc-production with preview/canary before material releases. Never use AppDeploy. Preserve homequotecheck.co.uk and www routing.

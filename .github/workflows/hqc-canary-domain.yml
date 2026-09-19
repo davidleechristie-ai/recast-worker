@@ -48,7 +48,7 @@ jobs:
             body=$(cat /tmp/canary 2>/dev/null || true)
             home=$(curl -L -sS --max-time 30 "$base/?release_probe=$attempt" || true)
             uploadfix=$(curl -L -sS --max-time 30 "$base/__hqc_upload_v3.js?release_probe=$attempt" || true)
-            if [ "$code" = '200' ] && grep -q 'hqc-migration-preview' <<< "$body" && grep -q '__hqc_enhancements.js' <<< "$home" && grep -q '__hqc_upload_v3.js' <<< "$home" && grep -q '__hqc_simple_results.js' <<< "$home" && ! grep -q 'heat-pump-second-opinion-v43csv.v2.appdeploy.ai' <<< "$home" && grep -q 'upload-friction-v3.3' <<< "$uploadfix"; then ready=true; break; fi
+            if [ "$code" = '200' ] && grep -q 'hqc-migration-preview' <<< "$body" && grep -q '__hqc_enhancements.js' <<< "$home" && grep -q '__hqc_upload_v3.js' <<< "$home" && grep -q '__hqc_simple_results.js' <<< "$home" && ! grep -q 'heat-pump-second-opinion-v43csv.v2.appdeploy.ai' <<< "$home" && grep -q 'upload-friction-v3.3' <<< "$uploadfix" && grep -q "Get my personalised Decision Pack — £4.99" <<< "$(curl -L -sS --max-time 30 "$base/__hqc_decision_pack.js?release_probe=$attempt")"; then ready=true; break; fi
             sleep 5
           done
           test "$ready" = 'true'
@@ -86,6 +86,24 @@ jobs:
             }
             if(errors.length)throw new Error(errors.join(' | '));await context.close();
           }
+          // Compare mode must accept more than one quote in the intake step and must not auto-analyse the first.
+          {
+            const context=await browser.newContext({viewport:{width:390,height:844},isMobile:true,hasTouch:true});
+            const page=await context.newPage();
+            const errors=[]; page.on('pageerror',e=>errors.push(String(e)));
+            await page.goto('https://cf-preview.homequotecheck.co.uk/?qa=1&compare_regression=1',{waitUntil:'domcontentloaded',timeout:30000});
+            await page.getByRole('button',{name:/start quote comparison/i}).first().click();
+            const choose=page.locator('#hqc-choose-file'); await choose.waitFor({state:'visible',timeout:15000});
+            const chooserPromise=page.waitForEvent('filechooser',{timeout:5000}); await choose.click(); const chooser=await chooserPromise;
+            const png=Buffer.from('iVBORw0KGgoAAAANSUhEUgAAAAEAAAABCAQAAAC1HAwCAAAAC0lEQVR42mP8/x8AAusB9Wl2+XkAAAAASUVORK5CYII=','base64');
+            await chooser.setFiles([{name:'quote-a.png',mimeType:'image/png',buffer:png},{name:'quote-b.png',mimeType:'image/png',buffer:png}]);
+            const count=await page.locator('input[type="file"]').first().evaluate(el=>el.files?.length||0);
+            if(count!==2)throw new Error(`Compare intake did not retain two selected quotes: ${count}`);
+            await page.waitForTimeout(700);
+            if(await page.getByRole('button',{name:/Analyse my quote$/i}).count())throw new Error('Compare intake incorrectly exposed single-quote auto-analysis');
+            if(errors.length)throw new Error(errors.join(' | '));
+            await context.close();
+          }
           await browser.close();
-          console.log('HQC canary quote intake paths passed.');
+          console.log('HQC canary quote intake and compare-mode regression paths passed.');
           NODE

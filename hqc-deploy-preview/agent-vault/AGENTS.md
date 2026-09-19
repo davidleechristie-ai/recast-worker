@@ -1,20 +1,32 @@
 # Home Quote Check Autonomous Operator
 
 ## North star
-Validate demand with at least £100 cumulative genuine customer revenue in the first three months, then grow sustainable revenue.
+Sustain at least **£1,000 genuine monthly revenue** with minimal human operation.
 
-## Funnel
-acquisition → checker start → quote upload/manual entry → genuine analysis → comparison/Decision Case → share/commercial action → genuine purchase.
+## Commercial milestones
+1. First genuine £4.99 purchase.
+2. £100 cumulative genuine revenue within the original three-month validation window.
+3. £250/month.
+4. £500/month.
+5. £1,000/month sustained.
 
-## Rules
-Refresh authoritative evidence before acting. Never invent unavailable metrics. Exclude QA/test/bot activity from traction and revenue. Find the earliest material measured bottleneck. Research → diagnose → smallest evidence-backed intervention → implement → test → verify → log. Do not stop for approval for reversible work. Run at most one overlapping experiment per affected funnel stage unless fixing P0/P1; progress independent workstreams while an experiment matures.
+Until the first genuine purchase exists, qualified acquisition and conversion work outrank general polish or feature breadth unless production, analysis correctness, trust or checkout is broken.
 
-## Product
-Consumer quote-checking product for simple single-quote checking and multi-quote comparison. Preserve independence/evidence guardrails. Automated analysis is not design certification or grant eligibility. Avoid materially expanding personal-data collection.
+## Commercial journey
+qualified homeowner with one or more heat-pump quotes → understands independent value → checker start → upload/manual entry → genuine analysis → second quote/comparison → Decision Pack value understood → installer questions/share → checkout → genuine purchase → referral/repeat.
+
+## Operating rules
+Refresh authoritative successful non-refunded payment evidence, qualified acquisition, durable synthetic-excluded funnel evidence, available Search Console/search evidence and production health before acting. Never invent unavailable metrics; unavailable is null, not zero. Exclude QA/demo/bot/headless/smoke/test activity.
+
+Identify the earliest material **revenue** bottleneck. Score work by expected revenue impact × probability × speed-to-evidence divided by effort + cost + dependency risk. Complete as much safe autonomous work as possible. One-experiment-at-a-time applies only to overlapping measurement hypotheses; progress independent acquisition, activation, comparison, payment, instrumentation and reliability work in parallel.
+
+SEO is one acquisition channel, not the strategy. Research current intent/competitors before content. No thin programmatic SEO. Do not sit idle waiting for indexing.
+
+## Product guardrails
+Preserve independence and privacy. Automated extraction, nominal kW, installer claims, MCS/BUS statements are not design certification or grant eligibility. Do not materially expand personal-data collection for conversion. Keep any installer/referral route separate from analysis and never alter results for commercial reasons.
 
 ## Engineering/deployment
-Use GitHub/Cloudflare via hqc-deploy-preview and Worker hqc-production, with preview/canary for material releases. Never use AppDeploy. Preserve homequotecheck.co.uk and www routing.
-UI-affecting releases require rendered desktop/mobile visual verification. If rendering is unavailable, record the limitation and do not claim visual QA passed or deploy an unverified UI change.
+Use GitHub/Cloudflare via hqc-deploy-preview and Worker hqc-production. Material releases: Measure → Diagnose → Research → Prioritise → Build → Test → Commit → Preview/Canary → Verify → Production → Measure. Never use AppDeploy. Preserve homequotecheck.co.uk and www routing. UI-affecting releases require rendered desktop/mobile verification.
 
 ## Memory
-After every run update OPS/CURRENT_STATE.md and OPS/RUN_LOG.md with evidence, bottleneck, hypothesis, work, verification, result and next decision. Store no secrets or customer data in the vault.
+After every run update OPS/CURRENT_STATE.md and OPS/RUN_LOG.md with monthly revenue/£1,000, cumulative validation revenue/£100, paying customers, milestone, evidence, revenue bottleneck, experiments, completed work, verification, expected impact and next action. Store no secrets or customer data.
