@@ -1,0 +1,80 @@
+{
+  "schemaVersion": 1,
+  "purpose": "Synthetic evidence fixtures for the non-public Solar PV + Battery correctness gate. Values are deliberately fictional and must never be treated as customer or market evidence.",
+  "cases": [
+    {
+      "id": "solar_only_complete",
+      "technology": "solar_battery",
+      "quoteText": "Proposal: 10 SunPeak SP450 panels, 4.50 kWp array. GridMax GM4 inverter rated 4.0 kW. Estimated annual generation 4,100 kWh using stated MCS methodology. Assumed self-consumption 45%; export 55%. Scaffolding included. DNO: G98 notification after commissioning. Panel product warranty 25 years; workmanship warranty 2 years. MCS certificate to be supplied after commissioning. Total £7,850 including VAT. Roof repairs excluded.",
+      "expected": {
+        "panel": {"make": "SunPeak", "model": "SP450", "count": 10},
+        "arrayKwp": 4.5,
+        "inverter": {"make": "GridMax", "model": "GM4", "ratingKw": 4.0},
+        "battery": null,
+        "annualGenerationKwh": 4100,
+        "selfConsumptionPercent": 45,
+        "exportPercent": 55,
+        "scaffolding": "included",
+        "roofWorks": "repairs excluded",
+        "dnoTreatment": "G98 notification after commissioning",
+        "priceGbp": 7850
+      }
+    },
+    {
+      "id": "solar_battery_complete",
+      "technology": "solar_battery",
+      "quoteText": "12 HelioWorks HW430 modules (5.16 kWp), VoltBridge VB5 hybrid inverter 5 kW and StoreBox SB10 battery, 9.2 kWh usable capacity. Annual PV generation estimate 4,650 kWh. Proposal assumes 70% self-consumption with battery and 30% export. Scaffolding included; no roof strengthening included. G99 application required before connection; approval is not stated as obtained. Panels 25-year product warranty, inverter 10 years, battery 10 years, workmanship 5 years. Installer states installation will be MCS certified on completion. Price £12,400 including VAT.",
+      "expected": {
+        "panel": {"make": "HelioWorks", "model": "HW430", "count": 12},
+        "arrayKwp": 5.16,
+        "inverter": {"make": "VoltBridge", "model": "VB5", "ratingKw": 5.0},
+        "battery": {"make": "StoreBox", "model": "SB10", "usableCapacityKwh": 9.2},
+        "annualGenerationKwh": 4650,
+        "selfConsumptionPercent": 70,
+        "exportPercent": 30,
+        "dnoTreatment": "G99 application required; approval not evidenced",
+        "priceGbp": 12400
+      }
+    },
+    {
+      "id": "battery_only",
+      "technology": "battery",
+      "quoteText": "Battery retrofit: PowerNest PN7, usable storage 6.8 kWh, with compatible AC-coupled inverter rated 3.6 kW. Existing solar retained. DNO treatment not stated. Battery warranty 10 years. Installation and commissioning included. Total £5,250. No annual saving figure is provided.",
+      "expected": {
+        "panel": null,
+        "arrayKwp": null,
+        "battery": {"make": "PowerNest", "model": "PN7", "usableCapacityKwh": 6.8},
+        "dnoTreatment": null,
+        "priceGbp": 5250
+      }
+    },
+    {
+      "id": "partial_quote_missing_evidence",
+      "technology": "solar_battery",
+      "quoteText": "Solar package: 12 premium panels and battery. Expected to save up to £1,500 per year. Fully installed £10,995. Offer ends Friday.",
+      "expected": {
+        "panelModel": null,
+        "arrayKwp": null,
+        "inverter": null,
+        "batteryModel": null,
+        "batteryUsableCapacityKwh": null,
+        "annualGenerationKwh": null,
+        "generationBasis": null,
+        "dnoTreatment": null,
+        "mcsStatus": null,
+        "priceGbp": 10995,
+        "requiredGaps": ["panel specification", "array size", "inverter specification", "battery usable capacity", "generation estimate and basis", "DNO treatment", "warranty detail", "MCS wording"]
+      }
+    },
+    {
+      "id": "comparison_pair",
+      "technology": "solar_battery",
+      "quotes": [
+        "Quote A: 10 ArcPanel AP440 panels, 4.4 kWp; ArcInv AI4 4 kW inverter; no battery; generation 3,900 kWh/year; scaffolding included; G98 notification stated; total £7,200.",
+        "Quote B: 12 ArcPanel AP440 panels, 5.28 kWp; ArcInv AI5 5 kW inverter; HomeCell HC8 battery 7.5 kWh usable; generation 4,550 kWh/year; scaffolding excluded; G99 application stated but approval not evidenced; total £11,900."
+      ],
+      "expectedComparisonDimensions": ["panel count", "array kWp", "inverter rating", "battery inclusion and usable capacity", "annual generation assumption", "scaffolding scope", "DNO treatment", "price"],
+      "mustNotConclude": ["Quote B is electrically approved", "either roof is structurally suitable", "either generation estimate is guaranteed", "either installer is MCS certified"]
+    }
+  ]
+}
