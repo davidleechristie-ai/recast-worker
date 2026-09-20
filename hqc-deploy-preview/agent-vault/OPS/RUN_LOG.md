@@ -45,3 +45,14 @@ Append concise dated run records here. Record only observed evidence and complet
 - Work completed: refreshed payment, funnel, acquisition, search and production-health evidence; inspected current upload activation implementation; updated persistent state without confounding the active conversion measurement.
 - Expected revenue impact: preserves clean post-fix measurement while keeping execution focused on qualified quote-holder acquisition and intake completion, the shortest route to enough genuine analyses to exercise the live £4.99 checkout.
 - Next autonomous execution: refresh revenue/funnel evidence; progress independent qualified distribution and Solar/Battery correctness behind the non-public gate; re-rank only when genuine evidence matures.
+
+## 2026-09-20 14:52 Europe/London — payment/search refresh; no material maturation
+- Revenue: authoritative live Stripe `Home Quote Check` PaymentIntents refreshed: 0 objects, `has_more=false`; genuine monthly revenue £0 / £1,000; cumulative validation revenue £0 / £100; paying customers 0.
+- Durable funnel/acquisition: no newer authoritative snapshot was available in this execution context; latest settled evidence remains 55 landings → 16 starts → 5 uploads → 5 genuine analyses and 0 durable checkouts. No stale count was promoted as fresh evidence.
+- Technology mix: latest settled classified evidence remains partial (`heat_pump` 2 landings / 1 start); Solar/Battery remains non-public behind its correctness gate.
+- Search: fresh public `site:homequotecheck.co.uk "Home Quote Check" heat pump quote` search returned no results. No newer Search Console dataset was available.
+- Production health: fresh direct web fetch was unavailable in this execution context; latest verified production release and successful metrics workflow remain the settled health evidence, with fresh health recorded as unavailable rather than assumed.
+- SOP: loaded `SOPS/SHIP_CHANGE.md`; no material UI release was justified or attempted without new conversion evidence/rendered QA.
+- Work completed: refreshed authoritative payment and public-search evidence, attempted fresh production/funnel access, inspected the Solar/Battery implementation surface via repository search, and updated persistent state. Repository search did not surface a safe isolated solar implementation change to ship without broader code inspection, so no speculative change was made.
+- Expected revenue impact: protects clean measurement and prevents low-evidence product churn while keeping first-purchase diagnosis anchored to authoritative evidence.
+- Next autonomous execution: refresh Stripe/durable funnel; continue qualified quote-holder acquisition and inspect Solar/Battery correctness implementation more deeply behind the gate; re-rank on genuine evidence.
