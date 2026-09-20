@@ -1,5 +1,5 @@
 {
-  "fetchedAt": "2026-09-20T06:17:08Z",
+  "fetchedAt": "2026-09-20T12:22:26Z",
   "durable": true,
   "measurementStartedAt": "2026-09-11T18:33:07.244Z",
   "northStar": {
@@ -18,8 +18,8 @@
     "note": "Cumulative Cloudflare-side validation counters. QA/demo/test traffic is excluded; payment intent is not treated as revenue."
   },
   "total": {
-    "landings": 48,
-    "cta": 12,
+    "landings": 55,
+    "cta": 16,
     "uploads": 5,
     "genuine": 5,
     "extendedGenuine": 4,
@@ -34,8 +34,8 @@
   },
   "sources": [
     {
-      "landings": 33,
-      "cta": 12,
+      "landings": 39,
+      "cta": 16,
       "uploads": 5,
       "genuine": 5,
       "extendedGenuine": 4,
@@ -48,9 +48,9 @@
       "outboundClicks": 0,
       "checkouts": 0,
       "source": "direct",
-      "landingToCta": 36,
-      "ctaToUpload": 42,
-      "landingToGenuine": 15
+      "landingToCta": 41,
+      "ctaToUpload": 31,
+      "landingToGenuine": 13
     },
     {
       "landings": 5,
@@ -91,6 +91,25 @@
       "landingToGenuine": 0
     },
     {
+      "landings": 2,
+      "cta": 0,
+      "uploads": 0,
+      "genuine": 0,
+      "extendedGenuine": 0,
+      "multiQuoteAnalyses": 0,
+      "decisionCases": 0,
+      "installerQuestions": 0,
+      "shareIntent": 0,
+      "shareOpens": 0,
+      "recipientStarts": 0,
+      "outboundClicks": 0,
+      "checkouts": 0,
+      "source": "organic_flowtemp",
+      "landingToCta": 0,
+      "ctaToUpload": null,
+      "landingToGenuine": 0
+    },
+    {
       "landings": 1,
       "cta": 0,
       "uploads": 0,
@@ -124,25 +143,6 @@
       "outboundClicks": 0,
       "checkouts": 0,
       "source": "organic_checklist",
-      "landingToCta": 0,
-      "ctaToUpload": null,
-      "landingToGenuine": 0
-    },
-    {
-      "landings": 1,
-      "cta": 0,
-      "uploads": 0,
-      "genuine": 0,
-      "extendedGenuine": 0,
-      "multiQuoteAnalyses": 0,
-      "decisionCases": 0,
-      "installerQuestions": 0,
-      "shareIntent": 0,
-      "shareOpens": 0,
-      "recipientStarts": 0,
-      "outboundClicks": 0,
-      "checkouts": 0,
-      "source": "organic_flowtemp",
       "landingToCta": 0,
       "ctaToUpload": null,
       "landingToGenuine": 0
