@@ -37,7 +37,7 @@
   "vars": {
     "SITE_URL": "https://tryrecast.app/",
     "OPENAI_MODEL": "gpt-5.6-luna",
-    "PRICE_MAP": "{\"price_1U41Bw07vRRG7JsXH0iAKy7g\":\"pro_monthly\",\"price_1U41Bx07vRRG7JsXlwnms0uo\":\"pro_yearly\",\"price_1U41Bs07vRRG7JsXnYpcoHh1\":\"api_monthly\",\"price_1U41Br07vRRG7JsXV1vskFmE\":\"api_yearly\",\"price_1U4Kub07vRRG7JsXtMatleol\":\"day_pass\"}"
+    "PRICE_MAP": "{\"price_1U41Bw07vRRG7JsXH0iAKy7g\":\"pro_monthly\",\"price_1U41Bx07vRRG7JsXlwnms0uo\":\"pro_yearly\",\"price_1U41Bs07vRRG7JsXnYpcoHh1\":\"api_monthly\",\"price_1U41Br07vRRG7JsXV1vskFmE\":\"api_yearly\",\"price_1U9g7I07vRRG7JsXPGLfnsk5\":\"automation_monthly\",\"price_1UHeZB07vRRG7JsXXkEATFe6\":\"automation_yearly\",\"price_1U4Kub07vRRG7JsXtMatleol\":\"day_pass\"}"
   },
 
   "triggers": { "crons": ["0 * * * *"] },
