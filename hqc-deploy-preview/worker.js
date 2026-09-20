@@ -121,7 +121,9 @@ async function createDecisionPackCheckout(request,env,mode,incoming){
   let payload={};try{payload=await request.json();}catch{return json({error:'invalid_json'},400);}
   const caseId=payload.caseId;if(!validCaseId(caseId))return json({error:'invalid_case_reference'},400);if(isQaRequest(request,mode))return json({error:'qa_checkout_blocked'},409);
   const form=new URLSearchParams();form.set('mode','payment');form.set('line_items[0][price]',env.STRIPE_DECISION_PACK_PRICE_ID);form.set('line_items[0][quantity]','1');form.set('success_url',`${incoming.origin}/?decision_pack=success&session_id={CHECKOUT_SESSION_ID}`);form.set('cancel_url',`${incoming.origin}/?decision_pack=cancelled`);form.set('client_reference_id',caseId);form.set('metadata[case_id]',caseId);form.set('metadata[product]','decision_pack');form.set('payment_intent_data[metadata][case_id]',caseId);form.set('payment_intent_data[metadata][product]','decision_pack');
-  const response=await fetch(`${STRIPE_API}/checkout/sessions`,{method:'POST',headers:{authorization:`Bearer ${env.STRIPE_SECRET_KEY}`,'content-type':'application/x-www-form-urlencoded','idempotency-key':`hqc-decision-pack-${caseId}`},body:form.toString()});const data=await response.json();if(!response.ok||!data.url)return json({error:'stripe_checkout_failed'},502);return json({url:data.url,sessionId:data.id});
+  const response=await fetch(`${STRIPE_API}/checkout/sessions`,{method:'POST',headers:{authorization:`Bearer ${env.STRIPE_SECRET_KEY}`,'content-type':'application/x-www-form-urlencoded','idempotency-key':`hqc-decision-pack-${caseId}`},body:form.toString()});const data=await response.json();if(!response.ok||!data.url)return json({error:'stripe_checkout_failed'},502);
+  try{await recordDurableMetric(env,{event:'decision_pack_checkout_created',source:payload.source||'decision_pack',technology:payload.technology||'heat_pump',caseId,isTest:false});}catch(e){console.error('durable checkout metric write failed',e);}
+  return json({url:data.url,sessionId:data.id});
 }
 async function decisionPackStatus(request,env,mode,incoming){
   if(mode!=='production')return json({paid:false,test:true},200);if(!env.STRIPE_SECRET_KEY)return json({error:'payment_configuration_missing'},503);
@@ -137,7 +139,7 @@ async function stripeWebhook(request,env,mode){
   const session=event.data?.object||{},caseId=session.client_reference_id||session.metadata?.case_id||'';const matches=validCaseId(caseId)&&session.metadata?.case_id===caseId&&session.metadata?.product==='decision_pack';
   if(!matches)return json({received:true,ignored:true});
   if(event.type!=='checkout.session.async_payment_failed'&&session.payment_status!=='paid')return json({received:true,pending:true});
-  try{await fetch(`${API_BASE}/api/event`,{method:'POST',headers:{'content-type':'application/json'},body:JSON.stringify({event:event.type==='checkout.session.async_payment_failed'?'decision_pack_payment_failed':'decision_pack_payment_confirmed',caseId,amount_pence:session.amount_total||1900,currency:session.currency||'gbp',stripeSessionId:session.id,isTest:false})});}catch{}
+  try{await fetch(`${API_BASE}/api/event`,{method:'POST',headers:{'content-type':'application/json'},body:JSON.stringify({event:event.type==='checkout.session.async_payment_failed'?'decision_pack_payment_failed':'decision_pack_payment_confirmed',caseId,amount_pence:session.amount_total||499,currency:session.currency||'gbp',stripeSessionId:session.id,isTest:false})});}catch{}
   return json({received:true});
 }
 export default {async fetch(request,env){
