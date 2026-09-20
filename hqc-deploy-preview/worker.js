@@ -7,7 +7,7 @@ const safeEqual=(a,b)=>{if(a.length!==b.length)return false;let d=0;for(let i=0;
 const hex=bytes=>[...new Uint8Array(bytes)].map(b=>b.toString(16).padStart(2,'0')).join('');
 const emptyTotals=()=>({landings:0,cta:0,uploads:0,genuine:0,extendedGenuine:0,multiQuoteAnalyses:0,decisionCases:0,installerQuestions:0,shareIntent:0,shareOpens:0,recipientStarts:0,outboundClicks:0,checkouts:0});
 const cleanSource=v=>String(v||'direct').slice(0,40).replace(/[^A-Za-z0-9_.:-]/g,'_')||'direct';
-const cleanTechnology=v=>{const x=String(v||'unspecified').toLowerCase().replace(/[- ]/g,'_');return ['heat_pump','solar_battery','battery'].includes(x)?x:'unspecified';};
+const cleanTechnology=v=>{const x=String(v||'heat_pump').toLowerCase().replace(/[- ]/g,'_');return ['heat_pump','solar_battery','battery'].includes(x)?x:'unspecified';};
 
 export class HqcMetrics {
   constructor(ctx){this.ctx=ctx;}
