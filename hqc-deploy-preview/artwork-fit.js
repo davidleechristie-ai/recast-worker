@@ -8,7 +8,8 @@
     if(!/homepage-house-only\.svg/i.test(img.getAttribute('src')||'')) img.setAttribute('src',HOUSE);
     img.alt='Modern home with an outdoor air-source heat pump';
     const mobile=innerWidth<760;
-    art.style.setProperty('aspect-ratio',mobile?'1.55 / 1':'1.35 / 1','important');
+    if(mobile){art.style.setProperty('display','none','important');art.setAttribute('aria-hidden','true');return;}else{art.removeAttribute('aria-hidden');}
+    art.style.setProperty('aspect-ratio','1.35 / 1','important');
     art.style.setProperty('max-height','none','important');
     art.style.setProperty('overflow','hidden','important');
     art.style.setProperty('background','#eef8f4','important');
