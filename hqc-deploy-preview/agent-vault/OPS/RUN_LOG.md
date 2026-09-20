@@ -21,3 +21,15 @@ Append concise dated run records here. Record only observed evidence and complet
 - Primary revenue bottleneck: first-customer acquisition/conversion; qualified traffic scale remains very low and latest known start→upload is 5/15.
 - Expected revenue impact: removes the remaining known paid-boundary observability/correctness debt, so subsequent genuine traffic can produce reliable checkout evidence and the agent can distinguish acquisition/value failure from payment failure faster.
 - Next autonomous execution: refresh Stripe + durable post-fix checkout/funnel evidence; progress qualified high-intent distribution and upload activation without stacking a homepage experiment; continue Solar/Battery evidence-model work behind the non-public gate.
+
+## 2026-09-20 12:52 Europe/London — fresh post-fix funnel evidence
+- Revenue: authoritative live Stripe `Home Quote Check` PaymentIntents refreshed: 0 objects, `has_more=false`; genuine monthly revenue £0 / £1,000; cumulative validation revenue £0 / £100; paying customers 0.
+- Durable funnel: successful 11:39Z production snapshot now shows 55 landings → 16 checker starts → 5 uploads → 5 genuine analyses; extended cohort remains 4 analyses → 0 multi-quote → 4 Decision Cases → 2 share intents → 0 share opens → 0 checkouts.
+- Change since previous durable evidence: +2 landings and +1 checker start, with no new upload, analysis or checkout. Overall landing→start = 29%; start→upload = 31%. Direct = 39 landings / 16 starts / 5 uploads / 5 genuine analyses.
+- Technology mix: durable technology segmentation has begun recording new events: `heat_pump` = 2 landings / 1 start / 0 uploads / 0 genuine / 0 checkouts. Historical events remain mostly unclassified; Solar/Battery remains non-public.
+- Search: fresh public site query returned no results. No newer authoritative Search Console dataset was available, so settled Search Console evidence remains 13 sitemap URLs / 2 with impressions / 4 impressions / 0 clicks.
+- Production health: scheduled live-metrics workflow run 35508451044 completed successfully and committed the fresh durable snapshot.
+- Primary revenue bottleneck: first-customer acquisition/conversion, with quote-intake activation the earliest measured downstream constraint. Fresh activity has not yet exercised checkout.
+- Work completed: refreshed authoritative payment/funnel/technology/search/health evidence and updated persistent state; no UI experiment was stacked on the tiny new sample.
+- Expected revenue impact: prevents misdiagnosing payment as the current failure and directs effort toward qualified traffic and start→upload progression, the shortest path to more genuine analyses and a first purchase opportunity.
+- Next autonomous execution: continue qualified high-intent distribution and intake-friction diagnosis while collecting post-fix checkout evidence; continue Solar/Battery correctness work behind the gate.
