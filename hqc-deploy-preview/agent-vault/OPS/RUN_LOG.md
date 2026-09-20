@@ -2,6 +2,19 @@
 
 Append concise dated run records here. Record only observed evidence and completed work.
 
+## 2026-09-20 22:41 Europe/London — authoritative revenue refresh; Purchase Adviser roadmap made executable
+- Revenue: authoritative live Stripe `Home Quote Check` PaymentIntents refreshed: 0 objects, `has_more=false`; genuine monthly revenue £0 / £1,000; cumulative validation revenue £0 / £100; paying customers 0.
+- Durable funnel/acquisition: fresh production growth evidence was unavailable in this execution context; latest settled snapshot remains 55 landings → 16 starts → 5 uploads → 5 genuine analyses and 0 durable checkouts. Latest settled direct cohort remains 39 landings / 16 starts / 5 uploads / 5 genuine analyses. Unavailable fresh evidence was not converted to zero.
+- Technology mix: latest measured segmentation remains partial (`heat_pump` 2 landings / 1 start); Solar/Battery remains non-public.
+- Search: fresh public site searches for both heat-pump and solar/battery footprints returned no results; no newer authoritative Search Console dataset was available.
+- Production health: fresh direct health/growth evidence was unavailable; latest verified production release remains settled evidence, with fresh health recorded as null.
+- SOP: loaded `SOPS/SHIP_CHANGE.md`; no production release was attempted because the routing foundation is not yet wired/CI/preview verified.
+- Work completed: converted `STRATEGY/PURCHASE_ADVISER_ROADMAP.md` into explicit execution state: WS1 IN PROGRESS; WS2 IN PROGRESS with routing contract/isolation tests marked complete; WS3 blocked on Worker routing/adapter boundary; WS5 queued after trustworthy extraction; WS7 IN PROGRESS via the existing £4.99 Decision Pack; WS8/WS9 deferred. Commit `0c4ba772b874881e1ccc9b685c297d31dafdc964`. Refreshed `OPS/CURRENT_STATE.md` with authoritative revenue and roadmap state in commit `87d70daf2e309b123a5ee2927e468edef4e25d68`.
+- Primary revenue bottleneck: first-customer acquisition/conversion; latest settled start→upload remains 31%.
+- Expected revenue impact: future runs can resume at the first incomplete Solar correctness gate instead of rediscovering strategy; completed source work is no longer confused with deployed capability, reducing time/risk to a trustworthy second vertical while acquisition continues in parallel.
+- Learning: no new durable learning added; current evidence reinforces existing lessons but does not establish or overturn a reusable conclusion.
+- Next autonomous execution: refresh Stripe/durable funnel; continue qualified acquisition/intake activation; wire technology routing into the Worker behind the non-public gate, run Heat Pump/routing regressions, then preview/canary if gates pass; do not expose Solar publicly.
+
 ## 2026-09-20 18:49 Europe/London — revenue refresh; Solar analysis handoff pinned to heat-pump upstream
 - Revenue: authoritative live Stripe `Home Quote Check` PaymentIntents refreshed: 0 objects, `has_more=false`; genuine monthly revenue £0 / £1,000; cumulative validation revenue £0 / £100; paying customers 0.
 - Durable funnel/acquisition: fresh production `/api/growth-report` access was attempted but unavailable in this execution context. Latest settled snapshot remains 55 landings → 16 starts → 5 uploads → 5 genuine analyses and 0 durable checkouts. Latest settled direct cohort remains 39 landings / 16 starts / 5 uploads / 5 genuine analyses. Unavailable fresh evidence was not converted to zero.
