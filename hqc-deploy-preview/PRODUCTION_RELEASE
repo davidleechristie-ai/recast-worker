@@ -28,3 +28,5 @@ Deploy only through guarded hqc-production Cloudflare workflow. Preserve homequo
 2026-09-20T07:40+01:00 mobile-layout-fix: compact mobile hero, remove obsolete competing override, hide decorative art, purge stale frontend caches; preview bridge and rendered custom-domain canary passed on 8ed206d0cbdf2725e49abfaba97f37f5e8aa31c8.
 
 2026-09-20T07:56+01:00 decision-pack-cta-fix: stop modal purchase CTA being intercepted by its own capture gate; dedicated rendered mobile checkout regression passed on canary run 35495415499 / commit 6284d45bec16e7552d584b37b7d2070236862bbc.
+
+2026-09-20T10:49+01:00 checkout-observability-fix: promote backend-only durable decision_pack_checkout_created recording plus webhook missing-amount fallback correction from 1900p to 499p. The original bridge run was superseded/cancelled during rapid vault commits, but the subsequent main commit dfdfeb8efd144ae358178088cf535bbe41800a27 contains the patch and passed Cloudflare preview verification (run 35500841854) and custom-domain canary verification (run 35500841869). No UI change.
