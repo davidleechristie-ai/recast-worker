@@ -108,6 +108,19 @@ jobs:
             if(badScripts.length)throw new Error('Script URLs returned HTML: '+badScripts.join(', ')); if(errors.length)throw new Error(errors.join(' | '));
             await context.close();
           }
+          // Decision Pack modal purchase CTA must invoke checkout rather than be re-intercepted by its own gate.
+          {
+            const context=await browser.newContext({viewport:{width:390,height:844},isMobile:true,hasTouch:true,serviceWorkers:'block'});
+            const page=await context.newPage();
+            let checkoutRequests=0;
+            await page.route('**/api/decision-pack/checkout',async route=>{checkoutRequests++;await route.fulfill({status:200,contentType:'application/json',body:JSON.stringify({url:'https://cf-preview.homequotecheck.co.uk/?qa=1&checkout_probe=ok',sessionId:'cs_probe'})});});
+            await page.goto('https://cf-preview.homequotecheck.co.uk/?qa=1&decision_pack_regression=1',{waitUntil:'domcontentloaded',timeout:30000});
+            await page.evaluate(()=>{localStorage.setItem('hqcDecisionPackCaseId','qa-case-12345678');const b=document.createElement('button');b.id='qa-open-decision-pack';b.textContent='Get Decision Pack';document.body.appendChild(b);});
+            const opener=page.locator('#qa-open-decision-pack');await opener.click();
+            const buy=page.locator('#hqc-comparison-gate [data-buy]');await buy.waitFor({state:'visible',timeout:5000});await buy.click();await page.waitForTimeout(400);
+            if(checkoutRequests!==1)throw new Error(`Decision Pack purchase CTA did not invoke checkout exactly once: ${checkoutRequests}`);
+            await context.close();
+          }
           await browser.close();
-          console.log('HQC canary quote intake and compare-mode regression paths passed.');
+          console.log('HQC canary quote intake, compare-mode and Decision Pack checkout regression paths passed.');
           NODE
