@@ -7,6 +7,7 @@ const safeEqual=(a,b)=>{if(a.length!==b.length)return false;let d=0;for(let i=0;
 const hex=bytes=>[...new Uint8Array(bytes)].map(b=>b.toString(16).padStart(2,'0')).join('');
 const emptyTotals=()=>({landings:0,cta:0,uploads:0,genuine:0,extendedGenuine:0,multiQuoteAnalyses:0,decisionCases:0,installerQuestions:0,shareIntent:0,shareOpens:0,recipientStarts:0,outboundClicks:0,checkouts:0});
 const cleanSource=v=>String(v||'direct').slice(0,40).replace(/[^A-Za-z0-9_.:-]/g,'_')||'direct';
+const cleanTechnology=v=>{const x=String(v||'unspecified').toLowerCase().replace(/[- ]/g,'_');return ['heat_pump','solar_battery','battery'].includes(x)?x:'unspecified';};
 
 export class HqcMetrics {
   constructor(ctx){this.ctx=ctx;}
@@ -18,17 +19,22 @@ export class HqcMetrics {
     const total={...emptyTotals(),...((await this.ctx.storage.get('total'))||{})};
     const listed=await this.ctx.storage.list({prefix:'source:'});
     const sources=[...listed.values()].map(r=>({...emptyTotals(),...r})).sort((a,b)=>b.genuine-a.genuine||b.landings-a.landings);
-    return {measurementStartedAt:startedAt,extendedMeasurementStartedAt:extendedStartedAt,total,sources};
+    const techListed=await this.ctx.storage.list({prefix:'technology:'});
+    const technologies=[...techListed.values()].map(r=>({...emptyTotals(),...r})).sort((a,b)=>b.genuine-a.genuine||b.landings-a.landings);
+    return {measurementStartedAt:startedAt,extendedMeasurementStartedAt:extendedStartedAt,total,sources,technologies};
   }
   async record(payload){
     if(!payload||payload.isTest===true)return this.snapshot();
     const event=String(payload.event||'');
     const source=cleanSource(payload.source);
+    const technology=cleanTechnology(payload.technology);
     const total={...emptyTotals(),...((await this.ctx.storage.get('total'))||{})};
     const key='source:'+source;
     const row={source,...emptyTotals(),...((await this.ctx.storage.get(key))||{})};
+    const techKey='technology:'+technology;
+    const techRow={technology,...emptyTotals(),...((await this.ctx.storage.get(techKey))||{})};
     let changed=false;
-    const inc=name=>{total[name]=(total[name]||0)+1;row[name]=(row[name]||0)+1;changed=true;};
+    const inc=name=>{total[name]=(total[name]||0)+1;row[name]=(row[name]||0)+1;techRow[name]=(techRow[name]||0)+1;changed=true;};
     if(event==='landing_view')inc('landings');
     else if(event==='checker_cta_clicked'){inc('cta');if(source==='shared_case')inc('recipientStarts');}
     else if(event==='upload_started')inc('uploads');
@@ -52,7 +58,7 @@ export class HqcMetrics {
       const id='share:'+String(payload.analysisId).slice(0,80);
       if(!(await this.ctx.storage.get(id))){await this.ctx.storage.put(id,true);inc('shareOpens');}
     }
-    if(changed)await this.ctx.storage.put({total,[key]:row});
+    if(changed)await this.ctx.storage.put({total,[key]:row,[techKey]:techRow});
     return this.snapshot();
   }
   async fetch(request){
@@ -96,7 +102,7 @@ async function durableGrowthResponse(env){
   if(t.shareOpens>=5&&t.recipientStarts/Math.max(1,t.shareOpens)<.2)recommendations.push('Shared-case recipients are not starting their own checks: improve the recipient checker handoff.');
   if(t.genuine>=10&&t.outboundClicks/t.genuine<.1)recommendations.push('Commercial/outbound intent is weak: improve the clearly separated installer-finding action without changing comparison results.');
   if(!sources.some(x=>x.source.startsWith('organic_')&&x.genuine>0)&&t.landings>=15)recommendations.push('No qualified organic cohort yet: improve existing high-intent decision pages and internal handoff before expanding acquisition.');
-  return json({generatedAt:new Date().toISOString(),measurementStartedAt:s.measurementStartedAt,extendedMeasurementStartedAt:s.extendedMeasurementStartedAt,durable:true,total:t,rates,sources:sources.slice(0,20),recommendations,loop:['Acquire qualified homeowners','Measure source funnels','Diagnose the largest constraint','Deploy one justified improvement','Verify against genuine analyses, shares and anonymous outbound intent']});
+  return json({generatedAt:new Date().toISOString(),measurementStartedAt:s.measurementStartedAt,extendedMeasurementStartedAt:s.extendedMeasurementStartedAt,durable:true,total:t,rates,sources:sources.slice(0,20),technologies:(s.technologies||[]).slice(0,10),recommendations,loop:['Acquire qualified homeowners','Measure source funnels','Diagnose the largest constraint','Deploy one justified improvement','Verify against genuine analyses, shares and anonymous outbound intent']});
 }
 async function verifyStripeSignature(raw,header,secret){
   if(!header||!secret)return false;
