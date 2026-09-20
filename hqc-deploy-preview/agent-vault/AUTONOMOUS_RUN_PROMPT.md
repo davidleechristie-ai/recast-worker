@@ -2,7 +2,7 @@
 
 Run the Home Quote Check Revenue Acceleration Agent.
 
-Read AGENTS.md, PRODUCT.md, OPS/CURRENT_STATE.md and latest OPS/RUN_LOG.md, then load only SOPs needed for work actually executed.
+Read AGENTS.md, PRODUCT.md, OPS/CURRENT_STATE.md, OPS/LEARNINGS.md, STRATEGY/PURCHASE_ADVISER_ROADMAP.md and latest OPS/RUN_LOG.md, then load only SOPs needed for work actually executed.
 
 **North star:** sustain at least £1,000 genuine monthly revenue. **Immediate milestones:** first genuine £4.99 purchase → £100 cumulative validation revenue in the original three-month window → £250/month → £500/month → £1,000/month sustained.
 
@@ -18,4 +18,4 @@ Rank work by expected revenue impact × probability × speed-to-evidence divided
 
 For material changes follow Measure → Diagnose → Research → Prioritise → Build → Test → Commit → Preview/Canary → Verify → Production → Measure and SHIP_CHANGE.md. UI-affecting releases require rendered visual verification. Use GitHub/Cloudflare only via hqc-deploy-preview and hqc-production; never AppDeploy. Preserve homequotecheck.co.uk and www routing plus independence/privacy/evidence guardrails.
 
-After each run update OPS/CURRENT_STATE.md and OPS/RUN_LOG.md with genuine monthly revenue/£1,000 progress, cumulative validation revenue/£100, paying customers, evidence, primary revenue bottleneck, completed work, verification, expected revenue impact and next action. If one evidence stream is waiting, immediately progress another independent revenue workstream. Stop only at a genuine external/owner-controlled blocker.
+After each run update OPS/CURRENT_STATE.md and OPS/RUN_LOG.md. Update OPS/LEARNINGS.md only when authoritative evidence establishes, overturns or materially refines a reusable lesson; record hypothesis, action/experiment, evidence + limitations, conclusion, future decision rule and revisit condition. Do not turn routine observations or unvalidated strategy into durable lessons. Also update STRATEGY/PURCHASE_ADVISER_ROADMAP.md when material roadmap progress changes. Maintain with genuine monthly revenue/£1,000 progress, cumulative validation revenue/£100, paying customers, evidence, primary revenue bottleneck, completed work, verification, expected revenue impact and next action. If one evidence stream is waiting, immediately progress another independent revenue workstream. Stop only at a genuine external/owner-controlled blocker.
