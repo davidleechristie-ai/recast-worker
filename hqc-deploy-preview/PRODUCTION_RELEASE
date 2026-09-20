@@ -26,3 +26,5 @@ Verification before promotion:
 Deploy only through guarded hqc-production Cloudflare workflow. Preserve homequotecheck.co.uk and www.homequotecheck.co.uk routing.
 
 2026-09-20T07:40+01:00 mobile-layout-fix: compact mobile hero, remove obsolete competing override, hide decorative art, purge stale frontend caches; preview bridge and rendered custom-domain canary passed on 8ed206d0cbdf2725e49abfaba97f37f5e8aa31c8.
+
+2026-09-20T07:56+01:00 decision-pack-cta-fix: stop modal purchase CTA being intercepted by its own capture gate; dedicated rendered mobile checkout regression passed on canary run 35495415499 / commit 6284d45bec16e7552d584b37b7d2070236862bbc.
