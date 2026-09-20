@@ -1,5 +1,5 @@
 {
-  "fetchedAt": "2026-09-20T06:39:37Z",
+  "fetchedAt": "2026-09-20T06:55:52Z",
   "metrics": {
     "genuineAnalyses": 5,
     "shareOpens": 0,
@@ -15,13 +15,13 @@
     "note": "Cumulative Cloudflare-side counters from measurementStartedAt; QA/demo/test events are excluded. Extended funnel counters use their own same-epoch denominator from extendedMeasurementStartedAt."
   },
   "growthReport": {
-    "generatedAt": "2026-09-20T06:39:37.633Z",
+    "generatedAt": "2026-09-20T06:55:52.460Z",
     "measurementStartedAt": "2026-09-11T18:33:07.244Z",
     "extendedMeasurementStartedAt": "2026-09-11T20:34:24.536Z",
     "durable": true,
     "total": {
-      "landings": 49,
-      "cta": 13,
+      "landings": 53,
+      "cta": 15,
       "uploads": 5,
       "genuine": 5,
       "extendedGenuine": 4,
@@ -35,8 +35,8 @@
       "checkouts": 0
     },
     "rates": {
-      "landingToCta": 27,
-      "ctaToUpload": 38,
+      "landingToCta": 28,
+      "ctaToUpload": 33,
       "uploadToGenuine": 100,
       "extendedGenuineToMultiQuote": 0,
       "extendedGenuineToDecisionCase": 100,
@@ -45,8 +45,8 @@
     },
     "sources": [
       {
-        "landings": 34,
-        "cta": 13,
+        "landings": 37,
+        "cta": 15,
         "uploads": 5,
         "genuine": 5,
         "extendedGenuine": 4,
@@ -59,9 +59,9 @@
         "outboundClicks": 0,
         "checkouts": 0,
         "source": "direct",
-        "landingToCta": 38,
-        "ctaToUpload": 38,
-        "landingToGenuine": 15
+        "landingToCta": 41,
+        "ctaToUpload": 33,
+        "landingToGenuine": 14
       },
       {
         "landings": 5,
@@ -102,6 +102,25 @@
         "landingToGenuine": 0
       },
       {
+        "landings": 2,
+        "cta": 0,
+        "uploads": 0,
+        "genuine": 0,
+        "extendedGenuine": 0,
+        "multiQuoteAnalyses": 0,
+        "decisionCases": 0,
+        "installerQuestions": 0,
+        "shareIntent": 0,
+        "shareOpens": 0,
+        "recipientStarts": 0,
+        "outboundClicks": 0,
+        "checkouts": 0,
+        "source": "organic_flowtemp",
+        "landingToCta": 0,
+        "ctaToUpload": null,
+        "landingToGenuine": 0
+      },
+      {
         "landings": 1,
         "cta": 0,
         "uploads": 0,
@@ -135,25 +154,6 @@
         "outboundClicks": 0,
         "checkouts": 0,
         "source": "organic_checklist",
-        "landingToCta": 0,
-        "ctaToUpload": null,
-        "landingToGenuine": 0
-      },
-      {
-        "landings": 1,
-        "cta": 0,
-        "uploads": 0,
-        "genuine": 0,
-        "extendedGenuine": 0,
-        "multiQuoteAnalyses": 0,
-        "decisionCases": 0,
-        "installerQuestions": 0,
-        "shareIntent": 0,
-        "shareOpens": 0,
-        "recipientStarts": 0,
-        "outboundClicks": 0,
-        "checkouts": 0,
-        "source": "organic_flowtemp",
         "landingToCta": 0,
         "ctaToUpload": null,
         "landingToGenuine": 0
@@ -254,6 +254,7 @@
         "landingToGenuine": 0
       }
     ],
+    "technologies": [],
     "recommendations": [
       "Landing-to-CTA is weak: improve message match, trust proof and CTA prominence before adding more traffic.",
       "Share loop is below the 20% validation threshold: strengthen Decision Case sharing and recipient conversion.",
