@@ -1,38 +1,41 @@
 # Current state
 
-Updated: 2026-09-20 08:50 Europe/London
+Updated: 2026-09-20 09:54 Europe/London
 
 North star: Sustain at least £1,000 genuine monthly revenue. Immediate milestone: first genuine purchase, then £100 cumulative validation revenue within the original three-month window.
 
 ## Evidence refreshed
 - Revenue: authoritative live Stripe `Home Quote Check` PaymentIntents refreshed this run: 0 objects, `has_more=false`. Genuine production revenue remains £0 / £1,000 monthly North Star; cumulative validation revenue £0 / £100; paying customers 0.
-- Durable funnel: no newer authoritative production Cloudflare snapshot was retrievable this runtime. Latest available baseline remains 48 genuine landings → 12 checker starts → 5 uploads → 5 genuine analyses. Extended cohort: 4 genuine analyses → 0 multi-quote analyses → 4 Decision Cases → 0 installer-question actions → 2 share intents → 0 share opens → 0 recipient starts → 0 outbound/commercial clicks → 0 durable checkouts. This predates the 07:42 mobile landing repair and 07:58 Decision Pack CTA repair, so it must not be treated as post-release performance.
+- Durable funnel: latest repository snapshot fetched 2026-09-20 06:55Z records 53 genuine landings → 15 checker starts → 5 uploads → 5 genuine analyses. Extended cohort: 4 genuine analyses → 0 multi-quote analyses → 4 Decision Cases → 0 installer-question actions → 2 share intents → 0 share opens → 0 recipient starts → 0 outbound/commercial clicks → 0 durable checkouts. This snapshot predates the 07:58 Decision Pack CTA repair and is not post-fix conversion evidence.
+- Qualified acquisition: direct remains the only source with genuine analyses in the latest durable snapshot (37 landings, 15 starts, 5 uploads, 5 genuine analyses). Organic cohorts have landings but no genuine analyses yet. Technology rows are absent in this pre-segmentation snapshot, so technology mix is unavailable rather than assumed.
 - SEO/search: no newer authoritative Search Console dataset was available this run; latest settled evidence remains 13 sitemap URLs, 2 receiving impressions, 4 total impressions and 0 clicks.
-- Production health: direct production fetch is unavailable in the current web reader. The most recent authoritative release evidence remains the 07:58 guarded production deploy and mobile journey smoke passing for commit `42f7817dbfef503f5f55fe0f014567c062feffb9`. Do not claim a fresher runtime health check.
+- Production health: latest authoritative release evidence remains the successful 07:58 guarded production deploy and mobile journey smoke for commit `42f7817dbfef503f5f55fe0f014567c062feffb9`. The backend-only checkout observability patch committed this run is not yet claimed deployed; Cloudflare bridge run 35500805534 queued immediately after commit.
 
 ## Technology mix
-- Heat pump: live product; all currently classified durable funnel evidence belongs to the pre-solar product.
-- Solar PV + battery: vertical #2 remains behind the non-public correctness gate; no genuine solar funnel activity yet.
+- Heat pump: live product; all currently classified genuine funnel evidence belongs to the pre-solar product.
+- Solar PV + battery: vertical #2 remains behind the non-public correctness gate; no genuine solar funnel activity measured yet.
 
 ## Commercial diagnosis
-First-customer acquisition/conversion remains the binding objective. The two highest-value commercial defects discovered overnight — advertised £4.99 vs £19 checkout and the non-working Decision Pack purchase CTA — are now repaired. The next evidence requirement is a genuine post-fix checkout/purchase. Landing → checker start was 25% overall (12/48) in the pre-repair baseline; acquisition scale remains extremely low. Do not stack another homepage UI experiment until post-release evidence matures.
+First-customer acquisition/conversion remains the binding objective. The advertised £4.99 vs £19 checkout mismatch and non-working Decision Pack purchase CTA are repaired in production. Latest durable snapshot is too early to judge those repairs. Landing → checker start is 28% overall (15/53); direct traffic is materially stronger at 41% (15/37), but acquisition scale is extremely low. Start → upload is 33% (5/15), so upload activation is also a material downstream constraint. Do not stack another homepage UI experiment until post-release evidence matures.
 
-## Solar/battery research refreshed 2026-09-20
-- GOV.UK guidance confirms solar PV and battery storage must be registered with the DNO and distinguishes connect-and-notify G98 from apply-to-connect G99, with G100 relevant where export is limited. The checker should therefore report what the quote says about DNO treatment and flag missing/ambiguous treatment, not assert approval.
-- Energy Saving Trust guidance, updated 19 Aug 2026 for battery storage, recommends at least three MCS-certified installer quotes and warns battery savings may not alone justify cost. This supports comparison and assumption-transparency rather than deterministic ROI claims.
-- MCS MGD 003 states solar self-consumption is an estimate, not a property-specific performance prediction, and is not an EESS design/sizing tool. Solar analysis must preserve installer assumptions and avoid certifying generation, savings or battery sizing.
-- Ofgem approved a G98 amendment for plug-in microgeneration on 11 Aug 2026 but implementation depends on legislative changes. Do not generalise that change into ordinary rooftop quote logic until it is in force and relevant to the quoted system.
+## Checkout observability/correctness change this run
+- Located the production Worker checkout path.
+- Patched successful Stripe Checkout Session creation to write `decision_pack_checkout_created` directly to the durable synthetic-excluded metrics store, including anonymous source/technology dimensions when supplied.
+- Corrected the Stripe webhook's stale missing-`amount_total` fallback from 1900 pence to 499 pence, matching the current £4.99 Decision Pack.
+- Commit: `adf542b51913956dc066ea9cae2d1a315e47d890`.
+- Cloudflare bridge run 35500805534 was queued at observation time. Per SHIP_CHANGE, this is not marked production-complete until preview/canary/production verification succeeds.
+- Revenue rationale: reliable checkout-created evidence distinguishes lack of paid intent from payment completion failure, accelerating diagnosis of the first-purchase bottleneck; the fallback correction prevents misleading revenue telemetry.
 
-## Engineering debt / next safe backend change
-- Durable metrics counts `decision_pack_checkout_created`, but checkout creation still does not record it, so durable checkout counts can understate created sessions.
-- Stripe webhook retains a stale 1900-pence fallback if `amount_total` is absent; it should be 499 for the current Decision Pack.
-- These are backend-only observability/correctness changes and should go through SHIP_CHANGE preview/canary/production gates.
+## Solar/battery evidence rules retained
+- Report what a quote says about DNO treatment (G98/G99/G100 where present); do not assert approval.
+- Treat generation, self-consumption, export and savings as installer/quote assumptions, not certified predictions.
+- Preserve equipment/scope/warranty/MCS wording extraction and the non-public correctness gate before any solar checker CTA.
 
 ## Next actions
-1. Refresh Stripe and post-fix durable checkout/funnel evidence; first genuine £4.99 purchase is the immediate commercial milestone.
-2. Patch checkout-created durable instrumentation and webhook fallback to 499 through guarded backend release when the relevant Worker file can be safely located, edited, tested and deployed.
-3. Continue Solar PV + Battery extraction/evidence completeness behind the non-public gate using the refreshed DNO/performance-assumption rules; then comparison and Decision Pack reuse. No production CTA until correctness + rendered journey gates pass.
-4. Continue qualified distribution and existing high-intent decision-page visibility without thin content.
+1. Observe bridge/canary outcome for `adf542b51913956dc066ea9cae2d1a315e47d890`; only promote via guarded production release after verification.
+2. Refresh live Stripe and durable post-fix funnel evidence; first genuine £4.99 purchase is the immediate commercial milestone.
+3. Progress qualified high-intent distribution and upload activation without overlapping the current homepage/checkout measurement window.
+4. Continue Solar PV + Battery extraction/evidence completeness behind the non-public gate; no production CTA until correctness + rendered journey gates pass.
 
 ## Guardrails
 Use GitHub + Cloudflare only; never AppDeploy. UI-affecting production changes require rendered verification. Preserve independence, privacy and evidence/certification guardrails.
