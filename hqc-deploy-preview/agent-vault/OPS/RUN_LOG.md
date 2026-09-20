@@ -87,3 +87,13 @@ Append concise dated run records here. Record only observed evidence and complet
 - Verification: no production release this run; no unsupported rendered-QA claim. State commit `06eea90cb2507a1cb9fe63fd0c380c372fe6ad92`.
 - Expected impact: fixing checkout-created observability will make first-purchase funnel diagnosis reliable without changing customer-facing behaviour; correcting the stale fallback removes misleading payment telemetry risk.
 - Next: patch/test the backend instrumentation through guarded preview/canary, verify £4.99 checkout creation safely, then continue qualified distribution and measurement.
+
+## 2026-09-20 03:55 Europe/London
+- Revenue: authoritative live Stripe PaymentIntents refreshed: 0 objects, `has_more=false`; £0 genuine revenue / £1,000 monthly North Star; £0 / £100 validation; 0 paying customers.
+- New commercial evidence: live Stripe Checkout Sessions revealed two historical £19.00 sessions. One was explicit healthcheck traffic; one had UUID case `b87fb69a-cae9-42e1-90fc-d8baf7a6677b`. Both expired unpaid. The UUID session proves the payment boundary was reached but is not classified as genuine customer activity because provenance is not authoritative.
+- Root cause: production wrangler config still pointed at live £19 price `price_1UER4fCnmTy7aZ0Hp1zMfDYT`, despite the frontend advertising £4.99. Stripe independently confirmed active launch-validation price `price_1UFsZ2CnmTy7aZ0HpfSQ5E8Z` = GBP 499.
+- Work completed: changed production Decision Pack price binding to £4.99 (commit `4c3c0661d2254bbb5c1d192343395311bf9b24d4`), passed Cloudflare bridge run 35485015861 and custom-domain canary run 35485015855, then promoted through guarded production release commit `a5887baee51433f259f41b94b7308cf2f46d22d0`.
+- Production verification: HQC production deploy run 35485076527 completed successfully; deployment, HTTP production verification and mobile journey smoke all passed. No AppDeploy deployment used.
+- Expected impact: removes a 3.8x advertised-vs-checkout price mismatch at the exact first-purchase boundary, materially improving trust and probability of first genuine purchase.
+- Remaining debt: checkout-created durable event is still missing from server-side creation path and webhook fallback remains 1900 when amount_total is absent; patch next as backend-only observability/correctness work.
+- Next: monitor for first new £4.99 live Checkout Session / PaymentIntent, patch durable checkout instrumentation and webhook fallback, and continue qualified distribution while current SEO/comparison experiments remain uncontaminated.
