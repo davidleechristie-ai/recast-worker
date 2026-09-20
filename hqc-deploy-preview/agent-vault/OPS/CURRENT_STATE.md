@@ -1,31 +1,27 @@
 # Current state
 
-Updated: 2026-09-20 03:55 Europe/London
+Updated: 2026-09-20 06:49 Europe/London
 
 North star: Sustain at least £1,000 genuine monthly revenue. Immediate milestone: first genuine £4.99 purchase, then £100 cumulative validation revenue within the original three-month window.
 
 ## Evidence refreshed
-- Revenue: authoritative live Stripe Home Quote Check account refreshed this run. PaymentIntents returned 0 objects with `has_more=false`; genuine live revenue = £0 / £1,000 monthly North Star; cumulative validation revenue = £0 / £100; paying customers = 0.
-- Stripe commercial evidence: live Checkout Sessions contained two historical £19.00 sessions. One was explicitly `stripe_healthcheck_20260911`; the other used UUID case `b87fb69a-cae9-42e1-90fc-d8baf7a6677b`. Both expired unpaid. This is evidence that the live payment boundary had been reached at least once outside the named healthcheck, but not evidence of a genuine customer because provenance cannot be established authoritatively.
-- Durable funnel: latest production Cloudflare snapshot remains 47 landings → 12 checker starts → 5 uploads → 5 genuine analyses. Extended cohort: 4 genuine analyses → 0 multi-quote analyses → 4 Decision Cases → 0 installer-question actions → 2 share intents → 0 share opens → 0 recipient starts → 0 outbound/commercial clicks → 0 durable checkouts. QA/demo/test excluded.
-- SEO/search: latest settled Search Console evidence remains 13 sitemap URLs, 2 receiving impressions, 4 total impressions and 0 clicks.
-
-## Material production improvement deployed
-The customer-facing Decision Pack offer was £4.99, but production `STRIPE_DECISION_PACK_PRICE_ID` still pointed at the stale £19.00 live Stripe price. Stripe confirmed the active intended launch-validation price `price_1UFsZ2CnmTy7aZ0HpfSQ5E8Z` is GBP 499 and carries decision_pack / first-£100 validation metadata. Production configuration was changed to this £4.99 price.
-
-Verification: initial config commit `4c3c0661d2254bbb5c1d192343395311bf9b24d4` passed Cloudflare bridge run 35485015861 and custom-domain canary run 35485015855 including mobile browser intake verification. Guarded production promotion commit `a5887baee51433f259f41b94b7308cf2f46d22d0` completed production deploy run 35485076527 successfully: deploy, production HTTP verification and mobile journey smoke all passed. No AppDeploy deployment was used.
+- Revenue: a fresh authoritative Stripe read is unavailable to this runtime, so current revenue/paying customers are null for this run rather than assumed unchanged. Last authoritative live Stripe evidence at 03:55 returned 0 PaymentIntents; that is retained only as prior evidence, not promoted to a fresh measurement.
+- Durable funnel: latest production Cloudflare snapshot fetched 2026-09-20T02:52:42Z is 48 genuine landings → 12 checker starts → 5 uploads → 5 genuine analyses. Extended cohort: 4 genuine analyses → 0 multi-quote analyses → 4 Decision Cases → 0 installer-question actions → 2 share intents → 0 share opens → 0 recipient starts → 0 outbound/commercial clicks → 0 durable checkouts. QA/demo/test excluded by the counter contract. This is one additional landing versus the prior 47-landings snapshot, with no downstream movement.
+- SEO/search: latest settled authoritative Search Console evidence remains 13 sitemap URLs, 2 receiving impressions, 4 total impressions and 0 clicks. No newer authoritative GSC evidence is available in this runtime.
+- Production/payment path: the £4.99 production price correction remains the latest verified material release; no evidence in the refreshed durable snapshot indicates a checkout after that release.
 
 ## Commercial diagnosis
-Commercial validation remains unachieved, but a severe payment-boundary mismatch has been removed. A homeowner shown £4.99 could previously have been sent to a £19 Stripe Checkout (3.8x advertised price). This directly threatened trust and first-purchase conversion. Distribution + activation remain the primary growth constraints after this fix.
+No new meaningful conversion or revenue signal has matured. Landing → checker start remains the earliest adequately sampled bottleneck at 25% overall (12/48); checker start → upload remains 42%; upload → genuine analysis remains 100%. Acquisition scale is still extremely low. Comparison remains a downstream zero but has a smaller sample. Do not stack another UI experiment without rendered verification and post-release evidence.
 
-## Remaining engineering debt
-- Durable metrics counts `decision_pack_checkout_created`, but checkout creation does not currently record it; durable checkout counts can therefore understate created sessions.
-- Stripe webhook retains a stale 1900-pence fallback if `amount_total` is absent. Normal Stripe completed-session payloads should carry amount_total, so this is lower priority than the now-fixed live checkout price but should be corrected through the guarded backend path.
+## Engineering debt / next safe backend change
+- Durable metrics counts `decision_pack_checkout_created`, but checkout creation still does not record it, so durable checkout counts can understate created sessions.
+- Stripe webhook retains a stale 1900-pence fallback if `amount_total` is absent; it should be 499 for the current Decision Pack.
+- These remain backend-only observability/correctness changes. They should go through SHIP_CHANGE preview/canary/production gates before release.
 
 ## Next actions
-1. Refresh live Stripe and durable metrics first; watch specifically for the first new £4.99 Checkout Session and successful PaymentIntent.
-2. Patch checkout-created durable instrumentation and webhook fallback to 499 without changing UI.
-3. Progress qualified distribution and existing high-intent decision-page visibility; do not add thin content.
+1. Refresh live Stripe first when the connector is available; watch for the first new £4.99 Checkout Session and successful PaymentIntent.
+2. Patch checkout-created durable instrumentation and webhook fallback to 499 through the guarded backend release path when full-file edit/test/deploy verification is available.
+3. Continue qualified distribution and existing high-intent decision-page visibility without adding thin content.
 4. Measure `results_compare` starts/uploads and multi-quote analyses before another comparison UI experiment.
 
 ## Guardrails
