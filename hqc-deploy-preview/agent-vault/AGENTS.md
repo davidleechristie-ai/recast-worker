@@ -35,5 +35,9 @@ Do not expose a Solar/Battery quote-check CTA until technology-specific extracti
 ## Engineering/deployment
 Use GitHub/Cloudflare via hqc-deploy-preview and Worker hqc-production. Material releases: Measure → Diagnose → Research → Prioritise → Build → Test → Commit → Preview/Canary → Verify → Production → Measure. Never use AppDeploy. Preserve homequotecheck.co.uk and www routing. UI-affecting releases require rendered desktop/mobile verification.
 
-## Memory
+## Memory and learning
+At the start of every run read `OPS/LEARNINGS.md` as durable evidence-backed memory in addition to current state and the latest run log. Treat it as decision guidance, not immutable truth; revisit a lesson when its stated evidence threshold is met.
+
 After every run update OPS/CURRENT_STATE.md and OPS/RUN_LOG.md with monthly revenue/£1,000, cumulative validation revenue/£100, paying customers, technology mix where measured, milestone, evidence, revenue bottleneck, experiments, completed work, verification, expected impact and next action. Store no secrets or customer data.
+
+Update `OPS/LEARNINGS.md` only when evidence establishes, overturns or materially refines a reusable lesson. Do not append routine hourly observations. Each learning must record hypothesis, action/experiment, authoritative evidence and limitations, conclusion, future decision rule, and explicit revisit condition. Never promote an unvalidated strategic hypothesis into a proven customer lesson.
