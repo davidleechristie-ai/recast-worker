@@ -73,7 +73,7 @@ jobs:
           for (const suffix of ['?qa=1','?qa=1&manual_path=1']) {
             const context=await browser.newContext({viewport:{width:390,height:844},isMobile:true,hasTouch:true,serviceWorkers:'block'});
             const page=await context.newPage();
-            const errors=[]; page.on('pageerror',e=>errors.push(String(e)));
+            const errors=[]; const badScripts=[]; page.on('pageerror',e=>errors.push(String(e))); page.on('response',res=>{if(res.request().resourceType()==='script'&&/text\/html/i.test(res.headers()['content-type']||''))badScripts.push(res.url());});
             await page.goto('https://cf-preview.homequotecheck.co.uk/'+suffix,{waitUntil:'domcontentloaded',timeout:30000});
             await page.waitForLoadState('load',{timeout:15000}).catch(()=>{});
             const mobileLayout=await page.evaluate(()=>{const choice=document.querySelector('#hqc-journey-choice');const hero=choice?.closest('[data-hqc-approved]');const img=[...document.querySelectorAll('img')].find(x=>/homepage-(?:graphic|house-only)/i.test(x.getAttribute('src')||''));let art=img;while(art&&hero&&art.parentElement!==hero)art=art.parentElement;return {overflow:document.documentElement.scrollWidth-window.innerWidth,choiceTop:choice?.getBoundingClientRect().top??9999,choiceBottom:choice?.getBoundingClientRect().bottom??9999,viewport:window.innerHeight,artDisplay:art?getComputedStyle(art).display:null};});
@@ -88,13 +88,13 @@ jobs:
             } else {
               const choose=page.locator('#hqc-choose-file');await choose.waitFor({state:'visible',timeout:15000});const chooserPromise=page.waitForEvent('filechooser',{timeout:5000});await choose.click();const chooser=await chooserPromise;const png=Buffer.from('iVBORw0KGgoAAAANSUhEUgAAAAEAAAABCAQAAAC1HAwCAAAAC0lEQVR42mP8/x8AAusB9Wl2+XkAAAAASUVORK5CYII=','base64');await chooser.setFiles({name:'qa-heat-pump-quote.png',mimeType:'image/png',buffer:png});await page.getByRole('button',{name:/Analyse my quote/i}).first().waitFor({state:'visible',timeout:15000});
             }
-            if(errors.length)throw new Error(errors.join(' | '));await context.close();
+            if(badScripts.length)throw new Error('Script URLs returned HTML: '+badScripts.join(', ')); if(errors.length)throw new Error(errors.join(' | '));await context.close();
           }
           // Compare mode must accept more than one quote in the intake step and must not auto-analyse the first.
           {
             const context=await browser.newContext({viewport:{width:390,height:844},isMobile:true,hasTouch:true,serviceWorkers:'block'});
             const page=await context.newPage();
-            const errors=[]; page.on('pageerror',e=>errors.push(String(e)));
+            const errors=[]; const badScripts=[]; page.on('pageerror',e=>errors.push(String(e))); page.on('response',res=>{if(res.request().resourceType()==='script'&&/text\/html/i.test(res.headers()['content-type']||''))badScripts.push(res.url());});
             await page.goto('https://cf-preview.homequotecheck.co.uk/?qa=1&compare_regression=1',{waitUntil:'domcontentloaded',timeout:30000});
             await page.getByRole('button',{name:/start quote comparison/i}).first().click();
             const choose=page.locator('#hqc-choose-file'); await choose.waitFor({state:'visible',timeout:15000});
@@ -105,7 +105,7 @@ jobs:
             if(count!==2)throw new Error(`Compare intake did not retain two selected quotes: ${count}`);
             await page.waitForTimeout(700);
             if(await page.getByRole('button',{name:/Analyse my quote$/i}).count())throw new Error('Compare intake incorrectly exposed single-quote auto-analysis');
-            if(errors.length)throw new Error(errors.join(' | '));
+            if(badScripts.length)throw new Error('Script URLs returned HTML: '+badScripts.join(', ')); if(errors.length)throw new Error(errors.join(' | '));
             await context.close();
           }
           await browser.close();
