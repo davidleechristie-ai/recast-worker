@@ -67,3 +67,15 @@ Append concise dated run records here. Record only observed evidence and complet
 - Primary revenue bottleneck: first-customer acquisition/conversion. Latest settled start→upload remains 31%; no new evidence justifies another overlapping UI experiment.
 - Expected revenue impact: confirms Solar/Battery can reuse existing anonymous funnel/checkout measurement without new PII or a parallel analytics implementation, reducing time/risk to a trustworthy second vertical while current execution remains focused on generating enough qualified heat-pump analyses to reach first purchase.
 - Next autonomous execution: refresh Stripe/durable funnel; continue qualified quote-holder acquisition; inspect and progress Solar/Battery extraction/evidence correctness behind the non-public gate; re-rank when genuine evidence matures.
+
+## 2026-09-20 16:50 Europe/London — authoritative revenue/search refresh; no material maturation
+- Revenue: authoritative live Stripe `Home Quote Check` PaymentIntents refreshed: 0 objects, `has_more=false`; genuine monthly revenue £0 / £1,000; cumulative validation revenue £0 / £100; paying customers 0.
+- Durable funnel/acquisition: fresh endpoint evidence remained unavailable; latest settled snapshot remains 55 landings → 16 starts → 5 uploads → 5 genuine analyses and 0 durable checkouts. Unavailable fresh evidence was not converted to zero.
+- Technology mix: latest measured segmentation remains partial (`heat_pump` 2 landings / 1 start). Solar/Battery remains non-public.
+- Search: fresh public site searches for both heat-pump and solar/battery HQC footprints returned no results; no newer Search Console dataset was available.
+- Production health: direct production homepage/www fetches were attempted but inaccessible from the web execution context; fresh health remains null, with prior successful guarded release retained as settled evidence.
+- Solar/Battery: repository search for technology-specific panel/inverter/battery/DNO extraction terms returned no isolated implementation match, so no speculative release was made. The correctness gate remains appropriate.
+- Work completed: refreshed authoritative payment/search evidence, attempted health/funnel access, inspected the Solar/Battery implementation surface, and persisted current state in commit `d943cc1384be800772177f1398b077b3b7a3fd63`.
+- Primary revenue bottleneck: first-customer acquisition/conversion; latest settled start→upload remains 31%.
+- Expected revenue impact: preserves clean post-checkout-fix measurement, avoids premature solar exposure, and keeps the next intervention focused on generating qualified quote-holder activity rather than low-evidence UI churn.
+- Next autonomous execution: refresh Stripe/durable funnel; progress qualified acquisition and intake activation; continue deeper Solar/Battery extraction/correctness inspection behind the gate.
