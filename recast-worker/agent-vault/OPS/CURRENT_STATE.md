@@ -1,21 +1,21 @@
 # Current state
 
-Updated: 2026-09-20 07:43 Europe/London
+Updated: 2026-09-20 08:40 Europe/London
 North star: ≥ £1,000 genuine MRR.
 Current milestone: first genuine paying customer.
 
 ## Evidence refreshed
-- Authoritative repository scoreboard remains £0 genuine MRR and 0 genuine paid customers under the strict successful/non-refunded latest-invoice definition. Fresh Recast payment-provider evidence is unavailable in this run, so revenue was not re-estimated.
-- Current scoreboard evidence shows 1,512 Search Console impressions, 4 organic clicks, 3 successful tool uses, 0 workflow starts and 0 commercial-intent events; unknown downstream rates remain null.
-- Current `public/app.js` still has real Pro/API payment links but placeholder `automation_monthly` and `automation_yearly` links. `startCheckout()` rejects unconfigured links, so Automation cannot currently collect a customer.
-- Current Recipe Builder 2.0 still has the exact 2B continuity gap: Automate saves `{schemaVersion:3,name,steps}` to `RecastWorkflowLibrary`, while ordinary Save writes only to legacy `RecastRecipes`.
-- Full preview remains async-inconsistent: partial preview awaits `RecastRecipes.runRecipe`, while full preview does not await it.
-- The dedicated `recast2-revenue-slice` had fallen 21 commits behind `main`, entirely because main advanced; it had no unique implementation commits. It was safely fast-forwarded to current main commit `fca6e10eb433169823fca46aaf4545146e20cc54` before further product work.
+- Last authoritative repository scoreboard remains £0 genuine MRR and 0 genuine paid customers under the strict successful/non-refunded latest-invoice definition. No newer verified successful payment evidence was available in this run, so revenue remains £0 rather than inferred.
+- Last scoreboard funnel evidence remains 1,512 Search Console impressions, 4 organic clicks, 3 successful tool uses, 0 workflow starts and 0 commercial-intent events; unavailable downstream rates remain null.
+- The live tryRecast Stripe catalogue was repaired immediately before this run: canonical Recast Automation now has a £29/month recurring price and a new £290/year recurring price, with live monthly/yearly Payment Links. The duplicate Automation product was archived rather than deleted.
+- Current `public/app.js` still contains placeholder `automation_monthly` and `automation_yearly` URLs, so the browser product cannot yet route a user to those new Stripe links.
+- Worker `PRICE_MAP` now recognises the canonical Automation monthly price `price_1U9g7I07vRRG7JsXPGLfnsk5` as `automation_monthly` and yearly price `price_1UHeZB07vRRG7JsXXkEATFe6` as `automation_yearly` (commit `5c38f55007b207ce5f2a23a1dc652a78b4f4c67a`). This prepares verified checkout returns to receive the correct entitlement once frontend links are wired.
+- Recipe Builder 2.0 still has the 2B continuity gap: Automate saves schemaVersion 3 to `RecastWorkflowLibrary`, while ordinary Save writes only to legacy `RecastRecipes`. Full preview remains async-inconsistent.
 
 ## Earliest revenue bottleneck
-Customer #1 remains the immediate milestone. The highest-priority commercial blocker remains **Automation checkout availability**. The product sells the £29 recurring-data-job proposition, but corresponding Automation checkout links are disabled in code. Acquisition cannot produce an Automation customer while this remains unresolved.
+Customer #1 remains the immediate milestone. Stripe-side Automation checkout is no longer missing. The earliest material blocker is now **frontend checkout wiring plus end-to-end entitlement verification**: the live Payment Links exist and Worker price mapping exists, but `public/app.js` still blocks Automation because its two URLs are placeholders.
 
-The next autonomous product constraint is **2B continuity**: a user who presses Save should have one reusable workflow that can later be repeated and promoted into hosted Automation, rather than a legacy recipe object separate from the workflow library.
+After that, the next product constraint is **2B Save → repeat → Automate continuity** so a successful local pipeline becomes one reusable object that can be promoted into hosted Automation.
 
 ## Target customer / value hypothesis
 Primary initial target: developers, technical founders, product/solutions engineers and technical operations people in small teams with recurring data jobs that are easy to script but not worth owning as another service. Recast removes operational ownership: repeated setup, hosting, scheduling, configuration, run history, failure visibility and reruns.
@@ -26,10 +26,10 @@ Durable thesis: **AI gets it working; Recast keeps it working.** Working pricing
 - Production marketing aligns with the thesis: free browser transformation, visible workflows, Copilot creation, and deliberate transition to hosted automation/API.
 - Recipe Builder 2.0 exposes Run, Save and Automate actions.
 - `rb2AutomateBtn` creates `{schemaVersion:3,name,steps}` and saves through `RecastWorkflowLibrary.save()` before activating the Automation surface.
-- `rb2SaveBtn` validates name/steps then only calls `RecastRecipes.upsert({name,steps})`. It does not create/update the corresponding workflow-library definition.
-- Partial preview awaits `RecastRecipes.runRecipe`; full preview currently assigns the returned value without `await`.
+- `rb2SaveBtn` validates name/steps then only calls `RecastRecipes.upsert({name,steps})`.
+- Partial preview awaits `RecastRecipes.runRecipe`; full preview currently does not await it.
 - Existing hosted workflow machinery should be reused; do not build a second execution/automation system.
-- Automation checkout remains unconfigured in `STRIPE.links` and is blocked by `isLinkConfigured()`/`startCheckout()`.
+- Automation Stripe catalogue and live Payment Links now exist; frontend link wiring is the remaining checkout availability gap.
 
 ## Active experiments / attribution guardrail
 - JSON Schema Generator content-consolidation experiment remains active; 28-day review due 2026-09-29.
@@ -37,27 +37,27 @@ Durable thesis: **AI gets it working; Recast keeps it working.** Working pricing
 - No active SEO target was edited this run.
 
 ## Work completed this run
-- Re-read the required operating vault, scoreboard and shipping SOP before execution.
-- Compared `recast2-revenue-slice` against current `main`: main was 21 commits ahead and the slice had zero unique commits.
-- Fast-forwarded `recast2-revenue-slice` from `66e9e2aa9c6b3af8536b74094aa5419b59919873` to current main `fca6e10eb433169823fca46aaf4545146e20cc54`, removing branch drift without force or loss of revenue-slice work.
-- Re-read the current Recipe Builder implementation and reconfirmed the exact Save-vs-Automate persistence discontinuity and full-preview async defect on the refreshed baseline.
-- Preserved all active SEO experiments and made no unverified production UI change.
+- Re-read the required operating vault and shipping SOP.
+- Reconciled the newly available live Stripe catalogue evidence with repository checkout configuration.
+- Added both canonical Automation Stripe price IDs to Worker `PRICE_MAP` so successful monthly/yearly Automation sessions can map to the correct entitlement; committed on main as `5c38f55007b207ce5f2a23a1dc652a78b4f4c67a`.
+- A first attempted `app.js` write through the connector would have replaced the large file with an incomplete payload. The resulting commit was detected immediately from its 2,825-deletion diff and main was restored to its exact parent before deployment. No broken frontend commit remains on main.
+- Did not re-attempt the large frontend file replacement through a mechanism that cannot safely perform a two-line patch. This preserves production integrity and the mandatory visual gate.
+- Preserved all active SEO experiments.
 
 ## Expected revenue impact
-- Enabling Automation checkout is prerequisite to collecting the hypothesised £29/month from the recurring-data-job proposition.
-- Keeping the revenue slice on current main removes repeated merge/divergence risk and allows the 2B fix to be implemented against the actual production baseline.
-- Unifying Save with the workflow library removes a conceptual and technical break between demonstrated value and the paid hosted action, increasing the probability that a successful local workflow can become a paid automation.
-- Async-safe preview execution reduces the risk that a successful workflow appears broken at the exact activation point.
+- Worker recognition of Automation prices removes a server-side entitlement failure that otherwise would occur immediately after a real £29/£290 checkout.
+- The remaining two-line frontend link change will remove the last known availability blocker between a persuaded Automation user and live Stripe Checkout.
+- Save/workflow continuity remains the next activation-to-paid improvement after checkout is safely reachable.
 
 ## Measurement gaps / blockers
-- Recast Stripe account/payment-link creation is not available through the current safe tool context; Automation monthly/yearly payment links cannot be created safely here.
-- Fresh Recast payment-provider and GA4/product-event evidence remain unavailable.
-- Successful-task rate lacks a usable tool_run_attempt denominator; workflow completion lacks workflow_start traffic.
-- Rendered browser verification is unavailable in this run, so UI-affecting production deployment remains blocked by policy.
+- No newer verified successful/non-refunded payment was observed during this run; genuine MRR therefore remains £0 and paying customers 0.
+- Fresh GA4/product-event evidence was unavailable; do not infer checkout intent from Stripe catalogue configuration.
+- Rendered browser verification is unavailable in this run. Under `SHIP_PRODUCT_CHANGE.md`, a UI-affecting production change must not be deployed without the full rendered visual-integrity sweep.
+- The current GitHub contents write action replaces complete files and is unsafe for a two-line change in the large `public/app.js`; use a patch-capable repository runner/Work execution path for that edit.
 
 ## Next autonomous execution
-1. Keep Automation checkout configuration as P0. If a verified Recast Stripe context becomes available, create/verify £29/month and £290/year Automation recurring prices/payment links, wire them into `STRIPE.links`, then verify checkout attribution/return/entitlement end-to-end.
-2. On refreshed `recast2-revenue-slice`, change named Save so the canonical schemaVersion 3 workflow definition is also available through `RecastWorkflowLibrary`, while retaining legacy recipe compatibility; add behavioural regression coverage for Save → reload → Automate.
-3. Fix async-safe full pipeline preview/run behaviour and test error propagation.
-4. Progress non-UI instrumentation/tests independently while rendered UI verification is unavailable.
+1. Using a patch-capable GitHub/repository runner, replace only the two Automation placeholders in `public/app.js` with the verified live links: monthly `https://buy.stripe.com/7sYcMX0IhcGncJ7bPi4c805`, yearly `https://buy.stripe.com/4gM4grcqZdKr24t06A4c806`.
+2. Run commercial/entitlement tests, then perform the mandatory rendered visual-integrity sweep before allowing the UI-affecting deployment to production.
+3. Verify a non-charged checkout reachability path and successful return/price mapping without manufacturing revenue; count revenue only after a genuine successful non-refunded payment.
+4. Implement 2B Save → workflow-library continuity and async-safe full preview with behavioural regression coverage.
 5. Preserve active SEO experiment windows.
