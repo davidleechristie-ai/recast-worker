@@ -1,9 +1,9 @@
 {
-  "fetchedAt": "2026-09-20T06:19:32.542324Z",
+  "fetchedAt": "2026-09-20T12:24:07.344204Z",
   "growthReport": {
     "durable": true,
     "extendedMeasurementStartedAt": "2026-09-11T20:34:24.536Z",
-    "generatedAt": "2026-09-20T06:19:32.510Z",
+    "generatedAt": "2026-09-20T12:24:07.310Z",
     "loop": [
       "Acquire qualified homeowners",
       "Measure source funnels",
@@ -13,11 +13,11 @@
     ],
     "measurementStartedAt": "2026-09-11T18:33:07.244Z",
     "rates": {
-      "ctaToUpload": 42,
+      "ctaToUpload": 31,
       "decisionCaseToShareIntent": 50,
       "extendedGenuineToDecisionCase": 100,
       "extendedGenuineToMultiQuote": 0,
-      "landingToCta": 25,
+      "landingToCta": 29,
       "shareOpenToRecipientStart": null,
       "uploadToGenuine": 100
     },
@@ -29,15 +29,15 @@
     "sources": [
       {
         "checkouts": 0,
-        "cta": 12,
-        "ctaToUpload": 42,
+        "cta": 16,
+        "ctaToUpload": 31,
         "decisionCases": 4,
         "extendedGenuine": 4,
         "genuine": 5,
         "installerQuestions": 0,
-        "landingToCta": 36,
-        "landingToGenuine": 15,
-        "landings": 33,
+        "landingToCta": 41,
+        "landingToGenuine": 13,
+        "landings": 39,
         "multiQuoteAnalyses": 0,
         "outboundClicks": 0,
         "recipientStarts": 0,
@@ -94,6 +94,25 @@
         "installerQuestions": 0,
         "landingToCta": 0,
         "landingToGenuine": 0,
+        "landings": 2,
+        "multiQuoteAnalyses": 0,
+        "outboundClicks": 0,
+        "recipientStarts": 0,
+        "shareIntent": 0,
+        "shareOpens": 0,
+        "source": "organic_flowtemp",
+        "uploads": 0
+      },
+      {
+        "checkouts": 0,
+        "cta": 0,
+        "ctaToUpload": null,
+        "decisionCases": 0,
+        "extendedGenuine": 0,
+        "genuine": 0,
+        "installerQuestions": 0,
+        "landingToCta": 0,
+        "landingToGenuine": 0,
         "landings": 1,
         "multiQuoteAnalyses": 0,
         "outboundClicks": 0,
@@ -120,25 +139,6 @@
         "shareIntent": 0,
         "shareOpens": 0,
         "source": "organic_checklist",
-        "uploads": 0
-      },
-      {
-        "checkouts": 0,
-        "cta": 0,
-        "ctaToUpload": null,
-        "decisionCases": 0,
-        "extendedGenuine": 0,
-        "genuine": 0,
-        "installerQuestions": 0,
-        "landingToCta": 0,
-        "landingToGenuine": 0,
-        "landings": 1,
-        "multiQuoteAnalyses": 0,
-        "outboundClicks": 0,
-        "recipientStarts": 0,
-        "shareIntent": 0,
-        "shareOpens": 0,
-        "source": "organic_flowtemp",
         "uploads": 0
       },
       {
@@ -237,14 +237,32 @@
         "uploads": 0
       }
     ],
+    "technologies": [
+      {
+        "checkouts": 0,
+        "cta": 1,
+        "decisionCases": 0,
+        "extendedGenuine": 0,
+        "genuine": 0,
+        "installerQuestions": 0,
+        "landings": 2,
+        "multiQuoteAnalyses": 0,
+        "outboundClicks": 0,
+        "recipientStarts": 0,
+        "shareIntent": 0,
+        "shareOpens": 0,
+        "technology": "heat_pump",
+        "uploads": 0
+      }
+    ],
     "total": {
       "checkouts": 0,
-      "cta": 12,
+      "cta": 16,
       "decisionCases": 4,
       "extendedGenuine": 4,
       "genuine": 5,
       "installerQuestions": 0,
-      "landings": 48,
+      "landings": 55,
       "multiQuoteAnalyses": 0,
       "outboundClicks": 0,
       "recipientStarts": 0,
