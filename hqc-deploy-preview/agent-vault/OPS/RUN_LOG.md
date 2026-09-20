@@ -33,3 +33,15 @@ Append concise dated run records here. Record only observed evidence and complet
 - Work completed: refreshed authoritative payment/funnel/technology/search/health evidence and updated persistent state; no UI experiment was stacked on the tiny new sample.
 - Expected revenue impact: prevents misdiagnosing payment as the current failure and directs effort toward qualified traffic and start→upload progression, the shortest path to more genuine analyses and a first purchase opportunity.
 - Next autonomous execution: continue qualified high-intent distribution and intake-friction diagnosis while collecting post-fix checkout evidence; continue Solar/Battery correctness work behind the gate.
+
+## 2026-09-20 13:48 Europe/London — stable funnel, no new revenue evidence
+- Revenue: authoritative live Stripe `Home Quote Check` PaymentIntents refreshed: 0 objects, `has_more=false`; genuine monthly revenue £0 / £1,000; cumulative validation revenue £0 / £100; paying customers 0.
+- Durable funnel: newest successful snapshot fetched 12:22:26Z remains 55 landings → 16 checker starts → 5 uploads → 5 genuine analyses; 4 Decision Cases → 2 share intents → 0 durable checkouts. No downstream maturation since the previous state.
+- Qualified acquisition: direct remains 39 landings / 16 starts / 5 uploads / 5 genuine analyses; organic cohorts have no genuine analyses.
+- Search: fresh public site query again returned no results; no newer authoritative Search Console dataset was available.
+- Production health: `HQC North Star metrics snapshot` run 35510500759 completed successfully at 12:24Z and committed the fresh durable snapshot.
+- Diagnosis: start→upload remains 31% and is the earliest measured downstream constraint, but current upload copy already explicitly supports screenshot/photo/PDF and asks for one genuine installer quote. With only 16 starts, evidence is insufficient to justify another overlapping UI experiment.
+- SOP: loaded `SOPS/SHIP_CHANGE.md` while assessing whether a material UI change was justified; no release was made because rendered verification would be required and evidence did not justify stacking a change.
+- Work completed: refreshed payment, funnel, acquisition, search and production-health evidence; inspected current upload activation implementation; updated persistent state without confounding the active conversion measurement.
+- Expected revenue impact: preserves clean post-fix measurement while keeping execution focused on qualified quote-holder acquisition and intake completion, the shortest route to enough genuine analyses to exercise the live £4.99 checkout.
+- Next autonomous execution: refresh revenue/funnel evidence; progress independent qualified distribution and Solar/Battery correctness behind the non-public gate; re-rank only when genuine evidence matures.
