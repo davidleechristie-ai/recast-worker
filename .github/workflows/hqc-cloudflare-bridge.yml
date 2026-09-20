@@ -26,6 +26,9 @@ jobs:
       - name: Install
         working-directory: hqc-deploy-preview
         run: npm install
+      - name: Test technology evidence models
+        working-directory: hqc-deploy-preview
+        run: node --test solar-evidence-model.test.js
       - name: Snapshot current HQC frontend
         working-directory: hqc-deploy-preview
         run: node snapshot.mjs
