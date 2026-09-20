@@ -19,6 +19,10 @@ First-customer acquisition/conversion remains binding. There is still no genuine
 ## Current milestone
 First genuine £4.99 Decision Pack purchase.
 
+## Product strategy extension
+- Detailed tracked roadmap created at `STRATEGY/PURCHASE_ADVISER_ROADMAP.md` (commit `941537c2c6c11d4b0d80ae66cafbd521bd5fb8c4`). HQC will retain Quote Check as the acquisition wedge while evolving toward an independent pre-commitment purchase adviser: Quote Check → Home/System Fit → Financial Assumptions → Installer/Proposal Evidence → Compare → Questions → paid Decision Pack.
+- Immediate product execution remains non-confounding with acquisition monitoring: first engineering target is technology-aware analysis routing plus Solar/Battery extraction behind the non-public gate; first higher-value differentiator after trustworthy Solar quote checking is deterministic Financial Assumptions Check.
+
 ## Active workstreams
 1. Qualified high-intent distribution: continue channels aimed at homeowners who already hold heat-pump quotes; organic cohorts have not yet produced a genuine analysis.
 2. Upload activation: latest settled start→upload remains 5/16; diagnose with durable evidence before changing UI again.
@@ -32,7 +36,7 @@ Keeping conversion UI stable avoids confounding a tiny post-fix sample. Concentr
 ## Next actions
 1. Refresh live Stripe and durable checkout/funnel evidence every run; first genuine purchase remains the immediate milestone.
 2. Progress qualified high-intent distribution and quote-intake activation without overlapping homepage experiments.
-3. Replace/prove the heat-pump-specific upstream analysis handoff with technology-specific Solar PV + Battery extraction/evidence completeness behind the non-public gate.
+3. Execute `STRATEGY/PURCHASE_ADVISER_ROADMAP.md`: first replace/prove the heat-pump-specific upstream analysis handoff with technology-aware routing and Solar PV + Battery extraction/evidence completeness behind the non-public gate; then prove single/two-quote Solar journeys and Financial Assumptions Check.
 4. Re-rank when additional genuine evidence arrives; unavailable metrics remain null rather than assumed zero.
 
 ## Guardrails
