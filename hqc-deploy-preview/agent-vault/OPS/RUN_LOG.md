@@ -2,6 +2,18 @@
 
 Append concise dated run records here. Record only observed evidence and completed work.
 
+## 2026-09-20 18:49 Europe/London — revenue refresh; Solar analysis handoff pinned to heat-pump upstream
+- Revenue: authoritative live Stripe `Home Quote Check` PaymentIntents refreshed: 0 objects, `has_more=false`; genuine monthly revenue £0 / £1,000; cumulative validation revenue £0 / £100; paying customers 0.
+- Durable funnel/acquisition: fresh production `/api/growth-report` access was attempted but unavailable in this execution context. Latest settled snapshot remains 55 landings → 16 starts → 5 uploads → 5 genuine analyses and 0 durable checkouts. Latest settled direct cohort remains 39 landings / 16 starts / 5 uploads / 5 genuine analyses. Unavailable fresh evidence was not converted to zero.
+- Technology mix: latest measured segmentation remains partial (`heat_pump` 2 landings / 1 start). Solar/Battery remains non-public.
+- Search: fresh public site searches for heat-pump and solar/battery footprints returned no results; no newer Search Console dataset was available.
+- Production health: direct `/health`, www `/health` and growth-report fetches were attempted but inaccessible from this web execution context; fresh health remains null rather than assumed.
+- Solar/Battery correctness: direct `worker.js` inspection shows all non-payment `/api/*` requests are proxied to `https://api-v2.appdeploy.ai/app/heat-pump-second-opinion-v43csv`; no solar panel/inverter/battery/DNO evidence extraction logic exists in the Cloudflare Worker. This pins the correctness gate to the actual upstream analysis handoff rather than technology instrumentation.
+- Work completed: refreshed live revenue/search evidence, attempted fresh funnel/health retrieval, traced the analysis proxy path, and persisted the explicit upstream dependency in current state (commit `80e81543ab4cb994ba512c3ddafbbaded440cf6a`).
+- Primary revenue bottleneck: first-customer acquisition/conversion; latest settled start→upload remains 31%.
+- Expected revenue impact: avoids exposing a falsely technology-aware Solar/Battery journey and turns the second-vertical blocker into a concrete engineering target, while preserving focus on qualified heat-pump quote holders for first revenue.
+- Next autonomous execution: refresh Stripe/durable funnel; progress qualified acquisition/intake activation; replace or prove the heat-pump-specific upstream handoff with technology-specific Solar/Battery extraction/evidence completeness behind the non-public gate.
+
 ## 2026-09-20 17:52 Europe/London — revenue refresh; Solar upstream correctness dependency confirmed
 - Revenue: authoritative live Stripe `Home Quote Check` PaymentIntents refreshed: 0 objects, `has_more=false`; genuine monthly revenue £0 / £1,000; cumulative validation revenue £0 / £100; paying customers 0.
 - Durable funnel/acquisition: fresh production growth endpoint evidence remained unavailable in this execution context. Latest settled snapshot remains 55 landings → 16 starts → 5 uploads → 5 genuine analyses and 0 durable checkouts. Latest settled direct cohort remains 39 landings / 16 starts / 5 uploads / 5 genuine analyses. Unavailable fresh evidence was not converted to zero.
