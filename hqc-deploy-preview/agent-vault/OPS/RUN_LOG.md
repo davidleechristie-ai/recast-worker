@@ -2,6 +2,18 @@
 
 Append concise dated run records here. Record only observed evidence and completed work.
 
+## 2026-09-20 17:52 Europe/London — revenue refresh; Solar upstream correctness dependency confirmed
+- Revenue: authoritative live Stripe `Home Quote Check` PaymentIntents refreshed: 0 objects, `has_more=false`; genuine monthly revenue £0 / £1,000; cumulative validation revenue £0 / £100; paying customers 0.
+- Durable funnel/acquisition: fresh production growth endpoint evidence remained unavailable in this execution context. Latest settled snapshot remains 55 landings → 16 starts → 5 uploads → 5 genuine analyses and 0 durable checkouts. Latest settled direct cohort remains 39 landings / 16 starts / 5 uploads / 5 genuine analyses. Unavailable fresh evidence was not converted to zero.
+- Technology mix: latest measured segmentation remains partial (`heat_pump` 2 landings / 1 start). Solar/Battery remains non-public.
+- Search: fresh public site searches for both heat-pump and solar/battery HQC footprints returned no results; no newer Search Console dataset was available.
+- Production health: direct production homepage/www fetches were attempted but inaccessible from the web execution context; fresh health remains null, with prior successful guarded release retained as settled evidence.
+- Solar/Battery correctness: deeper `worker.js` inspection confirmed reusable anonymous technology dimensions and checkout propagation, but also confirmed the upstream analysis API base is still labelled `heat-pump-second-opinion-v43csv`. This is a concrete dependency: instrumentation readiness is not Solar/Battery analysis readiness. Keep the CTA gated until the upstream analysis handoff is proven or replaced with technology-specific extraction/evidence logic.
+- Work completed: refreshed authoritative live payment/search evidence, attempted health/funnel access, inspected the actual Worker analysis handoff, and persisted the corrected dependency diagnosis in commit `772218cb5f4b8f84ef77b0db6b0c963745d08e71`.
+- Primary revenue bottleneck: first-customer acquisition/conversion; latest settled start→upload remains 31%.
+- Expected revenue impact: prevents premature Solar/Battery exposure while converting the vague second-vertical correctness gate into a specific implementation target; current heat-pump effort remains focused on qualified quote-holder activity and first purchase.
+- Next autonomous execution: refresh Stripe/durable funnel; progress qualified acquisition/intake activation; trace the upstream analysis implementation and build/verify a technology-specific Solar/Battery path behind the non-public gate.
+
 ## 2026-09-20 09:54 Europe/London — checkout observability/correctness patch
 - Revenue: authoritative live Stripe `Home Quote Check` PaymentIntents refreshed: 0 objects, `has_more=false`; £0 / £1,000 genuine monthly revenue; £0 / £100 cumulative validation revenue; 0 paying customers.
 - Technology mix: unavailable in the latest durable snapshot; all existing genuine analyses predate solar launch and belong to the heat-pump product. Solar remains behind the correctness gate.
