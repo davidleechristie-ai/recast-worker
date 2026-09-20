@@ -1,30 +1,26 @@
-2026-09-15T12:28+01:00
-Promote canary-verified simplified consumer journey.
+2026-09-20T03:52+01:00
+Promote canary-verified Decision Pack price alignment.
 
 Measured state before change:
-- Stripe live account: latest authoritative check found no PaymentIntents; cumulative genuine revenue remains £0.
-- latest durable production snapshot available to the programme: 20 genuine landings / 0 checker starts / 1 upload / 1 genuine analysis / 0 multi-quote analyses / 0 Decision Cases / 0 checkouts; QA/demo/headless/smoke activity excluded.
-- earliest measured funnel bottleneck remains landing -> checker start.
-- available organic acquisition remains sparse; prior qualified source labels include organic_bus, organic_checklist and organic_compare_static, with no reliable sustained ranking evidence.
+- authoritative live Stripe PaymentIntents: 0; genuine revenue £0; paying customers 0.
+- durable funnel: 47 genuine landings / 12 checker starts / 5 uploads / 5 genuine analyses / 4 Decision Cases / 0 durable checkouts.
+- authoritative live Stripe Checkout Sessions revealed two historical live sessions priced at £19.00; one was an explicit healthcheck and one used a genuine-looking UUID case reference. Both expired unpaid.
+- current customer-facing offer is £4.99 and an active live Stripe £4.99 Decision Pack price already exists.
 
 Diagnosis:
-- the generic entry action and immediate post-upload Decision Case presentation create unnecessary cognitive load for a homeowner.
-- customers need to declare one of two simple intents before upload: check one quote or compare quotes.
+- production wrangler configuration still bound STRIPE_DECISION_PACK_PRICE_ID to the stale £19.00 price, while the frontend advertises £4.99.
+- this creates a severe checkout trust/conversion defect exactly at the first-purchase boundary and can explain an unpaid live checkout attempt.
 
 Hypothesis:
-- presenting Check a single quote / Compare quotes as the first decision, then replacing internal Decision Case language with a simple quote-check/comparison result and one obvious next action, will increase checker starts and multi-quote progression without weakening evidence guardrails.
+- aligning production Stripe Checkout to the advertised £4.99 launch-validation price removes a 3.8x price mismatch at the payment boundary and materially increases probability of the first genuine purchase.
 
 Change:
-- homepage presents explicit single-quote and comparison paths;
-- session retains comparison intent;
-- post-analysis presentation uses Your quote check / Your quote comparison and prioritises installer questions or adding another quote;
-- Decision Pack remains a later £4.99 commercial action after free comparison value is demonstrated;
-- no DNS, personal-data, design-certification, grant-eligibility or payment-provider change.
+- production STRIPE_DECISION_PACK_PRICE_ID changed from price_1UER4fCnmTy7aZ0Hp1zMfDYT (£19.00) to active live price_1UFsZ2CnmTy7aZ0HpfSQ5E8Z (£4.99).
+- no UI, DNS, personal-data, independence, design-certification or grant-eligibility change.
 
 Verification before promotion:
-- Cloudflare preview deployment succeeded;
-- cf-preview.homequotecheck.co.uk canary succeeded after browser regression was updated for the intentional new CTA labels;
-- mobile single-quote intake path passed;
-- no AppDeploy deployment involved.
+- HQC Cloudflare bridge run 35485015861 passed.
+- custom-domain canary run 35485015855 passed including mobile quote-intake browser verification.
+- live Stripe price was independently read as active, one-time GBP 499 with decision_pack/launch metadata.
 
 Deploy only through guarded hqc-production Cloudflare workflow. Preserve homequotecheck.co.uk and www.homequotecheck.co.uk routing.
