@@ -71,7 +71,7 @@ jobs:
           import { chromium } from 'playwright';
           const browser=await chromium.launch({headless:true});
           for (const suffix of ['?qa=1','?qa=1&manual_path=1']) {
-            const context=await browser.newContext({viewport:{width:390,height:844},isMobile:true,hasTouch:true});
+            const context=await browser.newContext({viewport:{width:390,height:844},isMobile:true,hasTouch:true,serviceWorkers:'block'});
             const page=await context.newPage();
             const errors=[]; page.on('pageerror',e=>errors.push(String(e)));
             await page.goto('https://cf-preview.homequotecheck.co.uk/'+suffix,{waitUntil:'domcontentloaded',timeout:30000});
@@ -92,7 +92,7 @@ jobs:
           }
           // Compare mode must accept more than one quote in the intake step and must not auto-analyse the first.
           {
-            const context=await browser.newContext({viewport:{width:390,height:844},isMobile:true,hasTouch:true});
+            const context=await browser.newContext({viewport:{width:390,height:844},isMobile:true,hasTouch:true,serviceWorkers:'block'});
             const page=await context.newPage();
             const errors=[]; page.on('pageerror',e=>errors.push(String(e)));
             await page.goto('https://cf-preview.homequotecheck.co.uk/?qa=1&compare_regression=1',{waitUntil:'domcontentloaded',timeout:30000});
