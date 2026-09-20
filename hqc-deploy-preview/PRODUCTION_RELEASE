@@ -24,3 +24,5 @@ Verification before promotion:
 - live Stripe price was independently read as active, one-time GBP 499 with decision_pack/launch metadata.
 
 Deploy only through guarded hqc-production Cloudflare workflow. Preserve homequotecheck.co.uk and www.homequotecheck.co.uk routing.
+
+2026-09-20T07:40+01:00 mobile-layout-fix: compact mobile hero, remove obsolete competing override, hide decorative art, purge stale frontend caches; preview bridge and rendered custom-domain canary passed on 8ed206d0cbdf2725e49abfaba97f37f5e8aa31c8.
