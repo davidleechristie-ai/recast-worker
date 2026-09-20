@@ -97,3 +97,12 @@ Append concise dated run records here. Record only observed evidence and complet
 - Expected impact: removes a 3.8x advertised-vs-checkout price mismatch at the exact first-purchase boundary, materially improving trust and probability of first genuine purchase.
 - Remaining debt: checkout-created durable event is still missing from server-side creation path and webhook fallback remains 1900 when amount_total is absent; patch next as backend-only observability/correctness work.
 - Next: monitor for first new £4.99 live Checkout Session / PaymentIntent, patch durable checkout instrumentation and webhook fallback, and continue qualified distribution while current SEO/comparison experiments remain uncontaminated.
+
+
+## 2026-09-20 07:42 Europe/London — mobile landing repair
+- Trigger: owner reported the mobile screen needed fixing.
+- Diagnosis: multiple legacy layout scripts were competing on mobile. `target-mobile-design.js` was still loaded alongside the approved journey layout, while `artwork-fit.js` could re-show decorative artwork after the approved layout hid it. The obsolete bundle also produced an HTML fallback/SyntaxError after removal until the HTML injection was fully removed. Stale service-worker caches could preserve old frontend assets.
+- Work completed: compacted mobile hero typography/padding; prioritised Single Quote / Compare Quotes actions; removed decorative hero artwork on mobile; removed obsolete target-mobile bundle from the snapshot; aligned bridge/production release checks; changed service worker to purge stale caches on activation; added rendered 390×844 mobile regression checks for horizontal overflow, action placement and hidden artwork.
+- Verification: Cloudflare preview bridge succeeded; rendered custom-domain canary succeeded on commit `8ed206d0cbdf2725e49abfaba97f37f5e8aa31c8`; guarded production deployment succeeded on `ce0c8c86679dfd1a0d10be6459368fd4ce909bb6`; post-promotion canary also succeeded.
+- Expected revenue impact: removes a mobile first-impression/activation defect and keeps the two revenue-relevant journeys visible without decorative content competing for viewport space.
+- Next: measure genuine mobile checker starts/uploads and continue first-purchase acceleration.
