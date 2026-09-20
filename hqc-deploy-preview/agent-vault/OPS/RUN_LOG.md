@@ -106,3 +106,13 @@ Append concise dated run records here. Record only observed evidence and complet
 - Verification: Cloudflare preview bridge succeeded; rendered custom-domain canary succeeded on commit `8ed206d0cbdf2725e49abfaba97f37f5e8aa31c8`; guarded production deployment succeeded on `ce0c8c86679dfd1a0d10be6459368fd4ce909bb6`; post-promotion canary also succeeded.
 - Expected revenue impact: removes a mobile first-impression/activation defect and keeps the two revenue-relevant journeys visible without decorative content competing for viewport space.
 - Next: measure genuine mobile checker starts/uploads and continue first-purchase acceleration.
+
+
+## 2026-09-20 07:58 Europe/London — Decision Pack purchase CTA repaired
+- Trigger: owner supplied an iPhone screenshot and reported the £4.99 Decision Pack purchase control did not work.
+- Root cause: `paid-comparison-gate.js` globally intercepted any button/link whose text matched “Decision Pack” in capture phase. The modal's own `Get my Decision Pack — £4.99` button matched that rule, so its checkout handler never ran.
+- Work completed: excluded controls inside `#hqc-comparison-gate` (including `[data-buy]` and `[data-close]`) from the outer gate interceptor.
+- Regression protection: added a rendered 390×844 Playwright test that opens the Decision Pack modal, clicks its purchase CTA and asserts exactly one `/api/decision-pack/checkout` request.
+- Verification: dedicated custom-domain canary run 35495415499 passed. Guarded production deploy run 35495463380 passed including production verification and mobile journey smoke test. Production commit: `42f7817dbfef503f5f55fe0f014567c062feffb9`.
+- Revenue impact: fixes a P0 commercial-path defect at the final pre-payment action; customers can now proceed from the £4.99 offer into secure checkout.
+- Next: monitor live Stripe PaymentIntents/checkout evidence and genuine checkout funnel events; continue first-purchase acquisition.
