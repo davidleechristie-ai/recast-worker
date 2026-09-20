@@ -98,7 +98,6 @@ Append concise dated run records here. Record only observed evidence and complet
 - Remaining debt: checkout-created durable event is still missing from server-side creation path and webhook fallback remains 1900 when amount_total is absent; patch next as backend-only observability/correctness work.
 - Next: monitor for first new £4.99 live Checkout Session / PaymentIntent, patch durable checkout instrumentation and webhook fallback, and continue qualified distribution while current SEO/comparison experiments remain uncontaminated.
 
-
 ## 2026-09-20 07:42 Europe/London — mobile landing repair
 - Trigger: owner reported the mobile screen needed fixing.
 - Diagnosis: multiple legacy layout scripts were competing on mobile. `target-mobile-design.js` was still loaded alongside the approved journey layout, while `artwork-fit.js` could re-show decorative artwork after the approved layout hid it. The obsolete bundle also produced an HTML fallback/SyntaxError after removal until the HTML injection was fully removed. Stale service-worker caches could preserve old frontend assets.
@@ -106,7 +105,6 @@ Append concise dated run records here. Record only observed evidence and complet
 - Verification: Cloudflare preview bridge succeeded; rendered custom-domain canary succeeded on commit `8ed206d0cbdf2725e49abfaba97f37f5e8aa31c8`; guarded production deployment succeeded on `ce0c8c86679dfd1a0d10be6459368fd4ce909bb6`; post-promotion canary also succeeded.
 - Expected revenue impact: removes a mobile first-impression/activation defect and keeps the two revenue-relevant journeys visible without decorative content competing for viewport space.
 - Next: measure genuine mobile checker starts/uploads and continue first-purchase acceleration.
-
 
 ## 2026-09-20 07:58 Europe/London — Decision Pack purchase CTA repaired
 - Trigger: owner supplied an iPhone screenshot and reported the £4.99 Decision Pack purchase control did not work.
@@ -116,3 +114,14 @@ Append concise dated run records here. Record only observed evidence and complet
 - Verification: dedicated custom-domain canary run 35495415499 passed. Guarded production deploy run 35495463380 passed including production verification and mobile journey smoke test. Production commit: `42f7817dbfef503f5f55fe0f014567c062feffb9`.
 - Revenue impact: fixes a P0 commercial-path defect at the final pre-payment action; customers can now proceed from the £4.99 offer into secure checkout.
 - Next: monitor live Stripe PaymentIntents/checkout evidence and genuine checkout funnel events; continue first-purchase acquisition.
+
+## 2026-09-20 09:54 Europe/London — checkout observability/correctness patch
+- Revenue: authoritative live Stripe `Home Quote Check` PaymentIntents refreshed: 0 objects, `has_more=false`; £0 / £1,000 genuine monthly revenue; £0 / £100 cumulative validation revenue; 0 paying customers.
+- Technology mix: unavailable in the latest durable snapshot; all existing genuine analyses predate solar launch and belong to the heat-pump product. Solar remains behind the correctness gate.
+- Funnel: latest durable snapshot (06:55Z) = 53 landings → 15 checker starts → 5 uploads → 5 genuine analyses; extended 4 analyses → 0 multi-quote → 4 Decision Cases → 2 share intents → 0 share opens → 0 checkouts. Direct = 37 landings / 15 starts / 5 genuine; organic cohorts have no genuine analyses. Snapshot predates the 07:58 checkout CTA repair.
+- Bottleneck: first genuine purchase remains immediate milestone; acquisition scale is very low and start→upload is 33%, but checkout evidence itself was incomplete because successful server-side session creation was not durably recorded.
+- SOP: loaded only `SOPS/SHIP_CHANGE.md` for the backend release path.
+- Work completed: patched `hqc-deploy-preview/worker.js` so successful Decision Pack Stripe Session creation records `decision_pack_checkout_created` in durable metrics; corrected stale webhook missing-amount fallback from 1900p to 499p. Commit `adf542b51913956dc066ea9cae2d1a315e47d890`.
+- Verification: Cloudflare bridge run 35500805534 was queued immediately after the commit. No production-complete claim made; promotion remains gated on bridge/canary/production verification.
+- Expected revenue impact: makes the final pre-payment funnel measurable, reducing time to distinguish no purchase intent from payment completion failure; correct fallback protects £4.99 revenue telemetry.
+- Next: verify bridge/canary and promote through the guarded production path if green; then refresh Stripe + durable checkout evidence and continue qualified acquisition/upload activation without stacking a homepage UI experiment.
