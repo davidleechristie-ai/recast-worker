@@ -34,7 +34,7 @@ jobs:
         shell: bash
         run: |
           set -euo pipefail
-          for f in index.html __hqc_enhancements.js __hqc_upload_v3.js __hqc_target_mobile.js __hqc_artwork_fit.js __hqc_results_layout.js __hqc_quote_facts.js __hqc_paid_comparison.js __hqc_decision_pack.js __hqc_approved_layout.js __hqc_simple_results.js; do test -s "hqc-deploy-preview/site/$f"; done
+          for f in index.html __hqc_enhancements.js __hqc_upload_v3.js __hqc_artwork_fit.js __hqc_results_layout.js __hqc_quote_facts.js __hqc_paid_comparison.js __hqc_decision_pack.js __hqc_approved_layout.js __hqc_simple_results.js; do test -s "hqc-deploy-preview/site/$f"; done
           test -s hqc-deploy-preview/site/assets/notifications-runtime-DKZvfw3S.js
           test -s hqc-deploy-preview/site/resources/pdf.mjs
           test -s hqc-deploy-preview/site/resources/pdf.worker.mjs
