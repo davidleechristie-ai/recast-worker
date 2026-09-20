@@ -82,16 +82,17 @@ Current confirmed blocker: production non-payment analysis traffic is still prox
 - [ ] Build Solar/Battery extraction path independent of heat-pump prompts/logic.
 - [ ] Validate PDFs, screenshots/photos and manual-entry payloads.
 - [ ] Add malformed/partial quote handling.
-- [ ] Add battery-only fixtures.
+- [x] Add battery-only synthetic fixture alongside solar-only, solar+battery, partial and comparison cases in `test/fixtures/solar-battery-cases.json`.
 - [ ] Ensure technology is propagated into durable anonymous funnel and checkout events end-to-end.
 
 Exit gate: representative Solar/Battery fixtures produce technology-specific structured evidence without calling heat-pump analysis logic.
 
 ### WS3 — Solar/Battery Quote Check MVP
-Status: NOT STARTED (depends on WS2 Worker routing + adapter boundary).
+Status: IN PROGRESS (fixture corpus started; still depends on WS2 Worker routing + adapter boundary).
 Revenue rationale: creates the minimum trustworthy second vertical capable of producing a genuine paid-intent test.
 
-- [ ] Build representative anonymised/synthetic fixtures: solar-only, solar+battery, battery-only, partial quote, two competing quotes.
+- [x] Build initial representative synthetic fixtures: solar-only, solar+battery, battery-only, partial quote, two competing quotes. Fixtures deliberately use fictional products/values and are not customer/market evidence.
+- [ ] Bind fixtures to extraction tests once the dedicated adapter exists.
 - [ ] Extract required equipment/scope/assumption fields.
 - [ ] Detect material missing evidence rather than hallucinating values.
 - [ ] Produce plain-English findings tied to evidence.
