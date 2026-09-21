@@ -2,6 +2,18 @@
 
 Append concise dated run records here. Record only observed evidence and completed work.
 
+## 2026-09-21 07:44 Europe/London — second representative Solar parser gap fixed
+- Revenue: authoritative live Stripe `Home Quote Check` PaymentIntents refreshed: 0 objects, `has_more=false`; genuine monthly revenue £0 / £1,000; cumulative validation revenue £0 / £100; paying customers 0.
+- Funnel/acquisition: latest successful scheduled metrics workflow ran at 06:23Z, but no newer parsed authoritative funnel counts were available in this execution context; latest settled counts remain 55 genuine landings → 16 starts → 5 uploads → 5 genuine analyses; 4 Decision Cases → 2 share intents → 0 durable checkouts. Unavailable fresh counts were not converted to zero.
+- CI evidence: commit `6a23a110a0265c42118cfad6676e16cdf108dce2` did run and failed at `Test technology evidence models and Solar/Battery extraction`; preview/deploy/verify were correctly skipped.
+- Diagnosis: after the price-wording fix, direct fixture/extractor inspection exposed another representative mismatch: complete Solar+Battery wording uses `9.2 kWh usable capacity`, while the battery regex accepted `usable storage` but not `usable capacity` in that form.
+- SOP: followed `SOPS/SHIP_CHANGE.md`; no production deployment attempted and Solar remains non-public.
+- COMPLETED: extended the dedicated Solar/Battery extractor to accept both `usable storage` and `usable capacity` wording. Commit `671ac93232eb0caf574989ab2cb30721fb72132c`. No CI run had appeared at evidence cutoff, so no pass is claimed.
+- Primary revenue bottleneck: first-customer acquisition/conversion; latest settled start→upload remains 31%.
+- Expected revenue impact: increases real-world battery specification coverage and continues converting representative fixture failures into hardened extraction behaviour before customer exposure, shortening the path to a trustworthy second vertical without destabilising Heat Pump.
+- Learning: no new durable customer/product lesson; this is implementation hardening under the existing correctness-gate lesson.
+- NEXT: verify/fix CI for `671ac93232eb0caf574989ab2cb30721fb72132c`; continue malformed/partial hardening; only after green extraction + Heat Pump regression evidence wire technology-aware routing behind the non-public Worker gate. Continue qualified acquisition/revenue monitoring in parallel.
+
 ## 2026-09-21 06:44 Europe/London — Solar CI gate catches representative price-parser defect
 - Revenue: authoritative live Stripe `Home Quote Check` PaymentIntents refreshed: 0 objects, `has_more=false`; genuine monthly revenue £0 / £1,000; cumulative validation revenue £0 / £100; paying customers 0.
 - Funnel/acquisition: no newer authoritative production snapshot available; latest settled remains 55 genuine landings → 16 starts → 5 uploads → 5 genuine analyses; 4 Decision Cases → 2 share intents → 0 durable checkouts. Latest settled direct cohort remains 39 / 16 / 5 / 5. Unavailable fresh evidence was not converted to zero.
