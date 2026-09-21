@@ -1,0 +1,78 @@
+name: HQC production router release
+
+on:
+  push:
+    branches: [main]
+    paths:
+      - '.github/workflows/hqc-production-router-release.yml'
+      - 'hqc-deploy-preview/worker.js'
+      - 'hqc-deploy-preview/worker-entry.js'
+      - 'hqc-deploy-preview/lib/technology-routing.js'
+      - 'hqc-deploy-preview/lib/analysis-request-routing.js'
+      - 'hqc-deploy-preview/wrangler.production.toml'
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+concurrency:
+  group: hqc-production-router
+  cancel-in-progress: false
+
+jobs:
+  release:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 22
+      - name: Install
+        working-directory: hqc-deploy-preview
+        run: npm install
+      - name: Test technology evidence and routing
+        working-directory: hqc-deploy-preview
+        run: |
+          node --test solar-evidence-model.test.js test/solar-battery-extraction.test.mjs
+          node --test test/technology-routing.test.mjs test/analysis-request-routing.test.mjs
+      - name: Snapshot current HQC frontend
+        working-directory: hqc-deploy-preview
+        run: node snapshot.mjs
+      - name: Deploy production router
+        working-directory: hqc-deploy-preview
+        run: npx wrangler deploy -c wrangler.production.toml
+        env:
+          CLOUDFLARE_API_TOKEN: ${{ secrets.CLOUDFLARE_API_TOKEN }}
+          CLOUDFLARE_ACCOUNT_ID: ${{ secrets.CLOUDFLARE_ACCOUNT_ID }}
+      - name: Verify production Heat Pump compatibility and Solar isolation
+        shell: bash
+        run: |
+          set -euo pipefail
+          base='https://homequotecheck.co.uk'
+          ok=false
+          for attempt in 1 2 3 4 5; do
+            health=$(curl -L -sS --max-time 30 "$base/health" || true)
+            if grep -q '"environment":"production"' <<< "$health" && grep -q '"durableMetrics":true' <<< "$health"; then ok=true; break; fi
+            echo "Awaiting production Worker (attempt $attempt): $health"
+            sleep 5
+          done
+          test "$ok" = 'true'
+
+          # Existing Heat Pump/default analysis path must remain available.
+          hp_code=$(curl -L -sS -o /tmp/hqc-hp -w '%{http_code}' --max-time 30 "$base/api/_healthcheck")
+          echo "heat-pump/default health -> $hp_code"
+          test "$hp_code" = '200'
+          grep -q 'Success' /tmp/hqc-hp
+
+          # Explicit Solar/Battery must never fall through to the Heat Pump upstream.
+          solar_code=$(curl -L -sS -o /tmp/hqc-solar -w '%{http_code}' --max-time 30 -H 'x-hqc-technology: solar_battery' "$base/api/_healthcheck")
+          echo "solar gated health -> $solar_code"
+          test "$solar_code" = '503'
+          grep -q 'technology_analysis_not_ready' /tmp/hqc-solar
+
+          metrics_code=$(curl -L -sS -o /tmp/hqc-metrics -w '%{http_code}' --max-time 30 "$base/api/metrics")
+          echo "durable metrics -> $metrics_code"
+          test "$metrics_code" = '200'
+          grep -q '"durable":true' /tmp/hqc-metrics
+
+          echo 'HQC production technology-router verification passed.'
