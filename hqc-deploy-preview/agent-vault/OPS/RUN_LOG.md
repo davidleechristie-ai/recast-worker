@@ -2,6 +2,17 @@
 
 Append concise dated run records here. Record only observed evidence and completed work.
 
+## 2026-09-22 00:42 Europe/London — P0 UI recovery path gains rendered style gates
+- Revenue: no newer authoritative Stripe result was available in this execution context; latest authoritative Home Quote Check PaymentIntents remains 0 objects / `has_more=false`, so revenue remains £0 / £1,000 monthly, £0 / £100 validation, 0 paying customers. Fresh unavailable evidence is null.
+- Funnel/acquisition: no fresh production endpoint evidence available; latest settled evidence remains 56 genuine landings → 16 starts → 5 uploads → 5 genuine analyses; 4 Decision Cases → 2 share intents → 0 share opens → 0 durable checkouts. Direct remains 40 → 16 → 5 → 5.
+- Search: no newer authoritative Search Console dataset available; latest through 2026-09-19 remains 0 clicks / 4 impressions / 0% CTR / average position 8.07.
+- Production presentation: owner-provided broken iPhone render remains authoritative; P0 is not closed. Latest backend health remains the previously verified Heat Pump 200 / explicit Solar 409 / durable metrics 200 state.
+- COMPLETED: strengthened `.github/workflows/hqc-production.yml` in commit `3a3c3bbfd26329b41ac17f7f8053e2be711f653a`. Before any UI production deploy, a local rendered snapshot is now tested at 390×844 and 1440×1000. Gate requires at least one CSS stylesheet, rejects browser-default link/body styling, checks visible commercial CTAs, horizontal overflow and failed stylesheet requests. After deploy, production receives the same mobile+desktop computed-style integrity checks plus interaction verification.
+- RELEASE DECISION: no frontend recovery deployment was triggered in this run because the known broken production origin is still the snapshot source. The new gate must be used with a known-good recoverable asset source; P0 remains open rather than replacing broken assets blindly.
+- Solar remains non-public. No roadmap status changed; existing 9/9 extraction and 9/9 routing evidence remains valid.
+- OPS/LEARNINGS.md unchanged: this is release-engineering progress, not authoritative customer/product learning.
+- NEXT: recover a known-good frontend bundle through the strengthened UI path, require pre-deploy rendered pass, deploy, then require rendered production mobile+desktop pass before resuming acquisition and Solar public exposure.
+
 ## 2026-09-21 22:45 Europe/London — revenue refreshed; P0 recovery gate tightened in diagnosis
 - REVENUE EVIDENCE: authoritative live Stripe `Home Quote Check` PaymentIntents returned 0 objects with `has_more=false`. Genuine monthly revenue remains £0 / £1,000; cumulative validation revenue £0 / £100; paying customers 0.
 - Funnel/acquisition: fresh production endpoint access was unavailable in this execution environment; latest settled evidence remains 56 genuine landings → 16 starts → 5 uploads → 5 genuine analyses; 4 Decision Cases → 2 share intents → 0 share opens → 0 durable checkouts. Missing fresh evidence remains null.
@@ -20,14 +31,6 @@ Append concise dated run records here. Record only observed evidence and complet
 - DECISION: backend release recurrence path is now contained and verified. Do not treat this as frontend recovery; the public presentation remains P0 until rendered mobile/desktop evidence proves restoration.
 - Solar public expansion remains paused behind P0 frontend recovery; non-public engineering may continue independently.
 - NEXT: recover a known-good frontend through the dedicated UI release path with rendered iPhone + desktop verification, then resume qualified acquisition and Solar public gates.
-
-## 2026-09-21 20:45 Europe/London — router-only deploy path corrected after second safe pre-deploy failure
-- Revenue/search/funnel: no newer authoritative Stripe, parsed durable-funnel or Search Console dataset was available; latest verified revenue remains £0 / £1,000 monthly, validation revenue £0 / £100, paying customers 0; latest settled funnel remains 56 genuine landings → 16 starts → 5 uploads → 5 genuine analyses and 0 durable checkouts. Missing fresh evidence remains null.
-- Production presentation: no fresh rendered evidence supersedes the owner-provided broken iPhone result; P0 frontend recovery remains open.
-- RELEASE EVIDENCE: run `35640563855` for commit `82e79256...` passed 9/9 Solar evidence/extraction and 9/9 routing/isolation tests. The generated config correctly omitted `[assets]`, but deployment failed before touching production because `/tmp/hqc-router-production.toml` caused Wrangler to resolve relative `main = "worker-entry.js"` from `/tmp`; entry point not found.
-- COMPLETED: commit `be3c4ef823ab0bae3afdef806d859e2aaa59c25b` writes the router-only config inside `hqc-deploy-preview` instead, retaining correct relative entry-point resolution while still omitting assets. It also asserts `worker-entry.js` exists before deploy. No successful release is claimed until the workflow completes.
-- Solar public expansion remains paused behind P0 frontend recovery; backend isolation work remains non-confounding.
-- NEXT: verify the corrected router-only workflow, then recover and rendered-verify the known-good frontend before resuming acquisition/Solar public gates.
 
 ## Earlier runs
 Earlier detailed run history remains available in repository history. The current state and durable learnings carry forward the authoritative operating context.
