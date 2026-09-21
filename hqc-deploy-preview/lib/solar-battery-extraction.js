@@ -14,7 +14,7 @@ export function extractSolarBatteryEvidence(quoteText = '', technology = 'solar_
   const panelCount = num(match(text, /\b(\d+)\s+[A-Z][A-Za-z]+\s+[A-Z]{1,5}\d{2,4}\s+(?:panels|modules)/i));
   const arrayKwp = num(match(text, /\b(\d+(?:\.\d+)?)\s*kWp\b/i));
   const inverterMatch = text.match(/([A-Z][A-Za-z]+)\s+([A-Z]{1,5}\d{1,3})\s+(?:hybrid\s+)?inverter(?:\s+rated)?\s+(\d+(?:\.\d+)?)\s*kW/i);
-  const batteryMatch = text.match(/([A-Z][A-Za-z]+)\s+([A-Z]{1,5}\d{1,3})\s+battery(?:,)?(?:\s+usable\s+storage)?(?:,)?\s*(\d+(?:\.\d+)?)\s*kWh\s+usable|([A-Z][A-Za-z]+)\s+([A-Z]{1,5}\d{1,3}),?\s+usable\s+storage\s+(\d+(?:\.\d+)?)\s*kWh/i);
+  const batteryMatch = text.match(/([A-Z][A-Za-z]+)\s+([A-Z]{1,5}\d{1,3})\s+battery(?:,)?(?:\s+usable\s+(?:storage|capacity))?(?:,)?\s*(\d+(?:\.\d+)?)\s*kWh\s+usable|([A-Z][A-Za-z]+)\s+([A-Z]{1,5}\d{1,3}),?\s+usable\s+(?:storage|capacity)\s+(\d+(?:\.\d+)?)\s*kWh/i);
   const battery = batteryMatch ? {
     make: batteryMatch[1] || batteryMatch[4], model: batteryMatch[2] || batteryMatch[5],
     usableCapacityKwh: num(batteryMatch[3] || batteryMatch[6])
