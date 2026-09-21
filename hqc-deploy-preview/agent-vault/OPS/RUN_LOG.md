@@ -2,6 +2,17 @@
 
 Append concise dated run records here. Record only observed evidence and completed work.
 
+## 2026-09-21 08:43 Europe/London — corrected Solar battery wording parser
+- Revenue: authoritative live Stripe `Home Quote Check` PaymentIntents refreshed: 0 objects, `has_more=false`; genuine monthly revenue £0 / £1,000; cumulative validation revenue £0 / £100; paying customers 0.
+- Funnel/acquisition: no newer parsed authoritative funnel counts were available; latest settled remains 55 genuine landings → 16 starts → 5 uploads → 5 genuine analyses; 4 Decision Cases → 2 share intents → 0 durable checkouts. Unavailable fresh evidence was not converted to zero.
+- CI evidence: commit `671ac93232eb0caf574989ab2cb30721fb72132c` did trigger canary activity, but the custom-domain canary was cancelled during mobile quote-intake verification. Direct source/fixture inspection showed the previous battery regex change still did not match the representative phrase `StoreBox SB10 battery, 9.2 kWh usable capacity`; it had changed the wrong side of the numeric value.
+- SOP/release discipline: Solar remains non-public; no production release or readiness claim was made.
+- COMPLETED: corrected the dedicated Solar/Battery extractor to accept `battery, 9.2 kWh usable capacity` while retaining the battery-only `usable storage 6.8 kWh` form. Commit `1d44ad899bf5f7ef74446290f7546fc13ed0e358`. No CI run had appeared at evidence cutoff, so no pass is claimed.
+- Primary revenue bottleneck: first-customer acquisition/conversion; latest settled start→upload remains 31%.
+- Expected revenue impact: closes a representative battery-capacity extraction defect before public exposure and shortens the route to a trustworthy Solar/Battery paid-intent test without destabilising Heat Pump.
+- Learning: no new durable customer/product lesson; this remains parser hardening under the existing technology-readiness correctness gate.
+- NEXT: verify the corrected extraction CI; fix any remaining representative failures, harden malformed/partial inputs, then wire the adapter behind non-public technology routing only after green correctness + Heat Pump regression evidence. Continue acquisition/revenue monitoring in parallel.
+
 ## 2026-09-21 07:44 Europe/London — second representative Solar parser gap fixed
 - Revenue: authoritative live Stripe `Home Quote Check` PaymentIntents refreshed: 0 objects, `has_more=false`; genuine monthly revenue £0 / £1,000; cumulative validation revenue £0 / £100; paying customers 0.
 - Funnel/acquisition: latest successful scheduled metrics workflow ran at 06:23Z, but no newer parsed authoritative funnel counts were available in this execution context; latest settled counts remain 55 genuine landings → 16 starts → 5 uploads → 5 genuine analyses; 4 Decision Cases → 2 share intents → 0 durable checkouts. Unavailable fresh counts were not converted to zero.
