@@ -35,11 +35,25 @@ jobs:
         run: |
           node --test solar-evidence-model.test.js test/solar-battery-extraction.test.mjs
           node --test test/technology-routing.test.mjs test/analysis-request-routing.test.mjs
-      # Router-only releases must never re-snapshot or replace customer-facing frontend assets.
-      # UI/static releases use the separate preview/canary + rendered verification path.
+      # Router-only releases must never snapshot, require, upload or replace frontend assets.
+      # Generate a temporary Wrangler config with the production bindings/routes but no [assets]
+      # section. The tracked production config remains the UI/static release configuration.
+      - name: Prepare router-only Wrangler config
+        working-directory: hqc-deploy-preview
+        shell: bash
+        run: |
+          python - <<'PY'
+          from pathlib import Path
+          src = Path('wrangler.production.toml').read_text()
+          marker = '\n[assets]\n'
+          if marker not in src:
+              raise SystemExit('Expected [assets] section missing from production config')
+          Path('/tmp/hqc-router-production.toml').write_text(src.split(marker, 1)[0].rstrip() + '\n')
+          PY
+          ! grep -q '^\[assets\]' /tmp/hqc-router-production.toml
       - name: Deploy production router without static assets
         working-directory: hqc-deploy-preview
-        run: npx wrangler deploy -c wrangler.production.toml --no-assets
+        run: npx wrangler deploy -c /tmp/hqc-router-production.toml
         env:
           CLOUDFLARE_API_TOKEN: ${{ secrets.CLOUDFLARE_API_TOKEN }}
           CLOUDFLARE_ACCOUNT_ID: ${{ secrets.CLOUDFLARE_ACCOUNT_ID }}
