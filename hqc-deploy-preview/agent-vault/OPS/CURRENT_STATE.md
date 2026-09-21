@@ -1,53 +1,49 @@
 # Current state
 
-Updated: 2026-09-21 13:50 Europe/London
+Updated: 2026-09-21 14:44 Europe/London
 
 North star: Sustain at least **£1,000 genuine monthly revenue**. Immediate milestone: first genuine purchase, then £100 cumulative validation revenue within the original three-month validation window.
 
 ## Evidence refreshed
-- Revenue: authoritative live Stripe `Home Quote Check` PaymentIntents refreshed this run: 0 objects, `has_more=false`. Genuine production revenue remains **£0 / £1,000 monthly**, cumulative validation revenue **£0 / £100**, paying customers **0**.
-- Durable funnel: no newer parsed authoritative funnel snapshot was available in this execution context; latest settled counts remain 55 genuine landings → 16 checker starts → 5 uploads → 5 genuine analyses; extended settled evidence remains 4 Decision Cases → 2 share intents → 0 durable checkouts. Unavailable fresh evidence is not treated as zero.
-- Qualified acquisition: latest settled evidence remains direct 39 landings → 16 starts → 5 uploads → 5 genuine analyses. Organic cohorts have no genuine analyses in the latest settled snapshot.
-- Technology mix remains partial: latest classified evidence remains `heat_pump` 2 landings / 1 start / 0 uploads / 0 genuine / 0 checkouts. Solar/Battery remains behind its non-public correctness gate.
-- Search: no newer authoritative Search Console dataset was available this run; latest evidence through 2026-09-19 remains 0 clicks, 4 impressions, 0% CTR, average position 8.07 over the last 28 settled days.
-- Production health: direct web fetch was unavailable in this execution context; fresh production health is null rather than assumed.
-- Solar extraction CI remains previously verified at 9/9 passing on `1ce7fcb3...`.
-- New Worker-boundary release workflow `35601642799` for commit `614429ffece11ffb9e5092bac78f025408278884` is pending at evidence cutoff; no preview or production success is claimed yet.
+- Revenue: no newer authoritative Stripe object set was available in this execution context; latest verified live `Home Quote Check` PaymentIntent evidence remains 0 objects, `has_more=false`. Genuine production revenue remains **£0 / £1,000 monthly**, cumulative validation revenue **£0 / £100**, paying customers **0**. Stale evidence is not relabelled as fresh.
+- Durable funnel/acquisition: no newer parsed authoritative snapshot was available; latest settled remains 55 genuine landings → 16 starts → 5 uploads → 5 genuine analyses, with 4 Decision Cases → 2 share intents → 0 durable checkouts. Direct remains 39 → 16 → 5 → 5. Unavailable fresh evidence is null, not zero.
+- Search: no newer authoritative Search Console dataset was available; latest evidence through 2026-09-19 remains 0 clicks, 4 impressions, 0% CTR, average position 8.07.
+- Production: authoritative bridge logs confirm the production domain returned HTTP 200 during routing inspection at 2026-09-21 13:04Z. This is health evidence only; the new router has not yet been deployed to production.
+- Preview: workflow `35603189156` for `6c436d8b082f402da12fb70463fcf211a02518b6` completed successfully. Solar evidence/extraction tests passed **9/9**; `hqc-migration-preview` deployed version `daf09043-fa92-4cc9-8798-4b8d9a747b9a`; preview verification passed all checked routes/assets/API health. The Durable Object export regression is fixed.
 
 ## Commercial diagnosis
-First-customer acquisition/conversion remains binding. Latest settled start→upload remains 31% (5/16), the earliest adequately observed downstream constraint. Qualified distribution remains the fastest route to exercising the verified £4.99 checkout while independent Solar/Battery implementation progresses.
+First-customer acquisition/conversion remains binding. Latest settled start→upload is 31% (5/16). No new customer evidence justifies another Heat Pump UI experiment. Public product expansion can now proceed incrementally because the technology-routing preview gate is green.
 
 ## Current milestone
 First genuine £4.99 Decision Pack purchase.
 
 ## Product strategy / Solar-Battery progress
-- Tracked roadmap: `STRATEGY/PURCHASE_ADVISER_ROADMAP.md`.
-- Technology routing/request-level isolation, structured evidence contract, representative synthetic fixture corpus and dedicated non-public extraction adapter/tests exist in source.
-- Representative evidence/extraction suite is green: 9 tests passed, 0 failed.
-- **Completed this run:** added `worker-entry.js` as the active Wrangler entry point. It enforces request-level technology routing before the legacy Worker: existing Heat Pump analysis delegates unchanged; explicit Solar/Battery can no longer fall through to the Heat Pump upstream and returns `technology_analysis_not_ready` unless a dedicated `HQC_SOLAR_ANALYSIS_API_BASE` is explicitly configured. Commits `f1526cbf...` and `614429ff...`.
-- This is a non-UI boundary change and does not expose Solar publicly. The auto-triggered Cloudflare bridge workflow is pending; release/readiness is not claimed until preview/canary verification passes.
-- The dedicated Solar extraction adapter is still local/source-level rather than a configured HTTP analysis service, so public Solar analysis remains gated.
+- Technology-aware request isolation is now **VERIFIED IN PREVIEW**. Heat Pump delegates to the existing path; explicit Solar/Battery cannot silently fall through to Heat Pump.
+- Representative Solar evidence/extraction remains 9/9 green.
+- Cloudflare Durable Object compatibility is preserved by re-exporting `HqcMetrics` from `worker-entry.js`; preview deployment and verification prove the previous error 10064 is resolved without deleting/migrating metrics data.
+- Production config has now been changed on main to use the verified `worker-entry.js` (`f753ac9a85e74b6dc9268f365445bb9a0880f93e`). This prepares the safe non-UI production boundary; it does not expose a Solar CTA and does not configure a Solar analysis service.
+- Public Solar analysis remains gated because the dedicated Solar extraction adapter is not yet an executable configured HTTP analysis path and the required single/two-quote, checkout and rendered UI gates are not complete.
 
 ## Active workstreams
-1. Qualified high-intent distribution: continue channels aimed at homeowners already holding heat-pump quotes.
-2. Upload activation: latest settled start→upload remains 5/16; diagnose with durable evidence before another UI change.
-3. Paid boundary: repaired £4.99 checkout remains latest verified production state; do not change price without genuine commercial-intent evidence.
-4. Solar/Battery: Worker isolation boundary is now wired in source; next gate is successful preview/canary verification, then connect a dedicated Solar analysis execution path and prove single/two-quote journeys before public CTA.
-5. Instrumentation: existing anonymous technology dimensions are reusable; do not expand PII.
+1. Qualified high-intent acquisition: continue quote-holder distribution; this remains the immediate route to first revenue.
+2. Upload activation: diagnose from durable evidence before further UI change.
+3. Paid boundary: retain £4.99 until genuine willingness-to-pay evidence changes.
+4. Solar/Battery: move verified routing boundary into production safely, then connect a dedicated executable Solar adapter and prove complete journeys before public CTA.
+5. Instrumentation: reuse anonymous technology dimensions; do not expand PII.
 
 ## Expected revenue impact
-The Worker boundary removes a high-risk failure mode: future explicit Solar/Battery traffic cannot silently receive Heat Pump analysis. This safely shortens the path to making Solar public while preserving the current revenue-producing candidate Heat Pump journey. Acquisition remains the immediate route to first revenue.
+The preview-verified routing boundary removes the dangerous Solar→Heat Pump leakage failure and is now prepared for production. This enables progressive public expansion without destabilising the existing Heat Pump journey. The next revenue-enabling product step is executable Solar analysis behind that boundary, while acquisition continues in parallel.
 
 ## Next actions
-1. Refresh live Stripe and durable checkout/funnel evidence every run; first genuine purchase remains immediate milestone.
-2. Verify workflow `35601642799`; inspect failures if any. Complete preview/canary before any production-readiness claim.
-3. Continue qualified acquisition/intake activation without overlapping homepage experiments.
-4. Connect the verified Solar extraction/evidence adapter to an executable analysis path behind the explicit Worker gate; preserve Heat Pump regression coverage.
-5. Prove single/two-quote Solar journeys, guardrails, technology instrumentation and checkout; rendered mobile/desktop verification is mandatory before public CTA.
-6. After trustworthy integration, begin deterministic Financial Assumptions Check.
+1. Refresh authoritative Stripe/funnel evidence on every run.
+2. Deploy/verify the non-UI technology router to production using the existing GitHub/Cloudflare release route; confirm Heat Pump regression, durable metrics and explicit Solar rejection before enabling any Solar CTA.
+3. Connect the verified Solar extraction adapter to an executable gated analysis path.
+4. Prove single/two-quote Solar journeys, guardrails, technology instrumentation and checkout.
+5. Complete rendered mobile/desktop verification before exposing Solar publicly.
+6. Begin deterministic Financial Assumptions Check after trustworthy end-to-end Solar analysis.
 
 ## Durable learning
-No new durable customer/product lesson this run. Worker isolation is implementation progress under the existing Solar-readiness lesson.
+No new durable customer/product lesson. Preview success is implementation/release evidence under the existing technology-readiness lesson.
 
 ## Guardrails
 Use GitHub + Cloudflare only; never AppDeploy for deployment. UI-affecting production changes require rendered verification. Preserve independence, privacy and evidence/certification guardrails.
