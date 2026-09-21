@@ -19,7 +19,7 @@ export function extractSolarBatteryEvidence(quoteText = '', technology = 'solar_
     make: batteryMatch[1] || batteryMatch[4], model: batteryMatch[2] || batteryMatch[5],
     usableCapacityKwh: num(batteryMatch[3] || batteryMatch[6])
   } : null;
-  const annualGenerationKwh = num(match(text, /(?:annual\s+(?:PV\s+)?generation(?:\s+estimate)?|generation)\s+(?:estimate\s+)?(?:of\s+)?(\d[\d,]*)\s*kWh/i));
+  const annualGenerationKwh = num(match(text, /(?:(?:estimated\s+)?annual\s+(?:PV\s+)?generation(?:\s+estimate)?|generation)\s+(?:estimate\s+)?(?:of\s+)?(\d[\d,]*)\s*kWh/i));
   const selfConsumptionPercent = num(match(text, /(\d+(?:\.\d+)?)%\s+self-consumption/i));
   const exportPercent = num(match(text, /(\d+(?:\.\d+)?)%\s+export/i));
   const priceGbp = num(match(text, /(?:total|installed|price)\s+£([\d,]+)/i));
