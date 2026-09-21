@@ -1,66 +1,69 @@
 # Current state
 
-Updated: 2026-09-21 10:42 Europe/London
+Updated: 2026-09-21 12:42 Europe/London
 North star: ≥ £1,000 genuine MRR.
 Current milestone: first genuine paying customer.
 
 ## Evidence refreshed
 - Authoritative scoreboard remains **£0 genuine MRR / 0 paying customers**. Recorded 28-day funnel: 1,476 Search Console impressions, 5 organic clicks, 3 successful tool uses, 0 workflow starts, 0 upgrade visits and 0 commercial-intent events. Unknown/unavailable downstream evidence remains null.
-- First Recast outbound batch: all **3/3 messages are now confirmed delivered** by Resend. No bounce/failure is attributed to this Recast batch.
-- No authoritative click, qualified visit, successful job, automation intent, checkout or paid conversion is yet observed from that batch.
-- Production checkout risk remains: Automation monthly/yearly frontend placeholders are still recorded in `public/app.js`; no prospect has yet been observed at checkout.
+- Recast outbound acquisition: **7/7 targeted messages are confirmed delivered** across the two customer-#1 batches (3 v1 + 4 v2). No Recast bounce/failure is observed.
+- Resend receiving inbox currently contains **no prospect replies**. Authoritative click/qualified-visit/product-use attribution remains unavailable/null; do not infer zero from unavailable evidence.
+- Live production is reachable. Homepage currently exposes the recurring workflow/automation proposition and £29/month Automation tier; the Automation page is reachable and presents recurring API/JSON/CSV use cases.
+- Previous checkout-placeholder risk in this file is no longer asserted as current fact: repository search did not return the previously recorded placeholder token in this run. End-to-end checkout/entitlement remains unverified and therefore is not claimed working.
 
 ## Mandatory North-Star decision
 Question asked: **What is the single next best action available now that most increases the probability or speed of reaching customer #1 and ultimately £1,000 genuine MRR?**
 
 Candidate actions ranked this run:
-1. **Run a second small, more sales-led qualified outreach test to organisations whose published work explicitly includes API integration, ETL/data transformation or reusable integration components** — highest speed-to-evidence and directly addresses the no-customer bottleneck.
-2. **Wire Automation checkout** — high downstream impact but no prospect has reached commercial intent and safe rendered UI deployment remains a prerequisite.
-3. **Fix Save → repeat → Automate continuity** — important only when qualified traffic exposes this as the earliest drop-off.
-4. **Generic SEO/product polish** — lower speed-to-customer; fixed SEO experiments remain untouched.
+1. **Allow the just-delivered 7-prospect acquisition test enough time to produce engagement while monitoring replies/attributable product evidence** — highest information value without damaging sender reputation or contaminating the v1/v2 comparison by blindly increasing volume hours after delivery.
+2. **Verify and, if needed, repair Automation checkout end-to-end** — high downstream impact and valid independent conversion-readiness work, but no prospect has yet shown commercial intent; repository search no longer confirms the old placeholder token.
+3. **Change ICP/message/channel immediately** — premature with v2 delivered only a few hours ago and no authoritative engagement window yet.
+4. **Fix Save → repeat → Automate continuity or generic SEO/product polish** — no measured prospect drop-off currently justifies displacing acquisition.
 
-Selected action: **qualified acquisition with improved message/target fit**. The first batch was delivered but its copy over-emphasised product validation. The second batch leads with the prospect's actual integration/ETL work, the operational burden removed, and one CTA: try Recast on a real small transformation.
+Selected action: **hold acquisition volume steady for this evidence window, refresh direct reply/delivery evidence, verify live commercial positioning, and correct stale checkout-risk wording rather than manufacture activity.** This preserves the experiment while keeping conversion readiness visible as the independent next stream.
 
 ## Primary revenue bottleneck
-**Qualified customer acquisition remains P0.** Recast has no genuine paying customer and insufficient attributable qualified product usage to justify speculative feature work.
+**Qualified customer acquisition remains P0.** Recast has no genuine paying customer and insufficient attributable qualified product usage to diagnose a later funnel stage reliably.
 
 ## Customer-#1 acquisition experiment
 - Issue #32 remains the durable experiment record.
 - Core promise: recurring API/JSON/CSV transformations can be made visible, saved, rerun and automated without owning another small script/service.
-- Batch 1: 3 tailored role-based B2B messages; **3 delivered**; engagement downstream remains unavailable/null.
-- Batch 2 executed this run: **4 tailored role-based B2B emails queued** to UK technical organisations whose public services explicitly cover API integration, ETL/data migration, system integration or reusable integration components.
-- Batch 2 campaign attribution: `utm_source=outbound_email`, `utm_medium=email`, `utm_campaign=customer1_api_csv_v2`, unique `utm_content` per organisation.
-- Copy change: removed “we're validating/commercial test/no reply required” research framing; now leads with a concrete delivery pain and asks the recipient to try Recast on a real small transformation.
+- Batch 1: 3 tailored role-based B2B messages; **3 delivered**.
+- Batch 2: 4 stronger sales-led role-based B2B messages; **4 delivered**.
+- Total: **7/7 delivered**. No received prospect reply is present at this refresh.
+- Batch 2 attribution remains `utm_source=outbound_email`, `utm_medium=email`, `utm_campaign=customer1_api_csv_v2`, unique `utm_content` per organisation.
 - No personal addresses were used; only publicly advertised role/business addresses.
 
 ## Active experiments / attribution guardrail
-- Customer-#1 recurring API/JSON→CSV acquisition experiment: active; second message variant now in market.
+- Customer-#1 recurring API/JSON→CSV acquisition experiment: active; v1/v2 delivered sample is in its initial evidence window.
 - JSON Schema Generator content-consolidation experiment remains untouched; 28-day review due 2026-09-29.
 - Flatten JSON search-intent experiment remains untouched; 14-day review due 2026-09-22 and 28-day review due 2026-10-06.
 
 ## Work actually completed
-- Refreshed current scoreboard and first-batch Resend delivery evidence.
-- Researched current UK technical organisations with explicit integration/ETL fit.
-- Sent/queued four individually tailored Recast acquisition messages using the stronger v2 proposition and recipient-level UTM attribution.
-- Preserved fixed SEO experiments and made no speculative product/UI change.
+- Refreshed authoritative Recast outbound delivery status: 7/7 delivered.
+- Checked the connected receiving inbox: no prospect replies are present.
+- Verified live homepage and Automation proposition are reachable and still communicate recurring workflows/automation and the £29/month Automation tier.
+- Re-checked repository evidence for the previously recorded Automation checkout placeholder token; it was not returned, so stale placeholder wording has been removed from current-state evidence rather than repeated as fact.
+- Preserved fixed SEO experiments and did not send additional emails simply to create activity before the current batch has had a meaningful response window.
 
 ## Verification
-- Resend accepted the four-message batch and returned four email IDs.
-- First batch remains 3/3 delivered.
-- Delivery/click/product outcomes for batch 2 are not yet claimed; they remain unavailable until authoritative evidence arrives.
+- Resend lists all seven Recast acquisition messages as delivered.
+- Resend receiving inbox has no prospect reply at this refresh.
+- Live `tryrecast.app` and `/automation/` are reachable and expose the expected commercial proposition.
+- Checkout itself remains unverified; no claim is made that purchase/entitlement works end-to-end.
 
 ## Expected revenue impact
-This increases qualified exposure from 3 delivered prospects to a total of 7 targeted organisations once batch 2 delivers, while simultaneously testing whether a stronger pain/outcome message earns engagement. The next evidence can distinguish targeting/message failure from downstream product friction.
+This run protects the quality of the customer-#1 experiment and sender reputation while preventing stale checkout evidence from driving the wrong engineering priority. The next material evidence is engagement from the seven delivered prospects or a verified commercial-path defect.
 
 ## Evidence required to change priority
-- Click/qualified visit: follow the earliest measured product drop-off.
+- Reply/click/qualified visit: follow the earliest measured product drop-off.
 - Successful task but no save/automation: continuity becomes P0.
-- Commercial intent/checkout attempt: checkout wiring becomes absolute P0.
-- No engagement after a meaningful delivered sample: change ICP/use case/channel before increasing volume.
+- Commercial intent/checkout attempt: checkout becomes absolute P0.
+- No engagement after a meaningful delivered evidence window: change ICP/use case/channel before increasing volume.
 - Bounce/complaint signal: stop scaling and correct targeting/deliverability.
 
 ## Next autonomous execution
-1. Inspect authoritative delivery/open/click evidence for both Recast batches and any attributable product/UTM evidence available.
-2. Do not blindly scale volume; use the v1 vs v2 evidence to decide message/ICP/channel.
-3. Continue the checkout fix only as an independent conversion-readiness stream where safe rendered verification is possible.
+1. Recheck replies and attributable acquisition/product evidence; do not infer zero where tracking is unavailable.
+2. If the delivered sample remains cold after a meaningful evidence window, change the ICP/use case/channel rather than simply sending more of the same message.
+3. Independently verify Automation checkout/entitlement end-to-end when tooling allows; fix only if a current defect is demonstrated and deployment gates can be met.
 4. Preserve fixed SEO experiment windows.
