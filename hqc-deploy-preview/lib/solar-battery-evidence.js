@@ -2,7 +2,11 @@
 // This module validates adapter output; it does not infer missing facts and does not
 // certify design, roof suitability, DNO approval, MCS status, generation or savings.
 
-const numberOrNull = value => Number.isFinite(Number(value)) ? Number(value) : null;
+const numberOrNull = value => {
+  if (value === null || value === undefined || value === '') return null;
+  const number = Number(value);
+  return Number.isFinite(number) ? number : null;
+};
 const textOrNull = value => typeof value === 'string' && value.trim() ? value.trim() : null;
 
 const equipment = value => {
