@@ -1,50 +1,47 @@
 # Current state
 
-Updated: 2026-09-21 17:42 Europe/London
+Updated: 2026-09-21 18:42 Europe/London
 
 North star: Sustain at least **£1,000 genuine monthly revenue**. Immediate milestone: first genuine purchase, then £100 cumulative validation revenue within the original three-month validation window.
 
 ## Evidence refreshed
 - Revenue: no newer authoritative Stripe object set was available in this execution context; latest verified live `Home Quote Check` PaymentIntent evidence remains 0 objects, `has_more=false`. Genuine production revenue remains **£0 / £1,000 monthly**, cumulative validation revenue **£0 / £100**, paying customers **0**. Stale evidence is not relabelled as fresh.
-- Durable funnel/acquisition: latest authoritative production snapshot remains **56 genuine landings → 16 starts → 5 uploads → 5 genuine analyses**, with 4 Decision Cases → 2 share intents → 0 share opens → 0 durable checkouts. Direct remains **40 → 16 → 5 → 5**. No newer parsed snapshot was available in this execution context.
+- Durable funnel/acquisition: latest authoritative parsed production snapshot remains **56 genuine landings → 16 starts → 5 uploads → 5 genuine analyses**, with 4 Decision Cases → 2 share intents → 0 share opens → 0 durable checkouts. Direct remains **40 → 16 → 5 → 5**. Live-metrics workflow 35629926145 succeeded at 17:07Z, but a newer parsed count was unavailable here.
 - Search: no newer authoritative Search Console dataset was available; latest through 2026-09-19 remains **0 clicks, 4 impressions, 0% CTR, average position 8.07**.
-- Production router deployment is now authoritative: workflow run `35620826072` passed both 9/9 test suites, deployed `hqc-production` version `1c0821fd-1864-4ae0-90e8-f899cae8bc87`, preserved `HqcMetrics`, and verified the default Heat Pump health path returned HTTP 200.
-- Explicit Solar/Battery isolation also worked in production: the probe returned HTTP **409** and `technology_analysis_not_ready`, proving it did not fall through to Heat Pump. The workflow was marked failed only because the verification script incorrectly expected 503 rather than the router's intentional 409 contract.
-- The verification expectation was corrected in commit `bf3dd66d0fb20df07748960c2655afbedce272ca`; a new workflow run had not yet registered at evidence cutoff.
+- P0 production presentation regression: owner-provided live iPhone evidence at 17:52 shows results rendering largely unstyled/raw (default blue links and collapsed header/progress layout). Production trust/conversion is therefore broken and this outranks Solar expansion until recovered.
+- Root cause at release boundary: the router-only production workflow was running `snapshot.mjs`, which deletes/rebuilds `site/` from an external snapshot source before deployment. That allowed a backend-only router release to mutate customer-facing assets.
+- Containment committed: `189af6452f8894715bca2d5ee5cf3d03954501f2` removes snapshotting from the router release and deploys with `wrangler ... --no-assets`. Workflow run 35633776746 registered and was queued at evidence cutoff. Future router releases therefore have an explicit asset-isolation boundary once this workflow passes.
 
 ## Commercial diagnosis
-First-customer acquisition/conversion remains binding. Latest settled landing→start and start→upload remain the earliest observed constraints. No evidence justifies changing the £4.99 paid boundary. Independent Solar engineering continues because it opens a materially larger quote-holder vertical without confounding Heat Pump conversion measurement.
+Production visual integrity is now P0 because an unstyled result destroys trust at the decision point and can suppress the already-constrained first-purchase funnel. Acquisition remains the underlying commercial bottleneck, but adding traffic while the result presentation is broken would waste qualified demand. Solar public expansion is paused until the live Heat Pump presentation is restored and verified.
 
 ## Current milestone
-First genuine £4.99 Decision Pack purchase.
+Restore verified production presentation, then first genuine £4.99 Decision Pack purchase.
 
 ## Product strategy / Solar-Battery progress
-- Technology-aware request isolation is now **LIVE in production** at the infrastructure boundary: Heat Pump remains available and explicit Solar/Battery is safely rejected rather than leaking to Heat Pump.
+- Technology-aware request isolation is LIVE in production: Heat Pump remains available and explicit Solar/Battery is rejected rather than leaking to Heat Pump.
 - Representative Solar evidence/extraction remains 9/9 green.
-- Public Solar analysis remains gated because the dedicated Solar extraction adapter is not yet an executable configured HTTP analysis path and the required single/two-quote, checkout and rendered UI gates are incomplete.
-- Production verification automation now matches the intentional 409 `technology_analysis_not_ready` contract; rerun evidence remains pending.
+- Public Solar analysis remains gated; the P0 frontend recovery now precedes further public exposure.
 
 ## Active workstreams
-1. Qualified high-intent acquisition: continue quote-holder distribution; raw direct landing growth without starts is not success.
-2. Activation: measure landing→start→upload without overlapping UI experiments.
-3. Paid boundary: retain £4.99 until genuine willingness-to-pay evidence changes.
-4. Solar/Battery: connect a dedicated executable Solar adapter behind the now-live isolation boundary and prove complete journeys before public CTA.
-5. Instrumentation: reuse anonymous technology dimensions; do not expand PII.
+1. P0 frontend recovery: restore a known-good production asset bundle through the UI release path and perform rendered mobile/desktop verification.
+2. Release safety: verify router workflow `35633776746`; backend/router releases must not snapshot or mutate static assets.
+3. Revenue/funnel monitoring continues independently; do not send incremental acquisition into a visibly broken result journey.
+4. Solar/Battery engineering may continue non-public, but no public CTA until P0 recovery plus existing Solar gates pass.
+5. Paid boundary remains £4.99; no evidence supports a pricing change.
 
 ## Expected revenue impact
-The production technology boundary is now live without changing the customer-facing Heat Pump journey. This removes the accidental Solar→Heat Pump risk and shortens the path to a trustworthy Solar paid-intent test. Acquisition remains the immediate route to first revenue.
+Restoring visual integrity is the highest-probability immediate conversion protection: the current screenshot shows a trust-breaking result experience at the exact point where HQC must persuade a homeowner to act/pay. Separating backend releases from frontend assets prevents recurrence while preserving the live technology-isolation work.
 
 ## Next actions
-1. Verify the corrected production-router workflow rerun when registered.
-2. Refresh authoritative Stripe/funnel evidence every run; first genuine purchase remains immediate milestone.
-3. Connect the verified Solar extraction adapter to an executable gated analysis path.
-4. Prove single/two-quote Solar journeys, guardrails, technology instrumentation and checkout.
-5. Complete rendered mobile/desktop verification before exposing Solar publicly.
-6. Continue qualified acquisition while measuring landing→start→upload; do not count raw landings as acquisition success.
-7. Begin deterministic Financial Assumptions Check after trustworthy end-to-end Solar analysis.
+1. Verify router-only workflow 35633776746 completes green and no longer mutates assets.
+2. Recover the last known-good frontend using the dedicated UI release path; require rendered iPhone and desktop checks before production per `SOPS/SHIP_CHANGE.md`.
+3. Recheck production result page, navigation, progress indicator, buttons, typography, overflow and stylesheet loading after recovery.
+4. Refresh authoritative Stripe/funnel evidence; first genuine purchase remains the commercial milestone after P0 recovery.
+5. Resume Solar public gates only after Heat Pump production presentation is verified healthy.
 
 ## Durable learning
-No new durable customer/product lesson. The 409/503 mismatch was a verification-script defect, not evidence about customer behaviour or product value.
+No new customer/product learning is added from this incident. It is an engineering/release-process defect; the release SOP already requires rendered verification for UI changes. The concrete release containment is recorded in the run log.
 
 ## Guardrails
 Use GitHub + Cloudflare only; never AppDeploy for deployment. UI-affecting production changes require rendered verification. Preserve independence, privacy and evidence/certification guardrails.
