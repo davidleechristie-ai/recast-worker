@@ -2,6 +2,15 @@
 
 Append concise dated run records here. Record only observed evidence and completed work.
 
+## 2026-09-21 21:46 Europe/London — backend release isolation verified in production
+- Revenue/search/funnel: no newer authoritative Stripe, parsed durable-funnel or Search Console dataset was available; latest verified revenue remains £0 / £1,000 monthly, validation revenue £0 / £100, paying customers 0; latest settled funnel remains 56 genuine landings → 16 starts → 5 uploads → 5 genuine analyses and 0 durable checkouts. Missing fresh evidence remains null.
+- Production presentation: no fresh rendered evidence supersedes the owner-provided broken iPhone result; P0 frontend recovery remains open.
+- RELEASE EVIDENCE: run `35646864766` for commit `be3c4ef823ab0bae3afdef806d859e2aaa59c25b` completed success. Solar evidence/extraction passed 9/9; technology/request routing passed 9/9.
+- COMPLETED: router-only config was generated inside `hqc-deploy-preview`, contained no `[assets]` section, resolved `worker-entry.js`, and deployed production version `fc1888f3-f19f-4b08-aec3-a4957b3fd788`. Wrangler reported only Worker/Durable Object/environment bindings and no static asset upload. Live verification passed Heat Pump/default health 200, explicit Solar gate 409 with `technology_analysis_not_ready`, and durable metrics 200.
+- DECISION: backend release recurrence path is now contained and verified. Do not treat this as frontend recovery; the public presentation remains P0 until rendered mobile/desktop evidence proves restoration.
+- Solar public expansion remains paused behind P0 frontend recovery; non-public engineering may continue independently.
+- NEXT: recover a known-good frontend through the dedicated UI release path with rendered iPhone + desktop verification, then resume qualified acquisition and Solar public gates.
+
 ## 2026-09-21 20:45 Europe/London — router-only deploy path corrected after second safe pre-deploy failure
 - Revenue/search/funnel: no newer authoritative Stripe, parsed durable-funnel or Search Console dataset was available; latest verified revenue remains £0 / £1,000 monthly, validation revenue £0 / £100, paying customers 0; latest settled funnel remains 56 genuine landings → 16 starts → 5 uploads → 5 genuine analyses and 0 durable checkouts. Missing fresh evidence remains null.
 - Production presentation: no fresh rendered evidence supersedes the owner-provided broken iPhone result; P0 frontend recovery remains open.
