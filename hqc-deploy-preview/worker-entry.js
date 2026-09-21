@@ -1,4 +1,8 @@
-import legacyWorker from './worker.js';
+import legacyWorker, { HqcMetrics } from './worker.js';
+
+// Preserve the Durable Object class export used by existing preview deployments.
+// Cloudflare rejects a new Worker version if a class with existing Durable Objects disappears.
+export { HqcMetrics };
 import { analysisRequestRoute, technologyRouteErrorResponse } from './lib/analysis-request-routing.js';
 
 // Request-level analysis boundary. Existing Heat Pump requests are delegated unchanged.
