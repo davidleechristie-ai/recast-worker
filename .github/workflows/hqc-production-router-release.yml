@@ -65,9 +65,10 @@ jobs:
           grep -q 'Success' /tmp/hqc-hp
 
           # Explicit Solar/Battery must never fall through to the Heat Pump upstream.
+          # The router deliberately uses 409 while the dedicated adapter is gated.
           solar_code=$(curl -L -sS -o /tmp/hqc-solar -w '%{http_code}' --max-time 30 -H 'x-hqc-technology: solar_battery' "$base/api/_healthcheck")
           echo "solar gated health -> $solar_code"
-          test "$solar_code" = '503'
+          test "$solar_code" = '409'
           grep -q 'technology_analysis_not_ready' /tmp/hqc-solar
 
           metrics_code=$(curl -L -sS -o /tmp/hqc-metrics -w '%{http_code}' --max-time 30 "$base/api/metrics")
