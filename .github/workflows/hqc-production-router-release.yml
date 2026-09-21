@@ -35,12 +35,11 @@ jobs:
         run: |
           node --test solar-evidence-model.test.js test/solar-battery-extraction.test.mjs
           node --test test/technology-routing.test.mjs test/analysis-request-routing.test.mjs
-      - name: Snapshot current HQC frontend
+      # Router-only releases must never re-snapshot or replace customer-facing frontend assets.
+      # UI/static releases use the separate preview/canary + rendered verification path.
+      - name: Deploy production router without static assets
         working-directory: hqc-deploy-preview
-        run: node snapshot.mjs
-      - name: Deploy production router
-        working-directory: hqc-deploy-preview
-        run: npx wrangler deploy -c wrangler.production.toml
+        run: npx wrangler deploy -c wrangler.production.toml --no-assets
         env:
           CLOUDFLARE_API_TOKEN: ${{ secrets.CLOUDFLARE_API_TOKEN }}
           CLOUDFLARE_ACCOUNT_ID: ${{ secrets.CLOUDFLARE_ACCOUNT_ID }}
@@ -58,14 +57,11 @@ jobs:
           done
           test "$ok" = 'true'
 
-          # Existing Heat Pump/default analysis path must remain available.
           hp_code=$(curl -L -sS -o /tmp/hqc-hp -w '%{http_code}' --max-time 30 "$base/api/_healthcheck")
           echo "heat-pump/default health -> $hp_code"
           test "$hp_code" = '200'
           grep -q 'Success' /tmp/hqc-hp
 
-          # Explicit Solar/Battery must never fall through to the Heat Pump upstream.
-          # The router deliberately uses 409 while the dedicated adapter is gated.
           solar_code=$(curl -L -sS -o /tmp/hqc-solar -w '%{http_code}' --max-time 30 -H 'x-hqc-technology: solar_battery' "$base/api/_healthcheck")
           echo "solar gated health -> $solar_code"
           test "$solar_code" = '409'
