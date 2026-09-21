@@ -1,6 +1,6 @@
 # HQC Independent Purchase Adviser — Strategy & Delivery Plan
 
-Updated: 2026-09-20
+Updated: 2026-09-21
 
 ## Objective
 Evolve Home Quote Check from a document checker into an independent **pre-commitment home-energy purchase adviser**, while preserving the clear acquisition proposition:
@@ -35,19 +35,7 @@ Protect the existing working path. Incrementally migrate reusable decision primi
 Status: BUILD / NON-PUBLIC.
 Battery-only reuses this adapter where practical.
 
-Required evidence extraction where present:
-- panel make/model/count and array kWp
-- inverter make/model/rating
-- battery make/model and usable capacity
-- annual generation estimate and stated estimation basis
-- self-consumption/export assumptions
-- shading assumptions where stated
-- scaffolding/roof works
-- DNO/G98/G99/G100 wording
-- equipment/workmanship warranties
-- MCS claims/status wording
-- scope/exclusions
-- price/payment differences
+Required evidence extraction where present: panel make/model/count and array kWp; inverter make/model/rating; battery make/model and usable capacity; annual generation estimate and stated estimation basis; self-consumption/export assumptions; shading assumptions where stated; scaffolding/roof works; DNO/G98/G99/G100 wording; equipment/workmanship warranties; MCS claims/status wording; scope/exclusions; price/payment differences.
 
 Never represent automated output as electrical/design certification, structural/roof suitability, DNO approval, MCS certification, grant eligibility, guaranteed generation or guaranteed savings.
 
@@ -69,7 +57,7 @@ Revenue rationale: reduces cost/time to add Solar/Battery and future validated v
 Exit gate: same infrastructure can represent Heat Pump and Solar/Battery evidence without technology leakage.
 
 ### WS2 — Remove Solar dependency on heat-pump upstream
-Status: IN PROGRESS — routing contract implemented and unit-tested in source; Worker wiring/CI/preview still required.
+Status: IN PROGRESS — routing contract plus request-level routing boundary implemented in source; Worker wiring/CI/preview still required.
 Revenue rationale: this is the current hard blocker to acquiring/monetising Solar quote holders.
 
 Current confirmed blocker: production non-payment analysis traffic is still proxied to the heat-pump-specific service.
@@ -77,7 +65,9 @@ Current confirmed blocker: production non-payment analysis traffic is still prox
 - [x] Trace current production analysis boundary sufficiently to confirm the heat-pump-only upstream dependency.
 - [x] Implement explicit technology-routing contract in `lib/technology-routing.js`: legacy Heat Pump route is explicit; unsupported technology is rejected; Solar/Battery and battery-only cannot fall through to Heat Pump and remain gated unless a dedicated adapter base is configured.
 - [x] Add source-level routing tests covering Heat Pump compatibility, unknown technology rejection, Solar/Battery isolation and shared Solar/Battery adapter configuration.
-- [ ] Wire technology-aware routing into `worker.js` behind the non-public gate.
+- [x] Implement request-level routing boundary in `lib/analysis-request-routing.js` without consuming PDF/form-data bodies; technology can be supplied by `x-hqc-technology` or query hint, with legacy Heat Pump default preserved.
+- [x] Add request-level isolation tests proving explicit Solar/Battery cannot silently fall through to Heat Pump and a configured adapter is the only Solar route. CI result pending at time of update.
+- [ ] Wire request-level routing into `worker.js` behind the non-public gate.
 - [ ] Preserve Heat Pump production behaviour and regression-test the proxy contract.
 - [ ] Build Solar/Battery extraction path independent of heat-pump prompts/logic.
 - [ ] Validate PDFs, screenshots/photos and manual-entry payloads.
@@ -88,7 +78,7 @@ Current confirmed blocker: production non-payment analysis traffic is still prox
 Exit gate: representative Solar/Battery fixtures produce technology-specific structured evidence without calling heat-pump analysis logic.
 
 ### WS3 — Solar/Battery Quote Check MVP
-Status: IN PROGRESS (fixture corpus started; still depends on WS2 Worker routing + adapter boundary).
+Status: IN PROGRESS (fixture corpus + routing boundary exist; still depends on Worker wiring + dedicated extraction adapter).
 Revenue rationale: creates the minimum trustworthy second vertical capable of producing a genuine paid-intent test.
 
 - [x] Build initial representative synthetic fixtures: solar-only, solar+battery, battery-only, partial quote, two competing quotes. Fixtures deliberately use fictional products/values and are not customer/market evidence.
@@ -111,21 +101,7 @@ Exit gate: one genuine-style Solar/Battery quote and a two-quote comparison comp
 Status: NOT STARTED.
 Revenue rationale: moves value from “what does my PDF say?” toward “does this proposal make sense for me?”, increasing differentiation from generic AI/PDF tools.
 
-Phase A — low-dependency evidence:
-- [ ] Ask only for minimum information needed to materially improve the decision.
-- [ ] Solar: household annual electricity use where known, occupancy/usage pattern, EV/heat-pump presence, known roof orientation/shading information.
-- [ ] Heat Pump: reuse existing documented heat-loss/flow-temperature/emitter evidence before requesting more data.
-- [ ] Compare proposal sizing/assumptions with available evidence using ranges and caveats.
-- [ ] Show what cannot be determined without survey/design evidence.
-
-Phase B — external/property technology research:
-- [ ] Evaluate UK address/property/roof datasets and licensing/privacy constraints.
-- [ ] Evaluate satellite/aerial imagery sources and whether roof geometry/orientation can be derived reliably and commercially.
-- [ ] Evaluate deterministic solar-generation modelling options.
-- [ ] Prototype only if evidence quality materially improves decisions and unit economics remain viable.
-- [ ] Never infer structural suitability from imagery.
-
-Exit gate: fit findings clearly separate observed evidence, modelled range and unresolved survey/design questions.
+Phase A: minimum homeowner information that materially improves the decision; compare proposal sizing/assumptions with available evidence using ranges/caveats; clearly show what cannot be determined without survey/design evidence. Phase B: evaluate UK address/property/roof datasets, imagery, deterministic generation modelling, licensing/privacy and unit economics; never infer structural suitability from imagery.
 
 ### WS5 — Financial Assumptions Check
 Status: NOT STARTED; begins after trustworthy Solar quote extraction.
@@ -135,7 +111,6 @@ Revenue rationale: likely highest-value paid differentiator because installer RO
 - [ ] Build deterministic calculation layer independent of generative narrative.
 - [ ] Solar: generation → self-consumption → avoided import → export → annual benefit.
 - [ ] Battery: usable capacity/cycling assumptions → shifted import/export/tariff benefit, with explicit limitations.
-- [ ] Heat Pump: identify suitable deterministic assumptions that can be validated without pretending to perform a full design.
 - [ ] Research authoritative current methodology/guidance before implementation.
 - [ ] Support homeowner tariff/consumption inputs where they materially change result.
 - [ ] Present ranges/sensitivity, not false precision.
@@ -148,81 +123,32 @@ Exit gate: HQC can explain why its reconstructed range differs from an installer
 Status: NOT STARTED.
 Revenue rationale: addresses trust/risk at the point of commitment without turning HQC into lead generation.
 
-- [ ] Research authoritative sources/APIs and terms for MCS/company/consumer-code/warranty evidence.
-- [ ] Verify only facts available from authoritative/public evidence.
-- [ ] Distinguish “not found/unknown” from “not registered”.
-- [ ] Check quote wording for deposit/payment schedule, warranties, exclusions and pressure/time-limited claims.
-- [ ] Cross-check quoted equipment and documented warranties where reliable product data exists.
-- [ ] Do not create a subjective installer score/ranking.
-- [ ] Do not recommend an installer for commission.
-- [ ] Record source/date for externally verified evidence.
-
-Exit gate: every installer/proposal statement is sourceable, dated and neutrally worded.
+Research authoritative sources/APIs and terms for MCS/company/consumer-code/warranty evidence; verify only sourceable facts; distinguish unknown from not registered; inspect quote payment/warranty/exclusion/pressure wording; never create a subjective installer score or commission-influenced recommendation.
 
 ### WS7 — Pre-Commitment Decision Pack
 Status: IN PROGRESS via existing £4.99 Heat Pump Decision Pack; richer cross-technology pack deferred until structured findings are proven.
 Revenue rationale: convert the paid product from PDF parsing into decision support worth paying for.
 
 - [ ] Define free versus paid boundary from genuine observed intent.
-- [ ] Free: enough Quote Check value to demonstrate trust and reveal meaningful gaps.
-- [ ] Paid pack candidate sections: proposal summary; what is evidenced; material assumptions; system/financial checks; quote comparison; unresolved risks; personalised installer questions; pre-signing checklist.
+- [ ] Paid candidate: proposal summary, evidenced facts, material assumptions, system/financial checks, comparison, unresolved risks, personalised questions, pre-signing checklist.
 - [x] Keep current £4.99 Heat Pump boundary stable until genuine willingness-to-pay evidence exists.
 - [ ] Test Solar/Battery price only after trustworthy end-to-end usage exists.
 - [ ] Make pack shareable without exposing homeowner PII.
 - [x] Track checkout-created with technology dimension durably; paid/refunded evidence remains authoritative via Stripe and must not be inferred.
 
-Exit gate: pack contains meaningful decision value not obtainable merely by restating uploaded text.
-
 ### WS8 — Decision assistant / conversational layer
-Status: DEFERRED.
-Revenue rationale: lets consumers interrogate their own evidence, but should not be built before the structured evidence layer is reliable.
+Status: DEFERRED until structured evidence is reliable.
 
-- [ ] Add only after structured evidence layer is reliable.
-- [ ] Ground responses exclusively in case evidence, deterministic calculations and approved current sources.
-- [ ] Provide provenance links/labels for claims.
-- [ ] Refuse/qualify design-certification questions outside HQC evidence.
-- [ ] Suggested questions derived from actual quote differences/gaps.
-- [ ] Measure whether assistant use predicts comparison/checkout rather than shipping as novelty.
-
-Exit gate: answers are grounded, reproducible and do not bypass product guardrails.
-
-### WS9 — Post-installation Check (deferred validation)
-Status: DEFERRED.
-Revenue rationale: potential repeat/referral product, but does not outrank first purchase.
-
-- [ ] Do not build before pre-commitment demand/revenue evidence.
-- [ ] Research consumer job: contracted versus installed equipment/scope; required handover documentation; unresolved snags.
-- [ ] Validate willingness to use/pay via existing customers first.
+### WS9 — Post-installation Check
+Status: DEFERRED until pre-commitment demand/revenue evidence exists.
 
 ## External technology research backlog
-Research before integration; prefer APIs/data with stable UK coverage, clear licensing and low marginal cost.
-- MCS authoritative guidance/records and technology standards.
-- Energy Saving Trust calculators/methodology/guidance.
-- GOV.UK/Ofgem DNO, SEG and consumer guidance.
-- DNO/ENA connection rules/data where relevant.
-- Product specification datasets for panels/inverters/batteries/heat pumps.
-- Electricity tariff/import/export data.
-- Solar irradiance/generation modelling.
-- Address/property/roof geometry and aerial/satellite imagery.
-- Company/installer public evidence.
-- Document AI/OCR/vision models for PDFs/photos.
-- Deterministic calculation engine separated from LLM interpretation.
+Prefer stable UK coverage, clear licensing and low marginal cost: MCS standards/records; Energy Saving Trust methodology; GOV.UK/Ofgem/DNO/SEG guidance; ENA connection data; product specifications; import/export tariffs; solar irradiance/generation modelling; address/property/roof data and imagery; company/installer evidence; document AI/OCR/vision; deterministic calculation engine separated from LLM interpretation.
 
 For each candidate record: decision value unlocked, evidence quality, API/licence, cost per case, privacy/PII effect, failure mode, fallback and expected revenue impact.
 
 ## Measurement
-Anonymous aggregate events segmented by technology/source where available:
-landing → technology selected → checker start → upload/manual entry → genuine analysis → second quote → comparison → decision case → questions viewed/used → share → checkout created → paid → refunded → referral/repeat.
-
-Additional product-learning events:
-- financial_check_viewed
-- fit_check_viewed
-- material_gap_found
-- installer_questions_generated
-- decision_pack_previewed
-- decision_assistant_used
-
-Exclude QA/demo/bot/headless/smoke/test traffic. Missing evidence is null, not zero.
+Anonymous aggregate events segmented by technology/source where available: landing → technology selected → checker start → upload/manual entry → genuine analysis → second quote → comparison → decision case → questions viewed/used → share → checkout created → paid → refunded → referral/repeat. Exclude QA/demo/bot/headless/smoke/test traffic. Missing evidence is null, not zero.
 
 ## Delivery order
 P0: Continue first-customer acquisition and revenue monitoring in parallel.
@@ -239,24 +165,9 @@ Deferred: WS9 post-installation product until demand evidence.
 ## Release gates
 Every material release follows Measure → Diagnose → Research → Prioritise → Build → Test → Commit → Preview/Canary → Verify → Production → Measure and SOPS/SHIP_CHANGE.md.
 
-Solar/Battery public gate requires:
-- technology-specific extraction and evidence logic
-- no heat-pump analysis leakage
-- representative fixture/regression tests
-- single and multi-quote comparison correctness
-- guardrail language verified
-- anonymous technology instrumentation verified
-- checkout path verified
-- rendered mobile + desktop verification
-- preview + canary health passed
+Solar/Battery public gate requires technology-specific extraction/evidence logic; no heat-pump leakage; representative fixture/regression tests; single/multi-quote comparison correctness; guardrail language; anonymous technology instrumentation; checkout verification; rendered mobile/desktop verification; preview + canary health.
 
 ## Progress tracking
 Status vocabulary: NOT STARTED / IN PROGRESS / BLOCKED / VERIFIED / LIVE.
 
-At every autonomous run:
-1. Refresh authoritative revenue/acquisition/funnel/search/health evidence first.
-2. Update this plan only for material progress or changed evidence.
-3. Progress at least one independent roadmap item when acquisition evidence has not matured.
-4. Record completed implementation and verification in OPS/RUN_LOG.md.
-5. Keep OPS/CURRENT_STATE.md focused on current commercial truth and immediate next actions.
-6. Never mark a capability LIVE from code existence alone; require its release gate.
+At every autonomous run: refresh authoritative evidence first; update this plan only for material progress; progress at least one independent roadmap item when acquisition evidence has not matured; record completed implementation/verification in OPS/RUN_LOG.md; keep OPS/CURRENT_STATE.md focused on current commercial truth; never mark capability LIVE from code existence alone.
