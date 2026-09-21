@@ -1,5 +1,5 @@
 name = "hqc-production"
-main = "worker.js"
+main = "worker-entry.js"
 compatibility_date = "2026-09-08"
 workers_dev = true
 keep_vars = true
