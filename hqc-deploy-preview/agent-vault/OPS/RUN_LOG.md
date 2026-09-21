@@ -2,6 +2,19 @@
 
 Append concise dated run records here. Record only observed evidence and completed work.
 
+## 2026-09-21 06:44 Europe/London — Solar CI gate catches representative price-parser defect
+- Revenue: authoritative live Stripe `Home Quote Check` PaymentIntents refreshed: 0 objects, `has_more=false`; genuine monthly revenue £0 / £1,000; cumulative validation revenue £0 / £100; paying customers 0.
+- Funnel/acquisition: no newer authoritative production snapshot available; latest settled remains 55 genuine landings → 16 starts → 5 uploads → 5 genuine analyses; 4 Decision Cases → 2 share intents → 0 durable checkouts. Latest settled direct cohort remains 39 / 16 / 5 / 5. Unavailable fresh evidence was not converted to zero.
+- Technology/search: measured technology mix remains partial (`heat_pump` 2 landings / 1 start); Solar/Battery remains non-public. Fresh public HQC brand/solar searches returned no results; no newer authoritative Search Console dataset was available.
+- CI evidence: corrected extraction gate for `6156eb44f8293a3d7e706c9a7e84ecc618f3465f` completed with failure at `Test technology evidence models and Solar/Battery extraction`; preview/deploy/verify were skipped. This is the intended fail-closed behaviour.
+- Diagnosis: fixture/extractor inspection found a representative complete Solar+Battery quote says `Price £12,400`, while `priceGbp` extraction only accepted `total` or `installed`. That would return null instead of the evidenced quote price.
+- SOP: followed `SOPS/SHIP_CHANGE.md`; no production deployment attempted and Solar remains gated.
+- COMPLETED: expanded the Solar/Battery price parser to accept explicit `Price £...` wording. Commit `6a23a110a0265c42118cfad6676e16cdf108dce2`. CI had not appeared at evidence cutoff, so no pass is claimed.
+- Primary revenue bottleneck: first-customer acquisition/conversion; latest settled start→upload remains 31%.
+- Expected revenue impact: the release gate prevented a real extraction defect from advancing and the fix improves representative quote coverage, reducing false/missing price evidence on the path to a trustworthy second vertical.
+- Learning: no new durable customer/product lesson; engineering gate value is demonstrated but existing durable commercial lessons remain unchanged.
+- NEXT: verify/fix CI for the parser commit, harden malformed/partial extraction, then wire technology routing + adapter behind the non-public Worker gate only after green correctness/regression evidence. Continue acquisition/revenue refresh in parallel.
+
 ## 2026-09-21 05:43 Europe/London — Solar extractor made a real CI release gate
 - Revenue: authoritative live Stripe `Home Quote Check` PaymentIntents refreshed: 0 objects, `has_more=false`; genuine monthly revenue £0 / £1,000; cumulative validation revenue £0 / £100; paying customers 0.
 - Funnel/acquisition: no newer authoritative production snapshot available; latest settled remains 55 genuine landings → 16 starts → 5 uploads → 5 genuine analyses; 4 Decision Cases → 2 share intents → 0 durable checkouts. Latest settled direct cohort remains 39 / 16 / 5 / 5. Unavailable fresh evidence was not converted to zero.
@@ -25,19 +38,6 @@ Append concise dated run records here. Record only observed evidence and complet
 - Expected revenue impact: creates the first executable technology-specific extraction path required for a trustworthy Solar/Battery vertical, shortening time to a second paid-intent market without destabilising Heat Pump; acquisition remains the immediate first-revenue route.
 - Learning: no new durable lesson; implementation progress alone does not establish a reusable commercial/product conclusion.
 - NEXT: verify/fix extraction CI, harden partial/malformed cases, then wire technology routing + adapter into Worker behind the non-public gate and run Heat Pump regressions before preview/canary. Continue acquisition evidence refresh in parallel.
-
-## 2026-09-20 22:41 Europe/London — authoritative revenue refresh; Purchase Adviser roadmap made executable
-- Revenue: authoritative live Stripe `Home Quote Check` PaymentIntents refreshed: 0 objects, `has_more=false`; genuine monthly revenue £0 / £1,000; cumulative validation revenue £0 / £100; paying customers 0.
-- Durable funnel/acquisition: fresh production growth evidence was unavailable in this execution context; latest settled snapshot remains 55 landings → 16 starts → 5 uploads → 5 genuine analyses and 0 durable checkouts. Latest settled direct cohort remains 39 landings / 16 starts / 5 uploads / 5 genuine analyses. Unavailable fresh evidence was not converted to zero.
-- Technology mix: latest measured segmentation remains partial (`heat_pump` 2 landings / 1 start); Solar/Battery remains non-public.
-- Search: fresh public site searches for both heat-pump and solar/battery footprints returned no results; no newer authoritative Search Console dataset was available.
-- Production health: fresh direct health/growth evidence was unavailable; latest verified production release remains settled evidence, with fresh health recorded as null.
-- SOP: loaded `SOPS/SHIP_CHANGE.md`; no production release was attempted because the routing foundation is not yet wired/CI/preview verified.
-- Work completed: converted `STRATEGY/PURCHASE_ADVISER_ROADMAP.md` into explicit execution state: WS1 IN PROGRESS; WS2 IN PROGRESS with routing contract/isolation tests marked complete; WS3 blocked on Worker routing/adapter boundary; WS5 queued after trustworthy extraction; WS7 IN PROGRESS via the existing £4.99 Decision Pack; WS8/WS9 deferred. Commit `0c4ba772b874881e1ccc9b685c297d31dafdc964`. Refreshed `OPS/CURRENT_STATE.md` with authoritative revenue and roadmap state in commit `87d70daf2e309b123a5ee2927e468edef4e25d68`.
-- Primary revenue bottleneck: first-customer acquisition/conversion; latest settled start→upload remains 31%.
-- Expected revenue impact: future runs can resume at the first incomplete Solar correctness gate instead of rediscovering strategy; completed source work is no longer confused with deployed capability, reducing time/risk to a trustworthy second vertical while acquisition continues in parallel.
-- Learning: no new durable learning added; current evidence reinforces existing lessons but does not establish or overturn a reusable conclusion.
-- Next autonomous execution: refresh Stripe/durable funnel; continue qualified acquisition/intake activation; wire technology routing into the Worker behind the non-public gate, run Heat Pump/routing regressions, then preview/canary if gates pass; do not expose Solar publicly.
 
 ## Earlier runs
 Earlier detailed run history remains available in repository history. The current state and durable learnings carry forward the authoritative operating context.
