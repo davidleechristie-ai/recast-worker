@@ -54,6 +54,44 @@ jobs:
           ! grep -q 'hqc-migration-preview.davidleechristie.workers.dev' hqc-deploy-preview/site/index.html
           ! grep -q 'cf-preview.homequotecheck.co.uk' hqc-deploy-preview/site/index.html
           ! grep -q 'heat-pump-second-opinion-v43csv.v2.appdeploy.ai' hqc-deploy-preview/site/index.html
+      - name: Rendered snapshot style gate
+        working-directory: hqc-deploy-preview
+        shell: bash
+        run: |
+          set -euo pipefail
+          npm install --no-save playwright@1.55.0
+          npx playwright install --with-deps chromium
+          node --input-type=module <<'NODE'
+          import { chromium } from 'playwright';
+          import { createServer } from 'node:http';
+          import { readFile, stat } from 'node:fs/promises';
+          import { extname, join, normalize } from 'node:path';
+          const root=join(process.cwd(),'site');
+          const mime={'.html':'text/html','.css':'text/css','.js':'text/javascript','.mjs':'text/javascript','.svg':'image/svg+xml','.png':'image/png','.woff2':'font/woff2','.json':'application/json'};
+          const server=createServer(async(req,res)=>{try{const u=new URL(req.url,'http://127.0.0.1');let p=normalize(decodeURIComponent(u.pathname)).replace(/^(\.\.[/\\])+/, '');if(p==='/'||p==='.')p='/index.html';let f=join(root,p);let s;try{s=await stat(f);}catch{f=join(root,'index.html');s=await stat(f);}if(s.isDirectory())f=join(f,'index.html');const b=await readFile(f);res.writeHead(200,{'content-type':mime[extname(f)]||'application/octet-stream'});res.end(b);}catch(e){res.writeHead(500);res.end(String(e));}});
+          await new Promise(r=>server.listen(4173,'127.0.0.1',r));
+          const browser=await chromium.launch({headless:true});
+          for(const viewport of [{width:390,height:844,label:'mobile'},{width:1440,height:1000,label:'desktop'}]){
+            const page=await browser.newPage({viewport:{width:viewport.width,height:viewport.height},isMobile:viewport.label==='mobile',hasTouch:viewport.label==='mobile'});
+            const failed=[];page.on('requestfailed',r=>failed.push(r.url()));
+            await page.goto('http://127.0.0.1:4173/?qa=1&render_gate=1',{waitUntil:'networkidle',timeout:30000});
+            const result=await page.evaluate(()=>{
+              const css=[...document.styleSheets].filter(s=>s.href&&/\.css(?:\?|$)/.test(s.href));
+              const body=getComputedStyle(document.body);const links=[...document.querySelectorAll('a')].slice(0,8).map(a=>getComputedStyle(a));
+              const buttons=[...document.querySelectorAll('button')].filter(b=>b.offsetWidth&&b.offsetHeight);
+              return {cssCount:css.length,bodyFont:body.fontFamily,bodyMargin:body.margin,linkDefault:links.length>0&&links.every(s=>s.textDecorationLine.includes('underline')&&s.color==='rgb(0, 0, 238)'),buttonCount:buttons.length,overflow:document.documentElement.scrollWidth-document.documentElement.clientWidth};
+            });
+            if(result.cssCount<1)throw new Error(`${viewport.label}: no stylesheet loaded`);
+            if(result.linkDefault)throw new Error(`${viewport.label}: links render with browser-default styling`);
+            if(!result.bodyFont||/Times New Roman/i.test(result.bodyFont))throw new Error(`${viewport.label}: browser-default body font`);
+            if(result.buttonCount<2)throw new Error(`${viewport.label}: expected commercial CTAs not rendered`);
+            if(result.overflow>2)throw new Error(`${viewport.label}: horizontal overflow ${result.overflow}px`);
+            if(failed.some(u=>/\.css(?:\?|$)/.test(u)))throw new Error(`${viewport.label}: stylesheet request failed`);
+            console.log(`${viewport.label} rendered style gate passed`,result);
+            await page.close();
+          }
+          await browser.close();await new Promise(r=>server.close(r));
+          NODE
       - name: Deploy HQC production worker
         working-directory: hqc-deploy-preview
         run: npx wrangler deploy --config wrangler.production.toml
@@ -89,25 +127,27 @@ jobs:
           growth=$(curl -L -sS --max-time 30 "$base/api/growth-report")
           ! grep -q 'qa_production_guard' <<< "$growth"
           echo 'HQC production HTTP verification passed.'
-      - name: Mobile journey smoke test
+      - name: Rendered production integrity test
         working-directory: hqc-deploy-preview
         shell: bash
         run: |
           set -euo pipefail
-          npm install --no-save playwright@1.55.0
-          npx playwright install --with-deps chromium
           node --input-type=module <<'NODE'
           import { chromium } from 'playwright';
           const browser=await chromium.launch({headless:true});
-          const page=await browser.newPage({viewport:{width:390,height:844},isMobile:true,hasTouch:true});
-          const errors=[];page.on('pageerror',e=>errors.push(String(e)));
-          await page.goto('https://homequotecheck.co.uk/?qa=1&production_journey=1',{waitUntil:'domcontentloaded',timeout:30000});
-          await page.waitForLoadState('load',{timeout:15000}).catch(()=>{});
-          const single=page.getByRole('button',{name:/start single quote check/i}).first();
-          const compare=page.getByRole('button',{name:/start quote comparison/i}).first();
-          await single.waitFor({state:'visible',timeout:15000});await compare.waitFor({state:'visible',timeout:15000});
-          await single.click();
-          const choose=page.locator('#hqc-choose-file');await choose.waitFor({state:'visible',timeout:15000});
-          if(errors.length)throw new Error(errors.join(' | '));
-          await browser.close();console.log('HQC production simplified journey smoke test passed.');
+          for(const viewport of [{width:390,height:844,label:'mobile'},{width:1440,height:1000,label:'desktop'}]){
+            const page=await browser.newPage({viewport:{width:viewport.width,height:viewport.height},isMobile:viewport.label==='mobile',hasTouch:viewport.label==='mobile'});
+            const errors=[];const failed=[];page.on('pageerror',e=>errors.push(String(e)));page.on('requestfailed',r=>failed.push(r.url()));
+            await page.goto('https://homequotecheck.co.uk/?qa=1&production_render=1',{waitUntil:'networkidle',timeout:30000});
+            const single=page.getByRole('button',{name:/start single quote check/i}).first();const compare=page.getByRole('button',{name:/start quote comparison/i}).first();
+            await single.waitFor({state:'visible',timeout:15000});await compare.waitFor({state:'visible',timeout:15000});
+            const style=await page.evaluate(()=>{const css=[...document.styleSheets].filter(s=>s.href&&/\.css(?:\?|$)/.test(s.href));const body=getComputedStyle(document.body);const links=[...document.querySelectorAll('a')].slice(0,8).map(a=>getComputedStyle(a));return{cssCount:css.length,bodyFont:body.fontFamily,linkDefault:links.length>0&&links.every(s=>s.textDecorationLine.includes('underline')&&s.color==='rgb(0, 0, 238)'),overflow:document.documentElement.scrollWidth-document.documentElement.clientWidth};});
+            if(style.cssCount<1||style.linkDefault||!style.bodyFont||/Times New Roman/i.test(style.bodyFont)||style.overflow>2)throw new Error(`${viewport.label}: rendered style integrity failed ${JSON.stringify(style)}`);
+            if(failed.some(u=>/\.css(?:\?|$)/.test(u)))throw new Error(`${viewport.label}: stylesheet request failed`);
+            if(errors.length)throw new Error(`${viewport.label}: ${errors.join(' | ')}`);
+            await single.click();const choose=page.locator('#hqc-choose-file');await choose.waitFor({state:'visible',timeout:15000});
+            console.log(`${viewport.label} production render integrity passed`,style);
+            await page.close();
+          }
+          await browser.close();
           NODE
