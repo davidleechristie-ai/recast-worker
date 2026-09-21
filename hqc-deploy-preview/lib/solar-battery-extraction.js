@@ -22,7 +22,7 @@ export function extractSolarBatteryEvidence(quoteText = '', technology = 'solar_
   const annualGenerationKwh = num(match(text, /(?:annual\s+(?:PV\s+)?generation(?:\s+estimate)?|generation)\s+(?:estimate\s+)?(?:of\s+)?(\d[\d,]*)\s*kWh/i));
   const selfConsumptionPercent = num(match(text, /(\d+(?:\.\d+)?)%\s+self-consumption/i));
   const exportPercent = num(match(text, /(\d+(?:\.\d+)?)%\s+export/i));
-  const priceGbp = num(match(text, /(?:total|installed)\s+£([\d,]+)/i));
+  const priceGbp = num(match(text, /(?:total|installed|price)\s+£([\d,]+)/i));
   const dnoTreatment = /G99/i.test(text) ? (/approval\s+(?:is\s+)?not\s+(?:stated\s+as\s+)?(?:obtained|evidenced)/i.test(text) ? 'G99 application required; approval not evidenced' : 'G99 application stated') : (/G98/i.test(text) ? 'G98 notification after commissioning' : null);
   const generationBasis = match(text, /(using\s+stated\s+MCS\s+methodology)/i);
   const mcsWording = match(text, /(MCS\s+(?:certificate[^.]*|certified[^.]*))/i);
