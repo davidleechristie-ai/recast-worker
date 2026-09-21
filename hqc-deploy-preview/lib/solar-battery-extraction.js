@@ -36,6 +36,7 @@ export function extractSolarBatteryEvidence(quoteText = '', technology = 'solar_
     arrayKwp,
     inverter: inverterMatch ? { make: inverterMatch[1], model: inverterMatch[2], ratingKw: num(inverterMatch[3]) } : null,
     battery,
+    batteryMentioned: /\bbatter(?:y|ies)\b/i.test(text),
     annualGenerationKwh, generationBasis, selfConsumptionPercent, exportPercent,
     scaffolding, roofWorks, dnoTreatment, warranties, mcsWording, priceGbp
   });
