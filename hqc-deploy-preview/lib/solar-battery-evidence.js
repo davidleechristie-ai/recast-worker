@@ -22,6 +22,7 @@ export function normaliseSolarBatteryEvidence(input = {}) {
     arrayKwp: numberOrNull(input.arrayKwp),
     inverter: inverterBase ? { ...inverterBase, ratingKw: numberOrNull(input.inverter?.ratingKw) } : null,
     battery: batteryBase ? { ...batteryBase, usableCapacityKwh: numberOrNull(input.battery?.usableCapacityKwh) } : null,
+    batteryMentioned: input.batteryMentioned === true || Boolean(batteryBase),
     annualGenerationKwh: numberOrNull(input.annualGenerationKwh),
     generationBasis: textOrNull(input.generationBasis),
     selfConsumptionPercent: numberOrNull(input.selfConsumptionPercent),
@@ -44,7 +45,7 @@ export function solarBatteryEvidenceGaps(input = {}) {
   if (e.technology !== 'battery' && (!e.panel?.model || !e.panel?.count)) gaps.push('panel specification');
   if (e.technology !== 'battery' && e.arrayKwp === null) gaps.push('array size');
   if (!e.inverter?.model) gaps.push('inverter specification');
-  if (e.battery && e.battery.usableCapacityKwh === null) gaps.push('battery usable capacity');
+  if (e.batteryMentioned && e.battery?.usableCapacityKwh == null) gaps.push('battery usable capacity');
   if (e.technology !== 'battery' && (e.annualGenerationKwh === null || !e.generationBasis)) gaps.push('generation estimate and basis');
   if (!e.dnoTreatment) gaps.push('DNO treatment');
   if (!e.warranties.length) gaps.push('warranty detail');
