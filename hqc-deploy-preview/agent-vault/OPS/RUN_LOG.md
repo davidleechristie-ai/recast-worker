@@ -2,6 +2,18 @@
 
 Append concise dated run records here. Record only observed evidence and completed work.
 
+## 2026-09-21 05:43 Europe/London — Solar extractor made a real CI release gate
+- Revenue: authoritative live Stripe `Home Quote Check` PaymentIntents refreshed: 0 objects, `has_more=false`; genuine monthly revenue £0 / £1,000; cumulative validation revenue £0 / £100; paying customers 0.
+- Funnel/acquisition: no newer authoritative production snapshot available; latest settled remains 55 genuine landings → 16 starts → 5 uploads → 5 genuine analyses; 4 Decision Cases → 2 share intents → 0 durable checkouts. Latest settled direct cohort remains 39 / 16 / 5 / 5. Unavailable fresh evidence was not converted to zero.
+- Technology/search: measured technology mix remains partial (`heat_pump` 2 landings / 1 start); Solar/Battery remains non-public. No newer authoritative Search Console dataset was available; latest settled remains 0 clicks / 4 impressions through 2026-09-18.
+- Diagnosis: inspected the cancelled canary for extraction commit `f37d67704a18685e6c5f163194d52c7bee956660`. Deployment completed, but canary verification was cancelled. More importantly, the Cloudflare bridge only executed `solar-evidence-model.test.js`; the new dedicated extraction tests were not in the CI command. Previous bridge success therefore could not establish extractor correctness.
+- SOP: loaded `SOPS/SHIP_CHANGE.md`. No production deployment attempted; Solar remains non-public and extractor correctness has not yet passed the corrected gate.
+- COMPLETED: updated `.github/workflows/hqc-cloudflare-bridge.yml` to run `node --test solar-evidence-model.test.js test/solar-battery-extraction.test.mjs` before preview deployment. Commit `6156eb44f8293a3d7e706c9a7e84ecc618f3465f`. Workflow had not appeared at the evidence cutoff, so no pass is claimed.
+- Primary revenue bottleneck: first-customer acquisition/conversion; latest settled start→upload remains 31%.
+- Expected revenue impact: prevents false Solar readiness and makes technology-specific extraction correctness an enforceable release gate, reducing regression risk and time to a trustworthy second vertical while acquisition continues in parallel.
+- Learning: no new durable lesson; this is an engineering-control correction rather than customer/product evidence.
+- NEXT: verify/fix the new extraction CI gate; then harden malformed/partial cases and wire technology routing + adapter behind the non-public Worker gate, preserving Heat Pump behaviour. Continue revenue/acquisition refresh in parallel.
+
 ## 2026-09-21 04:48 Europe/London — dedicated Solar/Battery extraction slice implemented
 - Revenue: authoritative live Stripe `Home Quote Check` PaymentIntents refreshed: 0 objects, `has_more=false`; genuine monthly revenue £0 / £1,000; cumulative validation revenue £0 / £100; paying customers 0.
 - Funnel/acquisition: no newer authoritative production snapshot available; latest settled remains 55 genuine landings → 16 starts → 5 uploads → 5 genuine analyses; 4 Decision Cases → 2 share intents → 0 durable checkouts. Latest settled direct cohort remains 39 / 16 / 5 / 5. Unavailable fresh evidence was not converted to zero.
