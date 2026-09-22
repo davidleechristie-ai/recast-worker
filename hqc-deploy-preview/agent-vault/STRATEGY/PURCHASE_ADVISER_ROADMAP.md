@@ -57,7 +57,7 @@ Revenue rationale: reduces cost/time to add Solar/Battery and future validated v
 Exit gate: same infrastructure can represent Heat Pump and Solar/Battery evidence without technology leakage.
 
 ### WS2 — Remove Solar dependency on heat-pump upstream
-Status: VERIFIED ROUTING BOUNDARY / DEDICATED SOLAR SERVICE STILL IN PROGRESS.
+Status: VERIFIED ROUTING + GREEN DEDICATED SOLAR TRUST SUITE / REQUEST INTEGRATION IN PROGRESS.
 Revenue rationale: this is the current hard blocker to acquiring/monetising Solar quote holders.
 
 - [x] Trace current production analysis boundary sufficiently to confirm the heat-pump-only upstream dependency.
@@ -67,26 +67,29 @@ Revenue rationale: this is the current hard blocker to acquiring/monetising Sola
 - [x] Add request-level isolation tests proving explicit Solar/Battery cannot silently fall through to Heat Pump and a configured adapter is the only Solar route.
 - [x] Wire request-level routing into production `worker-entry.js` behind the non-public gate.
 - [x] Preserve Heat Pump production behaviour and verify the proxy contract through the asset-preserving production-router workflow.
-- [ ] Build/wire the complete Solar/Battery analysis service independent of heat-pump prompts/logic.
+- [x] Build the dedicated executable Solar/Battery analysis/comparison service independent of heat-pump prompts/logic; full analysis/extraction/evidence/fixture/isolation suite green in GitHub Actions run `35696615513`.
+- [ ] Wire that dedicated service into the non-public request path.
 - [ ] Validate PDFs, screenshots/photos and manual-entry payloads end-to-end.
-- [ ] Add malformed/partial quote handling at the executable service boundary.
+- [ ] Add malformed/partial quote handling at the executable request boundary.
 - [x] Add battery-only synthetic fixture alongside solar-only, solar+battery, partial and comparison cases in `test/fixtures/solar-battery-cases.json`.
 - [ ] Ensure technology is propagated into durable anonymous funnel and checkout events end-to-end.
 
-Production evidence: workflow run `35646864766`, attempt 2, completed successfully on 2026-09-22; tests, router-only deployment, Heat Pump compatibility, explicit Solar isolation and durable metrics verification all passed without deploying frontend assets.
+Production routing evidence: workflow run `35646864766`, attempt 2, completed successfully on 2026-09-22; tests, router-only deployment, Heat Pump compatibility, explicit Solar isolation and durable metrics verification all passed without deploying frontend assets.
+
+Behind-gate service evidence: GitHub Actions run `35696615513` passed executable Solar analysis, extraction, evidence contract, fixture contract and technology isolation after preserving explicit battery-presence state in the partial fixture. Unknown battery specification remains unknown.
 
 Exit gate: representative Solar/Battery fixtures produce technology-specific structured evidence without calling heat-pump analysis logic.
 
 ### WS3 — Solar/Battery Quote Check MVP
-Status: IN PROGRESS (fixture corpus + extraction/evidence adapter + verified routing boundary exist; complete executable Solar analysis service still required).
+Status: IN PROGRESS (fixture corpus + extraction/evidence adapter + executable analysis/comparison + verified routing boundary exist; request-path integration still required).
 Revenue rationale: creates the minimum trustworthy second vertical capable of producing a genuine paid-intent test.
 
 - [x] Build initial representative synthetic fixtures: solar-only, solar+battery, battery-only, partial quote, two competing quotes. Fixtures deliberately use fictional products/values and are not customer/market evidence.
 - [x] Bind representative text fixtures to the dedicated extraction tests.
 - [x] Extract initial equipment/price/generation/DNO/warranty/scope evidence fields from representative text fixtures.
 - [x] Detect material missing evidence rather than hallucinating zero/default values in the structured evidence contract.
-- [ ] Produce plain-English findings tied to evidence.
-- [ ] Compare two quotes dimension-by-dimension in the executable customer analysis path.
+- [x] Produce initial plain-English findings tied to structured evidence in the non-public executable service.
+- [x] Compare two quotes dimension-by-dimension in the non-public executable service without selecting an automatic winner.
 - [ ] Generate quote-specific installer questions from gaps/differences.
 - [ ] Reuse Decision Case/share infrastructure.
 - [ ] Reuse checkout infrastructure with technology dimension.
