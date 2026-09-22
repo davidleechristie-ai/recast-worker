@@ -1,6 +1,6 @@
 # HQC Independent Purchase Adviser — Strategy & Delivery Plan
 
-Updated: 2026-09-21
+Updated: 2026-09-22
 
 ## Objective
 Evolve Home Quote Check from a document checker into an independent **pre-commitment home-energy purchase adviser**, while preserving the clear acquisition proposition:
@@ -49,48 +49,48 @@ Revenue rationale: reduces cost/time to add Solar/Battery and future validated v
 - [ ] Define provenance for every finding: quote text, homeowner input, authoritative/public source, deterministic calculation, or unknown.
 - [ ] Add confidence/evidence-state semantics without presenting opaque consumer-facing scores.
 - [ ] Separate extraction from interpretation and deterministic calculations.
-- [ ] Ensure unknown/missing remains unknown; never infer zero.
+- [x] Ensure unknown/missing remains unknown; never infer zero in the Solar evidence contract/extractor.
 - [ ] Map current Heat Pump fields into the shared schema without changing live output.
-- [ ] Implement Solar/Battery adapter against the shared schema.
-- [ ] Add fixture-based tests for both technologies.
+- [x] Implement initial Solar/Battery structured evidence adapter/extractor against the technology-specific schema.
+- [x] Add representative fixture-based Solar/Battery extraction tests.
 
 Exit gate: same infrastructure can represent Heat Pump and Solar/Battery evidence without technology leakage.
 
 ### WS2 — Remove Solar dependency on heat-pump upstream
-Status: IN PROGRESS — routing contract plus request-level routing boundary implemented in source; Worker wiring/CI/preview still required.
+Status: VERIFIED ROUTING BOUNDARY / DEDICATED SOLAR SERVICE STILL IN PROGRESS.
 Revenue rationale: this is the current hard blocker to acquiring/monetising Solar quote holders.
-
-Current confirmed blocker: production non-payment analysis traffic is still proxied to the heat-pump-specific service.
 
 - [x] Trace current production analysis boundary sufficiently to confirm the heat-pump-only upstream dependency.
 - [x] Implement explicit technology-routing contract in `lib/technology-routing.js`: legacy Heat Pump route is explicit; unsupported technology is rejected; Solar/Battery and battery-only cannot fall through to Heat Pump and remain gated unless a dedicated adapter base is configured.
 - [x] Add source-level routing tests covering Heat Pump compatibility, unknown technology rejection, Solar/Battery isolation and shared Solar/Battery adapter configuration.
 - [x] Implement request-level routing boundary in `lib/analysis-request-routing.js` without consuming PDF/form-data bodies; technology can be supplied by `x-hqc-technology` or query hint, with legacy Heat Pump default preserved.
-- [x] Add request-level isolation tests proving explicit Solar/Battery cannot silently fall through to Heat Pump and a configured adapter is the only Solar route. CI result pending at time of update.
-- [ ] Wire request-level routing into `worker.js` behind the non-public gate.
-- [ ] Preserve Heat Pump production behaviour and regression-test the proxy contract.
-- [ ] Build Solar/Battery extraction path independent of heat-pump prompts/logic.
-- [ ] Validate PDFs, screenshots/photos and manual-entry payloads.
-- [ ] Add malformed/partial quote handling.
+- [x] Add request-level isolation tests proving explicit Solar/Battery cannot silently fall through to Heat Pump and a configured adapter is the only Solar route.
+- [x] Wire request-level routing into production `worker-entry.js` behind the non-public gate.
+- [x] Preserve Heat Pump production behaviour and verify the proxy contract through the asset-preserving production-router workflow.
+- [ ] Build/wire the complete Solar/Battery analysis service independent of heat-pump prompts/logic.
+- [ ] Validate PDFs, screenshots/photos and manual-entry payloads end-to-end.
+- [ ] Add malformed/partial quote handling at the executable service boundary.
 - [x] Add battery-only synthetic fixture alongside solar-only, solar+battery, partial and comparison cases in `test/fixtures/solar-battery-cases.json`.
 - [ ] Ensure technology is propagated into durable anonymous funnel and checkout events end-to-end.
+
+Production evidence: workflow run `35646864766`, attempt 2, completed successfully on 2026-09-22; tests, router-only deployment, Heat Pump compatibility, explicit Solar isolation and durable metrics verification all passed without deploying frontend assets.
 
 Exit gate: representative Solar/Battery fixtures produce technology-specific structured evidence without calling heat-pump analysis logic.
 
 ### WS3 — Solar/Battery Quote Check MVP
-Status: IN PROGRESS (fixture corpus + routing boundary exist; still depends on Worker wiring + dedicated extraction adapter).
+Status: IN PROGRESS (fixture corpus + extraction/evidence adapter + verified routing boundary exist; complete executable Solar analysis service still required).
 Revenue rationale: creates the minimum trustworthy second vertical capable of producing a genuine paid-intent test.
 
 - [x] Build initial representative synthetic fixtures: solar-only, solar+battery, battery-only, partial quote, two competing quotes. Fixtures deliberately use fictional products/values and are not customer/market evidence.
-- [ ] Bind fixtures to extraction tests once the dedicated adapter exists.
-- [ ] Extract required equipment/scope/assumption fields.
-- [ ] Detect material missing evidence rather than hallucinating values.
+- [x] Bind representative text fixtures to the dedicated extraction tests.
+- [x] Extract initial equipment/price/generation/DNO/warranty/scope evidence fields from representative text fixtures.
+- [x] Detect material missing evidence rather than hallucinating zero/default values in the structured evidence contract.
 - [ ] Produce plain-English findings tied to evidence.
-- [ ] Compare two quotes dimension-by-dimension.
+- [ ] Compare two quotes dimension-by-dimension in the executable customer analysis path.
 - [ ] Generate quote-specific installer questions from gaps/differences.
 - [ ] Reuse Decision Case/share infrastructure.
 - [ ] Reuse checkout infrastructure with technology dimension.
-- [ ] Automated correctness tests.
+- [ ] Automated end-to-end correctness tests.
 - [ ] Rendered mobile + desktop verification before public CTA.
 - [ ] Preview/canary verification under SHIP_CHANGE.
 - [ ] Public exposure only after all gates pass.
@@ -104,7 +104,7 @@ Revenue rationale: moves value from “what does my PDF say?” toward “does t
 Phase A: minimum homeowner information that materially improves the decision; compare proposal sizing/assumptions with available evidence using ranges/caveats; clearly show what cannot be determined without survey/design evidence. Phase B: evaluate UK address/property/roof datasets, imagery, deterministic generation modelling, licensing/privacy and unit economics; never infer structural suitability from imagery.
 
 ### WS5 — Financial Assumptions Check
-Status: NOT STARTED; begins after trustworthy Solar quote extraction.
+Status: NOT STARTED; begins after trustworthy Solar quote extraction is executable end-to-end.
 Revenue rationale: likely highest-value paid differentiator because installer ROI/savings claims directly influence purchase decisions.
 
 - [ ] Parse installer-stated annual generation, consumption, self-consumption, export, tariff and savings/payback assumptions.
@@ -152,7 +152,7 @@ Anonymous aggregate events segmented by technology/source where available: landi
 
 ## Delivery order
 P0: Continue first-customer acquisition and revenue monitoring in parallel.
-P0: WS2 technology-aware analysis boundary + Solar/Battery extraction.
+P0: WS2 dedicated Solar/Battery analysis service behind the verified technology-aware boundary.
 P0: WS3 Solar/Battery Quote Check MVP through comparison/Decision Case.
 P1: WS1 shared evidence schema where required to support P0 safely.
 P1: WS5 Financial Assumptions Check prototype for Solar/Battery.
