@@ -25,8 +25,12 @@ jobs:
       - uses: actions/setup-node@v4
         with:
           node-version: 22
-      - name: Verify Solar evidence, executable analysis and isolation
+      - name: Verify executable Solar analysis
         working-directory: hqc-deploy-preview
-        run: |
-          node --test test/solar-battery-extraction.test.mjs test/solar-battery-evidence.test.mjs test/solar-battery-fixture-contract.test.mjs test/solar-battery-analysis.test.mjs
-          node --test test/technology-routing.test.mjs test/analysis-request-routing.test.mjs
+        run: node --test test/solar-battery-analysis.test.mjs
+      - name: Verify Solar extraction and evidence contracts
+        working-directory: hqc-deploy-preview
+        run: node --test test/solar-battery-extraction.test.mjs test/solar-battery-evidence.test.mjs test/solar-battery-fixture-contract.test.mjs
+      - name: Verify technology isolation
+        working-directory: hqc-deploy-preview
+        run: node --test test/technology-routing.test.mjs test/analysis-request-routing.test.mjs
