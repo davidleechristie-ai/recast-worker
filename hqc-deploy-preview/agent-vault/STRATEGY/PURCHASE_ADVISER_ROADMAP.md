@@ -20,7 +20,7 @@ Status: IN PROGRESS.
 - [x] Implement Solar/Battery structured evidence adapter/extractor and representative fixture tests.
 
 ## WS2 — Remove Solar dependency on heat-pump upstream
-Status: REQUEST INTEGRATION VERIFIED / WORKER ISOLATION TEST PENDING CI.
+Status: REQUEST + WORKER ISOLATION VERIFIED / INGESTION NEXT.
 - [x] Confirm heat-pump-only upstream dependency.
 - [x] Explicit technology-routing contract; Solar/Battery cannot fall through to Heat Pump.
 - [x] Request-level technology boundary and isolation tests.
@@ -30,12 +30,12 @@ Status: REQUEST INTEGRATION VERIFIED / WORKER ISOLATION TEST PENDING CI.
 - [x] Wire handler into `worker-entry.js` behind explicit `HQC_SOLAR_ANALYSIS_INTERNAL=1` plus Solar/Battery technology hint; production remains gated with flag absent.
 - [x] Add request-boundary cases for complete, partial, malformed and two-quote payloads plus fail-closed unsupported media behaviour.
 - [x] Request integration CI run `35701193912` green.
-- [x] Add Worker-level gate/isolation tests; CI registration pending for commit `a3661ea47293a0f715ba4647a7f00b35f95866d2`.
-- [ ] Require Worker gate/isolation CI green before treating Worker boundary as verified.
+- [x] Add Worker-level gate/isolation tests.
+- [x] Worker gate/isolation CI run `35706680835` green for commit `a3661ea47293a0f715ba4647a7f00b35f95866d2`.
 - [ ] Validate PDF, screenshot/photo and manual-entry ingestion end-to-end; JSON/manual structured boundary exists, PDF/image deliberately returns 415 until verified.
 - [ ] Ensure technology propagates into durable anonymous funnel and checkout events end-to-end.
 
-Production routing evidence: run `35646864766`, attempt 2, passed without frontend assets. Behind-gate service evidence: run `35696615513` passed full trust suite. Request-integration evidence: run `35701193912` passed. Worker-level gate/isolation tests are committed and awaiting CI registration.
+Production routing evidence: run `35646864766`, attempt 2, passed without frontend assets. Behind-gate service evidence: run `35696615513` passed full trust suite. Request-integration evidence: run `35701193912` passed. Worker gate/isolation evidence: run `35706680835` passed.
 
 ## WS3 — Solar/Battery Quote Check MVP
 Status: IN PROGRESS.
