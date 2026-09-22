@@ -10,6 +10,7 @@ on:
       - 'hqc-deploy-preview/lib/technology-routing.js'
       - 'hqc-deploy-preview/lib/analysis-request-routing.js'
       - 'hqc-deploy-preview/test/solar-battery-*.mjs'
+      - 'hqc-deploy-preview/test/worker-entry-solar-gate.test.mjs'
       - 'hqc-deploy-preview/test/technology-routing.test.mjs'
       - 'hqc-deploy-preview/test/analysis-request-routing.test.mjs'
       - 'hqc-deploy-preview/test/fixtures/solar-battery-cases.json'
@@ -32,6 +33,9 @@ jobs:
       - name: Verify gated request boundary
         working-directory: hqc-deploy-preview
         run: node --test test/solar-battery-request-handler.test.mjs
+      - name: Verify Worker gate and isolation
+        working-directory: hqc-deploy-preview
+        run: node --test test/worker-entry-solar-gate.test.mjs
       - name: Verify Solar extraction
         working-directory: hqc-deploy-preview
         run: node --test test/solar-battery-extraction.test.mjs
