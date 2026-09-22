@@ -2,6 +2,16 @@
 
 Append concise dated run records here. Record only observed evidence and completed work.
 
+## 2026-09-22 12:42 Europe/London — Solar installer-question CI verified; live revenue refreshed
+- REVENUE: authoritative live Stripe `Home Quote Check` PaymentIntents refreshed: empty list (`data: []`, `has_more: false`). Genuine revenue remains £0 / £1,000 monthly, £0 / £100 validation, 0 paying customers.
+- FUNNEL/ACQUISITION: no newer authoritative Cloudflare-side snapshot available in this execution path; latest remains 56 landings → 16 starts → 5 uploads → 5 genuine analyses; 4 Decision Cases → 2 share intents → 0 share opens → 0 durable checkouts. Direct remains 40 → 16 → 5 → 5. Missing newer evidence remains null.
+- SEARCH: no newer authoritative Search Console dataset established; latest available remains 0 clicks / 4 impressions / 0% CTR / average position 8.07.
+- PRODUCTION: origin retrieval was unavailable through the current web path and no HQC production release was made. Prior rendered recovery/router-isolation proof remains authoritative; current GitHub canary evidence is not substituted for rendered production verification.
+- PRODUCT/TESTS: `HQC Solar analysis CI` run `35717861021` completed successfully for commit `fc8a8840dcb0042b02874aac7e043360ce345d5b`, closing the pending verification gate for evidence-tied Solar/Battery installer questions.
+- ROADMAP: WS3 installer-question capability marked verified/complete. PDF/image ingestion remains the next WS2/WS3 trust boundary; Solar remains non-public and Heat Pump unchanged.
+- OPS/LEARNINGS.md unchanged: no new authoritative reusable customer/product lesson established.
+- NEXT: implement and verify PDF/image ingestion behind the gate, verify technology propagation into durable funnel/checkout events, and continue qualified Heat Pump acquisition toward first genuine £4.99 purchase.
+
 ## 2026-09-22 11:48 Europe/London — evidence-tied Solar installer questions implemented
 - REVENUE: no newer authoritative successful non-refunded payment dataset was available in this execution path; latest authoritative live Stripe evidence remains 0 PaymentIntents, £0 / £1,000 monthly, £0 / £100 validation, 0 paying customers. Unavailable was not converted to a fresh zero.
 - FUNNEL/ACQUISITION: fresh Cloudflare-side snapshot at `2026-09-22T10:06:07Z` remains 56 landings → 16 starts → 5 uploads → 5 genuine analyses; 4 Decision Cases → 2 share intents → 0 share opens → 0 durable checkouts. Direct remains 40 → 16 → 5 → 5. Measured landing→start is 29%; start→upload 31%. Technology row currently contains only heat_pump 3→1→0, so missing historical technology attribution is null rather than backfilled.
