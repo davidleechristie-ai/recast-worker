@@ -43,7 +43,7 @@ Status: IN PROGRESS.
 - [x] Structured extraction/evidence checks with missing evidence preserved.
 - [x] Plain-English findings and evidence-only two-quote comparison without automatic winner.
 - [x] Structured/manual JSON request boundary implemented and verified behind non-public environment gate.
-- [ ] Generate quote-specific installer questions from gaps/differences.
+- [~] Generate quote-specific installer questions from gaps/differences — implemented from explicit evidence gaps in commits `41242eca8c0e642369a51ff2b5362c0e10d4874c` / `fc8a8840dcb0042b02874aac7e043360ce345d5b`; CI verification pending before marking complete.
 - [ ] Reuse Decision Case/share and checkout infrastructure with technology dimension.
 - [ ] PDF/image ingestion correctness tests.
 - [ ] Automated end-to-end correctness tests.
