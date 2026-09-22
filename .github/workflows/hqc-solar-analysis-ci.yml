@@ -33,6 +33,9 @@ jobs:
       - name: Verify gated request boundary
         working-directory: hqc-deploy-preview
         run: node --test test/solar-battery-request-handler.test.mjs
+      - name: Verify media extraction contract
+        working-directory: hqc-deploy-preview
+        run: node --test test/solar-battery-media-ingestion.test.mjs
       - name: Verify Worker gate and isolation
         working-directory: hqc-deploy-preview
         run: node --test test/worker-entry-solar-gate.test.mjs
