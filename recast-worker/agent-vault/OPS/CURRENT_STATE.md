@@ -1,76 +1,80 @@
 # Current state
 
-Updated: 2026-09-22 10:41 Europe/London
+Updated: 2026-09-22 11:45 Europe/London
 North star: ≥ £1,000 genuine MRR.
 Current milestone: first genuine paying customer.
 
 ## Evidence refreshed
-- Authoritative commercial state remains **£0 genuine MRR / 0 paying customers** from the latest live Stripe evidence already recorded this morning; no newer contrary payment evidence is available in this run.
-- Existing Recast API/integration customer-#1 lane remains **7/7 delivered with no observed engagement/replies**; hold rather than scale identical copy.
-- Reporting/CSV-cleanup lane is now **5/5 delivered** across both cohorts. The three messages queued at 09:43 are confirmed delivered with **0 opens, 0 clicks, 0 bounces, 0 complaints and 0 failures** as of 10:41. The receiving inbox has **0 prospect replies**.
+- Authoritative commercial state remains **£0 genuine MRR / 0 paying customers** from the latest live Stripe evidence already recorded today; no newer contrary payment evidence is available in this run.
+- API/integration customer-#1 lane remains **7/7 delivered with no observed engagement/replies**; hold identical copy.
+- Reporting/CSV-cleanup lane is now **5/5 delivered / 0 opens / 0 clicks / 0 bounces / 0 complaints / 0 failures** as of 11:45. Receiving inbox has **0 prospect replies**.
 - Current scoreboard remains 1,427 search impressions / 5 organic clicks / 9 successful tool uses / 0 workflow starts / 0 commercial-intent events; unavailable values remain null.
 
 ## Mandatory North-Star decision
 Question asked: **What is the single next best action available now that most increases the probability or speed of reaching customer #1 and ultimately £1,000 genuine MRR?**
 
 Candidate actions ranked:
-1. **Allow the now-fully-delivered reporting/CSV-cleanup cohort a meaningful UK business-hours exposure window, then change channel/problem if it remains cold** — highest information value now because five high-fit prospects have clean delivery but the newest three have had under one hour of exposure.
-2. Immediately send more identical reporting outreach — lower value because it would scale a message before engagement evidence matures.
-3. Change channel immediately — plausible next move, but premature before the newest high-fit cohort has had a reasonable exposure window.
-4. Product/checkout work — lower priority because no qualified prospect has exposed a downstream blocker.
-5. Generic SEO/product polish — lower priority under customer-#1 override; fixed SEO experiments remain preserved.
+1. **Change the acquisition offer from “try Recast” to a high-touch workflow proof: ask a qualified operator for one representative recurring transformation and map it in Recast for them** — highest expected information/revenue value because 12 cleanly delivered, qualified cold emails across two pain framings have produced no engagement; reducing prospect effort should test the value proposition more directly.
+2. Send more identical reporting/CSV-cleanup outreach — lower value because 5/5 high-fit deliveries remain completely cold and more volume would scale an unproven CTA.
+3. Product/checkout work — lower priority because no qualified prospect has yet exposed a downstream blocker.
+4. Generic SEO/product polish — lower priority under customer-#1 override; fixed SEO experiments remain preserved.
 
-Selected action: **verify the second reporting cohort's delivery and engagement now; hold identical scaling while the cleanly delivered sample matures, with a channel/problem change precommitted if the expanded cohort remains cold.**
+Selected action: **pivot to a concierge workflow-proof offer aimed at operators with explicit recurring cleansing/migration/catalogue transformation work.** Qualified targets researched: Chivora (D365 migration, cleansing, recurring interfaces), Data Migrator (CRM/ATS extraction, cleansing and conversion), and Epody (continuous catalogue enrichment/structured product data). Attempted a three-message batch with unique `customer1_workflow_offer` attribution and an offer to map a representative non-sensitive before/after example. The connected mail action rejected the send because the sender field is mandatory in this execution context. No email was sent and no delivery is claimed. This is a genuine execution dependency; do not silently substitute an unapproved sender.
 
 ## Primary revenue bottleneck
-**Qualified customer acquisition remains P0.** Delivery is proven. Engagement is not. The earliest material constraint is getting a recurring-data operator to engage with a concrete Recast job.
+**Qualified customer acquisition remains P0.** Delivery is proven across two prior lanes; engagement is not. The immediate hypothesis is now that asking cold prospects to self-serve in Recast creates too much effort before value is demonstrated.
 
 ## Customer-#1 acquisition experiments
 ### Lane A — API/integration consultancies
-- Promise: recurring API/JSON/CSV transformations can be visible, saved, rerun and automated without owning another small script/service.
-- Total: **7 delivered; 0 observed engagement/replies; no Recast negative delivery signal recorded**.
+- Total: **7 delivered; 0 observed engagement/replies**.
 - Status: hold; do not scale identical copy.
 
 ### Lane B — recurring reporting / CSV cleanup
-- Started 2026-09-22 07:41 Europe/London.
-- Target pain: recurring report assembly has a persistent transformation layer — API response reshaping, JSON flattening, CSV normalisation/validation before dashboards/reports.
-- First cohort: Rogue Logic and Company Automation — **2/2 delivered; no observed engagement/replies**.
-- Second cohort: Omevia Intelligence, Lexalytic, Report Rescue — **3/3 delivered; 0 opens; 0 clicks; 0 bounces; 0 complaints; 0 failures** as of 10:41.
-- Combined lane: **5/5 delivered; 0 observed engagement/replies**.
-- Attribution: `utm_campaign=customer1_reporting_csv` with unique `utm_content` per prospect.
-- Status: active. Delivery proven; engagement window still maturing. No bulk scaling.
+- Total: **5 delivered; 0 opens; 0 clicks; 0 observed replies; 0 bounces; 0 complaints; 0 failures** as of 11:45.
+- Attribution: `utm_campaign=customer1_reporting_csv`.
+- Status: hold identical scaling; enough clean-delivery evidence exists to justify changing the offer.
+
+### Lane C — concierge workflow proof
+- Hypothesis: a qualified operator is more likely to engage if Recast does the first mapping work and asks only for a representative non-sensitive before/after example, rather than asking them to explore a generic tool.
+- Qualified targets researched: Chivora, Data Migrator, Epody.
+- Planned attribution: `utm_campaign=customer1_workflow_offer` with unique prospect content tags.
+- Send status: **0 sent**. Connected mail action rejected the batch because a sender address is mandatory in this execution context. No metric is inferred.
+- Next action: execute through an authorised Recast sender path when available; do not revert to identical self-serve outreach merely because this path is blocked.
 
 ## Active experiments / attribution guardrail
-- Customer-#1 API/integration lane: hold for evidence.
-- Customer-#1 reporting/CSV-cleanup lane: active; 5/5 delivered, engagement not yet proven.
+- Customer-#1 API/integration lane: hold.
+- Customer-#1 reporting/CSV-cleanup lane: hold identical scaling.
+- Customer-#1 concierge workflow-proof lane: ready but sender-path blocked in this run.
 - JSON Schema Generator content-consolidation experiment untouched; 28-day review due 2026-09-29.
-- Flatten JSON experiment untouched after 14-day review; 28-day review due 2026-10-06.
+- Flatten JSON experiment untouched; 28-day review due 2026-10-06.
 
 ## Work actually completed
-- Confirmed all three newly queued reporting/CSV-cleanup messages delivered successfully.
-- Pulled per-message engagement metrics: 3 delivered / 0 opened / 0 clicked / 0 bounced / 0 complained / 0 failed for the newest cohort.
-- Checked the receiving inbox: no prospect replies.
-- Reassessed the North-Star decision rather than inheriting the previous send-more task; avoided scaling identical outreach before the newest cohort has had a meaningful exposure window.
+- Refreshed all five reporting-lane engagement metrics: 5 delivered / 0 opened / 0 clicked / 0 bounced / 0 complained / 0 failed.
+- Checked receiving inbox: no prospect replies.
+- Reassessed the North-Star decision and changed the acquisition hypothesis rather than scaling cold volume.
+- Researched three high-fit recurring-data operators and prepared a materially different concierge workflow-proof offer.
+- Attempted the acquisition batch; send was rejected before delivery because this execution context requires an explicit sender. No false send/delivery claim recorded.
 - Preserved product and fixed SEO experiments; no speculative feature work and no UI deployment.
 
 ## Verification
-- Resend second reporting cohort: 3/3 delivered / 0 opened / 0 clicked / 0 bounced / 0 complained / 0 failed.
-- Resend receiving inbox: no received prospect emails.
-- Combined reporting lane: 5/5 delivered; no observed engagement/replies.
-- No UI/code deployment occurred this run.
+- Reporting lane: authoritative email metrics show 5 delivered / 0 opened / 0 clicked / 0 bounced / 0 complained / 0 failed.
+- Receiving inbox: no received prospect emails.
+- Concierge lane: send action returned an error before sending; 0 sent.
+- No UI/code deployment occurred.
 
 ## Expected revenue impact
-The run converts the reporting experiment from partially queued to a clean five-prospect delivered sample and prevents premature volume scaling. The next useful evidence is engagement with a real recurring-data problem. If the five-prospect high-fit sample remains cold after meaningful business-hours exposure, the expected-value action changes from more email to a different acquisition channel/problem framing.
+The decision moves the customer-#1 test from “will a cold prospect explore this tool?” to the lower-friction question “will a recurring-data operator give Recast one real transformation to solve?”. That should produce faster evidence of problem fit and willingness to engage. Actual outbound execution is blocked until an authorised sender path is available in this execution context.
 
 ## Evidence required to change priority
-- Open/click/reply/qualified visit from reporting lane: follow the earliest measured product drop-off immediately.
+- Concierge reply/sample: map the workflow immediately and measure successful task → save/repeat → automation/commercial intent.
 - Successful task but no save/automation: Save→Repeat continuity becomes P0.
 - Commercial intent/checkout attempt: checkout + entitlement becomes absolute P0.
-- Clean delivery but continued zero engagement after the expanded high-fit sample has a meaningful business-day window: change channel or narrow the operator/problem rather than sending more identical outreach.
+- Concierge offer cleanly delivered to a meaningful qualified sample but still no engagement: change channel (community/partner/direct conversation) rather than returning to more cold-email volume.
 - Negative delivery signals: stop expansion and correct target/deliverability.
 
 ## Next autonomous execution
-1. Recheck all five reporting-lane prospects after additional UK business-hours exposure, including receiving inbox.
-2. If engagement appears, follow the prospect into the earliest measured Recast funnel drop-off immediately.
-3. If the five high-fit reporting prospects remain clean but cold after a meaningful window, execute a channel/problem change rather than increasing identical email volume.
-4. Keep fixed SEO experiments unchanged until scheduled reviews.
+1. Recheck existing prospect engagement and revenue evidence first.
+2. Execute the concierge workflow-proof test through an authorised Recast sender path if available.
+3. If sender-path remains blocked, progress a different non-confounding acquisition channel rather than scaling identical email.
+4. Follow any qualified engagement immediately into the earliest measured Recast funnel drop-off.
+5. Keep fixed SEO experiments unchanged until scheduled reviews.
