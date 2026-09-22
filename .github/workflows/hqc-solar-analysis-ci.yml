@@ -28,9 +28,15 @@ jobs:
       - name: Verify executable Solar analysis
         working-directory: hqc-deploy-preview
         run: node --test test/solar-battery-analysis.test.mjs
-      - name: Verify Solar extraction and evidence contracts
+      - name: Verify Solar extraction
         working-directory: hqc-deploy-preview
-        run: node --test test/solar-battery-extraction.test.mjs test/solar-battery-evidence.test.mjs test/solar-battery-fixture-contract.test.mjs
+        run: node --test test/solar-battery-extraction.test.mjs
+      - name: Verify Solar evidence contract
+        working-directory: hqc-deploy-preview
+        run: node --test test/solar-battery-evidence.test.mjs
+      - name: Verify Solar fixture contract
+        working-directory: hqc-deploy-preview
+        run: node --test test/solar-battery-fixture-contract.test.mjs
       - name: Verify technology isolation
         working-directory: hqc-deploy-preview
         run: node --test test/technology-routing.test.mjs test/analysis-request-routing.test.mjs
