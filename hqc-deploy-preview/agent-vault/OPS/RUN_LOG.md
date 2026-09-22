@@ -2,6 +2,18 @@
 
 Append concise dated run records here. Record only observed evidence and completed work.
 
+## 2026-09-22 09:46 Europe/London — Solar request CI green; Worker isolation coverage added
+- REVENUE: no newer authoritative payment dataset was available in this execution path; latest authoritative live Stripe evidence remains 0 PaymentIntents, £0 / £1,000 monthly, £0 / £100 validation, 0 paying customers. Unavailable was not converted to a fresh zero.
+- Funnel/acquisition: fresh production metrics unavailable; latest settled remains 56 genuine landings → 16 starts → 5 uploads → 5 genuine analyses; 4 Decision Cases → 2 share intents → 0 share opens → 0 durable checkouts. Direct remains 40 → 16 → 5 → 5.
+- Search: no newer authoritative Search Console evidence; latest available remains 0 clicks / 4 impressions / 0% CTR / average position 8.07.
+- PRODUCTION: no deployment made; prior rendered recovery and router-isolation verification remain authoritative.
+- CI EVIDENCE: previously queued Solar request-integration run `35701193912` completed successfully for commit `e51dc504cb7c59ab76598b90f32002de89140621`. Structured/manual JSON request integration is now verified behind the non-public gate.
+- PRODUCT/SAFETY: added `test/worker-entry-solar-gate.test.mjs` proving the actual Worker keeps Solar/Battery closed with a 409 when the internal gate is absent, enters only the dedicated handler with `HQC_SOLAR_ANALYSIS_INTERNAL=1`, and keeps unsupported technologies fail-closed.
+- CI: updated `HQC Solar analysis CI` to execute the Worker-level gate/isolation test and trigger on it. Commit `a3661ea47293a0f715ba4647a7f00b35f95866d2`; workflow registration was not visible at last observation, so this new Worker-level proof is pending rather than claimed green.
+- ROADMAP: WS2 request integration marked verified; Worker isolation coverage implemented/pending CI. Solar remains non-public; Heat Pump unchanged.
+- OPS/LEARNINGS.md unchanged: no new authoritative reusable customer/product lesson established.
+- NEXT: require Worker isolation CI green, then progress verified PDF/image/manual ingestion behind the gate while continuing first-customer Heat Pump acquisition.
+
 ## 2026-09-22 08:48 Europe/London — gated Solar request integration implemented
 - REVENUE: fresh authoritative live Stripe `Home Quote Check` PaymentIntents returned 0 objects with `has_more=false`; genuine revenue remains £0 / £1,000 monthly, £0 / £100 validation, 0 paying customers.
 - Funnel/acquisition: fresh production metrics were unavailable from the current web execution path; latest settled remains 56 genuine landings → 16 starts → 5 uploads → 5 genuine analyses; 4 Decision Cases → 2 share intents → 0 share opens → 0 durable checkouts. Missing fresh dimensions remain null.
