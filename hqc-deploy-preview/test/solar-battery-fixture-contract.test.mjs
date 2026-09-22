@@ -15,6 +15,7 @@ function evidenceFromExpected(item) {
     arrayKwp: expected.arrayKwp,
     inverter: expected.inverter,
     battery: expected.battery ?? (expected.batteryModel ? { model: expected.batteryModel, usableCapacityKwh: expected.batteryUsableCapacityKwh } : null),
+    batteryMentioned: expected.batteryMentioned === true || Boolean(expected.battery),
     annualGenerationKwh: expected.annualGenerationKwh,
     generationBasis: expected.generationBasis,
     selfConsumptionPercent: expected.selfConsumptionPercent,
@@ -48,6 +49,7 @@ test('partial quote fixture preserves unknowns and surfaces its required decisio
   assert.equal(result.evidence.arrayKwp, null);
   assert.equal(result.evidence.panel, null);
   assert.equal(result.evidence.dnoTreatment, null);
+  assert.equal(result.evidence.batteryMentioned, true);
   for (const gap of item.expected.requiredGaps) {
     assert.ok(result.gaps.includes(gap), `partial fixture did not surface ${gap}`);
   }
