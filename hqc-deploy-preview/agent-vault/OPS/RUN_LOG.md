@@ -2,6 +2,17 @@
 
 Append concise dated run records here. Record only observed evidence and completed work.
 
+## 2026-09-22 10:41 Europe/London — Worker Solar isolation CI verified
+- REVENUE: no newer authoritative payment dataset was available in this execution path; latest authoritative live Stripe evidence remains 0 PaymentIntents, £0 / £1,000 monthly, £0 / £100 validation, 0 paying customers. Unavailable was not converted to a fresh zero.
+- Funnel/acquisition: fresh production metrics unavailable; latest settled remains 56 genuine landings → 16 starts → 5 uploads → 5 genuine analyses; 4 Decision Cases → 2 share intents → 0 share opens → 0 durable checkouts. Direct remains 40 → 16 → 5 → 5.
+- Search: no newer authoritative Search Console evidence; latest available remains 0 clicks / 4 impressions / 0% CTR / average position 8.07.
+- PRODUCTION: no deployment made; prior rendered recovery and production router-isolation verification remain authoritative.
+- CI EVIDENCE: GitHub Actions run `35706680835`, `HQC Solar analysis CI`, completed successfully for commit `a3661ea47293a0f715ba4647a7f00b35f95866d2`.
+- PRODUCT/SAFETY: the actual Worker-level gate is now verified: Solar/Battery remains closed when `HQC_SOLAR_ANALYSIS_INTERNAL` is absent, enters the dedicated handler only when explicitly enabled, and unsupported technologies fail closed. Heat Pump was not changed.
+- ROADMAP: WS2 request + Worker isolation boundary now verified. Next technical boundary is trustworthy PDF/image/manual ingestion plus technology propagation through durable funnel/checkout evidence. Solar remains non-public.
+- OPS/LEARNINGS.md unchanged: this is engineering verification, not a new reusable customer/product lesson.
+- NEXT: implement and verify ingestion behind the gate while continuing first-customer Heat Pump acquisition.
+
 ## 2026-09-22 09:46 Europe/London — Solar request CI green; Worker isolation coverage added
 - REVENUE: no newer authoritative payment dataset was available in this execution path; latest authoritative live Stripe evidence remains 0 PaymentIntents, £0 / £1,000 monthly, £0 / £100 validation, 0 paying customers. Unavailable was not converted to a fresh zero.
 - Funnel/acquisition: fresh production metrics unavailable; latest settled remains 56 genuine landings → 16 starts → 5 uploads → 5 genuine analyses; 4 Decision Cases → 2 share intents → 0 share opens → 0 durable checkouts. Direct remains 40 → 16 → 5 → 5.
@@ -37,28 +48,6 @@ Append concise dated run records here. Record only observed evidence and complet
 - TESTS: GitHub Actions run `35696615513` passed executable Solar analysis, extraction, evidence contract, fixture contract and technology-isolation checks. The complete behind-gate trust suite is now green.
 - ROADMAP: trust-contract blocker closed. Next boundary is wiring the dedicated Solar service behind the existing non-public request gate and validating complete/partial/malformed/two-quote request behaviour before Financial Assumptions Check or any public Solar CTA.
 - OPS/LEARNINGS.md unchanged: this is engineering correctness evidence, not a reusable customer/product learning.
-
-## 2026-09-22 06:46 Europe/London — executable Solar analysis boundary added behind gate
-- REVENUE: fresh authoritative live Stripe `Home Quote Check` PaymentIntents returned 0 objects with `has_more=false`; genuine revenue remains £0 / £1,000 monthly, £0 / £100 validation, 0 paying customers.
-- Funnel/acquisition: no newer qualified technology/source cohort established; latest settled remains 56 genuine landings → 16 starts → 5 uploads → 5 genuine analyses; 4 Decision Cases → 2 share intents → 0 share opens → 0 durable checkouts. Direct remains 40 → 16 → 5 → 5. Missing dimensions remain null.
-- Search: fresh Search Console 28-day summary remains 0 clicks / 4 impressions / 0% CTR / average position 8.07. Visibility remains too small for meaningful SEO conversion inference.
-- Production: fresh `/health` and `/api/metrics` requests were made and no customer-facing regression was established; last rendered proof remains the successful mobile/desktop recovery. Heat Pump was not changed this run.
-- PRODUCT: added `lib/solar-battery-analysis.js`, a non-public executable analysis/comparison layer over the structured Solar/Battery extractor. It emits evidence-state findings, preserves missing evidence, carries explicit non-certification guardrails and compares two quotes without selecting an automatic winner.
-- TESTS: added `test/solar-battery-analysis.test.mjs`; its dedicated GitHub Actions step passed. Added dedicated `HQC Solar analysis CI` to keep this work independent of production release.
-- CI: the first broader CI run exposed a failure in the pre-existing evidence/fixture contract group while the new executable-analysis tests passed. Split the workflow into independent extraction/evidence/fixture/isolation checks to pinpoint the legacy contract failure before integration. No contract was weakened and nothing was deployed.
-- ROADMAP: executable analysis has moved from design/extraction-only to tested behind-gate implementation. Integration remains blocked on a fully green trust contract; Financial Assumptions Check remains behind that boundary.
-- OPS/LEARNINGS.md unchanged: no authoritative reusable customer/product lesson established.
-- NEXT: identify and correct the failing evidence/fixture contract, then connect the service behind the non-public technology gate only after the complete Solar suite is green.
-
-## 2026-09-22 05:42 Europe/London — technology isolation restored safely in production
-- REVENUE: fresh authoritative live Stripe `Home Quote Check` PaymentIntents returned 0 objects with `has_more=false`; genuine revenue remains £0 / £1,000 monthly, £0 / £100 validation, 0 paying customers.
-- Funnel/acquisition: fresh production endpoint evidence unavailable; latest settled remains 56 genuine landings → 16 starts → 5 uploads → 5 genuine analyses; 4 Decision Cases → 2 share intents → 0 share opens → 0 durable checkouts. Direct remains 40 → 16 → 5 → 5. Missing fresh evidence is null.
-- Search: no newer authoritative Search Console dataset available; latest through 2026-09-19 remains 0 clicks / 4 impressions / 0% CTR / average position 8.07.
-- PRODUCTION ROUTER: workflow run `35646864766`, attempt 2, completed successfully. Job `106607937449` passed technology evidence/routing tests, prepared the router-only Wrangler config, deployed production without static assets, and passed live verification of Heat Pump compatibility, explicit Solar isolation and durable metrics.
-- PRESENTATION: no UI assets were deployed by this release. The prior guarded recovery remains the authoritative rendered production evidence and had passed 390×844 mobile + 1440×1000 desktop.
-- ROADMAP: technology-isolation blocker is closed. Dedicated Solar extraction/evidence modules exist and remain non-public; next engineering boundary is wiring them into a complete dedicated Solar analysis path and validating single/two-quote Decision Case behaviour before Financial Assumptions Check.
-- OPS/LEARNINGS.md unchanged: this is operational verification, not a new customer/product learning.
-- NEXT: continue qualified Heat Pump acquisition toward first £4.99 purchase while independently wiring and testing the dedicated non-public Solar analysis path without changing Heat Pump.
 
 ## Earlier runs
 Earlier detailed run history remains available in repository history. The current state and durable learnings carry forward the authoritative operating context.
