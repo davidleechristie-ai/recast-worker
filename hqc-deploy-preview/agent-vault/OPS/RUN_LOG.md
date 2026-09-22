@@ -2,6 +2,17 @@
 
 Append concise dated run records here. Record only observed evidence and completed work.
 
+## 2026-09-22 03:44 Europe/London — P0 frontend recovery verified and closed
+- Revenue: no newer authoritative Stripe result available in this execution context; latest authoritative Home Quote Check PaymentIntents remains 0 objects / `has_more=false`: £0 / £1,000 monthly, £0 / £100 validation, 0 paying customers. Fresh unavailable evidence is null.
+- Funnel/acquisition: fresh production endpoint evidence unavailable; latest settled remains 56 genuine landings → 16 starts → 5 uploads → 5 genuine analyses; 4 Decision Cases → 2 share intents → 0 share opens → 0 durable checkouts. Direct remains 40 → 16 → 5 → 5.
+- Search: no newer authoritative Search Console dataset available; latest through 2026-09-19 remains 0 clicks / 4 impressions / 0% CTR / average position 8.07.
+- P0 RECOVERY: workflow run `35677048668` completed successfully. Wrangler restored complete Cloudflare Worker version `1931e05c-439c-474e-9879-9b52b19794cd` to 100% traffic; Durable Object/bound resources were not rolled back.
+- HTTP verification passed for `/`, `/api/_healthcheck`, `/robots.txt`, `/sitemap.xml`, `/__hqc_approved_layout.js`, `/__hqc_simple_results.js`, and `/__hqc_paid_comparison.js` (all 200).
+- RENDERED verification passed on production at 390×844 mobile and 1440×1000 desktop. Both reported `cssCount: 1`, Inter/system body font, `linkDefault: false`, `overflow: 0`; single/compare CTAs were visible and clicking single quote exposed `#hqc-choose-file`.
+- DECISION: presentation P0 is closed. Qualified acquisition may resume into the Heat Pump journey. Solar remains non-public because rollback restored the older complete Worker; do not assume the newer technology router remains live.
+- NEXT: re-establish technology isolation through the proven asset-preserving backend release path, verify frontend remains unchanged, and resume acquisition/conversion toward the first genuine £4.99 Decision Pack purchase.
+- OPS/LEARNINGS.md unchanged: successful recovery is operational evidence and existing release-safety rules already capture the reusable lesson.
+
 ## 2026-09-22 02:46 Europe/London — guarded known-good frontend recovery committed
 - Revenue: no newer authoritative Stripe result available in this execution context; latest authoritative Home Quote Check PaymentIntents remains 0 objects / `has_more=false`: £0 / £1,000 monthly, £0 / £100 validation, 0 paying customers. Fresh unavailable evidence is null.
 - Funnel/acquisition: fresh production endpoint evidence unavailable; latest settled remains 56 genuine landings → 16 starts → 5 uploads → 5 genuine analyses; 4 Decision Cases → 2 share intents → 0 share opens → 0 durable checkouts. Direct remains 40 → 16 → 5 → 5.
@@ -25,17 +36,6 @@ Append concise dated run records here. Record only observed evidence and complet
 - Solar remains non-public; no Solar readiness claim changed. Acquisition remains paused while the customer-facing P0 is open.
 - OPS/LEARNINGS.md unchanged: no reusable customer/product lesson established.
 - NEXT: inspect inventory output, select the last known-good Cloudflare version/deployment before the regression and verify it corresponds to the 2026-09-20 rendered mobile production state.
-
-## 2026-09-22 00:42 Europe/London — P0 UI recovery path gains rendered style gates
-- Revenue: latest authoritative Home Quote Check PaymentIntents remains 0 objects / `has_more=false`, so revenue remains £0 / £1,000 monthly, £0 / £100 validation, 0 paying customers.
-- Funnel/acquisition: latest settled evidence remains 56 genuine landings → 16 starts → 5 uploads → 5 genuine analyses; 4 Decision Cases → 2 share intents → 0 share opens → 0 durable checkouts. Direct remains 40 → 16 → 5 → 5.
-- COMPLETED: strengthened `.github/workflows/hqc-production.yml` in commit `3a3c3bbfd26329b41ac17f7f8053e2be711f653a` with local and production rendered style gates at mobile+desktop widths.
-- Solar remains non-public. OPS/LEARNINGS.md unchanged.
-
-## 2026-09-21 21:46 Europe/London — backend release isolation verified in production
-- RELEASE EVIDENCE: run `35646864766` completed success; Solar extraction 9/9 and routing/isolation 9/9.
-- Router-only production version `fc1888f3-f19f-4b08-aec3-a4957b3fd788` verified Heat Pump/default 200, explicit Solar 409, durable metrics 200.
-- DECISION: backend recurrence path contained; frontend P0 remained open.
 
 ## Earlier runs
 Earlier detailed run history remains available in repository history. The current state and durable learnings carry forward the authoritative operating context.
