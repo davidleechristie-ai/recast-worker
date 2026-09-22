@@ -2,6 +2,17 @@
 
 Append concise dated run records here. Record only observed evidence and completed work.
 
+## 2026-09-22 07:50 Europe/London — Solar trust contract fully green behind gate
+- REVENUE: fresh authoritative live Stripe `Home Quote Check` PaymentIntents returned 0 objects with `has_more=false`; genuine revenue remains £0 / £1,000 monthly, £0 / £100 validation, 0 paying customers.
+- Funnel/acquisition: no newer qualified technology/source cohort established; latest settled remains 56 genuine landings → 16 starts → 5 uploads → 5 genuine analyses; 4 Decision Cases → 2 share intents → 0 share opens → 0 durable checkouts. Direct remains 40 → 16 → 5 → 5. Missing dimensions remain null.
+- Search: no newer authoritative Search Console dataset established; latest available remains 0 clicks / 4 impressions / 0% CTR / average position 8.07. Missing fresh evidence is null.
+- PRODUCTION: no UI or production analysis change made; prior rendered recovery and router-isolation verification remain authoritative.
+- DIAGNOSIS: isolated the Solar CI failure to the fixture contract. The partial synthetic quote explicitly said a battery was present but its expected-value mapper discarded that presence because make/model/capacity were unknown, so `battery usable capacity` was not surfaced as a required evidence gap.
+- FIX: added explicit `batteryMentioned: true` to the partial fixture and propagated it through the fixture-to-evidence mapper. Unknown battery specification remains unknown; no evidence requirement was weakened.
+- TESTS: GitHub Actions run `35696615513` passed executable Solar analysis, extraction, evidence contract, fixture contract and technology-isolation checks. The complete behind-gate trust suite is now green.
+- ROADMAP: trust-contract blocker closed. Next boundary is wiring the dedicated Solar service behind the existing non-public request gate and validating complete/partial/malformed/two-quote request behaviour before Financial Assumptions Check or any public Solar CTA.
+- OPS/LEARNINGS.md unchanged: this is engineering correctness evidence, not a reusable customer/product learning.
+
 ## 2026-09-22 06:46 Europe/London — executable Solar analysis boundary added behind gate
 - REVENUE: fresh authoritative live Stripe `Home Quote Check` PaymentIntents returned 0 objects with `has_more=false`; genuine revenue remains £0 / £1,000 monthly, £0 / £100 validation, 0 paying customers.
 - Funnel/acquisition: no newer qualified technology/source cohort established; latest settled remains 56 genuine landings → 16 starts → 5 uploads → 5 genuine analyses; 4 Decision Cases → 2 share intents → 0 share opens → 0 durable checkouts. Direct remains 40 → 16 → 5 → 5. Missing dimensions remain null.
