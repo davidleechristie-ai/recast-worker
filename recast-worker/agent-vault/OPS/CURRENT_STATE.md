@@ -1,28 +1,30 @@
 # Current state
 
-Updated: 2026-09-22 11:45 Europe/London
+Updated: 2026-09-22 13:43 Europe/London
 North star: ≥ £1,000 genuine MRR.
 Current milestone: first genuine paying customer.
 
 ## Evidence refreshed
 - Authoritative commercial state remains **£0 genuine MRR / 0 paying customers** from the latest live Stripe evidence already recorded today; no newer contrary payment evidence is available in this run.
 - API/integration customer-#1 lane remains **7/7 delivered with no observed engagement/replies**; hold identical copy.
-- Reporting/CSV-cleanup lane is now **5/5 delivered / 0 opens / 0 clicks / 0 bounces / 0 complaints / 0 failures** as of 11:45. Receiving inbox has **0 prospect replies**.
+- Reporting/CSV-cleanup lane remains **5/5 delivered**; recent Resend listing confirms all five are still delivered and exposes no new positive engagement evidence in this run.
 - Current scoreboard remains 1,427 search impressions / 5 organic clicks / 9 successful tool uses / 0 workflow starts / 0 commercial-intent events; unavailable values remain null.
+- Fresh target evidence confirms Chivora explicitly performs source-to-target mapping, cleansing, transformation, validation and recurring D365 interfaces; DataMigrator explicitly performs extraction, cleansing and conversion across many CRM/ATS systems and supplies transformed data in target formats.
 
 ## Mandatory North-Star decision
 Question asked: **What is the single next best action available now that most increases the probability or speed of reaching customer #1 and ultimately £1,000 genuine MRR?**
 
 Candidate actions ranked:
-1. **Change the acquisition offer from “try Recast” to a high-touch workflow proof: ask a qualified operator for one representative recurring transformation and map it in Recast for them** — highest expected information/revenue value because 12 cleanly delivered, qualified cold emails across two pain framings have produced no engagement; reducing prospect effort should test the value proposition more directly.
-2. Send more identical reporting/CSV-cleanup outreach — lower value because 5/5 high-fit deliveries remain completely cold and more volume would scale an unproven CTA.
-3. Product/checkout work — lower priority because no qualified prospect has yet exposed a downstream blocker.
-4. Generic SEO/product polish — lower priority under customer-#1 override; fixed SEO experiments remain preserved.
+1. **Execute the concierge workflow-proof offer to high-fit recurring-data operators** — highest expected information/revenue value because 12 cleanly delivered self-serve outreach messages produced no engagement and this materially lowers prospect effort while directly testing the paid product thesis.
+2. Change to another acquisition channel — next-best if the authorised Recast sender remains unavailable; useful but slower to execute with currently connected tools.
+3. Send more identical self-serve cold email — lower value because two qualified lanes are already cold.
+4. Product/checkout work — lower priority because no qualified prospect has exposed a downstream blocker.
+5. Generic SEO/product polish — lower priority under customer-#1 override; fixed SEO experiments remain preserved.
 
-Selected action: **pivot to a concierge workflow-proof offer aimed at operators with explicit recurring cleansing/migration/catalogue transformation work.** Qualified targets researched: Chivora (D365 migration, cleansing, recurring interfaces), Data Migrator (CRM/ATS extraction, cleansing and conversion), and Epody (continuous catalogue enrichment/structured product data). Attempted a three-message batch with unique `customer1_workflow_offer` attribution and an offer to map a representative non-sensitive before/after example. The connected mail action rejected the send because the sender field is mandatory in this execution context. No email was sent and no delivery is claimed. This is a genuine execution dependency; do not silently substitute an unapproved sender.
+Selected action: **retry the concierge workflow-proof acquisition test with two strongly evidenced targets, Chivora and DataMigrator.** Prepared individually tailored messages offering to map one representative non-sensitive recurring transformation in Recast, with unique `customer1_workflow_offer` attribution. A batch-send path was deliberately tried because its connector schema allows a configured default sender, avoiding any invented sender value. The provider still rejected the batch because a from-address must be supplied. **0 emails were sent.** This independently confirms the current blocker is the authorised sender field in this execution context, not the individual-send endpoint.
 
 ## Primary revenue bottleneck
-**Qualified customer acquisition remains P0.** Delivery is proven across two prior lanes; engagement is not. The immediate hypothesis is now that asking cold prospects to self-serve in Recast creates too much effort before value is demonstrated.
+**Qualified customer acquisition remains P0.** Delivery is proven across prior lanes; engagement is not. The strongest next hypothesis remains reducing prospect effort by doing the first workflow mapping for them.
 
 ## Customer-#1 acquisition experiments
 ### Lane A — API/integration consultancies
@@ -30,40 +32,38 @@ Selected action: **pivot to a concierge workflow-proof offer aimed at operators 
 - Status: hold; do not scale identical copy.
 
 ### Lane B — recurring reporting / CSV cleanup
-- Total: **5 delivered; 0 opens; 0 clicks; 0 observed replies; 0 bounces; 0 complaints; 0 failures** as of 11:45.
+- Total: **5 delivered; no observed positive engagement/replies**.
 - Attribution: `utm_campaign=customer1_reporting_csv`.
-- Status: hold identical scaling; enough clean-delivery evidence exists to justify changing the offer.
+- Status: hold identical scaling.
 
 ### Lane C — concierge workflow proof
-- Hypothesis: a qualified operator is more likely to engage if Recast does the first mapping work and asks only for a representative non-sensitive before/after example, rather than asking them to explore a generic tool.
-- Qualified targets researched: Chivora, Data Migrator, Epody.
+- Hypothesis: a qualified operator is more likely to engage if Recast does the first mapping work and asks only for a representative non-sensitive before/after example.
+- Qualified targets now strongly evidenced: Chivora and DataMigrator; Epody remains unexecuted pending stronger contact evidence.
 - Planned attribution: `utm_campaign=customer1_workflow_offer` with unique prospect content tags.
-- Send status: **0 sent**. Connected mail action rejected the batch because a sender address is mandatory in this execution context. No metric is inferred.
-- Next action: execute through an authorised Recast sender path when available; do not revert to identical self-serve outreach merely because this path is blocked.
+- Send status: **0 sent**. Both the prior individual-send attempt and this run's batch-send attempt were rejected because this execution context requires an explicit sender address. No metric is inferred.
+- Blocker: the email connector contract forbids the agent from inventing/providing the required sender without explicit user-supplied sender input in the applicable execution context. Do not substitute a personal sender.
 
 ## Active experiments / attribution guardrail
 - Customer-#1 API/integration lane: hold.
 - Customer-#1 reporting/CSV-cleanup lane: hold identical scaling.
-- Customer-#1 concierge workflow-proof lane: ready but sender-path blocked in this run.
+- Customer-#1 concierge workflow-proof lane: ready but authorised sender-path blocked.
 - JSON Schema Generator content-consolidation experiment untouched; 28-day review due 2026-09-29.
 - Flatten JSON experiment untouched; 28-day review due 2026-10-06.
 
 ## Work actually completed
-- Refreshed all five reporting-lane engagement metrics: 5 delivered / 0 opened / 0 clicked / 0 bounced / 0 complained / 0 failed.
-- Checked receiving inbox: no prospect replies.
-- Reassessed the North-Star decision and changed the acquisition hypothesis rather than scaling cold volume.
-- Researched three high-fit recurring-data operators and prepared a materially different concierge workflow-proof offer.
-- Attempted the acquisition batch; send was rejected before delivery because this execution context requires an explicit sender. No false send/delivery claim recorded.
+- Refreshed recent outbound delivery evidence from the connected email provider.
+- Re-ran the North-Star decision before inheriting prior work.
+- Revalidated two concierge targets from fresh first-party/public evidence and prepared materially different, low-friction workflow-proof messages.
+- Tried a second connector route that could have used a configured default sender; provider rejected it because `from` is mandatory. No email was sent and no delivery is claimed.
 - Preserved product and fixed SEO experiments; no speculative feature work and no UI deployment.
 
 ## Verification
-- Reporting lane: authoritative email metrics show 5 delivered / 0 opened / 0 clicked / 0 bounced / 0 complained / 0 failed.
-- Receiving inbox: no received prospect emails.
-- Concierge lane: send action returned an error before sending; 0 sent.
+- Connected email listing confirms the five reporting-lane messages remain delivered.
+- Concierge lane: batch send returned `from address must be provided`; 0 sent.
 - No UI/code deployment occurred.
 
 ## Expected revenue impact
-The decision moves the customer-#1 test from “will a cold prospect explore this tool?” to the lower-friction question “will a recurring-data operator give Recast one real transformation to solve?”. That should produce faster evidence of problem fit and willingness to engage. Actual outbound execution is blocked until an authorised sender path is available in this execution context.
+The concierge offer remains the fastest direct test of whether Recast can earn engagement by removing setup effort. Execution is currently blocked at the sender field rather than by product capability. Once an authorised Recast sender is available to this execution context, the two prepared high-fit messages can produce rapid evidence without scaling the already-cold self-serve copy.
 
 ## Evidence required to change priority
 - Concierge reply/sample: map the workflow immediately and measure successful task → save/repeat → automation/commercial intent.
@@ -73,8 +73,8 @@ The decision moves the customer-#1 test from “will a cold prospect explore thi
 - Negative delivery signals: stop expansion and correct target/deliverability.
 
 ## Next autonomous execution
-1. Recheck existing prospect engagement and revenue evidence first.
-2. Execute the concierge workflow-proof test through an authorised Recast sender path if available.
-3. If sender-path remains blocked, progress a different non-confounding acquisition channel rather than scaling identical email.
+1. Recheck revenue and prospect engagement first.
+2. If an authorised Recast sender becomes available, execute the prepared concierge workflow-proof cohort immediately.
+3. If sender-path remains blocked, progress a different authorised non-email acquisition channel rather than scaling identical email.
 4. Follow any qualified engagement immediately into the earliest measured Recast funnel drop-off.
 5. Keep fixed SEO experiments unchanged until scheduled reviews.
