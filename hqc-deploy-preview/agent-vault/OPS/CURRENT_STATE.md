@@ -1,6 +1,6 @@
 # Current state
 
-Updated: 2026-09-22 09:46 Europe/London
+Updated: 2026-09-22 10:41 Europe/London
 
 North star: Sustain at least **£1,000 genuine monthly revenue**. Immediate milestone: first genuine purchase and £100 cumulative validation revenue.
 
@@ -18,22 +18,21 @@ First genuine £4.99 Decision Pack purchase, then £100 cumulative validation re
 
 ## Product strategy / Solar-Battery progress
 - Request-integration CI run `35701193912` completed successfully, verifying the gated structured/manual JSON Solar request boundary.
-- Added Worker-level tests proving Solar/Battery returns 409 while the internal gate is absent, enters the dedicated Solar handler only with `HQC_SOLAR_ANALYSIS_INTERNAL=1`, and unsupported technology still fails closed.
-- Updated Solar CI to execute the new Worker gate/isolation test. Commit `a3661ea47293a0f715ba4647a7f00b35f95866d2`; workflow registration was not yet visible at last observation, so this new boundary is implemented but not yet marked verified.
-- Nothing was deployed; Solar remains non-public and Heat Pump remains unchanged.
+- Worker-level gate/isolation CI run `35706680835` completed successfully for commit `a3661ea47293a0f715ba4647a7f00b35f95866d2`. It verifies Solar/Battery returns 409 while the internal gate is absent, enters the dedicated Solar handler only with `HQC_SOLAR_ANALYSIS_INTERNAL=1`, and unsupported technology fails closed.
+- The Worker request boundary is therefore verified behind the non-public gate. Nothing was deployed; Solar remains non-public and Heat Pump remains unchanged.
 
 ## Active workstreams
 1. Continue qualified Heat Pump acquisition toward first purchase.
-2. Require the Worker-level gate/isolation CI to pass, then progress verified ingestion behind the non-public Solar gate.
-3. Add PDF/image ingestion correctness only after the Worker boundary is green; keep unsupported media fail-closed until verified.
+2. Progress verified PDF/image/manual-entry ingestion behind the non-public Solar gate; structured/manual JSON is verified and unsupported media remains fail-closed until correctness is proven.
+3. Ensure technology propagates through durable anonymous funnel/checkout evidence before public Solar exposure.
 4. Then progress Financial Assumptions Check and richer Decision Pack.
 
 ## Expected revenue impact
-The now-green request integration plus Worker isolation coverage moves Solar toward a trustworthy second paid-intent vertical while explicitly protecting the live Heat Pump revenue path. It reduces the risk of launching a second vertical on the wrong analysis service.
+The now-green request integration and Worker isolation boundary moves Solar toward a trustworthy second paid-intent vertical while explicitly protecting the live Heat Pump revenue path. It reduces the risk of launching a second vertical on the wrong analysis service.
 
 ## Next actions
-1. Require CI for commit `a3661ea47293a0f715ba4647a7f00b35f95866d2` to pass before marking Worker isolation verified.
-2. Implement and verify PDF/image/manual-entry ingestion behind the gate; do not expose a public Solar CTA before rendered end-to-end verification.
+1. Implement and verify PDF/image/manual-entry ingestion behind the gate; do not expose a public Solar CTA before rendered end-to-end verification.
+2. Verify technology propagation into durable anonymous funnel and checkout events.
 3. Continue qualified Heat Pump acquisition and measure genuine analysis → checkout → purchase.
 4. Begin Financial Assumptions Check only after trustworthy Solar ingestion is executable end-to-end.
 
