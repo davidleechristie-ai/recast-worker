@@ -5,6 +5,7 @@ on:
     branches: [main]
     paths:
       - '.github/workflows/hqc-solar-analysis-ci.yml'
+      - 'hqc-deploy-preview/worker-entry.js'
       - 'hqc-deploy-preview/lib/solar-battery-*.js'
       - 'hqc-deploy-preview/lib/technology-routing.js'
       - 'hqc-deploy-preview/lib/analysis-request-routing.js'
@@ -28,6 +29,9 @@ jobs:
       - name: Verify executable Solar analysis
         working-directory: hqc-deploy-preview
         run: node --test test/solar-battery-analysis.test.mjs
+      - name: Verify gated request boundary
+        working-directory: hqc-deploy-preview
+        run: node --test test/solar-battery-request-handler.test.mjs
       - name: Verify Solar extraction
         working-directory: hqc-deploy-preview
         run: node --test test/solar-battery-extraction.test.mjs
