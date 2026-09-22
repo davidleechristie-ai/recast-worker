@@ -2,6 +2,18 @@
 
 Append concise dated run records here. Record only observed evidence and completed work.
 
+## 2026-09-22 01:45 Europe/London — known-good Cloudflare recovery inventory initiated
+- REVENUE: fresh authoritative live Stripe `Home Quote Check` PaymentIntents returned 0 objects with `has_more=false`; genuine revenue remains £0 / £1,000 monthly, £0 / £100 validation, 0 paying customers.
+- Funnel/acquisition: fresh production endpoint evidence unavailable; latest settled evidence remains 56 genuine landings → 16 starts → 5 uploads → 5 genuine analyses; 4 Decision Cases → 2 share intents → 0 share opens → 0 durable checkouts. Direct remains 40 → 16 → 5 → 5. Missing fresh evidence is null.
+- Search: no newer authoritative Search Console dataset available; latest through 2026-09-19 remains 0 clicks / 4 impressions / 0% CTR / average position 8.07.
+- Production presentation: owner-provided broken iPhone render remains authoritative P0 evidence. Fresh direct health unavailable; latest backend health remains previously verified Heat Pump 200 / explicit Solar 409 / durable metrics 200.
+- RECOVERY EVIDENCE: repository history establishes a rendered, guarded, successful mobile production repair on 2026-09-20, including custom-domain canary and production promotion. This gives a concrete known-good recovery epoch rather than requiring a new snapshot from the legacy external origin.
+- COMPLETED: added read-only `.github/workflows/hqc-recovery-inventory.yml` in commit `e513190d5a4189c89d44181b3e3757e4dccb0bab`. It lists Cloudflare `hqc-production` deployments and versions using Wrangler and explicitly performs no deployment, rollback or asset mutation. Run `35673186035` queued successfully.
+- DECISION: do not rebuild or recover production from AppDeploy. Use Cloudflare's own version/deployment history to identify the last known-good asset-bearing version, then recover through a guarded rollback path and rendered verification. This obeys the GitHub/Cloudflare-only boundary and avoids snapshotting the currently unsafe source.
+- Solar remains non-public; no Solar readiness claim changed. Acquisition remains paused while the customer-facing P0 is open.
+- OPS/LEARNINGS.md unchanged: no reusable customer/product lesson established.
+- NEXT: inspect inventory output, select the last known-good asset-bearing Cloudflare version corresponding to the verified 2026-09-20 production state, implement guarded recovery, and require rendered mobile+desktop production verification before closing P0.
+
 ## 2026-09-22 00:42 Europe/London — P0 UI recovery path gains rendered style gates
 - Revenue: no newer authoritative Stripe result was available in this execution context; latest authoritative Home Quote Check PaymentIntents remains 0 objects / `has_more=false`, so revenue remains £0 / £1,000 monthly, £0 / £100 validation, 0 paying customers. Fresh unavailable evidence is null.
 - Funnel/acquisition: no fresh production endpoint evidence available; latest settled evidence remains 56 genuine landings → 16 starts → 5 uploads → 5 genuine analyses; 4 Decision Cases → 2 share intents → 0 share opens → 0 durable checkouts. Direct remains 40 → 16 → 5 → 5.
