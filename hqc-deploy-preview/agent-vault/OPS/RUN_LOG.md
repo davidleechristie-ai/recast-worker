@@ -2,6 +2,19 @@
 
 Append concise dated run records here. Record only observed evidence and completed work.
 
+## 2026-09-22 08:48 Europe/London — gated Solar request integration implemented
+- REVENUE: fresh authoritative live Stripe `Home Quote Check` PaymentIntents returned 0 objects with `has_more=false`; genuine revenue remains £0 / £1,000 monthly, £0 / £100 validation, 0 paying customers.
+- Funnel/acquisition: fresh production metrics were unavailable from the current web execution path; latest settled remains 56 genuine landings → 16 starts → 5 uploads → 5 genuine analyses; 4 Decision Cases → 2 share intents → 0 share opens → 0 durable checkouts. Missing fresh dimensions remain null.
+- Search: no newer authoritative Search Console dataset established; latest available remains 0 clicks / 4 impressions / 0% CTR / average position 8.07.
+- PRODUCTION: no deployment made. Direct health/metrics retrieval was unavailable from the current web execution path; prior rendered recovery and production technology-isolation proof remain authoritative.
+- PRODUCT: added `lib/solar-battery-request-handler.js` for structured/manual JSON single-quote analysis and two-quote comparison. It fails closed for malformed/missing input and explicitly rejects PDF/image media until that ingestion path is verified.
+- ISOLATION: wired the handler into `worker-entry.js` only for explicit Solar/Battery requests when `HQC_SOLAR_ANALYSIS_INTERNAL=1`. The gate is absent in current production, so public Solar isolation behaviour is unchanged; Heat Pump bypasses the new branch.
+- TESTS: added request-boundary tests for single quote, two-quote comparison, partial evidence, malformed JSON and unsupported media. Updated Solar CI to run them and to trigger on Worker boundary changes.
+- CI: run `35701193912` for commit `e51dc504cb7c59ab76598b90f32002de89140621` registered and was queued at last observation. Capability is implemented but not marked verified.
+- ROADMAP: WS2 request integration advanced from not wired to implemented/pending CI. No public CTA and no production config change.
+- OPS/LEARNINGS.md unchanged: no authoritative reusable customer/product lesson established.
+- NEXT: require CI green, add Worker-level gate/isolation tests, then verify PDF/image ingestion before any public Solar journey; continue qualified Heat Pump acquisition in parallel.
+
 ## 2026-09-22 07:50 Europe/London — Solar trust contract fully green behind gate
 - REVENUE: fresh authoritative live Stripe `Home Quote Check` PaymentIntents returned 0 objects with `has_more=false`; genuine revenue remains £0 / £1,000 monthly, £0 / £100 validation, 0 paying customers.
 - Funnel/acquisition: no newer qualified technology/source cohort established; latest settled remains 56 genuine landings → 16 starts → 5 uploads → 5 genuine analyses; 4 Decision Cases → 2 share intents → 0 share opens → 0 durable checkouts. Direct remains 40 → 16 → 5 → 5. Missing dimensions remain null.
