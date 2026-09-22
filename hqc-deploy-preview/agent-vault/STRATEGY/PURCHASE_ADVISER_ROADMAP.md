@@ -1,6 +1,6 @@
 # HQC Independent Purchase Adviser — Strategy & Delivery Plan
 
-Updated: 2026-09-22
+Updated: 2026-09-23
 
 ## Objective
 Evolve Home Quote Check from a document checker into an independent **pre-commitment home-energy purchase adviser**, while preserving the acquisition proposition: **Already have a quote? Independently check and compare it before you commit.** The uploaded installer quote remains the acquisition/input wedge. This roadmap runs in parallel with first-customer acquisition and must not destabilise Heat Pump.
@@ -20,7 +20,7 @@ Status: IN PROGRESS.
 - [x] Implement Solar/Battery structured evidence adapter/extractor and representative fixture tests.
 
 ## WS2 — Remove Solar dependency on heat-pump upstream
-Status: REQUEST + WORKER ISOLATION VERIFIED / INGESTION NEXT.
+Status: REQUEST + WORKER ISOLATION VERIFIED / INGESTION IN PROGRESS.
 - [x] Confirm heat-pump-only upstream dependency.
 - [x] Explicit technology-routing contract; Solar/Battery cannot fall through to Heat Pump.
 - [x] Request-level technology boundary and isolation tests.
@@ -32,7 +32,8 @@ Status: REQUEST + WORKER ISOLATION VERIFIED / INGESTION NEXT.
 - [x] Request integration CI run `35701193912` green.
 - [x] Add Worker-level gate/isolation tests.
 - [x] Worker gate/isolation CI run `35706680835` green for commit `a3661ea47293a0f715ba4647a7f00b35f95866d2`.
-- [ ] Validate PDF, screenshot/photo and manual-entry ingestion end-to-end; JSON/manual structured boundary exists, PDF/image deliberately returns 415 until verified.
+- [~] PDF/image ingestion: added fail-closed extracted-media provenance contract and tests for PDF-derived and image/OCR-derived text. CI run `35798847121` queued; raw media remains HTTP 415 until end-to-end extraction correctness is proven.
+- [ ] Validate representative PDF and screenshot/photo extraction end-to-end and wire verified extracted-text envelopes into the gated handler.
 - [ ] Ensure technology propagates into durable anonymous funnel and checkout events end-to-end.
 
 Production routing evidence: run `35646864766`, attempt 2, passed without frontend assets. Behind-gate service evidence: run `35696615513` passed full trust suite. Request-integration evidence: run `35701193912` passed. Worker gate/isolation evidence: run `35706680835` passed.
@@ -45,7 +46,7 @@ Status: IN PROGRESS.
 - [x] Structured/manual JSON request boundary implemented and verified behind non-public environment gate.
 - [x] Generate quote-specific installer questions from gaps/differences — implemented in commits `41242eca8c0e642369a51ff2b5362c0e10d4874c` / `fc8a8840dcb0042b02874aac7e043360ce345d5b` and verified by successful `HQC Solar analysis CI` run `35717861021`.
 - [ ] Reuse Decision Case/share and checkout infrastructure with technology dimension.
-- [ ] PDF/image ingestion correctness tests.
+- [~] PDF/image ingestion correctness tests: media provenance/normalisation contract added; representative end-to-end extraction fixtures still required.
 - [ ] Automated end-to-end correctness tests.
 - [ ] Rendered mobile + desktop and preview/canary verification before public CTA.
 
