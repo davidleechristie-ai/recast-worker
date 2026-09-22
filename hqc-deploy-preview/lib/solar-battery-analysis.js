@@ -2,6 +2,27 @@ import { extractSolarBatteryEvidence } from './solar-battery-extraction.js';
 
 const value = (v, suffix = '') => v == null ? 'not stated' : `${v}${suffix}`;
 
+const gapQuestions = {
+  'panel specification': 'Please confirm the panel manufacturer, model and quantity included in this quote.',
+  'array size': 'Please confirm the total proposed solar array size in kWp.',
+  'inverter specification': 'Please confirm the inverter manufacturer, model and rated output included in this quote.',
+  'battery usable capacity': 'Please confirm the battery usable capacity in kWh (not only nominal capacity).',
+  'generation estimate and basis': 'Please provide the annual generation estimate and the assumptions or methodology used to produce it.',
+  'DNO treatment': 'Please confirm the proposed DNO/grid-connection route and whether notification or approval is expected before commissioning.',
+  'warranty detail': 'Please confirm the equipment and workmanship warranty periods and who provides each warranty.',
+  'MCS wording': 'Please confirm what MCS certification or MCS-certified installation wording applies to this proposal.',
+  'price': 'Please confirm the total quoted price and what is included or excluded from that figure.'
+};
+
+function questionsFor(result) {
+  return result.gaps.map((gap, index) => ({
+    id: `gap_${index + 1}`,
+    evidenceGap: gap,
+    question: gapQuestions[gap] || `Please confirm the missing quote evidence for: ${gap}.`,
+    reason: `The supplied quote does not evidence ${gap}.`,
+  }));
+}
+
 function findingsFor(result) {
   const e = result.evidence;
   const findings = [];
@@ -18,14 +39,18 @@ function findingsFor(result) {
 
 export function analyseSolarBatteryQuote({ quoteText = '', technology = 'solar_battery', quoteId = null } = {}) {
   const extracted = extractSolarBatteryEvidence(quoteText, technology);
-  return {
+  const base = {
     ok: extracted.ok,
     technology: extracted.evidence.technology,
     quoteId,
     evidence: extracted.evidence,
     gaps: extracted.gaps,
     errors: extracted.errors,
-    findings: findingsFor(extracted),
+  };
+  return {
+    ...base,
+    findings: findingsFor(base),
+    installerQuestions: questionsFor(base),
     guardrails: [
       'This checks written quote evidence; it is not electrical or structural design approval.',
       'DNO, MCS, generation, savings and roof suitability are not certified by this analysis.'
