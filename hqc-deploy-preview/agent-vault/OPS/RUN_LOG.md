@@ -2,6 +2,16 @@
 
 Append concise dated run records here. Record only observed evidence and completed work.
 
+## 2026-09-22 05:42 Europe/London — technology isolation restored safely in production
+- REVENUE: fresh authoritative live Stripe `Home Quote Check` PaymentIntents returned 0 objects with `has_more=false`; genuine revenue remains £0 / £1,000 monthly, £0 / £100 validation, 0 paying customers.
+- Funnel/acquisition: fresh production endpoint evidence unavailable; latest settled remains 56 genuine landings → 16 starts → 5 uploads → 5 genuine analyses; 4 Decision Cases → 2 share intents → 0 share opens → 0 durable checkouts. Direct remains 40 → 16 → 5 → 5. Missing fresh evidence is null.
+- Search: no newer authoritative Search Console dataset available; latest through 2026-09-19 remains 0 clicks / 4 impressions / 0% CTR / average position 8.07.
+- PRODUCTION ROUTER: workflow run `35646864766`, attempt 2, completed successfully. Job `106607937449` passed technology evidence/routing tests, prepared the router-only Wrangler config, deployed production without static assets, and passed live verification of Heat Pump compatibility, explicit Solar isolation and durable metrics.
+- PRESENTATION: no UI assets were deployed by this release. The prior guarded recovery remains the authoritative rendered production evidence and had passed 390×844 mobile + 1440×1000 desktop.
+- ROADMAP: technology-isolation blocker is closed. Dedicated Solar extraction/evidence modules exist and remain non-public; next engineering boundary is wiring them into a complete dedicated Solar analysis path and validating single/two-quote Decision Case behaviour before Financial Assumptions Check.
+- OPS/LEARNINGS.md unchanged: this is operational verification, not a new customer/product learning.
+- NEXT: continue qualified Heat Pump acquisition toward first £4.99 purchase while independently wiring and testing the dedicated non-public Solar analysis path without changing Heat Pump.
+
 ## 2026-09-22 04:47 Europe/London — technology isolation restoration initiated after frontend recovery
 - REVENUE: fresh authoritative live Stripe `Home Quote Check` PaymentIntents returned 0 objects with `has_more=false`; genuine revenue remains £0 / £1,000 monthly, £0 / £100 validation, 0 paying customers.
 - Funnel/acquisition: fresh production endpoint evidence unavailable; latest settled remains 56 genuine landings → 16 starts → 5 uploads → 5 genuine analyses; 4 Decision Cases → 2 share intents → 0 share opens → 0 durable checkouts. Direct remains 40 → 16 → 5 → 5. Missing fresh evidence is null.
@@ -22,18 +32,6 @@ Append concise dated run records here. Record only observed evidence and complet
 - DECISION: presentation P0 is closed. Qualified acquisition may resume into the Heat Pump journey. Solar remains non-public because rollback restored the older complete Worker; do not assume the newer technology router remains live.
 - NEXT: re-establish technology isolation through the proven asset-preserving backend release path, verify frontend remains unchanged, and resume acquisition/conversion toward the first genuine £4.99 Decision Pack purchase.
 - OPS/LEARNINGS.md unchanged: successful recovery is operational evidence and existing release-safety rules already capture the reusable lesson.
-
-## 2026-09-22 02:46 Europe/London — guarded known-good frontend recovery committed
-- Revenue: no newer authoritative Stripe result available in this execution context; latest authoritative Home Quote Check PaymentIntents remains 0 objects / `has_more=false`: £0 / £1,000 monthly, £0 / £100 validation, 0 paying customers. Fresh unavailable evidence is null.
-- Funnel/acquisition: fresh production endpoint evidence unavailable; latest settled remains 56 genuine landings → 16 starts → 5 uploads → 5 genuine analyses; 4 Decision Cases → 2 share intents → 0 share opens → 0 durable checkouts. Direct remains 40 → 16 → 5 → 5.
-- Search: no newer authoritative Search Console dataset available; latest through 2026-09-19 remains 0 clicks / 4 impressions / 0% CTR / average position 8.07.
-- P0: owner-provided unstyled iPhone render remains authoritative until recovery passes rendered production verification.
-- RECOVERY INVENTORY: run `35673186035` completed successfully. Cloudflare history includes version `1931e05c-439c-474e-9879-9b52b19794cd`, created 2026-09-20 06:38:59Z immediately after the guarded production mobile-repair promotion at 07:38 BST; this is the strongest available mapping to the known-good rendered state.
-- COMPLETED: added `.github/workflows/hqc-p0-frontend-recovery.yml` in commit `8800ff1ca690551db71b202677718446cde4f870`. It uses Cloudflare rollback to restore the complete known-good version rather than rebuilding from the broken origin, then requires HTTP checks and Playwright rendered integrity at 390×844 and 1440×1000: stylesheet loaded, non-default typography/link styling, no horizontal overflow, visible single/compare CTAs, and upload entry after click.
-- RELEASE STATE: no Actions run had registered for the recovery commit at final check, therefore no rollback or production recovery is claimed yet.
-- Solar remains non-public. A rollback to the older complete version may temporarily remove the newer routing boundary; because no Solar CTA is public, safety is preserved while presentation recovery remains P0. Re-establish current isolation only through a method proven to preserve recovered assets.
-- OPS/LEARNINGS.md unchanged: this is operational recovery evidence, not a customer/product lesson.
-- NEXT: inspect the recovery workflow once registered; close P0 only on successful rendered production evidence, then refresh funnel/revenue and resume qualified acquisition.
 
 ## Earlier runs
 Earlier detailed run history remains available in repository history. The current state and durable learnings carry forward the authoritative operating context.
