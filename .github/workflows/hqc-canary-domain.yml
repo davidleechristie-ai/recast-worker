@@ -84,6 +84,7 @@ jobs:
             await start.waitFor({state:'visible',timeout:15000});
             await start.click();
             const back=page.locator('#hqc-upload-back');await back.waitFor({state:'visible',timeout:15000});
+            if(suffix.includes('qa=1')&&!suffix.includes('manual_path')){await back.click();await page.waitForURL(url=>url.pathname==='/'&&!url.search,{timeout:15000});await start.waitFor({state:'visible',timeout:15000});await start.click();await page.locator('#hqc-upload-back').waitFor({state:'visible',timeout:15000});}
             const chooseVisible=await page.locator('#hqc-choose-file').isVisible().catch(()=>false);
             if(!chooseVisible)throw new Error('Upload CTA missing after opening single-quote intake');
             if(suffix.includes('manual_path')){
@@ -101,6 +102,8 @@ jobs:
             await page.goto('https://cf-preview.homequotecheck.co.uk/?qa=1&compare_regression=1',{waitUntil:'domcontentloaded',timeout:30000});
             await page.getByRole('button',{name:/start quote comparison/i}).first().click();
             const compareBack=page.locator('#hqc-upload-back'); await compareBack.waitFor({state:'visible',timeout:15000});
+            await compareBack.click(); await page.waitForURL(url=>url.pathname==='/'&&!url.search,{timeout:15000});
+            await page.getByRole('button',{name:/start quote comparison/i}).first().click(); await page.locator('#hqc-upload-back').waitFor({state:'visible',timeout:15000});
             const choose=page.locator('#hqc-choose-file'); await choose.waitFor({state:'visible',timeout:15000});
             const chooserPromise=page.waitForEvent('filechooser',{timeout:5000}); await choose.click(); const chooser=await chooserPromise;
             const png=Buffer.from('iVBORw0KGgoAAAANSUhEUgAAAAEAAAABCAQAAAC1HAwCAAAAC0lEQVR42mP8/x8AAusB9Wl2+XkAAAAASUVORK5CYII=','base64');
