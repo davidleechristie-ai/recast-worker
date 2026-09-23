@@ -1,5 +1,12 @@
 # Run log
 
+## 2026-09-23 11:55 Europe/London — Solar preview rendered-isolation canary added
+- TEST: custom-domain Playwright canary now opens the private Solar preview at mobile and desktop widths, requires the Solar/Battery proposition and explicit NOT PUBLIC badge, then opens the normal journey and proves Solar state has not leaked and the Heat Pump proposition remains.
+- COMMIT: `83ebc474259aa87bf43dc917687c6fc6d930b5eb`.
+- STATUS: test is committed; do not mark rendered verification complete until the resulting canary workflow is green.
+- NEXT: inspect canary result, fix any legitimate regression, then advance the preview journey toward real upload/analyse/result wiring while retaining the backend/public gate.
+
+
 ## 2026-09-23 11:48 Europe/London — technology-aware Decision Pack telemetry added
 - REVENUE: refreshed authoritative live Home Quote Check Stripe PaymentIntents; `data=[]`, `has_more=false`. Genuine revenue remains £0 / £1,000 monthly, £0 / £100 validation, 0 paying customers.
 - FUNNEL/ACQUISITION: fresh authoritative synthetic-excluded Cloudflare snapshot unavailable in this execution path; null. Latest settled snapshot remains 56 landings → 16 starts → 5 uploads → 5 analyses; 4 Decision Cases → 2 share intents → 0 share opens → 0 durable checkouts.
