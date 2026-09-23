@@ -1,6 +1,6 @@
 # Current state
 
-Updated: 2026-09-23 06:47 Europe/London
+Updated: 2026-09-23 08:42 Europe/London
 
 North star: Sustain at least **£1,000 genuine monthly revenue**. Immediate milestone: first genuine purchase and £100 cumulative validation revenue.
 
@@ -17,27 +17,26 @@ Qualified acquisition and activation remain the earliest measured revenue constr
 First genuine £4.99 Decision Pack purchase, then £100 cumulative validation revenue.
 
 ## Solar/Battery progress
-- Previously verified media provenance contract remains green (`35798847121`).
-- Commit `a5044219eba000aa6aaefab8625be2d2bbf9e10b` wires only verified extracted-media JSON envelopes into the gated Solar request handler while leaving raw media HTTP 415.
-- Commit `c4dca3dbd1d95cb64f8e33774f5787f8a8afc40b` adds handler-level PDF-derived and image/OCR-derived fixtures, provenance assertions, unknown-preservation and invalid-envelope fail-closed coverage.
-- `HQC Solar analysis CI` run `35823816580` was in progress at the evidence cutoff. Do not promote this integration to verified until green.
+- Media provenance contract remains verified green (`35798847121`).
+- Verified extracted-media JSON envelopes are wired into the gated Solar request handler while raw media remains HTTP 415.
+- Handler-level PDF-derived and image/OCR-derived fixtures cover provenance, unknown preservation and invalid-envelope fail-closed behaviour.
+- **`HQC Solar analysis CI` run `35823816580` completed successfully** for commit `c4dca3dbd1d95cb64f8e33774f5787f8a8afc40b`; extracted-media → gated-handler integration is now verified rather than pending.
 - Heat Pump and production UI were not changed.
 
 ## Active workstreams
 1. Continue qualified Heat Pump acquisition/conversion toward first purchase.
-2. Verify extracted-media → gated-handler CI; if green, progress representative client/extractor fixtures while retaining raw-media 415 until actual extraction correctness is proven.
+2. Progress representative client/extractor fixtures for PDF/screenshot/photo while retaining raw-media 415 until actual extraction correctness is proven end-to-end.
 3. Ensure technology propagates through durable anonymous funnel/checkout evidence before public Solar exposure.
 4. Begin Financial Assumptions Check after trustworthy ingestion is executable end-to-end.
 
 ## Expected revenue impact
-No fresh genuine payment/funnel advance was observable. This change removes one integration gap between verified extraction output and technology-specific Solar analysis without widening the public attack/trust boundary.
+No fresh genuine payment/funnel advance was observable. The verified integration removes another trust boundary between extracted quote evidence and technology-specific Solar analysis without widening the public media boundary or destabilising Heat Pump.
 
 ## Next actions
-1. Confirm `35823816580`; promote roadmap only if green.
-2. Add representative client/extractor fixtures for PDF/screenshot/photo.
-3. Verify technology propagation into durable funnel/checkout events.
-4. Continue qualified Heat Pump acquisition and measure genuine analysis → checkout → purchase.
-5. Start Financial Assumptions Check after ingestion gate is green.
+1. Add representative client/extractor fixtures for PDF/screenshot/photo.
+2. Verify technology propagation into durable funnel/checkout events.
+3. Continue qualified Heat Pump acquisition and measure genuine analysis → checkout → purchase.
+4. Start Financial Assumptions Check after ingestion gate is green end-to-end.
 
 ## Durable learning
 No new reusable customer/product learning established; OPS/LEARNINGS.md unchanged.
