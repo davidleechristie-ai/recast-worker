@@ -1,2 +1,2 @@
-2026-09-23T11:05:00+01:00
-Deploy upload syntax fix and Back-button regression guard. Require Back and Choose file visible on single and comparison intake before production promotion.
+2026-09-23T11:12:00+01:00
+Deploy corrected upload Back navigation. Back must return to clean homepage from both single and comparison intake; canary browser test must prove navigation.
