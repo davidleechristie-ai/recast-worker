@@ -132,7 +132,8 @@ jobs:
           for (const viewport of [{width:390,height:844},{width:1366,height:900}]) {
             const context=await browser.newContext({viewport,serviceWorkers:'block'});
             const page=await context.newPage();
-            await page.goto('https://cf-preview.homequotecheck.co.uk/?qa=1&solar_preview=1',{waitUntil:'domcontentloaded',timeout:30000});
+            await page.goto('https://cf-preview.homequotecheck.co.uk/?qa=1&solar_preview=1',{waitUntil:'commit',timeout:30000});
+            await page.locator('#hqc-solar-preview-badge').waitFor({state:'attached',timeout:20000});
             await page.locator('#hqc-solar-preview-badge').waitFor({state:'visible',timeout:15000});
             const solarHeading=(await page.locator('.copy h1,.copy h2').first().innerText()).toLowerCase();
             if(!solarHeading.includes('solar')||!solarHeading.includes('battery'))throw new Error('Solar preview proposition did not render');
@@ -143,7 +144,8 @@ jobs:
           {
             const context=await browser.newContext({viewport:{width:390,height:844},isMobile:true,hasTouch:true,serviceWorkers:'block'});
             const page=await context.newPage();
-            await page.goto('https://cf-preview.homequotecheck.co.uk/?qa=1',{waitUntil:'domcontentloaded',timeout:30000});
+            await page.goto('https://cf-preview.homequotecheck.co.uk/?qa=1',{waitUntil:'commit',timeout:30000});
+            await page.locator('.copy h1,.copy h2').first().waitFor({state:'visible',timeout:20000});
             if(await page.locator('#hqc-solar-preview-badge').count())throw new Error('Solar preview leaked into default Heat Pump journey');
             const heading=(await page.locator('.copy h1,.copy h2').first().innerText()).toLowerCase();
             if(!heading.includes('heat-pump'))throw new Error('Default public proposition is no longer Heat Pump');
