@@ -1,5 +1,13 @@
 # Run log
 
+## 2026-09-23 11:47 Europe/London — gated Solar customer journey added
+- PRODUCT: added `solar-preview-journey.js`, activated only by explicit `?solar_preview=1` / preview session state. It adapts landing/upload copy for Solar/Battery and marks analysis requests with `x-hqc-technology: solar_battery`.
+- SNAPSHOT: `snapshot.mjs` now bundles the preview script as `/__hqc_solar_preview.js`.
+- COMMITS: `564381a0bf0c3a7812063eb045ee85a3eb0f4b38`, `c202d089bd93808c15f3220ec20d5608e1174d89`.
+- SAFETY: no public Solar release; backend remains gated by `HQC_SOLAR_ANALYSIS_INTERNAL=1`. Heat Pump remains the default public journey.
+- NEXT: add browser regression coverage for preview desktop/mobile plus non-preview Heat Pump isolation, then verify before any exposure.
+
+
 ## 2026-09-23 11:38 Europe/London — representative Solar ingestion gate verified
 - VERIFICATION: `HQC Solar analysis CI` run `35849623161` completed successfully for commit `e1cd6e9f2933ebd0121cb1d01da34f18bfc2bae9`.
 - PRODUCT: representative PDF extraction, mobile screenshot OCR, partial camera-photo OCR and PDF+screenshot comparison now pass through the gated Solar request handler in CI.
