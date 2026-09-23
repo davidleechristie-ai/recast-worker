@@ -84,16 +84,34 @@ jobs:
           static=$(curl -L -sS --max-time 30 "$base/is-this-a-good-heat-pump-quote.html")
           grep -q 'Is this a good heat-pump quote' <<< "$static"
           echo 'HQC Cloudflare readability/commercial preview verification passed.'
-      - name: Inspect current HQC production routing
+      - name: Gate on current HQC production routing
         shell: bash
         run: |
-          set -u
+          set -euo pipefail
           echo '--- DNS A/AAAA/CNAME ---'
           dig +short homequotecheck.co.uk A || true
           dig +short homequotecheck.co.uk AAAA || true
           dig +short homequotecheck.co.uk CNAME || true
-          echo '--- HTTPS headers ---'
-          curl -sS -I -L --max-time 30 https://homequotecheck.co.uk/ | sed -n '1,30p' || true
+          echo '--- Production smoke ---'
+          for path in / /health /api/_healthcheck /is-this-a-good-heat-pump-quote.html; do
+            code=$(curl -L -sS -o /tmp/hqc-production-check -w '%{http_code}' --max-time 30 "https://homequotecheck.co.uk$path")
+            echo "$path -> $code"
+            test "$code" = '200'
+          done
+          health=$(curl -L -sS --max-time 30 https://homequotecheck.co.uk/health)
+          api=$(curl -L -sS --max-time 30 https://homequotecheck.co.uk/api/_healthcheck)
+          home=$(curl -L -sS --max-time 30 https://homequotecheck.co.uk/)
+          grep -q 'cloudflare-assets' <<< "$health"
+          grep -q 'Success' <<< "$api"
+          grep -q '__hqc_enhancements.js' <<< "$home"
+          if grep -q 'data-appdeploy-overlay-bootstrap' <<< "$home"; then echo 'Production homepage contains stale AppDeploy bootstrap'; exit 1; fi
+          if grep -q 'heat-pump-second-opinion-v43csv.v2.appdeploy.ai' <<< "$home"; then echo 'Production homepage references stale AppDeploy origin'; exit 1; fi
+          css_path=$(grep -oE '/assets/[^" ]+\.css' <<< "$home" | head -1)
+          js_path=$(grep -oE '/assets/[^" ]+\.js' <<< "$home" | head -1)
+          test -n "$css_path" && test -n "$js_path"
+          test "$(curl -L -sS -o /tmp/hqc-prod-css -w '%{http_code}' --max-time 30 "https://homequotecheck.co.uk$css_path")" = '200'
+          test "$(curl -L -sS -o /tmp/hqc-prod-js -w '%{http_code}' --max-time 30 "https://homequotecheck.co.uk$js_path")" = '200'
+          echo 'HQC production routing gate passed.'
       - name: Inspect Cloudflare zone ownership
         shell: bash
         env:
