@@ -57,7 +57,8 @@ jobs:
           }
 
           if live_is_hqc; then
-            echo 'Root domain is already serving the verified HQC Cloudflare Worker.'
+            echo 'Root domain is already serving HQC; deploying the current commit to production Worker.'
+            npx wrangler deploy --config wrangler.production.toml
           else
             mapfile -t appdeploy_ids < <(jq -r '.result[] | select(.type=="A" and .name=="homequotecheck.co.uk" and .content=="18.232.7.146") | .id' <<< "$dns_json")
             mapfile -t cf_transition_ids < <(jq -r '.result[] | select(.type=="AAAA" and .name=="homequotecheck.co.uk" and .content=="100::" and .proxied==true) | .id' <<< "$dns_json")
