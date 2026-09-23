@@ -6,10 +6,12 @@ on:
     paths:
       - '.github/workflows/hqc-solar-analysis-ci.yml'
       - 'hqc-deploy-preview/worker-entry.js'
+      - 'hqc-deploy-preview/decision-pack.js'
       - 'hqc-deploy-preview/lib/solar-battery-*.js'
       - 'hqc-deploy-preview/lib/technology-routing.js'
       - 'hqc-deploy-preview/lib/analysis-request-routing.js'
       - 'hqc-deploy-preview/test/solar-battery-*.mjs'
+      - 'hqc-deploy-preview/test/decision-pack-technology.test.mjs'
       - 'hqc-deploy-preview/test/worker-entry-solar-gate.test.mjs'
       - 'hqc-deploy-preview/test/technology-routing.test.mjs'
       - 'hqc-deploy-preview/test/analysis-request-routing.test.mjs'
@@ -55,3 +57,6 @@ jobs:
       - name: Verify technology isolation
         working-directory: hqc-deploy-preview
         run: node --test test/technology-routing.test.mjs test/analysis-request-routing.test.mjs
+      - name: Verify Decision Pack technology propagation
+        working-directory: hqc-deploy-preview
+        run: node --test test/decision-pack-technology.test.mjs
