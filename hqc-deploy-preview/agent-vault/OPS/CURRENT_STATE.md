@@ -1,6 +1,6 @@
 # Current state
 
-Updated: 2026-09-23 11:20 Europe/London
+Updated: 2026-09-23 11:38 Europe/London
 
 North star: Sustain at least **£1,000 genuine monthly revenue**. Immediate milestone: first genuine purchase and £100 cumulative validation revenue.
 
@@ -19,7 +19,7 @@ First genuine £4.99 Decision Pack purchase, then £100 cumulative validation re
 ## Solar/Battery progress
 - Representative extractor-output fixtures have now been added for multi-page PDF text, mobile screenshot OCR, partial camera-photo OCR and PDF+screenshot comparison.
 - New end-to-end gate `test/solar-battery-extractor-e2e.test.mjs` drives those extracted-media envelopes through the gated Solar request handler and verifies evidence/null preservation/comparison provenance.
-- `HQC Solar analysis CI` now includes this representative document-ingestion gate; commits `46bbfb1`, `9fe85a1`, `e1cd6e9`. Do not mark this slice verified until the workflow is green.
+- `HQC Solar analysis CI` now includes this representative document-ingestion gate; run `35849623161` completed successfully for commit `e1cd6e9f2933ebd0121cb1d01da34f18bfc2bae9`. This representative extracted-document → gated-handler slice is now CI-verified.
 - Media provenance contract remains verified green (`35798847121`).
 - Verified extracted-media JSON envelopes are wired into the gated Solar request handler while raw media remains HTTP 415.
 - Handler-level PDF-derived and image/OCR-derived fixtures cover provenance, unknown preservation and invalid-envelope fail-closed behaviour.
@@ -36,7 +36,7 @@ First genuine £4.99 Decision Pack purchase, then £100 cumulative validation re
 No material genuine-revenue advance this run. Fresh authoritative Stripe evidence keeps the commercial milestone and acquisition/activation priority grounded without manufacturing payment evidence.
 
 ## Next actions
-1. Confirm the new representative PDF/screenshot/photo extractor-output CI gate is green; then progress the client-facing Solar journey without opening the public gate.
+1. Progress the client-facing Solar journey behind the closed public gate, reusing the verified representative PDF/screenshot/photo ingestion path.
 2. Verify technology propagation into durable funnel/checkout events.
 3. Continue qualified Heat Pump acquisition and measure genuine analysis → checkout → purchase.
 4. Start Financial Assumptions Check after ingestion gate is green end-to-end.
