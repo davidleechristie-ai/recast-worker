@@ -2,6 +2,18 @@
 
 Append concise dated run records here. Record only observed evidence and completed work.
 
+## 2026-09-23 08:42 Europe/London — extracted-media → gated Solar handler verified
+- REVENUE: fresh authoritative Stripe evidence unavailable in this execution path; fresh evidence null. Latest authoritative settled evidence remains £0 / £1,000 monthly, £0 / £100 validation, 0 paying customers and is not promoted as fresh.
+- FUNNEL/ACQUISITION: fresh authoritative synthetic-excluded Cloudflare snapshot unavailable; null. Latest settled snapshot remains 56 landings → 16 starts → 5 uploads → 5 analyses; 4 Decision Cases → 2 share intents → 0 share opens → 0 durable checkouts.
+- SEARCH: fresh Search Console evidence unavailable; null. Latest settled summary remains 0 clicks / 4 impressions / 0% CTR / average position 8.07.
+- VERIFICATION: GitHub Actions `HQC Solar analysis CI` run `35823816580` completed successfully for commit `c4dca3dbd1d95cb64f8e33774f5787f8a8afc40b`.
+- PRODUCT: promoted extracted-media → gated Solar handler integration from pending to verified. PDF-derived and image/OCR-derived extracted-text envelopes preserve provenance and unknowns; invalid envelopes fail closed.
+- SAFETY: Solar remains non-public; raw PDF/image requests remain HTTP 415; no Heat Pump or production UI change.
+- ROADMAP: WS2/WS3 updated to record verified handler integration. Remaining ingestion boundary is representative client/extractor PDF/screenshot/photo end-to-end correctness before changing raw-media support.
+- LEARNINGS: unchanged; no reusable customer/product lesson established.
+- EXPECTED IMPACT: removes another technical trust boundary toward a sellable Solar/Battery quote checker while preserving the live Heat Pump path.
+- NEXT: representative client/extractor PDF/screenshot/photo fixtures; verify technology propagation into durable funnel/checkout evidence; continue qualified Heat Pump acquisition toward first genuine £4.99 purchase.
+
 ## 2026-09-23 06:47 Europe/London — extracted-media envelopes wired into gated Solar handler
 - REVENUE: fresh authoritative Stripe evidence unavailable in this execution path; fresh evidence null. Latest authoritative settled evidence remains £0 / £1,000 monthly, £0 / £100 validation, 0 paying customers.
 - FUNNEL/ACQUISITION: fresh authoritative synthetic-excluded Cloudflare snapshot unavailable; null. Latest settled snapshot remains 56 landings → 16 starts → 5 uploads → 5 analyses; 4 Decision Cases → 2 share intents → 0 share opens → 0 durable checkouts.
