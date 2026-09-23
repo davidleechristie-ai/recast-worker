@@ -1,5 +1,13 @@
 # Run log
 
+## 2026-09-23 12:03 Europe/London — Solar preview canary navigation hardened
+- RESULT: custom-domain canary run `35850820509` failed in Playwright because `page.goto(...solar_preview=1)` exceeded 30s waiting for `domcontentloaded`.
+- DIAGNOSIS: snapshot, Cloudflare canary deployment, domain verification, static assets and API health had already passed; no Solar proposition/isolation assertion failed before the navigation timeout.
+- FIX: commit `df080f39793c574722855afa1e112063cd0a0296` changes the new Solar/default navigation checks to wait for response commit and then explicit UI elements, avoiding a false failure caused by slow/nonessential page resources.
+- STATUS: rendered Solar verification remains pending until the resulting canary run is green.
+- NEXT: inspect the new run and only promote the gate after success.
+
+
 ## 2026-09-23 11:55 Europe/London — Solar preview rendered-isolation canary added
 - TEST: custom-domain Playwright canary now opens the private Solar preview at mobile and desktop widths, requires the Solar/Battery proposition and explicit NOT PUBLIC badge, then opens the normal journey and proves Solar state has not leaked and the Heat Pump proposition remains.
 - COMMIT: `83ebc474259aa87bf43dc917687c6fc6d930b5eb`.
