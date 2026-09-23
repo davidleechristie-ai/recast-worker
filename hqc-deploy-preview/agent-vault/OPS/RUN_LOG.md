@@ -1,5 +1,16 @@
 # Run log
 
+## 2026-09-23 12:43 Europe/London — fresh funnel identifies quote-intake constraint
+- REVENUE: authoritative live Home Quote Check Stripe PaymentIntents refreshed; `data=[]`, `has_more=false`. Genuine revenue remains £0 / £1,000 monthly, £0 / £100 validation, 0 paying customers.
+- FUNNEL: fresh synthetic-excluded Cloudflare snapshot at 11:40Z: 80 landings → 56 CTA/checker starts → 6 uploads → 6 genuine analyses; 5 extended genuine → 1 multi-quote analysis → 5 Decision Cases → 2 share intents → 0 share opens → 0 durable checkouts.
+- SOURCE: direct produced all 6 genuine analyses (62 landings → 56 CTA → 6 uploads → 6 genuine); current organic-labelled cohorts produced landings but no CTA/upload/analysis.
+- DIAGNOSIS: start/CTA → upload is now the earliest measured constraint at 11%; landing engagement is no longer the leading measured problem. Sample remains small, so do not infer a pricing problem from 0 checkouts.
+- SOLAR: technology-aware Decision Pack telemetry CI run `35850406399` is now confirmed green for `ad5f43a8b9e0029ab6d97ef1f6f606215efa60f1`. Rendered Solar preview verification remains pending a confirmed post-`df080f3` custom-domain canary success.
+- SEARCH: fresh Search Console evidence unavailable; null.
+- PRODUCTION: no UI/product production release this run; Solar remains non-public and Heat Pump unchanged.
+- LEARNINGS: unchanged; evidence refines current diagnosis but does not yet establish a durable reusable customer lesson.
+- NEXT: reduce Heat Pump checker-start → upload friction; independently close Solar rendered/isolation verification and durable technology attribution.
+
 ## 2026-09-23 12:03 Europe/London — Solar preview canary navigation hardened
 - RESULT: custom-domain canary run `35850820509` failed in Playwright because `page.goto(...solar_preview=1)` exceeded 30s waiting for `domcontentloaded`.
 - DIAGNOSIS: snapshot, Cloudflare canary deployment, domain verification, static assets and API health had already passed; no Solar proposition/isolation assertion failed before the navigation timeout.
