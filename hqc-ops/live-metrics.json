@@ -1,5 +1,5 @@
 {
-  "fetchedAt": "2026-09-23T11:51:33Z",
+  "fetchedAt": "2026-09-23T17:15:37Z",
   "metrics": {
     "genuineAnalyses": 6,
     "shareOpens": 0,
@@ -15,12 +15,12 @@
     "note": "Cumulative Cloudflare-side counters from measurementStartedAt; QA/demo/test events are excluded. Extended funnel counters use their own same-epoch denominator from extendedMeasurementStartedAt."
   },
   "growthReport": {
-    "generatedAt": "2026-09-23T11:51:33.331Z",
+    "generatedAt": "2026-09-23T17:15:37.288Z",
     "measurementStartedAt": "2026-09-11T18:33:07.244Z",
     "extendedMeasurementStartedAt": "2026-09-11T20:34:24.536Z",
     "durable": true,
     "total": {
-      "landings": 80,
+      "landings": 81,
       "cta": 56,
       "uploads": 6,
       "genuine": 6,
@@ -35,7 +35,7 @@
       "checkouts": 0
     },
     "rates": {
-      "landingToCta": 70,
+      "landingToCta": 69,
       "ctaToUpload": 11,
       "uploadToGenuine": 100,
       "extendedGenuineToMultiQuote": 20,
@@ -116,6 +116,25 @@
         "outboundClicks": 0,
         "checkouts": 0,
         "source": "organic_flowtemp",
+        "landingToCta": 0,
+        "ctaToUpload": null,
+        "landingToGenuine": 0
+      },
+      {
+        "landings": 2,
+        "cta": 0,
+        "uploads": 0,
+        "genuine": 0,
+        "extendedGenuine": 0,
+        "multiQuoteAnalyses": 0,
+        "decisionCases": 0,
+        "installerQuestions": 0,
+        "shareIntent": 0,
+        "shareOpens": 0,
+        "recipientStarts": 0,
+        "outboundClicks": 0,
+        "checkouts": 0,
+        "source": "organic_radiators",
         "landingToCta": 0,
         "ctaToUpload": null,
         "landingToGenuine": 0
@@ -267,25 +286,6 @@
         "recipientStarts": 0,
         "outboundClicks": 0,
         "checkouts": 0,
-        "source": "organic_radiators",
-        "landingToCta": 0,
-        "ctaToUpload": null,
-        "landingToGenuine": 0
-      },
-      {
-        "landings": 1,
-        "cta": 0,
-        "uploads": 0,
-        "genuine": 0,
-        "extendedGenuine": 0,
-        "multiQuoteAnalyses": 0,
-        "decisionCases": 0,
-        "installerQuestions": 0,
-        "shareIntent": 0,
-        "shareOpens": 0,
-        "recipientStarts": 0,
-        "outboundClicks": 0,
-        "checkouts": 0,
         "source": "professional",
         "landingToCta": 0,
         "ctaToUpload": null,
@@ -294,7 +294,7 @@
     ],
     "technologies": [
       {
-        "landings": 27,
+        "landings": 28,
         "cta": 41,
         "uploads": 1,
         "genuine": 1,
