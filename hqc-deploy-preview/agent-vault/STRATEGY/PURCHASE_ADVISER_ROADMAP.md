@@ -47,7 +47,7 @@ Status: IN PROGRESS.
 - [~] Reuse Decision Case/share and checkout infrastructure with technology dimension. Technology-aware client telemetry/checkout plumbing implemented; Solar-specific Decision Pack content remains deliberately gated because current pack analysis is Heat-Pump-specific.
 - [~] PDF/image ingestion: provenance/normalisation, extracted-media → gated-handler integration, and representative PDF/screenshot/photo extractor-output fixtures are CI-verified (`35849623161`). Direct raw-media HTTP ingestion remains disabled pending the customer-facing extraction path and rendered end-to-end verification.
 - [ ] Automated rendered/browser correctness tests for gated Solar preview and non-preview Heat Pump isolation.
-- [ ] Rendered mobile + desktop and preview/canary verification before public CTA.
+- [~] Rendered mobile + desktop and preview/canary verification before public CTA. Browser isolation gate added in `83ebc47`; awaiting green custom-domain canary before promotion.
 
 ## WS4 — Home/System Fit Check
 Status: NOT STARTED. Deferred behind P0/P1 work.
