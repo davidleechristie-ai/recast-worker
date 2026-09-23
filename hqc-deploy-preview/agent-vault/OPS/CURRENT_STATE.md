@@ -1,14 +1,14 @@
 # Current state
 
-Updated: 2026-09-23 11:47 Europe/London
+Updated: 2026-09-23 11:48 Europe/London
 
 North star: Sustain at least **£1,000 genuine monthly revenue**. Immediate milestone: first genuine purchase and £100 cumulative validation revenue.
 
 ## Evidence refreshed
 - Revenue: authoritative live Home Quote Check Stripe evidence refreshed this run. The live account has **0 PaymentIntents** (`has_more=false`), therefore successful non-refunded production payments remain **£0 / £1,000 monthly, £0 / £100 validation, 0 paying customers**.
 - Durable funnel/acquisition: fresh authoritative synthetic-excluded Cloudflare evidence unavailable in this execution path; **null**. Latest settled snapshot remains **56 genuine landings → 16 starts → 5 uploads → 5 genuine analyses**, 4 Decision Cases → 2 share intents → 0 share opens → 0 durable checkouts.
-- Search: fresh Search Console evidence unavailable; **null**. Latest settled summary remains 0 clicks, 4 impressions, 0% CTR, average position 8.07. A fresh public web search returned no usable result evidence and is not substituted for Search Console.
-- Production: fresh authoritative production health evidence unavailable through the available HTTP path this run; **null**. No production release made. Solar remains non-public and raw PDF/image requests remain fail-closed.
+- Search: fresh Search Console evidence unavailable; **null**. Latest settled summary remains 0 clicks, 4 impressions, 0% CTR, average position 8.07.
+- Production: no production release made this run. Solar remains non-public and raw PDF/image requests remain fail-closed.
 
 ## Commercial diagnosis
 Qualified acquisition and activation remain the earliest measured revenue constraints. Only five genuine analyses exist, so there is insufficient evidence for a pricing/payment-demand conclusion. Fresh Stripe evidence confirms no purchase has occurred yet but does not change the bottleneck diagnosis.
@@ -17,31 +17,29 @@ Qualified acquisition and activation remain the earliest measured revenue constr
 First genuine £4.99 Decision Pack purchase, then £100 cumulative validation revenue.
 
 ## Solar/Battery progress
-- A gated customer-facing Solar/Battery preview journey now exists in `solar-preview-journey.js` and is bundled by `snapshot.mjs` (commits `564381a`, `c202d08`). It activates only via explicit `?solar_preview=1` / session preview state, changes the home/upload copy for Solar/Battery, and adds `x-hqc-technology: solar_battery` to analysis requests.
-- This does **not** open the backend public gate: production analysis still requires `HQC_SOLAR_ANALYSIS_INTERNAL=1`; normal public traffic remains Heat Pump / fail-closed for Solar.
-- Representative extractor-output fixtures have now been added for multi-page PDF text, mobile screenshot OCR, partial camera-photo OCR and PDF+screenshot comparison.
-- New end-to-end gate `test/solar-battery-extractor-e2e.test.mjs` drives those extracted-media envelopes through the gated Solar request handler and verifies evidence/null preservation/comparison provenance.
-- `HQC Solar analysis CI` now includes this representative document-ingestion gate; run `35849623161` completed successfully for commit `e1cd6e9f2933ebd0121cb1d01da34f18bfc2bae9`. This representative extracted-document → gated-handler slice is now CI-verified.
-- Media provenance contract remains verified green (`35798847121`).
-- Verified extracted-media JSON envelopes are wired into the gated Solar request handler while raw media remains HTTP 415.
-- Handler-level PDF-derived and image/OCR-derived fixtures cover provenance, unknown preservation and invalid-envelope fail-closed behaviour.
-- `HQC Solar analysis CI` run `35823816580` remains the latest verified extracted-media → gated-handler integration evidence.
-- Heat Pump and production UI were not changed.
+- Technology-specific Solar/Battery routing, analysis/comparison, evidence preservation, installer questions and representative extracted PDF/screenshot/photo envelopes are CI-verified behind the non-public gate.
+- A gated customer-facing Solar/Battery preview journey exists via explicit `?solar_preview=1` / session preview state and remains non-public.
+- Decision Pack telemetry/checkout client plumbing now propagates the active anonymous technology dimension from `hqc_journey_technology`, defaulting safely to `heat_pump`. Commit `79a8889497873c1e58f7bf355c020dc12e8563ae`.
+- Added `test/decision-pack-technology.test.mjs` and wired it into `HQC Solar analysis CI`; commits `a3c7a5819cb57a53b846d1f0f9587aa2615851ad`, `ad5f43a8b9e0029ab6d97ef1f6f606215efa60f1`.
+- CI run `35850406399` was queued at cutoff; technology propagation is implemented but **not yet promoted to verified**.
+- Solar Decision Pack content itself is still Heat-Pump-specific and must not be exposed for Solar merely because telemetry is technology-aware.
+- Heat Pump public journey and production UI were not released or changed in production.
 
 ## Active workstreams
 1. Continue qualified Heat Pump acquisition/conversion toward first purchase.
-2. Progress representative client/extractor fixtures for PDF/screenshot/photo while retaining raw-media 415 until actual extraction correctness is proven end-to-end.
-3. Ensure technology propagates through durable anonymous funnel/checkout evidence before public Solar exposure.
-4. Begin Financial Assumptions Check after trustworthy ingestion is executable end-to-end.
+2. Verify gated Solar preview journey on desktop/mobile while proving non-preview Heat Pump isolation.
+3. Complete technology propagation verification through durable funnel/checkout evidence; keep Solar Decision Pack content gated until technology-specific output exists.
+4. Begin Financial Assumptions Check after trustworthy ingestion/journey gate is green end-to-end.
 
 ## Expected revenue impact
-No material genuine-revenue advance this run. Fresh authoritative Stripe evidence keeps the commercial milestone and acquisition/activation priority grounded without manufacturing payment evidence.
+No material genuine-revenue advance this run. The change removes a measurement blind spot so future Solar/Battery commercial intent can be attributed correctly without contaminating Heat Pump evidence, improving speed and quality of go/no-go decisions for vertical #2.
 
 ## Next actions
-1. Add automated browser coverage for the gated Solar preview journey and verify it renders correctly on desktop/mobile while the non-preview Heat Pump journey remains unchanged.
-2. Verify technology propagation into durable funnel/checkout events.
-3. Continue qualified Heat Pump acquisition and measure genuine analysis → checkout → purchase.
-4. Start Financial Assumptions Check after ingestion gate is green end-to-end.
+1. Confirm `HQC Solar analysis CI` run `35850406399` green before promoting technology-aware checkout telemetry to verified.
+2. Add automated rendered/browser coverage for the gated Solar preview journey and non-preview Heat Pump isolation.
+3. Verify technology propagation into durable funnel/checkout events end-to-end.
+4. Continue qualified Heat Pump acquisition and measure genuine analysis → checkout → purchase.
+5. Start Financial Assumptions Check after the ingestion/journey gate is green end-to-end.
 
 ## Durable learning
 No new reusable customer/product learning established; OPS/LEARNINGS.md unchanged.
