@@ -32,11 +32,11 @@ Status: REQUEST + WORKER ISOLATION VERIFIED / INGESTION IN PROGRESS.
 - [x] Request integration CI run `35701193912` green.
 - [x] Add Worker-level gate/isolation tests.
 - [x] Worker gate/isolation CI run `35706680835` green for commit `a3661ea47293a0f715ba4647a7f00b35f95866d2`.
-- [~] PDF/image ingestion: added fail-closed extracted-media provenance contract and tests for PDF-derived and image/OCR-derived text. CI run `35798847121` queued; raw media remains HTTP 415 until end-to-end extraction correctness is proven.
+- [x] PDF/image extracted-media provenance contract and correctness tests verified by `HQC Solar analysis CI` run `35798847121` for commit `7593955a07378842bf77d1bf77b21a136f41114c`. Raw media remains HTTP 415 until end-to-end extraction correctness is proven.
 - [ ] Validate representative PDF and screenshot/photo extraction end-to-end and wire verified extracted-text envelopes into the gated handler.
 - [ ] Ensure technology propagates into durable anonymous funnel and checkout events end-to-end.
 
-Production routing evidence: run `35646864766`, attempt 2, passed without frontend assets. Behind-gate service evidence: run `35696615513` passed full trust suite. Request-integration evidence: run `35701193912` passed. Worker gate/isolation evidence: run `35706680835` passed.
+Production routing evidence: run `35646864766`, attempt 2, passed without frontend assets. Behind-gate service evidence: run `35696615513` passed full trust suite. Request-integration evidence: run `35701193912` passed. Worker gate/isolation evidence: run `35706680835` passed. Media extraction contract evidence: run `35798847121` passed.
 
 ## WS3 — Solar/Battery Quote Check MVP
 Status: IN PROGRESS.
@@ -46,7 +46,7 @@ Status: IN PROGRESS.
 - [x] Structured/manual JSON request boundary implemented and verified behind non-public environment gate.
 - [x] Generate quote-specific installer questions from gaps/differences — implemented in commits `41242eca8c0e642369a51ff2b5362c0e10d4874c` / `fc8a8840dcb0042b02874aac7e043360ce345d5b` and verified by successful `HQC Solar analysis CI` run `35717861021`.
 - [ ] Reuse Decision Case/share and checkout infrastructure with technology dimension.
-- [~] PDF/image ingestion correctness tests: media provenance/normalisation contract added; representative end-to-end extraction fixtures still required.
+- [~] PDF/image ingestion: extraction provenance/normalisation contract is CI-verified; representative client/extractor → handler fixtures still required before raw media support changes.
 - [ ] Automated end-to-end correctness tests.
 - [ ] Rendered mobile + desktop and preview/canary verification before public CTA.
 
