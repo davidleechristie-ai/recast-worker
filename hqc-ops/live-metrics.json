@@ -1,7 +1,7 @@
 {
-  "fetchedAt": "2026-09-23T06:06:08Z",
+  "fetchedAt": "2026-09-23T11:51:33Z",
   "metrics": {
-    "genuineAnalyses": 5,
+    "genuineAnalyses": 6,
     "shareOpens": 0,
     "outboundClicks": 0,
     "measurementStartedAt": "2026-09-11T18:33:07.244Z",
@@ -15,18 +15,18 @@
     "note": "Cumulative Cloudflare-side counters from measurementStartedAt; QA/demo/test events are excluded. Extended funnel counters use their own same-epoch denominator from extendedMeasurementStartedAt."
   },
   "growthReport": {
-    "generatedAt": "2026-09-23T06:06:08.320Z",
+    "generatedAt": "2026-09-23T11:51:33.331Z",
     "measurementStartedAt": "2026-09-11T18:33:07.244Z",
     "extendedMeasurementStartedAt": "2026-09-11T20:34:24.536Z",
     "durable": true,
     "total": {
-      "landings": 56,
-      "cta": 16,
-      "uploads": 5,
-      "genuine": 5,
-      "extendedGenuine": 4,
-      "multiQuoteAnalyses": 0,
-      "decisionCases": 4,
+      "landings": 80,
+      "cta": 56,
+      "uploads": 6,
+      "genuine": 6,
+      "extendedGenuine": 5,
+      "multiQuoteAnalyses": 1,
+      "decisionCases": 5,
       "installerQuestions": 0,
       "shareIntent": 2,
       "shareOpens": 0,
@@ -35,23 +35,23 @@
       "checkouts": 0
     },
     "rates": {
-      "landingToCta": 29,
-      "ctaToUpload": 31,
+      "landingToCta": 70,
+      "ctaToUpload": 11,
       "uploadToGenuine": 100,
-      "extendedGenuineToMultiQuote": 0,
+      "extendedGenuineToMultiQuote": 20,
       "extendedGenuineToDecisionCase": 100,
-      "decisionCaseToShareIntent": 50,
+      "decisionCaseToShareIntent": 40,
       "shareOpenToRecipientStart": null
     },
     "sources": [
       {
-        "landings": 40,
-        "cta": 16,
-        "uploads": 5,
-        "genuine": 5,
-        "extendedGenuine": 4,
-        "multiQuoteAnalyses": 0,
-        "decisionCases": 4,
+        "landings": 62,
+        "cta": 56,
+        "uploads": 6,
+        "genuine": 6,
+        "extendedGenuine": 5,
+        "multiQuoteAnalyses": 1,
+        "decisionCases": 5,
         "installerQuestions": 0,
         "shareIntent": 2,
         "shareOpens": 0,
@@ -59,9 +59,9 @@
         "outboundClicks": 0,
         "checkouts": 0,
         "source": "direct",
-        "landingToCta": 40,
-        "ctaToUpload": 31,
-        "landingToGenuine": 13
+        "landingToCta": 90,
+        "ctaToUpload": 11,
+        "landingToGenuine": 10
       },
       {
         "landings": 5,
@@ -172,6 +172,25 @@
         "recipientStarts": 0,
         "outboundClicks": 0,
         "checkouts": 0,
+        "source": "organic_compare",
+        "landingToCta": 0,
+        "ctaToUpload": null,
+        "landingToGenuine": 0
+      },
+      {
+        "landings": 1,
+        "cta": 0,
+        "uploads": 0,
+        "genuine": 0,
+        "extendedGenuine": 0,
+        "multiQuoteAnalyses": 0,
+        "decisionCases": 0,
+        "installerQuestions": 0,
+        "shareIntent": 0,
+        "shareOpens": 0,
+        "recipientStarts": 0,
+        "outboundClicks": 0,
+        "checkouts": 0,
         "source": "organic_goodquote_static",
         "landingToCta": 0,
         "ctaToUpload": null,
@@ -229,6 +248,25 @@
         "recipientStarts": 0,
         "outboundClicks": 0,
         "checkouts": 0,
+        "source": "organic_questions_static",
+        "landingToCta": 0,
+        "ctaToUpload": null,
+        "landingToGenuine": 0
+      },
+      {
+        "landings": 1,
+        "cta": 0,
+        "uploads": 0,
+        "genuine": 0,
+        "extendedGenuine": 0,
+        "multiQuoteAnalyses": 0,
+        "decisionCases": 0,
+        "installerQuestions": 0,
+        "shareIntent": 0,
+        "shareOpens": 0,
+        "recipientStarts": 0,
+        "outboundClicks": 0,
+        "checkouts": 0,
         "source": "organic_radiators",
         "landingToCta": 0,
         "ctaToUpload": null,
@@ -256,13 +294,13 @@
     ],
     "technologies": [
       {
-        "landings": 3,
-        "cta": 1,
-        "uploads": 0,
-        "genuine": 0,
-        "extendedGenuine": 0,
-        "multiQuoteAnalyses": 0,
-        "decisionCases": 0,
+        "landings": 27,
+        "cta": 41,
+        "uploads": 1,
+        "genuine": 1,
+        "extendedGenuine": 1,
+        "multiQuoteAnalyses": 1,
+        "decisionCases": 1,
         "installerQuestions": 0,
         "shareIntent": 0,
         "shareOpens": 0,
@@ -273,7 +311,8 @@
       }
     ],
     "recommendations": [
-      "Landing-to-CTA is weak: improve message match, trust proof and CTA prominence before adding more traffic.",
+      "CTA-to-upload is weak: reduce intake friction and clarify privacy/file requirements.",
+      "Too few genuine users reach a second-quote comparison: strengthen multi-quote progression before expanding acquisition.",
       "Share loop is below the 20% validation threshold: strengthen Decision Case sharing and recipient conversion.",
       "No qualified organic cohort yet: improve existing high-intent decision pages and internal handoff before expanding acquisition."
     ],
@@ -287,7 +326,7 @@
   },
   "autonomousDecisionGate": {
     "status": "ACT",
-    "bottleneck": "landing -> checker start",
-    "action": "Prioritise message-match, trust and CTA clarity on existing landing/decision pages before expanding acquisition."
+    "bottleneck": "checker start -> quote submission",
+    "action": "Prioritise quote-intake friction and instrumentation; do not add acquisition pages merely to increase traffic."
   }
 }
