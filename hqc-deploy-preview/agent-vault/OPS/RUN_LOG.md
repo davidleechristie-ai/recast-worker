@@ -1,5 +1,13 @@
 # Run log
 
+## 2026-09-23 11:20 Europe/London — representative Solar document-ingestion gate added
+- PRODUCT: added representative extractor-output fixtures for multi-page PDF, mobile screenshot OCR and partial camera-photo OCR, plus PDF+screenshot comparison.
+- TESTS: added `test/solar-battery-extractor-e2e.test.mjs` to drive representative extracted-media envelopes through the gated Solar handler and assert evidence, provenance, unknown preservation and comparison behaviour.
+- CI: `HQC Solar analysis CI` now runs the representative ingestion test. Commits: `46bbfb1727a0b79c70794fd49b6fd32817b392b2`, `9fe85a17e9f0d9d8a40e2abc0c0b9c7a51a936f2`, `e1cd6e9f2933ebd0121cb1d01da34f18bfc2bae9`.
+- SAFETY: Solar remains non-public; raw PDF/image HTTP support is not opened by this change.
+- NEXT: confirm CI green, then connect the proven Solar path to the customer-facing journey behind the existing public gate and perform rendered desktop/mobile verification.
+
+
 Append concise dated run records here. Record only observed evidence and completed work.
 
 ## 2026-09-23 09:41 Europe/London — authoritative revenue refresh; no material state change
