@@ -1,5 +1,15 @@
 # Run log
 
+## 2026-09-23 16:46 Europe/London — production consistency gate red; unrelated UI work held
+- REVENUE: fresh authoritative payment evidence unavailable in this execution path; null. Latest settled authoritative position remains £0 / £1,000 monthly, £0 / £100 validation, 0 paying customers.
+- FUNNEL/ACQUISITION: fresh authoritative synthetic-excluded snapshot unavailable; null. Latest settled snapshot remains 80 landings → 56 starts/CTA → 6 uploads → 6 genuine analyses → 1 multi-quote analysis → 5 Decision Cases → 2 share intents → 0 durable checkouts. Start→upload remains the earliest measured commercial constraint at 11%.
+- SEARCH: fresh Search Console evidence unavailable; null.
+- PRODUCTION: scheduled `HQC site consistency` run `35862572810` failed on main `ee2a957f880dd27ff06ce6562f247f570110a22e`. Setup and Playwright installation passed; the failing step was the browser audit covering HTML/assets/responsive/PDF upload. Available Actions metadata does not expose the failing assertion, so production health is unverified rather than assumed broken or healthy.
+- DECISION: per SHIP_CHANGE, hold unrelated UI production changes until the red consistency gate is diagnosed and a green verification exists. This temporarily outranks the measured upload-activation experiment.
+- SOLAR: remains non-public; no capability was promoted. Existing gated analysis/extraction evidence remains intact; rendered custom-domain verification remains pending.
+- LEARNINGS: unchanged; one opaque audit failure is insufficient for a durable rule.
+- NEXT: diagnose exact site-consistency failure, repair only if legitimate, require green rerun; then resume start→upload conversion work and independent Solar rendered/isolation verification.
+
 ## 2026-09-23 12:43 Europe/London — fresh funnel identifies quote-intake constraint
 - REVENUE: authoritative live Home Quote Check Stripe PaymentIntents refreshed; `data=[]`, `has_more=false`. Genuine revenue remains £0 / £1,000 monthly, £0 / £100 validation, 0 paying customers.
 - FUNNEL: fresh synthetic-excluded Cloudflare snapshot at 11:40Z: 80 landings → 56 CTA/checker starts → 6 uploads → 6 genuine analyses; 5 extended genuine → 1 multi-quote analysis → 5 Decision Cases → 2 share intents → 0 share opens → 0 durable checkouts.
@@ -18,13 +28,11 @@
 - STATUS: rendered Solar verification remains pending until the resulting canary run is green.
 - NEXT: inspect the new run and only promote the gate after success.
 
-
 ## 2026-09-23 11:55 Europe/London — Solar preview rendered-isolation canary added
 - TEST: custom-domain Playwright canary now opens the private Solar preview at mobile and desktop widths, requires the Solar/Battery proposition and explicit NOT PUBLIC badge, then opens the normal journey and proves Solar state has not leaked and the Heat Pump proposition remains.
 - COMMIT: `83ebc474259aa87bf43dc917687c6fc6d930b5eb`.
 - STATUS: test is committed; do not mark rendered verification complete until the resulting canary workflow is green.
 - NEXT: inspect canary result, fix any legitimate regression, then advance the preview journey toward real upload/analyse/result wiring while retaining the backend/public gate.
-
 
 ## 2026-09-23 11:48 Europe/London — technology-aware Decision Pack telemetry added
 - REVENUE: refreshed authoritative live Home Quote Check Stripe PaymentIntents; `data=[]`, `has_more=false`. Genuine revenue remains £0 / £1,000 monthly, £0 / £100 validation, 0 paying customers.
