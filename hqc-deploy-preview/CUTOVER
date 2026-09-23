@@ -1,2 +1,2 @@
-2026-09-23T09:25:00+01:00
-Deploy current HQC commit to hqc-production after fixing cutover short-circuit. Promote approved upload UI and verify apex.
+2026-09-23T09:45:00+01:00
+Promote approved three-screen HQC UX: upload, simplified analysis/results hierarchy, and visual comparison journey. Verify live production after deployment.
