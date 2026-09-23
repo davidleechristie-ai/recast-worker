@@ -35,7 +35,7 @@ Status: REQUEST + WORKER ISOLATION VERIFIED / INGESTION IN PROGRESS.
 - [x] PDF/image extracted-media provenance contract and correctness tests verified by `HQC Solar analysis CI` run `35798847121` for commit `7593955a07378842bf77d1bf77b21a136f41114c`.
 - [x] Wire verified extracted-text envelopes into gated handler and verify PDF-derived/image-OCR-derived handler fixtures: `HQC Solar analysis CI` run `35823816580` green for commit `c4dca3dbd1d95cb64f8e33774f5787f8a8afc40b`.
 - [x] Validate representative extracted PDF and screenshot/photo envelopes end-to-end through the gated handler. `HQC Solar analysis CI` run `35849623161` green for `e1cd6e9`; direct raw-media HTTP remains a separate closed boundary.
-- [~] Ensure technology propagates into durable anonymous funnel and checkout events end-to-end. Decision Pack client events + checkout request now carry `hqc_journey_technology` with Heat Pump safe default; CI run `35850406399` pending at cutoff. Server already records checkout technology from request payload. Full end-to-end durable evidence remains to verify.
+- [~] Ensure technology propagates into durable anonymous funnel and checkout events end-to-end. Decision Pack client events + checkout request carry `hqc_journey_technology` with Heat Pump safe default; contract CI run `35850406399` is green for `ad5f43a8b9e0029ab6d97ef1f6f606215efa60f1`. Full durable event-path reconciliation remains to verify.
 
 ## WS3 — Solar/Battery Quote Check MVP
 Status: IN PROGRESS.
@@ -44,10 +44,10 @@ Status: IN PROGRESS.
 - [x] Plain-English findings and evidence-only two-quote comparison without automatic winner.
 - [x] Structured/manual JSON request boundary implemented and verified behind non-public environment gate.
 - [x] Generate quote-specific installer questions from gaps/differences — verified by successful `HQC Solar analysis CI` run `35717861021`.
-- [~] Reuse Decision Case/share and checkout infrastructure with technology dimension. Technology-aware client telemetry/checkout plumbing implemented; Solar-specific Decision Pack content remains deliberately gated because current pack analysis is Heat-Pump-specific.
+- [~] Reuse Decision Case/share and checkout infrastructure with technology dimension. Technology-aware client telemetry/checkout plumbing is CI-verified; Solar-specific Decision Pack content remains deliberately gated because current pack analysis is Heat-Pump-specific.
 - [~] PDF/image ingestion: provenance/normalisation, extracted-media → gated-handler integration, and representative PDF/screenshot/photo extractor-output fixtures are CI-verified (`35849623161`). Direct raw-media HTTP ingestion remains disabled pending the customer-facing extraction path and rendered end-to-end verification.
-- [ ] Automated rendered/browser correctness tests for gated Solar preview and non-preview Heat Pump isolation.
-- [~] Rendered mobile + desktop and preview/canary verification before public CTA. Browser isolation gate added in `83ebc47`; awaiting green custom-domain canary before promotion.
+- [ ] Automated rendered/browser correctness tests for gated Solar preview and non-preview Heat Pump isolation — tests exist; green custom-domain verification still pending.
+- [~] Rendered mobile + desktop and preview/canary verification before public CTA. Browser isolation gate added in `83ebc47`; initial run `35850820509` timed out during navigation and was hardened in `df080f3`. Await confirmed green custom-domain canary before promotion.
 
 ## WS4 — Home/System Fit Check
 Status: NOT STARTED. Deferred behind P0/P1 work.
@@ -66,7 +66,7 @@ Status: NOT STARTED.
 ## WS7 — Pre-Commitment Decision Pack
 Status: IN PROGRESS via existing £4.99 Heat Pump Decision Pack.
 - [x] Keep current £4.99 Heat Pump boundary stable until willingness-to-pay evidence exists.
-- [~] Track checkout-created with technology dimension durably; client propagation implemented and CI-gated, full end-to-end durable verification pending.
+- [~] Track checkout-created with technology dimension durably; client propagation contract is CI-verified, full end-to-end durable event verification pending.
 - [ ] Richer cross-technology pack after structured findings are proven.
 
 ## WS8 — Decision assistant
