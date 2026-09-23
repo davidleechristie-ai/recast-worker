@@ -83,6 +83,9 @@ jobs:
             const start=page.getByRole('button',{name:/start single quote check/i}).first();
             await start.waitFor({state:'visible',timeout:15000});
             await start.click();
+            const back=page.locator('#hqc-upload-back');await back.waitFor({state:'visible',timeout:15000});
+            const chooseVisible=await page.locator('#hqc-choose-file').isVisible().catch(()=>false);
+            if(!chooseVisible)throw new Error('Upload CTA missing after opening single-quote intake');
             if(suffix.includes('manual_path')){
               const manual=page.locator('#hqc-enter-manual');await manual.waitFor({state:'visible',timeout:15000});const before=await page.locator('input:not([type="file"]),textarea,select').count();await manual.click();await page.waitForTimeout(500);const after=await page.locator('input:not([type="file"]),textarea,select').count();if(after<=before)throw new Error(`Manual-entry fallback did not reveal editable fields: before=${before} after=${after}`);
             } else {
@@ -97,6 +100,7 @@ jobs:
             const errors=[]; const badScripts=[]; page.on('pageerror',e=>errors.push(String(e))); page.on('response',res=>{if(res.request().resourceType()==='script'&&/text\/html/i.test(res.headers()['content-type']||''))badScripts.push(res.url());});
             await page.goto('https://cf-preview.homequotecheck.co.uk/?qa=1&compare_regression=1',{waitUntil:'domcontentloaded',timeout:30000});
             await page.getByRole('button',{name:/start quote comparison/i}).first().click();
+            const compareBack=page.locator('#hqc-upload-back'); await compareBack.waitFor({state:'visible',timeout:15000});
             const choose=page.locator('#hqc-choose-file'); await choose.waitFor({state:'visible',timeout:15000});
             const chooserPromise=page.waitForEvent('filechooser',{timeout:5000}); await choose.click(); const chooser=await chooserPromise;
             const png=Buffer.from('iVBORw0KGgoAAAANSUhEUgAAAAEAAAABCAQAAAC1HAwCAAAAC0lEQVR42mP8/x8AAusB9Wl2+XkAAAAASUVORK5CYII=','base64');
