@@ -1,9 +1,9 @@
 {
-  "fetchedAt": "2026-09-23T11:40:31.089934Z",
+  "fetchedAt": "2026-09-23T17:03:18.004758Z",
   "growthReport": {
     "durable": true,
     "extendedMeasurementStartedAt": "2026-09-11T20:34:24.536Z",
-    "generatedAt": "2026-09-23T11:40:31.057Z",
+    "generatedAt": "2026-09-23T17:03:17.968Z",
     "loop": [
       "Acquire qualified homeowners",
       "Measure source funnels",
@@ -17,7 +17,7 @@
       "decisionCaseToShareIntent": 40,
       "extendedGenuineToDecisionCase": 100,
       "extendedGenuineToMultiQuote": 20,
-      "landingToCta": 70,
+      "landingToCta": 69,
       "shareOpenToRecipientStart": null,
       "uploadToGenuine": 100
     },
@@ -102,6 +102,25 @@
         "shareIntent": 0,
         "shareOpens": 0,
         "source": "organic_flowtemp",
+        "uploads": 0
+      },
+      {
+        "checkouts": 0,
+        "cta": 0,
+        "ctaToUpload": null,
+        "decisionCases": 0,
+        "extendedGenuine": 0,
+        "genuine": 0,
+        "installerQuestions": 0,
+        "landingToCta": 0,
+        "landingToGenuine": 0,
+        "landings": 2,
+        "multiQuoteAnalyses": 0,
+        "outboundClicks": 0,
+        "recipientStarts": 0,
+        "shareIntent": 0,
+        "shareOpens": 0,
+        "source": "organic_radiators",
         "uploads": 0
       },
       {
@@ -253,25 +272,6 @@
         "recipientStarts": 0,
         "shareIntent": 0,
         "shareOpens": 0,
-        "source": "organic_radiators",
-        "uploads": 0
-      },
-      {
-        "checkouts": 0,
-        "cta": 0,
-        "ctaToUpload": null,
-        "decisionCases": 0,
-        "extendedGenuine": 0,
-        "genuine": 0,
-        "installerQuestions": 0,
-        "landingToCta": 0,
-        "landingToGenuine": 0,
-        "landings": 1,
-        "multiQuoteAnalyses": 0,
-        "outboundClicks": 0,
-        "recipientStarts": 0,
-        "shareIntent": 0,
-        "shareOpens": 0,
         "source": "professional",
         "uploads": 0
       }
@@ -284,7 +284,7 @@
         "extendedGenuine": 1,
         "genuine": 1,
         "installerQuestions": 0,
-        "landings": 27,
+        "landings": 28,
         "multiQuoteAnalyses": 1,
         "outboundClicks": 0,
         "recipientStarts": 0,
@@ -301,7 +301,7 @@
       "extendedGenuine": 5,
       "genuine": 6,
       "installerQuestions": 0,
-      "landings": 80,
+      "landings": 81,
       "multiQuoteAnalyses": 1,
       "outboundClicks": 0,
       "recipientStarts": 0,
