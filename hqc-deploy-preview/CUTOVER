@@ -1,2 +1,2 @@
-2026-09-23T10:59:00+01:00
-Promote approved Back button layout on both single-quote and comparison upload screens. Keep Back opposite See example / Continue and verify production.
+2026-09-23T11:05:00+01:00
+Deploy upload syntax fix and Back-button regression guard. Require Back and Choose file visible on single and comparison intake before production promotion.
