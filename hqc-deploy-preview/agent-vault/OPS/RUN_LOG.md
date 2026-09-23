@@ -2,6 +2,16 @@
 
 Append concise dated run records here. Record only observed evidence and completed work.
 
+## 2026-09-23 09:41 Europe/London — authoritative revenue refresh; no material state change
+- REVENUE: refreshed the live Home Quote Check Stripe account. PaymentIntents list is empty (`data=[]`, `has_more=false`), so authoritative successful production payment evidence remains £0 / £1,000 monthly, £0 / £100 validation and 0 paying customers.
+- FUNNEL/ACQUISITION: fresh authoritative synthetic-excluded Cloudflare snapshot unavailable in this execution path; null. Latest settled snapshot remains 56 landings → 16 starts → 5 uploads → 5 analyses; 4 Decision Cases → 2 share intents → 0 share opens → 0 durable checkouts.
+- SEARCH: fresh Search Console evidence unavailable; null. Public web search produced no usable evidence and was not substituted for Search Console.
+- PRODUCTION: fresh authoritative health evidence unavailable through the available HTTP path; null. No deployment or UI change made.
+- PRODUCT: inspected the current Solar ingestion boundary and checkout technology plumbing; no unverified code change was shipped. Solar remains non-public and raw PDF/image requests remain HTTP 415.
+- LEARNINGS: unchanged; no authoritative evidence established or overturned a reusable lesson.
+- EXPECTED IMPACT: evidence refresh prevents stale/null payment state from being mistaken for revenue progress; commercial priority remains qualified acquisition/activation toward first £4.99 purchase.
+- NEXT: representative PDF/screenshot/photo extractor fixtures; technology propagation verification through durable checkout evidence; continue qualified Heat Pump acquisition.
+
 ## 2026-09-23 08:42 Europe/London — extracted-media → gated Solar handler verified
 - REVENUE: fresh authoritative Stripe evidence unavailable in this execution path; fresh evidence null. Latest authoritative settled evidence remains £0 / £1,000 monthly, £0 / £100 validation, 0 paying customers and is not promoted as fresh.
 - FUNNEL/ACQUISITION: fresh authoritative synthetic-excluded Cloudflare snapshot unavailable; null. Latest settled snapshot remains 56 landings → 16 starts → 5 uploads → 5 analyses; 4 Decision Cases → 2 share intents → 0 share opens → 0 durable checkouts.
