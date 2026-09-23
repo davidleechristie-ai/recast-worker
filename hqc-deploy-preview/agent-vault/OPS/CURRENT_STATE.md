@@ -1,6 +1,6 @@
 # Current state
 
-Updated: 2026-09-23 11:55 Europe/London
+Updated: 2026-09-23 12:03 Europe/London
 
 North star: Sustain at least **£1,000 genuine monthly revenue**. Immediate milestone: first genuine purchase and £100 cumulative validation revenue.
 
@@ -17,7 +17,7 @@ Qualified acquisition and activation remain the earliest measured revenue constr
 First genuine £4.99 Decision Pack purchase, then £100 cumulative validation revenue.
 
 ## Solar/Battery progress
-- Custom-domain canary browser coverage now explicitly tests the private Solar preview at 390×844 and 1366×900, requires the non-public badge/Solar proposition, and separately proves the default public page remains Heat Pump with no Solar badge (commit `83ebc47`). Awaiting workflow result before marking rendered verification green.
+- Custom-domain canary browser coverage now explicitly tests the private Solar preview at 390×844 and 1366×900, requires the non-public badge/Solar proposition, and separately proves the default public page remains Heat Pump with no Solar badge (commit `83ebc47`). Run `35850820509` failed at browser navigation timeout, not a Solar assertion. Canary navigation now waits for the committed response plus explicit UI elements (`df080f3`); rendered verification remains pending until the new run is green.
 - Technology-specific Solar/Battery routing, analysis/comparison, evidence preservation, installer questions and representative extracted PDF/screenshot/photo envelopes are CI-verified behind the non-public gate.
 - A gated customer-facing Solar/Battery preview journey exists via explicit `?solar_preview=1` / session preview state and remains non-public.
 - Decision Pack telemetry/checkout client plumbing now propagates the active anonymous technology dimension from `hqc_journey_technology`, defaulting safely to `heat_pump`. Commit `79a8889497873c1e58f7bf355c020dc12e8563ae`.
