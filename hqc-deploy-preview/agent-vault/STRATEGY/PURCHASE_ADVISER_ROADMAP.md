@@ -34,7 +34,7 @@ Status: REQUEST + WORKER ISOLATION VERIFIED / INGESTION IN PROGRESS.
 - [x] Worker gate/isolation CI run `35706680835` green for commit `a3661ea47293a0f715ba4647a7f00b35f95866d2`.
 - [x] PDF/image extracted-media provenance contract and correctness tests verified by `HQC Solar analysis CI` run `35798847121` for commit `7593955a07378842bf77d1bf77b21a136f41114c`.
 - [x] Wire verified extracted-text envelopes into gated handler and verify PDF-derived/image-OCR-derived handler fixtures: `HQC Solar analysis CI` run `35823816580` green for commit `c4dca3dbd1d95cb64f8e33774f5787f8a8afc40b`.
-- [~] Validate representative client/extractor PDF and screenshot/photo extraction end-to-end before changing raw-media HTTP 415 boundary. Representative extractor-output fixtures and end-to-end handler gate added (`46bbfb1`, `9fe85a1`, `e1cd6e9`); awaiting green CI before promotion to verified.
+- [x] Validate representative extracted PDF and screenshot/photo envelopes end-to-end through the gated handler. `HQC Solar analysis CI` run `35849623161` green for `e1cd6e9`; direct raw-media HTTP remains a separate closed boundary.
 - [ ] Ensure technology propagates into durable anonymous funnel and checkout events end-to-end.
 
 Production routing evidence: run `35646864766`, attempt 2, passed without frontend assets. Behind-gate service evidence: run `35696615513` passed full trust suite. Request-integration evidence: run `35701193912` passed. Worker gate/isolation evidence: run `35706680835` passed. Media extraction contract evidence: run `35798847121` passed. Extracted-media handler integration evidence: run `35823816580` passed.
@@ -47,7 +47,7 @@ Status: IN PROGRESS.
 - [x] Structured/manual JSON request boundary implemented and verified behind non-public environment gate.
 - [x] Generate quote-specific installer questions from gaps/differences — verified by successful `HQC Solar analysis CI` run `35717861021`.
 - [ ] Reuse Decision Case/share and checkout infrastructure with technology dimension.
-- [~] PDF/image ingestion: provenance/normalisation and extracted-media → gated-handler integration are CI-verified; representative PDF/screenshot/photo extractor-output fixtures and end-to-end handler gate are now added and awaiting CI verification before raw media support changes.
+- [~] PDF/image ingestion: provenance/normalisation, extracted-media → gated-handler integration, and representative PDF/screenshot/photo extractor-output fixtures are CI-verified (`35849623161`). Direct raw-media HTTP ingestion remains disabled pending the customer-facing extraction path and rendered end-to-end verification.
 - [ ] Automated end-to-end correctness tests.
 - [ ] Rendered mobile + desktop and preview/canary verification before public CTA.
 
