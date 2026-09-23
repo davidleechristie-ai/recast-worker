@@ -1,2 +1,2 @@
-2026-09-23T08:00:00+01:00
-Recover production from Cloudflare Worker Error 1101. Re-adopt apex custom domain using the verified HQC Worker and require end-to-end 200 verification.
+2026-09-23T09:20:00+01:00
+Promote approved upload-screen implementation d6ec492 to the production custom-domain Worker. Verify live apex and assets after deployment.
