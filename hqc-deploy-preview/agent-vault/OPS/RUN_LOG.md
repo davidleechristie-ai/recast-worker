@@ -2,6 +2,17 @@
 
 Append concise dated run records here. Record only observed evidence and completed work.
 
+## 2026-09-23 01:42 Europe/London — Solar media extraction contract verified
+- REVENUE: fresh authoritative Stripe evidence unavailable in this execution path; fresh evidence is null. Latest authoritative settled evidence remains £0 / £1,000 monthly, £0 / £100 validation, 0 paying customers and is not promoted as fresh.
+- FUNNEL/ACQUISITION: no newer authoritative synthetic-excluded Cloudflare snapshot available in this execution path; fresh funnel evidence is null. Latest settled snapshot remains 56 landings → 16 starts → 5 uploads → 5 genuine analyses; 4 Decision Cases → 2 share intents → 0 share opens → 0 durable checkouts.
+- SEARCH: fresh authoritative Search Console evidence unavailable; null rather than inferred. Latest settled summary remains 0 clicks / 4 impressions / 0% CTR / average position 8.07.
+- VERIFICATION: GitHub Actions `HQC Solar analysis CI` run `35798847121` completed successfully for commit `7593955a07378842bf77d1bf77b21a136f41114c`.
+- PRODUCT: promoted the PDF/image extracted-media provenance contract from queued to CI-verified. The next safe boundary is representative client/extractor → gated-handler end-to-end fixtures.
+- SAFETY: raw PDF/image requests remain HTTP 415; Solar remains non-public; no Heat Pump or production UI change was made.
+- ROADMAP: updated WS2/WS3 to record the verified media extraction contract without marking raw media ingestion live.
+- LEARNINGS: unchanged; no new authoritative reusable customer/product lesson established.
+- NEXT: wire only verified extracted-text envelopes into the gated Solar request path and prove representative PDF/image extraction end-to-end before changing the 415 boundary; continue qualified Heat Pump acquisition toward first genuine £4.99 purchase.
+
 ## 2026-09-23 00:45 Europe/London — Solar media extraction trust boundary
 - REVENUE: authoritative live Stripe `Home Quote Check` PaymentIntents refreshed: empty list (`data: []`, `has_more: false`). Genuine revenue remains £0 / £1,000 monthly, £0 / £100 validation, 0 paying customers.
 - FUNNEL/ACQUISITION: no newer authoritative synthetic-excluded Cloudflare snapshot available in this execution path; fresh funnel evidence is null. Latest settled snapshot remains 56 landings → 16 starts → 5 uploads → 5 genuine analyses; 4 Decision Cases → 2 share intents → 0 share opens → 0 durable checkouts.
@@ -16,7 +27,7 @@ Append concise dated run records here. Record only observed evidence and complet
 ## 2026-09-22 22:42 Europe/London — authoritative revenue refresh
 - REVENUE: authoritative live Stripe `Home Quote Check` PaymentIntents refreshed: empty list (`data: []`, `has_more: false`). Genuine revenue remains £0 / £1,000 monthly, £0 / £100 validation, 0 paying customers.
 - FUNNEL/ACQUISITION: no newer authoritative synthetic-excluded Cloudflare snapshot was available in this execution path; fresh funnel evidence is null. Latest settled snapshot remains 56 landings → 16 starts → 5 uploads → 5 genuine analyses; 4 Decision Cases → 2 share intents → 0 share opens → 0 durable checkouts.
-- SEARCH: fresh authoritative Search Console evidence unavailable in this execution path; null rather than inferred. Latest settled summary remains 0 clicks / 4 impressions / 0% CTR / average position 8.07.
+- SEARCH: fresh authoritative Search Console evidence unavailable; null rather than inferred. Latest settled summary remains 0 clicks / 4 impressions / 0% CTR / average position 8.07.
 - PRODUCTION: no release made; prior rendered frontend recovery and router-isolation proof remain authoritative.
 - PRODUCT/SAFETY: re-inspected the gated Solar request handler. Non-JSON media remains deliberately fail-closed at HTTP 415; structured/manual JSON remains the verified ingestion boundary. No unsafe media support introduced.
 - ROADMAP: no capability promoted to verified/live. Representative PDF/image extraction correctness remains the next WS2/WS3 boundary, followed by technology propagation. Solar remains non-public; Heat Pump unchanged.
