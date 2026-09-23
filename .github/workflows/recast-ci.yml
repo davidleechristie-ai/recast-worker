@@ -1,0 +1,30 @@
+name: Recast CI
+
+on:
+  pull_request:
+    paths:
+      - 'recast-worker/**'
+      - '.github/workflows/recast-ci.yml'
+  push:
+    branches:
+      - main
+      - 'recast-*'
+    paths:
+      - 'recast-worker/**'
+      - '.github/workflows/recast-ci.yml'
+
+jobs:
+  test:
+    runs-on: ubuntu-latest
+    defaults:
+      run:
+        working-directory: recast-worker
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 24
+          cache: npm
+          cache-dependency-path: recast-worker/package-lock.json
+      - run: npm ci
+      - run: npm test
