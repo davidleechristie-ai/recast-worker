@@ -35,9 +35,7 @@ Status: REQUEST + WORKER ISOLATION VERIFIED / INGESTION IN PROGRESS.
 - [x] PDF/image extracted-media provenance contract and correctness tests verified by `HQC Solar analysis CI` run `35798847121` for commit `7593955a07378842bf77d1bf77b21a136f41114c`.
 - [x] Wire verified extracted-text envelopes into gated handler and verify PDF-derived/image-OCR-derived handler fixtures: `HQC Solar analysis CI` run `35823816580` green for commit `c4dca3dbd1d95cb64f8e33774f5787f8a8afc40b`.
 - [x] Validate representative extracted PDF and screenshot/photo envelopes end-to-end through the gated handler. `HQC Solar analysis CI` run `35849623161` green for `e1cd6e9`; direct raw-media HTTP remains a separate closed boundary.
-- [ ] Ensure technology propagates into durable anonymous funnel and checkout events end-to-end.
-
-Production routing evidence: run `35646864766`, attempt 2, passed without frontend assets. Behind-gate service evidence: run `35696615513` passed full trust suite. Request-integration evidence: run `35701193912` passed. Worker gate/isolation evidence: run `35706680835` passed. Media extraction contract evidence: run `35798847121` passed. Extracted-media handler integration evidence: run `35823816580` passed.
+- [~] Ensure technology propagates into durable anonymous funnel and checkout events end-to-end. Decision Pack client events + checkout request now carry `hqc_journey_technology` with Heat Pump safe default; CI run `35850406399` pending at cutoff. Server already records checkout technology from request payload. Full end-to-end durable evidence remains to verify.
 
 ## WS3 — Solar/Battery Quote Check MVP
 Status: IN PROGRESS.
@@ -46,9 +44,9 @@ Status: IN PROGRESS.
 - [x] Plain-English findings and evidence-only two-quote comparison without automatic winner.
 - [x] Structured/manual JSON request boundary implemented and verified behind non-public environment gate.
 - [x] Generate quote-specific installer questions from gaps/differences — verified by successful `HQC Solar analysis CI` run `35717861021`.
-- [ ] Reuse Decision Case/share and checkout infrastructure with technology dimension.
+- [~] Reuse Decision Case/share and checkout infrastructure with technology dimension. Technology-aware client telemetry/checkout plumbing implemented; Solar-specific Decision Pack content remains deliberately gated because current pack analysis is Heat-Pump-specific.
 - [~] PDF/image ingestion: provenance/normalisation, extracted-media → gated-handler integration, and representative PDF/screenshot/photo extractor-output fixtures are CI-verified (`35849623161`). Direct raw-media HTTP ingestion remains disabled pending the customer-facing extraction path and rendered end-to-end verification.
-- [ ] Automated end-to-end correctness tests.
+- [ ] Automated rendered/browser correctness tests for gated Solar preview and non-preview Heat Pump isolation.
 - [ ] Rendered mobile + desktop and preview/canary verification before public CTA.
 
 ## WS4 — Home/System Fit Check
@@ -68,7 +66,7 @@ Status: NOT STARTED.
 ## WS7 — Pre-Commitment Decision Pack
 Status: IN PROGRESS via existing £4.99 Heat Pump Decision Pack.
 - [x] Keep current £4.99 Heat Pump boundary stable until willingness-to-pay evidence exists.
-- [x] Track checkout-created with technology dimension durably; Stripe remains authoritative for paid/refunded evidence.
+- [~] Track checkout-created with technology dimension durably; client propagation implemented and CI-gated, full end-to-end durable verification pending.
 - [ ] Richer cross-technology pack after structured findings are proven.
 
 ## WS8 — Decision assistant
