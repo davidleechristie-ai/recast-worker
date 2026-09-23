@@ -14,6 +14,7 @@ on:
       - 'hqc-deploy-preview/test/technology-routing.test.mjs'
       - 'hqc-deploy-preview/test/analysis-request-routing.test.mjs'
       - 'hqc-deploy-preview/test/fixtures/solar-battery-cases.json'
+      - 'hqc-deploy-preview/test/fixtures/solar-battery-extractor-output.json'
   workflow_dispatch:
 
 permissions:
@@ -36,6 +37,9 @@ jobs:
       - name: Verify media extraction contract
         working-directory: hqc-deploy-preview
         run: node --test test/solar-battery-media-ingestion.test.mjs
+      - name: Verify representative PDF/photo extractor outputs end to end
+        working-directory: hqc-deploy-preview
+        run: node --test test/solar-battery-extractor-e2e.test.mjs
       - name: Verify Worker gate and isolation
         working-directory: hqc-deploy-preview
         run: node --test test/worker-entry-solar-gate.test.mjs
