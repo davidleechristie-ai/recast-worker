@@ -164,6 +164,10 @@ jobs:
             let extracted=null;try{extracted=JSON.parse(extractionState.raw||'[]')[0]||null}catch{}
             if(!extracted||extracted.extractionMethod!=='pdfjs-text-v1'||!/5\.1 kWp/.test(extracted.extractedText||''))throw new Error('Solar PDF browser extraction failed: '+JSON.stringify(extractionState));
             if(extracted.sourceMediaType!=='application/pdf'||extracted.pageCount!==1)throw new Error('Solar PDF extraction provenance was not retained');
+            const analysed=await page.evaluate(async()=>{const r=await fetch('/api/analyse',{method:'POST',body:'native-upstream-body'});return {status:r.status,body:await r.json()};});
+            if(analysed.status!==200||analysed.body?.evidence?.arrayKwp!==5.1)throw new Error('Extracted Solar PDF did not reach technology-specific analysis');
+            const result=page.locator('#hqc-solar-analysis-result');await result.waitFor({state:'visible',timeout:10000});
+            const resultText=await result.innerText();if(!resultText.includes('5.1 kWp')||!/evidence gaps/i.test(resultText))throw new Error('Extracted Solar PDF result did not render');
             await context.close();
           }
           {
