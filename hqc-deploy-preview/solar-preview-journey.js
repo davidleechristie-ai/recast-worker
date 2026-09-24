@@ -8,12 +8,19 @@
     if(!enabled())return;
     setPreview();
     const hero=document.querySelector('.copy');if(!hero)return;
-    const h=hero.querySelector('h1,h2'),p=hero.querySelector('p'),btn=hero.querySelector('button.primary');
-    if(h)h.textContent='Got a solar or battery quote? Check it before you pay a deposit.';
+    const h=hero.querySelector('h1,h2'),p=hero.querySelector('p');
+    if(!h)return;
+    h.textContent='Got a solar or battery quote? Check it before you pay a deposit.';
     if(p)p.textContent='Upload the installer quote you already have. We’ll flag missing panel, inverter, battery, generation, DNO, warranty and scope evidence so you know what to ask before you commit.';
-    if(btn)btn.textContent='Check my solar quote — preview →';
+    const choice=document.querySelector('#hqc-journey-choice');
+    if(choice){
+      const single=choice.querySelector('[data-mode="single"]');
+      if(single){const b=single.querySelector('b'),span=single.querySelector('span'),strong=single.querySelector('strong');if(b)b.textContent='Check a solar or battery quote';if(span)span.textContent='See what evidence is included, what is missing and what to ask the installer.';if(strong)strong.textContent='Start solar quote check →';}
+      const compare=choice.querySelector('[data-mode="compare"]');
+      if(compare){const b=compare.querySelector('b'),span=compare.querySelector('span'),strong=compare.querySelector('strong');if(b)b.textContent='Compare solar / battery quotes';if(span)span.textContent='Upload two or more quotes and compare price, equipment, scope and documented evidence side by side.';if(strong)strong.textContent='Start solar quote comparison →';}
+    }
     let badge=document.querySelector('#hqc-solar-preview-badge');
-    if(!badge&&h){badge=document.createElement('div');badge.id='hqc-solar-preview-badge';badge.textContent='SOLAR / BATTERY PREVIEW — NOT PUBLIC';badge.style.cssText='display:inline-block;margin:0 0 12px;padding:6px 10px;border-radius:999px;background:#fff4cc;color:#6a4b00;font:800 11px/1.2 system-ui';h.insertAdjacentElement('beforebegin',badge);}
+    if(!badge){badge=document.createElement('div');badge.id='hqc-solar-preview-badge';badge.textContent='SOLAR / BATTERY PREVIEW — NOT PUBLIC';badge.style.cssText='display:inline-block;margin:0 0 12px;padding:6px 10px;border-radius:999px;background:#fff4cc;color:#6a4b00;font:800 11px/1.2 system-ui';h.insertAdjacentElement('beforebegin',badge);}
   }
   function decorateUpload(){
     if(!enabled())return;
@@ -30,6 +37,7 @@
   }
   if(new URLSearchParams(location.search).get('solar_preview')==='0')clearPreview();
   addTechnologyHeader();
-  const tick=()=>{decorateHome();decorateUpload()};
+  let queued=false;
+  const tick=()=>{if(queued)return;queued=true;requestAnimationFrame(()=>{queued=false;decorateHome();decorateUpload()})};
   new MutationObserver(tick).observe(document.documentElement,{childList:true,subtree:true});tick();
 })();
