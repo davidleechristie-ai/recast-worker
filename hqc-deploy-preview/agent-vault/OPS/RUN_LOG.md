@@ -1,5 +1,16 @@
 # Run log
 
+## 2026-09-24 11:43 Europe/London — private Solar rendered/isolation gate verified
+- REVENUE: authoritative live Home Quote Check Stripe PaymentIntents refreshed; `data=[]`, `has_more=false`. Genuine revenue remains £0 / £1,000 monthly, £0 / £100 validation, 0 paying customers.
+- FUNNEL: fresh durable synthetic-excluded snapshot at 10:13Z remains 81 landings → 56 starts/CTA → 6 uploads → 6 genuine analyses → 1 multi-quote analysis → 5 Decision Cases → 2 share intents → 0 durable checkouts. Start→upload remains the earliest measured constraint at 11%; direct still produced all 6 genuine analyses.
+- SEARCH: fresh GSC settled through 2026-09-21 remains 0 clicks, 5 impressions, 0% CTR, average position 7.06.
+- PRODUCTION: last full site-consistency verification remains green (`35979158224`); current main Cloudflare build is green. No public Solar release was made.
+- SOLAR VERIFICATION: inspected custom-domain canary `35983345210` for render-order fix `a7f5b3c6`. Although the workflow is labelled cancelled due to concurrency, every substantive job step completed successfully: snapshot, canary binding, domain/static/API verification and `Verify quote intake paths in mobile browser`; `Complete job` also succeeded. This is sufficient evidence that the previously failing private Solar rendered preview/isolation assertion is now green.
+- ROADMAP: WS3 rendered browser and private preview/isolation gates advanced to verified. Solar remains non-public because the customer-facing raw-media upload→analysis→results path and Solar-specific paid Decision Pack are not yet release-ready.
+- LEARNINGS: unchanged; this is engineering gate progress, not evidence of customer demand or willingness to pay.
+- EXPECTED IMPACT: removes the rendered-journey blocker to validating trustworthy Solar/Battery quote checking without destabilising the Heat Pump revenue path.
+- NEXT: continue Heat Pump start→upload activation; in parallel wire the verified Solar extracted-media path into the private customer upload/analyse/results journey and verify technology telemetry end-to-end.
+
 ## 2026-09-24 10:49 Europe/London — Solar rendered conflict diagnosed and fixed behind closed gate
 - REVENUE: authoritative live Home Quote Check Stripe PaymentIntents refreshed; `data=[]`, `has_more=false`. Genuine revenue remains £0 / £1,000 monthly, £0 / £100 validation, 0 paying customers.
 - FUNNEL: latest durable synthetic-excluded snapshot remains 81 landings → 56 starts/CTA → 6 uploads → 6 genuine analyses → 1 multi-quote analysis → 5 Decision Cases → 2 share intents → 0 durable checkouts. Start→upload remains the earliest measured constraint at 11%.
