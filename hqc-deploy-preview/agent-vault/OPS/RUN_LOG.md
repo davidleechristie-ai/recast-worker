@@ -1,5 +1,17 @@
 # Run log
 
+## 2026-09-24 13:44 Europe/London — refreshed evidence; fixed false-negative custom-domain canary timing
+- REVENUE: authoritative live Home Quote Check PaymentIntents refreshed; `data=[]`, `has_more=false`. Genuine revenue remains £0 / £1,000 monthly, £0 / £100 validation, 0 paying customers. Sigma aggregation was attempted but is unavailable because the account has no Sigma plan; direct live PaymentIntent evidence is complete for the account.
+- FUNNEL: latest durable synthetic-excluded snapshot at 10:13Z remains 81 landings → 56 starts/CTA → 6 uploads → 6 genuine analyses → 1 multi-quote analysis → 5 Decision Cases → 2 share intents → 0 durable checkouts. Start→upload remains the earliest measured constraint at 11%; direct still produced all 6 genuine analyses.
+- SEARCH: fresh GSC settled through 2026-09-21 remains 0 clicks, 5 impressions, 0% CTR, average position 7.06.
+- PRODUCTION: last full site-consistency verification remains green (`35979158224`). New custom-domain canary `35994641139` passed snapshot, Cloudflare binding, static/domain/API checks, Heat Pump intake/compare/checkout probes and both Solar preview viewport assertions, then failed only when it sampled the default hero immediately after response commit and before `approved-home-layout.js` had rendered the Heat Pump heading.
+- FIX: commit `b07e0eb2ce9fed5da0ccb8ef614f95ba17913f5c` changes the default-isolation canary to wait for `#hqc-journey-choice`, the approved-layout readiness marker, before asserting Heat Pump copy. Verification run `36000842107` is queued at cutoff. No public UI/product code changed.
+- SOLAR: remains non-public. The latest canary confirms the private Solar proposition and NOT PUBLIC badge render at mobile and desktop widths; customer upload→extractedMedia→Solar handler→results remains the next product boundary.
+- ROADMAP: no capability promoted this run; WS3 remains ingestion-in-progress pending the trusted extracted-media bridge and end-to-end rendered results verification.
+- LEARNINGS: unchanged; canary timing is implementation/test evidence, not a reusable customer-demand lesson.
+- EXPECTED IMPACT: removes a false release-gate failure that could block safe Solar validation and future deployment evidence. First-purchase priority remains Heat Pump start→upload activation.
+- NEXT: require `36000842107` green; continue Heat Pump activation; implement/test private Solar extracted-media bridge; keep Solar public CTA closed.
+
 ## 2026-09-24 12:40 Europe/London — evidence refreshed; Solar customer-ingestion boundary narrowed
 - REVENUE: authoritative live Home Quote Check Stripe PaymentIntents refreshed; `data=[]`, `has_more=false`. Genuine revenue remains £0 / £1,000 monthly, £0 / £100 validation, 0 paying customers.
 - FUNNEL: latest durable synthetic-excluded snapshot at 10:13Z remains 81 landings → 56 starts/CTA → 6 uploads → 6 genuine analyses → 1 multi-quote analysis → 5 Decision Cases → 2 share intents → 0 durable checkouts. Start→upload remains the earliest measured constraint at 11%; direct still produced all 6 genuine analyses.
@@ -36,7 +48,7 @@
 
 ## 2026-09-24 10:08 Europe/London — production gate green; commercial activation resumes
 - REVENUE: authoritative live Home Quote Check Stripe PaymentIntents refreshed; `data=[]`, `has_more=false`. Genuine revenue remains £0 / £1,000 monthly, £0 / £100 validation, 0 paying customers.
-- FUNNEL: fresh durable snapshot (2026-09-24 05:03:55Z) is 81 landings → 56 starts/CTA → 6 uploads → 6 genuine analyses; 5 extended genuine → 1 multi-quote analysis → 5 Decision Cases → 2 share intents → 0 share opens → 0 durable checkouts. Start→upload remains the earliest measured constraint at 11%.
+- FUNNEL: fresh durable snapshot (2026-09-24 05:03:55Z) is 81 landings → 56 starts/CTA → 6 uploads → 6 genuine analyses; 5 extended genuine → 1 multi-quote analysis → 5 Decision Cases → 2 share intents → 0 share opens → 0 durable checkouts. Start→upload remains the earliest measured commercial constraint at 11%.
 - SEARCH: fresh GSC 28-day settled summary through 2026-09-21 is 0 clicks, 5 impressions, 0% CTR, average position 7.06.
 - PRODUCTION DIAGNOSIS: exact logs from failed site-consistency run `35862572810` show the only failure was the PDF probe timing out on obsolete CTA copy `/check my quote/i`; the broader 23-page crawl had no reported production failure.
 - FIX: commit `698a04be3e8c7b371b4f9ea450fcf148961356de` makes the PDF probe follow the current quote CTA intent rather than stale exact wording.
