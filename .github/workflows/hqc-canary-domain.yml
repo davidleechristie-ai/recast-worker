@@ -5,6 +5,7 @@ on:
     branches: [main]
     paths:
       - 'hqc-deploy-preview/**'
+      - '!hqc-deploy-preview/agent-vault/**'
       - '.github/workflows/hqc-canary-domain.yml'
   workflow_dispatch:
 
