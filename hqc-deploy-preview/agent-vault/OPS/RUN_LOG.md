@@ -1,5 +1,12 @@
 # Run log
 
+## 2026-09-24 22:12 Europe/London — Solar text-PDF path verified
+- Private custom-domain canary run `36060001899` passed browser file selection, PDF.js text extraction/provenance, gated Solar analysis and Solar-specific rendered evidence/results in one flow.
+- Image-only/photo OCR remains fail-closed. Solar remains non-public; Heat Pump production was unchanged.
+- Isolated the canary Worker from the generic preview Worker and excluded vault-only commits from deployment workflows to remove race/deploy churn.
+- Commercial priority remains first genuine Heat Pump purchase and start-to-upload activation.
+
+
 ## 2026-09-24 16:45 Europe/London — fresh metrics; no material commercial change
 - REVENUE: authoritative live Home Quote Check PaymentIntents refreshed; `data=[]`, `has_more=false`. Genuine revenue remains £0 / £1,000 monthly, £0 / £100 validation, 0 paying customers.
 - FUNNEL: fresh durable synthetic-excluded snapshot at 15:16Z is 82 landings → 56 starts/CTA → 6 uploads → 6 genuine analyses → 1 multi-quote analysis → 5 Decision Cases → 2 share intents → 0 durable checkouts. Start→upload remains the earliest measured constraint at 11%; direct still produced all 6 genuine analyses. One additional landing produced no checker start and is not enough evidence for a new overlapping conversion experiment.
