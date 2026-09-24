@@ -169,7 +169,7 @@ jobs:
             const chooserPromise=page.waitForEvent('filechooser',{timeout:5000});await choose.click();const chooser=await chooserPromise;
             await chooser.setFiles({name:'solar-installer-quote.pdf',mimeType:'application/pdf',buffer:makeTextPdf('Solar quote. 12 panels. Array size 5.1 kWp. Annual generation 4200 kWh. Total price GBP 9500.')});
             await page.waitForTimeout(5000);
-            const extractionState=await page.evaluate(()=>({raw:sessionStorage.getItem('hqc_solar_extracted_media'),status:document.querySelector('#hqc-upload-v3-status')?.textContent||'',scripts:[...document.scripts].map(s=>s.src).filter(Boolean)}));
+            const extractionState=await page.evaluate(()=>({raw:sessionStorage.getItem('hqc_solar_extracted_media'),status:document.querySelector('#hqc-upload-v3-status')?.textContent||'',error:document.querySelector('#hqc-upload-help')?.dataset?.hqcPdfError||'',scripts:[...document.scripts].map(s=>s.src).filter(Boolean)}));
             let extracted=null;try{extracted=JSON.parse(extractionState.raw||'[]')[0]||null}catch{}
             if(!extracted||extracted.extractionMethod!=='pdfjs-text-v1'||!/5\.1 kWp/.test(extracted.extractedText||''))throw new Error('Solar PDF browser extraction failed: '+JSON.stringify(extractionState));
             if(extracted.sourceMediaType!=='application/pdf'||extracted.pageCount!==1)throw new Error('Solar PDF extraction provenance was not retained');
