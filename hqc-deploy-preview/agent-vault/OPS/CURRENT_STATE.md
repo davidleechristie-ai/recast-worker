@@ -1,6 +1,6 @@
 # Current state
 
-Updated: 2026-09-24 16:45 Europe/London
+Updated: 2026-09-24 18:45 Europe/London
 
 North star: Sustain at least **£1,000 genuine monthly revenue**. Immediate milestone: first genuine purchase and £100 cumulative validation revenue.
 
@@ -8,7 +8,7 @@ North star: Sustain at least **£1,000 genuine monthly revenue**. Immediate mile
 - Revenue: authoritative live Home Quote Check Stripe PaymentIntents refreshed; `data=[]`, `has_more=false`. Genuine revenue remains **£0 / £1,000 monthly, £0 / £100 validation, 0 paying customers**.
 - Durable funnel/acquisition: fresh synthetic-excluded Cloudflare snapshot fetched 2026-09-24 15:16:11Z is **82 landings → 56 checker starts/CTA → 6 uploads → 6 genuine analyses**, 5 extended genuine analyses → **1 multi-quote analysis** → 5 Decision Cases → 2 share intents → 0 share opens → 0 durable checkouts. Direct produced all 6 genuine analyses. Start→upload remains **6/56 (11%)**. The one new landing did not start the checker.
 - Technology evidence: Heat Pump records 29 landings, 41 CTA events, 1 upload, 1 genuine analysis, 1 multi-quote analysis, 1 Decision Case and 0 checkouts. The unsegmented remainder remains unknown; no qualified Solar production cohort exists while the public gate is closed.
-- Search: fresh GSC 28-day settled summary through 2026-09-21 remains **0 clicks, 5 impressions, 0% CTR, average position 7.06**.
+- Search: fresh GSC 28-day settled summary through 2026-09-22 remains **0 clicks, 5 impressions, 0% CTR, average position 7.06**.
 - Production health: **GREEN**. Full site-consistency verification remains green (`35979158224`), and latest confirmed custom-domain canary `36007880323` is workflow-level success with Cloudflare binding, static/API and rendered Heat Pump/Solar-isolation verification green. Latest live-metrics workflow `36018906746` also completed successfully.
 
 ## Commercial diagnosis
