@@ -60,6 +60,11 @@ jobs:
           api=$(curl -L -sS --max-time 30 "$base/api/_healthcheck")
           grep -q 'Success' <<< "$api"
           echo 'HQC custom-domain canary passed: assets, health, API proxy and enhancement bundle verified.'
+      - name: Verify gated Solar analysis boundary
+        working-directory: hqc-deploy-preview
+        run: node test/canary-solar-live.mjs
+        env:
+          HQC_CANARY_ORIGIN: https://cf-preview.homequotecheck.co.uk
       - name: Verify quote intake paths in mobile browser
         working-directory: hqc-deploy-preview
         shell: bash
