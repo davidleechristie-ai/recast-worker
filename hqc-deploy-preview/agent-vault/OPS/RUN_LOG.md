@@ -1,5 +1,16 @@
 # Run log
 
+## 2026-09-24 15:46 Europe/London — evidence stable; production and private Solar gate green
+- REVENUE: authoritative live Home Quote Check PaymentIntents refreshed; `data=[]`, `has_more=false`. Genuine revenue remains £0 / £1,000 monthly, £0 / £100 validation, 0 paying customers.
+- FUNNEL: latest available durable synthetic-excluded snapshot at 10:13Z remains 81 landings → 56 starts/CTA → 6 uploads → 6 genuine analyses → 1 multi-quote analysis → 5 Decision Cases → 2 share intents → 0 durable checkouts. Start→upload remains the earliest measured constraint at 11%; direct still produced all 6 genuine analyses.
+- SEARCH: fresh GSC settled through 2026-09-21 remains 0 clicks, 5 impressions, 0% CTR, average position 7.06.
+- PRODUCTION: full site-consistency gate remains green (`35979158224`). Latest custom-domain canary `36007880323` is unambiguously workflow-level success; its sole canary job `107660920783` passed install, snapshot, Cloudflare binding, domain/static/API checks and rendered mobile-browser quote-intake/Solar/default-isolation verification.
+- COMMERCIAL DECISION: no new genuine demand evidence changes the priority. Continue Heat Pump start→upload activation while progressing the independent private Solar extracted-media bridge. Do not change £4.99 pricing on six genuine analyses.
+- SOLAR: remains non-public. Rendered preview/isolation is green; remaining WS3 boundary is real customer media → trustworthy extracted text/provenance → JSON `extractedMedia` → Solar handler → rendered results. Never fall through to Heat Pump.
+- LEARNINGS: unchanged; no authoritative evidence established or overturned a reusable customer lesson.
+- ROADMAP: no capability status change this run; latest green canary strengthens the already-recorded rendered verification. Financial Assumptions Check remains behind trustworthy Solar customer ingestion.
+- NEXT: progress Heat Pump upload activation; implement/test private Solar extracted-media bridge; require rendered end-to-end private upload→Solar analysis→results before public exposure.
+
 ## 2026-09-24 14:44 Europe/London — custom-domain rendered gate confirmed green
 - REVENUE: authoritative live Home Quote Check PaymentIntents refreshed; `data=[]`, `has_more=false`. Genuine revenue remains £0 / £1,000 monthly, £0 / £100 validation, 0 paying customers.
 - FUNNEL: latest available durable synthetic-excluded snapshot at 10:13Z remains 81 landings → 56 starts/CTA → 6 uploads → 6 genuine analyses → 1 multi-quote analysis → 5 Decision Cases → 2 share intents → 0 durable checkouts. Start→upload remains the earliest measured constraint at 11%; direct still produced all 6 genuine analyses.
