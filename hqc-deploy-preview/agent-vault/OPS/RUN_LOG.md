@@ -1,5 +1,18 @@
 # Run log
 
+## 2026-09-24 10:08 Europe/London — production gate green; commercial activation resumes
+- REVENUE: authoritative live Home Quote Check Stripe PaymentIntents refreshed; `data=[]`, `has_more=false`. Genuine revenue remains £0 / £1,000 monthly, £0 / £100 validation, 0 paying customers.
+- FUNNEL: fresh durable snapshot (2026-09-24 05:03:55Z) is 81 landings → 56 starts/CTA → 6 uploads → 6 genuine analyses; 5 extended genuine → 1 multi-quote analysis → 5 Decision Cases → 2 share intents → 0 share opens → 0 durable checkouts. Start→upload remains the earliest measured constraint at 11%.
+- SEARCH: fresh GSC 28-day settled summary through 2026-09-21 is 0 clicks, 5 impressions, 0% CTR, average position 7.06.
+- PRODUCTION DIAGNOSIS: exact logs from failed site-consistency run `35862572810` show the only failure was the PDF probe timing out on obsolete CTA copy `/check my quote/i`; the broader 23-page crawl had no reported production failure.
+- FIX: commit `698a04be3e8c7b371b4f9ea450fcf148961356de` makes the PDF probe follow the current quote CTA intent rather than stale exact wording.
+- VERIFICATION: site-consistency run `35979158224` is green. It audited 23 HTML pages plus required runtime assets and explicitly logged `PDF_UPLOAD_REGRESSION_VERIFIED eco-stream-quote-pdf.webp image/webp`.
+- DECISION: production reliability is green again; resume the measured Heat Pump start→upload activation work. Keep Solar non-public because its separate custom-domain rendered badge gate is still red.
+- SOLAR: latest inspected canary reached snapshot/deploy/domain/static/API verification but timed out waiting for `#hqc-solar-preview-badge`; rendered Solar verification remains pending.
+- LEARNINGS: unchanged; selector drift was repaired in QA but no new durable customer/product lesson was established.
+- NEXT: progress Heat Pump upload activation; independently diagnose Solar preview badge rendering and durable technology attribution.
+
+
 ## 2026-09-23 16:46 Europe/London — production consistency gate red; unrelated UI work held
 - REVENUE: fresh authoritative payment evidence unavailable in this execution path; null. Latest settled authoritative position remains £0 / £1,000 monthly, £0 / £100 validation, 0 paying customers.
 - FUNNEL/ACQUISITION: fresh authoritative synthetic-excluded snapshot unavailable; null. Latest settled snapshot remains 80 landings → 56 starts/CTA → 6 uploads → 6 genuine analyses → 1 multi-quote analysis → 5 Decision Cases → 2 share intents → 0 durable checkouts. Start→upload remains the earliest measured commercial constraint at 11%.
