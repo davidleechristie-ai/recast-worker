@@ -94,7 +94,6 @@ jobs:
             }
             if(badScripts.length)throw new Error('Script URLs returned HTML: '+badScripts.join(', ')); if(errors.length)throw new Error(errors.join(' | '));await context.close();
           }
-          // Compare mode must accept more than one quote in the intake step and must not auto-analyse the first.
           {
             const context=await browser.newContext({viewport:{width:390,height:844},isMobile:true,hasTouch:true,serviceWorkers:'block'});
             const page=await context.newPage();
@@ -106,7 +105,7 @@ jobs:
             await page.getByRole('button',{name:/start quote comparison/i}).first().click(); await page.locator('#hqc-upload-back').waitFor({state:'visible',timeout:15000});
             const choose=page.locator('#hqc-choose-file'); await choose.waitFor({state:'visible',timeout:15000});
             const chooserPromise=page.waitForEvent('filechooser',{timeout:5000}); await choose.click(); const chooser=await chooserPromise;
-            const png=Buffer.from('iVBORw0KGgoAAAANSUhEUgAAAAEAAAABCAQAAAC1HAwCAAAAC0lEQVR42mP8/x8AAusB9Wl2+XkAAAAASUVORK5CYII=','base64');
+            const png=Buffer.from('iVBORw0KGgoAAAANSUhEUgAAAAEAAAABCAQAAAC0lEQVR42mP8/x8AAusB9Wl2+XkAAAAASUVORK5CYII=','base64');
             await chooser.setFiles([{name:'quote-a.png',mimeType:'image/png',buffer:png},{name:'quote-b.png',mimeType:'image/png',buffer:png}]);
             const count=await page.locator('input[type="file"]').first().evaluate(el=>el.files?.length||0);
             if(count!==2)throw new Error(`Compare intake did not retain two selected quotes: ${count}`);
@@ -115,7 +114,6 @@ jobs:
             if(badScripts.length)throw new Error('Script URLs returned HTML: '+badScripts.join(', ')); if(errors.length)throw new Error(errors.join(' | '));
             await context.close();
           }
-          // Decision Pack modal purchase CTA must invoke checkout rather than be re-intercepted by its own gate.
           {
             const context=await browser.newContext({viewport:{width:390,height:844},isMobile:true,hasTouch:true,serviceWorkers:'block'});
             const page=await context.newPage();
@@ -128,7 +126,6 @@ jobs:
             if(checkoutRequests!==1)throw new Error(`Decision Pack purchase CTA did not invoke checkout exactly once: ${checkoutRequests}`);
             await context.close();
           }
-          // Solar preview must be explicitly opt-in, visually distinct, and must not leak into the default Heat Pump journey.
           for (const viewport of [{width:390,height:844},{width:1366,height:900}]) {
             const context=await browser.newContext({viewport,serviceWorkers:'block'});
             const page=await context.newPage();
@@ -145,10 +142,10 @@ jobs:
             const context=await browser.newContext({viewport:{width:390,height:844},isMobile:true,hasTouch:true,serviceWorkers:'block'});
             const page=await context.newPage();
             await page.goto('https://cf-preview.homequotecheck.co.uk/?qa=1',{waitUntil:'commit',timeout:30000});
-            await page.locator('.copy h1,.copy h2').first().waitFor({state:'visible',timeout:20000});
+            await page.locator('#hqc-journey-choice').waitFor({state:'visible',timeout:20000});
             if(await page.locator('#hqc-solar-preview-badge').count())throw new Error('Solar preview leaked into default Heat Pump journey');
             const heading=(await page.locator('.copy h1,.copy h2').first().innerText()).toLowerCase();
-            if(!heading.includes('heat-pump'))throw new Error('Default public proposition is no longer Heat Pump');
+            if(!heading.includes('heat-pump'))throw new Error(`Default public proposition is no longer Heat Pump: ${heading}`);
             await context.close();
           }
           await browser.close();
