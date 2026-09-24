@@ -1,18 +1,18 @@
 # Current state
 
-Updated: 2026-09-23 16:46 Europe/London
+Updated: 2026-09-24 10:08 Europe/London
 
 North star: Sustain at least **£1,000 genuine monthly revenue**. Immediate milestone: first genuine purchase and £100 cumulative validation revenue.
 
 ## Evidence refreshed
-- Revenue: fresh authoritative payment evidence unavailable in this execution path; **null**. Latest authoritative settled evidence remains **£0 / £1,000 monthly, £0 / £100 validation, 0 paying customers** from a live Home Quote Check Stripe account with 0 PaymentIntents.
-- Durable funnel/acquisition: fresh authoritative synthetic-excluded snapshot unavailable this run; **null**. Latest settled snapshot remains **80 landings → 56 checker starts/CTA → 6 uploads → 6 genuine analyses**, 5 extended genuine analyses → **1 multi-quote analysis** → 5 Decision Cases → 2 share intents → 0 share opens → 0 durable checkouts. Direct produced all 6 genuine analyses; organic-labelled cohorts had landings but 0 CTA/uploads/analyses.
-- Technology evidence: latest settled durable breakdown records Heat Pump 27 landings, 41 CTA events, 1 upload, 1 genuine analysis, 1 multi-quote analysis, 1 Decision Case, 0 checkouts. Unsegmented remainder remains unknown.
-- Search: fresh Search Console evidence unavailable; **null**. Latest settled summary remains 0 clicks, 4 impressions, 0% CTR, average position 8.07.
-- Production health: **not green**. Scheduled `HQC site consistency` run `35862572810` on current main `ee2a957f880dd27ff06ce6562f247f570110a22e` failed in the browser audit step `Crawl HTML pages, verify loaded assets, responsive layouts and PDF upload`. Setup/install passed. The available Actions metadata does not expose the failing assertion/log text, so do not infer whether this is a production defect or QA timeout. Per SHIP_CHANGE, production health remains unverified until a subsequent audit is green or the exact failure is diagnosed.
+- Revenue: authoritative live Home Quote Check Stripe PaymentIntents refreshed; `data=[]`, `has_more=false`. Genuine revenue remains **£0 / £1,000 monthly, £0 / £100 validation, 0 paying customers**.
+- Durable funnel/acquisition: latest synthetic-excluded Cloudflare snapshot fetched 2026-09-24 05:03:55Z: **81 landings → 56 checker starts/CTA → 6 uploads → 6 genuine analyses**, 5 extended genuine analyses → **1 multi-quote analysis** → 5 Decision Cases → 2 share intents → 0 share opens → 0 durable checkouts. Direct produced all 6 genuine analyses. Start→upload remains **6/56 (11%)**.
+- Technology evidence: Heat Pump now records 28 landings, 41 CTA events, 1 upload, 1 genuine analysis, 1 multi-quote analysis, 1 Decision Case and 0 checkouts. The unsegmented remainder remains unknown.
+- Search: fresh GSC 28-day settled summary through 2026-09-21 is **0 clicks, 5 impressions, 0% CTR, average position 7.06**.
+- Production health: **GREEN**. The previous site-consistency failure was diagnosed from job logs as a QA selector regression: the PDF probe waited for the obsolete exact CTA copy `Check my quote`. Commit `698a04be3e8c7b371b4f9ea450fcf148961356de` made the probe follow the current quote CTA intent. Rerun `35979158224` passed: 23 HTML pages/assets/responsive checks clean and PDF→WebP upload conversion explicitly verified.
 
 ## Commercial diagnosis
-The latest settled funnel still identifies checker-start/CTA → upload as the earliest measured revenue constraint at **6/56 (11%)**. Six genuine analyses remain too few for a pricing/payment-demand conclusion. However, the newly observed red production consistency gate temporarily outranks conversion changes: do not ship unrelated UI changes while production health is unverified.
+With production reliability green again, the earliest measured revenue constraint returns to checker-start/CTA → quote submission at **11%**. Six genuine analyses remain too few to conclude that £4.99 pricing or checkout demand is the problem. Organic-labelled cohorts have not yet produced a genuine analysis.
 
 ## Current milestone
 First genuine £4.99 Decision Pack purchase, then £100 cumulative validation revenue.
@@ -21,29 +21,28 @@ First genuine £4.99 Decision Pack purchase, then £100 cumulative validation re
 - Technology-aware Decision Pack telemetry CI remains verified green (`35850406399`).
 - Gated Solar/Battery routing, analysis/comparison, evidence preservation, installer questions and representative extracted PDF/screenshot/photo envelopes remain CI-verified behind the non-public gate.
 - A gated customer-facing Solar/Battery preview journey exists via explicit `?solar_preview=1` / session preview state and remains non-public.
-- Rendered Solar verification remains pending a confirmed green custom-domain canary after navigation hardening `df080f3`.
+- Rendered Solar verification remains **not green**: latest custom-domain canary evidence reaches deployment/domain/static/API checks but times out waiting for `#hqc-solar-preview-badge`. Do not promote Solar until this rendered preview failure is diagnosed and green.
 - Solar Decision Pack content remains Heat-Pump-specific and must stay gated.
-- No Solar public release was made this run.
 
 ## Active workstreams
-1. **P0/P1 reliability:** diagnose the current red site-consistency audit before unrelated production UI changes.
-2. Reduce Heat Pump checker-start → upload friction once production health is green.
-3. Continue qualified Heat Pump acquisition/conversion while measuring upload → genuine analysis → checkout → purchase.
-4. Close gated Solar rendered/isolation verification and durable technology attribution.
-5. Begin Financial Assumptions Check after trustworthy Solar ingestion/journey gate is green end-to-end.
+1. **P0 commercial activation:** reduce Heat Pump checker-start → upload friction, now that production health is green.
+2. Continue qualified Heat Pump acquisition while measuring upload → genuine analysis → checkout → purchase.
+3. Diagnose/fix the gated Solar rendered-preview badge failure without changing the public Heat Pump journey.
+4. Verify technology propagation into durable funnel/checkout events end-to-end.
+5. Begin Financial Assumptions Check after trustworthy Solar journey verification is green end-to-end.
 
 ## Expected revenue impact
-No genuine-revenue advance this run. Protecting the working Heat Pump journey from an unresolved production-consistency failure prevents conversion work from being measured against an unreliable surface. Once green, start→upload remains the highest-leverage measured commercial boundary.
+The run removed a false reliability block and restores safe experimentation on the measured 11% start→upload constraint. No genuine-revenue advance yet.
 
 ## Next actions
-1. Obtain/diagnose the exact failure from `HQC site consistency` run `35862572810`; fix only a legitimate production/QA regression and require a green rerun.
-2. Resume the measured Heat Pump upload-activation experiment after the reliability gate is green.
-3. Confirm a post-`df080f3` custom-domain canary green before promoting Solar rendered verification.
-4. Verify technology propagation into durable funnel/checkout events end-to-end.
-5. Continue qualified Heat Pump acquisition and measure genuine analysis → checkout → purchase.
+1. Resume the measured Heat Pump upload-activation experiment; prioritise clearer file requirements/privacy and fewer steps before quote submission.
+2. Diagnose the Solar preview badge failure on the custom-domain canary; require rendered mobile+desktop green before any public Solar CTA.
+3. Verify technology propagation into durable funnel/checkout events end-to-end.
+4. Continue qualified Heat Pump acquisition and measure genuine analysis → checkout → purchase.
+5. Keep £4.99 pricing stable until materially more genuine analyses reach the paid boundary.
 
 ## Durable learning
-No new OPS/LEARNINGS.md entry. A single failed audit without the failing assertion does not establish a reusable lesson.
+No OPS/LEARNINGS.md update this run. The reliability incident was a test-selector drift fixed in the release gate; it does not yet justify a broader customer/product lesson.
 
 ## Guardrails
 GitHub + Cloudflare only; never AppDeploy. UI production changes require rendered verification. Preserve independence/privacy/evidence guardrails.
