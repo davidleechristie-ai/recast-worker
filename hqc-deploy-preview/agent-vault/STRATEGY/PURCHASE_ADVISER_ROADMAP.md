@@ -34,6 +34,7 @@ Status: REQUEST + WORKER ISOLATION VERIFIED / INGESTION IN PROGRESS.
 - [x] Worker gate/isolation CI run `35706680835` green for commit `a3661ea47293a0f715ba4647a7f00b35f95866d2`.
 - [x] PDF/image extracted-media provenance contract and correctness tests verified by `HQC Solar analysis CI` run `35798847121` for commit `7593955a07378842bf77d1bf77b21a136f41114c`.
 - [x] Wire verified extracted-text envelopes into gated handler and verify PDF-derived/image-OCR-derived handler fixtures: `HQC Solar analysis CI` run `35823816580` green for commit `c4dca3dbd1d95cb64f8e33774f5787f8a8afc40b`.
+- [x] Custom-domain canary now runs `worker-entry.js` with the internal Solar gate enabled only on canary; live extracted-media analysis, raw-media isolation, and existing rendered browser regression gates all passed in run `36057638281`.
 - [x] Validate representative extracted PDF and screenshot/photo envelopes end-to-end through the gated handler. `HQC Solar analysis CI` run `35849623161` green for `e1cd6e9`; direct raw-media HTTP remains a separate closed boundary.
 - [~] Ensure technology propagates into durable anonymous funnel and checkout events end-to-end. Decision Pack client events + checkout request carry `hqc_journey_technology` with Heat Pump safe default; contract CI run `35850406399` is green for `ad5f43a8b9e0029ab6d97ef1f6f606215efa60f1`. Full durable event-path reconciliation remains to verify.
 
