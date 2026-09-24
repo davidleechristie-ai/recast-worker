@@ -126,7 +126,9 @@ jobs:
             page.on('pageerror',e=>errors.push(String(e)));
             page.on('response',r=>{try{const u=r.url(),ct=(r.headers()['content-type']||'').toLowerCase();if(new URL(u).origin===origin&&/\/resources\/pdf(?:\.worker)?\.mjs(?:\?|$)/i.test(u)&&(!r.ok()||!/javascript|ecmascript/.test(ct)))badRuntime.push(`${u} -> ${r.status()} ${ct||'missing content-type'}`)}catch{}});
             await page.goto(`${base}/?qa=1&pdf_probe=1`,{waitUntil:'domcontentloaded',timeout:30000});
-            await page.getByRole('button',{name:/check my quote/i}).first().click();
+            const quoteStart=page.getByRole('button',{name:/check.*quote/i}).first();
+            await quoteStart.waitFor({state:'visible',timeout:15000});
+            await quoteStart.click();
             const input=page.locator('input[type="file"]').first();
             await input.waitFor({state:'attached',timeout:15000});
             await page.evaluate(()=>{
