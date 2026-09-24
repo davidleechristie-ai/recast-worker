@@ -146,6 +146,20 @@ jobs:
           {
             const context=await browser.newContext({viewport:{width:390,height:844},isMobile:true,hasTouch:true,serviceWorkers:'block'});
             const page=await context.newPage();
+            await page.goto('https://cf-preview.homequotecheck.co.uk/?qa=1&solar_preview=1',{waitUntil:'domcontentloaded',timeout:30000});
+            await page.locator('#hqc-solar-preview-badge').waitFor({state:'visible',timeout:20000});
+            await page.evaluate(()=>sessionStorage.setItem('hqc_solar_extracted_media',JSON.stringify([{sourceMediaType:'application/pdf',extractionMethod:'pdfjs-text-v1',pageCount:1,extractedText:'12 panels. Array size 5.1 kWp. Annual generation 4200 kWh. Total price £9,500.'}])));
+            const probe=await page.evaluate(async()=>{const r=await fetch('/api/analyse',{method:'POST',body:'native-upstream-body'});return {status:r.status,body:await r.json()};});
+            if(probe.status!==200||probe.body?.evidence?.arrayKwp!==5.1)throw new Error('Solar browser bridge did not replace native request with extracted-media analysis');
+            const rendered=page.locator('#hqc-solar-analysis-result');
+            await rendered.waitFor({state:'visible',timeout:10000});
+            const renderedText=await rendered.innerText();
+            if(!renderedText.includes('5.1 kWp')||!/questions to ask the installer/i.test(renderedText))throw new Error('Solar-specific evidence result did not render');
+            await context.close();
+          }
+          {
+            const context=await browser.newContext({viewport:{width:390,height:844},isMobile:true,hasTouch:true,serviceWorkers:'block'});
+            const page=await context.newPage();
             await page.goto('https://cf-preview.homequotecheck.co.uk/?qa=1',{waitUntil:'commit',timeout:30000});
             await page.locator('#hqc-journey-choice').waitFor({state:'visible',timeout:20000});
             if(await page.locator('#hqc-solar-preview-badge').count())throw new Error('Solar preview leaked into default Heat Pump journey');
