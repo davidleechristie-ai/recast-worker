@@ -1,6 +1,6 @@
 # HQC Independent Purchase Adviser — Strategy & Delivery Plan
 
-Updated: 2026-09-23
+Updated: 2026-09-24
 
 ## Objective
 Evolve Home Quote Check from a document checker into an independent **pre-commitment home-energy purchase adviser**, while preserving the acquisition proposition: **Already have a quote? Independently check and compare it before you commit.** The uploaded installer quote remains the acquisition/input wedge. This roadmap runs in parallel with first-customer acquisition and must not destabilise Heat Pump.
@@ -46,8 +46,8 @@ Status: IN PROGRESS.
 - [x] Generate quote-specific installer questions from gaps/differences — verified by successful `HQC Solar analysis CI` run `35717861021`.
 - [~] Reuse Decision Case/share and checkout infrastructure with technology dimension. Technology-aware client telemetry/checkout plumbing is CI-verified; Solar-specific Decision Pack content remains deliberately gated because current pack analysis is Heat-Pump-specific.
 - [~] PDF/image ingestion: provenance/normalisation, extracted-media → gated-handler integration, and representative PDF/screenshot/photo extractor-output fixtures are CI-verified (`35849623161`). Direct raw-media HTTP ingestion remains disabled pending the customer-facing extraction path and rendered end-to-end verification.
-- [ ] Automated rendered/browser correctness tests for gated Solar preview and non-preview Heat Pump isolation — tests exist; green custom-domain verification still pending.
-- [~] Rendered mobile + desktop and preview/canary verification before public CTA. Browser isolation gate added in `83ebc47`; initial run `35850820509` timed out during navigation and was hardened in `df080f3`. Await confirmed green custom-domain canary before promotion.
+- [~] Automated rendered/browser correctness tests for gated Solar preview and non-preview Heat Pump isolation exist. Latest canary `35979367750` isolated a render-order conflict between the Heat-Pump approved-layout mutation pass and Solar preview decoration; fix `a7f5b3c6` is committed and awaiting green canary.
+- [~] Rendered mobile + desktop and preview/canary verification before public CTA. Static/domain/API gates pass; rendered Solar gate remains pending the `a7f5b3c6` canary result. Do not promote until green.
 
 ## WS4 — Home/System Fit Check
 Status: NOT STARTED. Deferred behind P0/P1 work.
