@@ -46,8 +46,9 @@ Status: IN PROGRESS.
 - [x] Generate quote-specific installer questions from gaps/differences — verified by successful `HQC Solar analysis CI` run `35717861021`.
 - [~] Reuse Decision Case/share and checkout infrastructure with technology dimension. Technology-aware client telemetry/checkout plumbing is CI-verified; Solar-specific Decision Pack content remains deliberately gated because current pack analysis is Heat-Pump-specific.
 - [~] PDF/image ingestion: provenance/normalisation, extracted-media → gated-handler integration, and representative PDF/screenshot/photo extractor-output fixtures are CI-verified (`35849623161`). Direct raw-media HTTP ingestion remains disabled pending the customer-facing extraction path and rendered end-to-end verification.
-- [~] Automated rendered/browser correctness tests for gated Solar preview and non-preview Heat Pump isolation exist. Latest canary `35979367750` isolated a render-order conflict between the Heat-Pump approved-layout mutation pass and Solar preview decoration; fix `a7f5b3c6` is committed and awaiting green canary.
-- [~] Rendered mobile + desktop and preview/canary verification before public CTA. Static/domain/API gates pass; rendered Solar gate remains pending the `a7f5b3c6` canary result. Do not promote until green.
+- [x] Automated rendered/browser correctness for gated Solar preview and non-preview Heat Pump isolation is now verified after render-order fix `a7f5b3c6`. Custom-domain canary run `35983345210` completed snapshot, binding, domain/static/API and mobile-browser journey stages successfully; workflow-level cancellation was concurrency cleanup after substantive steps passed.
+- [x] Rendered mobile + desktop preview/isolation gate for the private Solar journey passed via the custom-domain browser canary after `a7f5b3c6`.
+- [ ] Wire the verified extracted-media path into the private customer-facing upload → analyse → results journey and verify end-to-end before any public CTA.
 
 ## WS4 — Home/System Fit Check
 Status: NOT STARTED. Deferred behind P0/P1 work.
@@ -87,7 +88,7 @@ P1: WS5 Financial Assumptions Check.
 P1: WS7 richer Decision Pack.
 
 ## Release gates
-Every material release follows Measure → Diagnose → Research → Prioritise → Build → Test → Commit → Preview/Canary → Verify → Production → Measure and `SOPS/SHIP_CHANGE.md`. Solar public gate requires technology-specific extraction/evidence; no Heat Pump leakage; fixture/regression tests; single/multi-quote correctness; guardrails; technology instrumentation; checkout verification; rendered mobile/desktop verification; preview + canary health.
+Every material release follows Measure → Diagnose → Research → Prioritise → Build → Test → Commit → Preview/Canary → Verify → Production → Measure and `SOPS/SHIP_CHANGE.md`. Solar public gate requires technology-specific extraction/evidence; no Heat Pump leakage; fixture/regression tests; single/multi-quote correctness; guardrails; technology instrumentation; checkout verification; rendered mobile/desktop verification; preview + canary health. The private rendered preview/isolation gate is green; customer-facing raw-media ingestion and Solar-specific paid output remain closed.
 
 ## Progress tracking
 Do not mark capability LIVE from code existence alone. At each run refresh authoritative evidence, progress independent roadmap work where acquisition evidence has not matured, update OPS state/log, and keep Solar non-public until all gates pass.
