@@ -1,6 +1,6 @@
 # Current state
 
-Updated: 2026-09-24 21:55 Europe/London
+Updated: 2026-09-24 22:12 Europe/London
 
 North star: Sustain at least **£1,000 genuine monthly revenue**. Immediate milestone: first genuine purchase and £100 cumulative validation revenue.
 
@@ -18,6 +18,9 @@ The earliest measured revenue constraint remains checker-start/CTA → quote sub
 First genuine £4.99 Decision Pack purchase, then £100 cumulative validation revenue.
 
 ## Solar/Battery progress
+- Private Solar text-PDF ingestion is now end-to-end verified on the isolated custom-domain canary: real browser file selection → PDF.js text extraction with provenance → gated Solar analysis → Solar-specific evidence/gaps/questions render. Run `36060001899` green. Image-only/photo OCR remains deliberately fail-closed.
+- Canary Worker is now isolated as `hqc-custom-domain-canary`, preventing the generic preview deployment from overwriting its internal Solar gate. Vault-only commits are excluded from both HQC preview deployment workflows to avoid unnecessary deploy churn.
+
 - Custom-domain canary now executes `worker-entry.js` with the internal Solar gate enabled only on canary. Run `36057638281` is fully green, including live extracted-media Solar analysis, raw-media fail-closed isolation, and rendered browser regression checks.
 
 - Technology-aware Decision Pack telemetry CI remains verified green (`35850406399`).
