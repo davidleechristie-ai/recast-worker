@@ -75,6 +75,23 @@ jobs:
           node --input-type=module <<'NODE'
           import { chromium } from 'playwright';
           const browser=await chromium.launch({headless:true});
+          const makeTextPdf=(text)=>{
+            const safe=String(text).replace(/\\/g,'\\\\').replace(/\(/g,'\\(').replace(/\)/g,'\\)');
+            const stream=`BT /F1 12 Tf 72 720 Td (${safe}) Tj ET`;
+            const objects=[
+              '<< /Type /Catalog /Pages 2 0 R >>',
+              '<< /Type /Pages /Kids [3 0 R] /Count 1 >>',
+              '<< /Type /Page /Parent 2 0 R /MediaBox [0 0 612 792] /Resources << /Font << /F1 4 0 R >> >> /Contents 5 0 R >>',
+              '<< /Type /Font /Subtype /Type1 /BaseFont /Helvetica >>',
+              `<< /Length ${Buffer.byteLength(stream)} >>\\nstream\\n${stream}\\nendstream`
+            ];
+            let pdf='%PDF-1.4\\n',offsets=[0];
+            objects.forEach((obj,i)=>{offsets.push(Buffer.byteLength(pdf));pdf+=`${i+1} 0 obj\\n${obj}\\nendobj\\n`;});
+            const xref=Buffer.byteLength(pdf);pdf+=`xref\\n0 ${objects.length+1}\\n0000000000 65535 f \\n`;
+            for(let i=1;i<offsets.length;i++)pdf+=String(offsets[i]).padStart(10,'0')+' 00000 n \\n';
+            pdf+=`trailer\\n<< /Size ${objects.length+1} /Root 1 0 R >>\\nstartxref\\n${xref}\\n%%EOF\\n`;
+            return Buffer.from(pdf);
+          };
           for (const suffix of ['?qa=1','?qa=1&manual_path=1']) {
             const context=await browser.newContext({viewport:{width:390,height:844},isMobile:true,hasTouch:true,serviceWorkers:'block'});
             const page=await context.newPage();
@@ -141,6 +158,19 @@ jobs:
             if(!solarHeading.includes('solar')||!solarHeading.includes('battery'))throw new Error('Solar preview proposition did not render');
             const badge=await page.locator('#hqc-solar-preview-badge').innerText();
             if(!/not public/i.test(badge))throw new Error('Solar preview is missing its non-public label');
+            await context.close();
+          }
+          {
+            const context=await browser.newContext({viewport:{width:390,height:844},isMobile:true,hasTouch:true,serviceWorkers:'block'});
+            const page=await context.newPage();
+            await page.goto('https://cf-preview.homequotecheck.co.uk/?qa=1&solar_preview=1',{waitUntil:'domcontentloaded',timeout:30000});
+            await page.getByRole('button',{name:/start solar quote check/i}).first().click();
+            const choose=page.locator('#hqc-choose-file');await choose.waitFor({state:'visible',timeout:15000});
+            const chooserPromise=page.waitForEvent('filechooser',{timeout:5000});await choose.click();const chooser=await chooserPromise;
+            await chooser.setFiles({name:'solar-installer-quote.pdf',mimeType:'application/pdf',buffer:makeTextPdf('Solar quote. 12 panels. Array size 5.1 kWp. Annual generation 4200 kWh. Total price GBP 9500.')});
+            await page.waitForFunction(()=>{try{const m=JSON.parse(sessionStorage.getItem('hqc_solar_extracted_media')||'[]');return m[0]?.extractionMethod==='pdfjs-text-v1'&&/5\.1 kWp/.test(m[0]?.extractedText||'')}catch{return false}},{timeout:20000});
+            const extracted=await page.evaluate(()=>JSON.parse(sessionStorage.getItem('hqc_solar_extracted_media')||'[]')[0]);
+            if(extracted.sourceMediaType!=='application/pdf'||extracted.pageCount!==1)throw new Error('Solar PDF extraction provenance was not retained');
             await context.close();
           }
           {
