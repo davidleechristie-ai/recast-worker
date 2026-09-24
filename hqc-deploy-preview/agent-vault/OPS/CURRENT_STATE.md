@@ -1,6 +1,6 @@
 # Current state
 
-Updated: 2026-09-24 18:45 Europe/London
+Updated: 2026-09-24 21:55 Europe/London
 
 North star: Sustain at least **£1,000 genuine monthly revenue**. Immediate milestone: first genuine purchase and £100 cumulative validation revenue.
 
@@ -18,6 +18,8 @@ The earliest measured revenue constraint remains checker-start/CTA → quote sub
 First genuine £4.99 Decision Pack purchase, then £100 cumulative validation revenue.
 
 ## Solar/Battery progress
+- Custom-domain canary now executes `worker-entry.js` with the internal Solar gate enabled only on canary. Run `36057638281` is fully green, including live extracted-media Solar analysis, raw-media fail-closed isolation, and rendered browser regression checks.
+
 - Technology-aware Decision Pack telemetry CI remains verified green (`35850406399`).
 - Gated Solar/Battery routing, analysis/comparison, evidence preservation, installer questions and representative extracted PDF/screenshot/photo envelopes remain CI-verified behind the non-public gate.
 - Private rendered Solar preview + default Heat Pump isolation has an unambiguous workflow-level green custom-domain canary (`36007880323`).
