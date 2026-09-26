@@ -1,15 +1,15 @@
 # Current state
 
-Updated: 2026-09-24 22:12 Europe/London
+Updated: 2026-09-26 08:55 Europe/London
 
 North star: Sustain at least **£1,000 genuine monthly revenue**. Immediate milestone: first genuine purchase and £100 cumulative validation revenue.
 
 ## Evidence refreshed
-- Revenue: authoritative live Home Quote Check Stripe PaymentIntents refreshed; `data=[]`, `has_more=false`. Genuine revenue remains **£0 / £1,000 monthly, £0 / £100 validation, 0 paying customers**.
-- Durable funnel/acquisition: fresh synthetic-excluded Cloudflare snapshot fetched 2026-09-24 15:16:11Z is **82 landings → 56 checker starts/CTA → 6 uploads → 6 genuine analyses**, 5 extended genuine analyses → **1 multi-quote analysis** → 5 Decision Cases → 2 share intents → 0 share opens → 0 durable checkouts. Direct produced all 6 genuine analyses. Start→upload remains **6/56 (11%)**. The one new landing did not start the checker.
-- Technology evidence: Heat Pump records 29 landings, 41 CTA events, 1 upload, 1 genuine analysis, 1 multi-quote analysis, 1 Decision Case and 0 checkouts. The unsegmented remainder remains unknown; no qualified Solar production cohort exists while the public gate is closed.
-- Search: fresh GSC 28-day settled summary through 2026-09-22 remains **0 clicks, 5 impressions, 0% CTR, average position 7.06**.
-- Production health: **GREEN**. Full site-consistency verification remains green (`35979158224`), and latest confirmed custom-domain canary `36007880323` is workflow-level success with Cloudflare binding, static/API and rendered Heat Pump/Solar-isolation verification green. Latest live-metrics workflow `36018906746` also completed successfully.
+- Revenue: authoritative live Home Quote Check Stripe PaymentIntents refreshed 2026-09-26; `data=[]`, `has_more=false`. Genuine revenue remains **£0 / £1,000 monthly, £0 / £100 validation, 0 paying customers**.
+- Durable funnel/acquisition: fresh synthetic-excluded Cloudflare snapshot fetched 2026-09-24 15:16:11Z is **82 landings → 56 checker starts/CTA → 6 uploads → 6 genuine analyses**, 5 extended genuine analyses → **1 multi-quote analysis** → 5 Decision Cases → 2 share intents → 0 share opens → 0 durable checkouts. Direct produced all 6 genuine analyses. Start→upload remains **6/56 (11%)**. Landings increased to 83 while starts/uploads/analyses stayed flat, reinforcing the current start→upload constraint without establishing a new reusable lesson.
+- Technology evidence: Heat Pump records 30 landings, 41 CTA events, 1 upload, 1 genuine analysis, 1 multi-quote analysis, 1 Decision Case and 0 checkouts. The unsegmented remainder remains unknown; no qualified Solar production cohort exists while the public gate is closed.
+- Search: current refresh unavailable because the connected GSC Wizard subscription is inactive; latest vault evidence remains 0 clicks / 5 impressions, but current position is **null pending authoritative refresh** rather than carrying forward the disputed 7.06 value.
+- Production health: **GREEN** from fresh production metrics workflows: HQC commercial metrics run `36227539921` and HQC North Star metrics snapshot `36227715656` both completed successfully on 2026-09-26. Latest durable production metrics endpoint was read successfully and persisted by the workflow.
 
 ## Commercial diagnosis
 The earliest measured revenue constraint remains checker-start/CTA → quote submission at **11%**. Six genuine analyses remain too few to conclude that £4.99 pricing or checkout demand is the problem. Organic-labelled cohorts have not yet produced a genuine analysis. The latest extra landing without a start is not sufficient evidence to add a new landing-page experiment alongside the active upload-activation hypothesis.
@@ -37,7 +37,7 @@ First genuine £4.99 Decision Pack purchase, then £100 cumulative validation re
 5. Begin Financial Assumptions Check only after trustworthy Solar customer ingestion is executable end-to-end.
 
 ## Expected revenue impact
-No genuine-revenue advance this run. Production and private Solar rendered verification remain green. The direct first-purchase lever remains Heat Pump start→upload activation; the independent Solar ingestion bridge remains the highest-priority Purchase Adviser build boundary.
+No genuine-revenue advance this run. GitHub repository authorization was repaired and authoritative Stripe + durable production evidence refreshed. The direct first-purchase lever remains Heat Pump start→upload activation; private Solar remains non-public.
 
 ## Next actions
 1. Continue the measured Heat Pump upload-activation experiment without overlapping conversion hypotheses.
@@ -47,7 +47,7 @@ No genuine-revenue advance this run. Production and private Solar rendered verif
 5. Keep £4.99 pricing stable until materially more genuine analyses reach the paid boundary.
 
 ## Durable learning
-No OPS/LEARNINGS.md update this run. Evidence is commercially unchanged apart from one additional non-starting landing; that is insufficient to establish, overturn or materially refine a reusable lesson.
+No OPS/LEARNINGS.md update this run. The new evidence does not establish, overturn or materially refine a reusable lesson; GSC is unavailable and therefore treated as null for the current refresh.
 
 ## Guardrails
 GitHub + Cloudflare only; never AppDeploy. UI production changes require rendered verification. Preserve independence/privacy/evidence guardrails.
