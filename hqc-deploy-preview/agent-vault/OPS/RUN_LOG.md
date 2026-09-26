@@ -63,3 +63,15 @@
 - LEARNINGS: unchanged; this is implementation-boundary evidence, not customer-demand or willingness-to-pay evidence.
 - EXPECTED IMPACT: reduces ambiguity and dependency risk on the next Solar implementation while protecting the live Heat Pump path. Direct first-purchase priority remains Heat Pump start→upload activation.
 - NEXT: continue Heat Pump activation; implement/test the private Solar extracted-media bridge and require rendered end-to-end verification before any public Solar CTA.
+
+
+## 2026-09-26 08:55 Europe/London — GitHub access repaired; authoritative refresh resumed
+- REVENUE: live Home Quote Check Stripe PaymentIntents refreshed; `data=[]`, `has_more=false`. Genuine revenue remains £0 / £1,000 monthly, £0 / £100 validation, 0 paying customers.
+- FUNNEL: fresh durable synthetic-excluded production snapshot at 07:44:57Z: 83 landings → 56 starts/CTA → 6 uploads → 6 genuine analyses → 1 multi-quote analysis → 5 Decision Cases → 2 share intents → 0 share opens → 0 checkouts. Start→upload remains 11%. Direct produced all 6 genuine analyses. Heat Pump technology cohort: 30 landings, 41 CTA events, 1 upload, 1 genuine analysis, 1 comparison, 1 Decision Case, 0 checkouts.
+- SEARCH: authoritative current GSC refresh unavailable because GSC Wizard subscription is inactive. Current value recorded as null; do not promote stale/disputed position data as fresh evidence.
+- PRODUCTION: green. HQC commercial metrics run 36227539921 and North Star metrics snapshot 36227715656 completed successfully; production metrics endpoint returned durable=true and the snapshot persisted successfully.
+- ACCESS FIX: reauthorised GitHub connection now exposes recast-worker; HQC vault located at hqc-deploy-preview/agent-vault. Previous blocker is cleared.
+- COMMERCIAL DECISION: no price change or overlapping conversion experiment. Continue the active Heat Pump start→upload activation hypothesis and qualified acquisition.
+- SOLAR/PURCHASE ADVISER: remains non-public. No roadmap capability promoted this run; trustworthy text-PDF private path remains green from prior evidence, image-only/OCR remains fail-closed. Financial Assumptions Check stays behind trustworthy customer ingestion.
+- LEARNINGS: unchanged; no authoritative evidence established or overturned a reusable lesson.
+- NEXT: continue Heat Pump upload activation; verify durable technology propagation; progress private Solar customer-ingestion boundary without public exposure; refresh GSC when an authoritative source is available.
