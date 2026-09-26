@@ -50,5 +50,6 @@ test('MVP benchmark: >=95% of explicitly expected material fields are correct wi
     if(fixture.expected.annualGenerationKwh===null) assert.equal(result.evidence.annualGenerationKwh,null);
   }
   const accuracy=correct/expected;
+  console.log('MVP_ACCURACY',correct+'/'+expected,(accuracy*100).toFixed(1)+'%');
   assert.ok(accuracy>=0.95,'material-field accuracy '+(accuracy*100).toFixed(1)+'% is below 95% ('+correct+'/'+expected+')');
 });
