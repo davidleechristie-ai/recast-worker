@@ -119,3 +119,8 @@ Do not mark capability LIVE from code existence alone. At each run refresh autho
 
 ## 2026-09-26 milestone
 Solar PV + Battery has passed the LIVE MVP production gate for the supported text-PDF journey: rendered custom-domain canary 36231458276 passed; production release 36240154137 returned Heat Pump/default 200, Solar production analysis 200 with expected 5.1 kWp evidence, and durable metrics 200. Unsupported image-only/photo inputs remain fail-closed. WS3 now moves from gated MVP delivery into production observation/refinement. WS5 Financial Assumptions Check is the next Purchase Adviser build priority; richer WS7 cross-technology Decision Pack follows once assumptions are evidence-backed.
+
+## Vertical 3 — EV Chargepoint + Smart Charging
+Status: BUILD / NON-PUBLIC.
+
+Selected as the next iterative vertical after Solar PV + Battery reached LIVE MVP. Initial benchmark scope is domestic GB chargepoint installer quotes, with Scotland-specific grant wording treated separately where relevant. Evidence model covers charger model/power, tethering/connector, smart/connectivity features, load management, PV integration, supply/consumer-unit/cabling/earthing scope, DNO treatment, warranties, price/exclusions, and grant/installer/model claims. Current authoritative guardrails are GOV.UK smart-chargepoint regulations and OZEV chargepoint/grant specifications plus Energy Saving Trust consumer charging guidance. The technology route is registered fail-closed at 409 until a dedicated adapter passes fixtures, comparison, rendered journey and production gates.
