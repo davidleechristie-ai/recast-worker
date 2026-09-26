@@ -190,9 +190,12 @@ jobs:
             const page=await context.newPage();
             await page.goto('https://cf-preview.homequotecheck.co.uk/?qa=1',{waitUntil:'commit',timeout:30000});
             await page.locator('#hqc-journey-choice').waitFor({state:'visible',timeout:20000});
-            if(await page.locator('#hqc-solar-preview-badge').count())throw new Error('Solar preview leaked into default Heat Pump journey');
+            if(await page.locator('#hqc-solar-preview-badge').count())throw new Error('Private Solar preview leaked into default renewable-generic journey');
             const heading=(await page.locator('.copy h1,.copy h2').first().innerText()).toLowerCase();
-            if(!heading.includes('heat-pump'))throw new Error(`Default public proposition is no longer Heat Pump: ${heading}`);
+            if(!heading.includes('home energy quote'))throw new Error(`Default public proposition is not renewable-generic: ${heading}`);
+            const tech=page.locator('#hqc-technology-choice');
+            const techText=(await tech.innerText()).toLowerCase();
+            if(!techText.includes('heat pump')||!techText.includes('solar pv / battery'))throw new Error(`Technology selector is incomplete: ${techText}`);
             await context.close();
           }
           await browser.close();
