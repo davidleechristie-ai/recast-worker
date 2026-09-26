@@ -1,0 +1,52 @@
+{
+  "cases": [
+    {
+      "id": "complete",
+      "quoteText": "Installation of Zappi V2 EV charger 7.4 kW charging. Tethered Type 2 cable. Smart charging with app control and dynamic load management. Solar PV integration included. DNO notification included. Equipment warranty 3 years. Total £1,250.",
+      "expected": {
+        "make": "Zappi",
+        "model": "V2",
+        "powerKw": 7.4,
+        "tethered": true,
+        "connector": "Type 2",
+        "smart": true,
+        "loadManagement": "dynamic load management stated",
+        "pvIntegration": "solar/PV integration stated",
+        "warrantyYears": 3,
+        "priceGbp": 1250
+      }
+    },
+    {
+      "id": "partial",
+      "quoteText": "Untethered EV chargepoint. Installed price £899. Cabling route subject to survey.",
+      "expected": {
+        "make": null,
+        "model": null,
+        "powerKw": null,
+        "tethered": false,
+        "connector": null,
+        "smart": null,
+        "loadManagement": null,
+        "pvIntegration": null,
+        "warrantyYears": null,
+        "priceGbp": 899
+      }
+    },
+    {
+      "id": "alternative",
+      "quoteText": "Install Ohme HomePro chargepoint 7 kW charging with Type 2 connector, smart charging and app control. DNO application handled by installer. Installation warranty 2 years. Total £1,099.",
+      "expected": {
+        "make": "Ohme",
+        "model": "HomePro",
+        "powerKw": 7,
+        "tethered": null,
+        "connector": "Type 2",
+        "smart": true,
+        "loadManagement": null,
+        "pvIntegration": null,
+        "warrantyYears": 2,
+        "priceGbp": 1099
+      }
+    }
+  ]
+}
