@@ -29,5 +29,14 @@ Use GitHub/Cloudflare via hqc-deploy-preview and Worker hqc-production, with pre
 After release verify production and log evidence.
 
 
+## Fast production lane
+Optimise for hours-to-production, not ceremony. Classify each change before work starts:
+- **Fast lane:** isolated copy, SEO, telemetry, guarded backend logic, technology adapter, or low-risk UI change with existing regression coverage. Run targeted tests and deploy straight to the production Worker after they pass; production verification is the final gate. Preview/canary may run in parallel and must not serially delay production unless the change touches routing, bindings, checkout/payment, shared upload plumbing, privacy/security, or an existing live technology's analysis correctness.
+- **Full lane:** routing/bindings, payments, shared upload/analysis infrastructure, privacy/security, destructive data changes, or changes capable of breaking an already-live vertical. Require targeted tests plus canary before production.
+
+For a new renewable vertical behind an independent kill switch, build and deploy dormant production code/assets early. Passing tests may put the implementation into production with the public flag OFF; do not wait for the entire vertical benchmark. Once the vertical independently passes its MVP benchmark and rendered journey verification, enable its public flag immediately, verify the real hostname, and disable only that flag on a vertical-specific P0/P1 regression. Do not redeploy unrelated code merely to toggle a vertical where a safe environment flag is available.
+
+Do not repeat equivalent gates serially. Reuse fresh evidence from the same commit/release candidate. Targeted test + rendered canary + production smoke are sufficient where applicable; avoid waiting for duplicate broad workflows that do not cover additional risk.
+
 ## New renewable vertical release gate
 For every new HQC technology, apply the Renewable Vertical MVP Production Benchmark in `STRATEGY/PURCHASE_ADVISER_ROADMAP.md` in addition to this SOP. A technology cannot be marked LIVE until its benchmark evidence is recorded, preview/canary rendered verification is green, production is deployed, and the real production hostname journey is re-verified. Prefer a per-technology kill switch so one vertical can be disabled without affecting existing live technologies.
