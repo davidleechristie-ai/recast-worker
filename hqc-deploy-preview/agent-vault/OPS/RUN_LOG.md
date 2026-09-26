@@ -75,3 +75,11 @@
 - SOLAR/PURCHASE ADVISER: remains non-public. No roadmap capability promoted this run; trustworthy text-PDF private path remains green from prior evidence, image-only/OCR remains fail-closed. Financial Assumptions Check stays behind trustworthy customer ingestion.
 - LEARNINGS: unchanged; no authoritative evidence established or overturned a reusable lesson.
 - NEXT: continue Heat Pump upload activation; verify durable technology propagation; progress private Solar customer-ingestion boundary without public exposure; refresh GSC when an authoritative source is available.
+
+
+## 2026-09-26 — iterative renewable MVP release policy approved
+- STRATEGY: owner directed that each new renewable technology should be released independently when it reaches an appropriate MVP, rather than waiting for the portfolio.
+- BENCHMARK: documented mandatory Renewable Vertical MVP Production Benchmark covering technology isolation; technology-specific evidence; ≥95% required material field capture on representative fixtures when explicitly present with zero fabricated material values; evidence-backed findings/comparison; current UK guardrails; end-to-end customer journey; technology-correct commercial boundary; privacy-safe durable telemetry; existing-live regression; rendered mobile/desktop canary; production-host verification; and post-release kill-switch/watch.
+- RELEASE RULE: zero known P0/P1 correctness or safety defects. Unsupported inputs may fail closed at MVP if clearly disclosed. A technology is LIVE MVP only after production verification.
+- DELIVERY: Solar PV + Battery remains first because it is closest to the benchmark. Once released, continuously rank and progress the next technology by observed demand × revenue potential × speed-to-MVP ÷ implementation/risk.
+- SOP: SHIP_CHANGE now requires the benchmark for every new renewable vertical.
