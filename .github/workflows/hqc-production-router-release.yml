@@ -69,10 +69,10 @@ jobs:
           test "$hp_code" = '200'
           grep -q 'Success' /tmp/hqc-hp
 
-          solar_code=$(curl -L -sS -o /tmp/hqc-solar -w '%{http_code}' --max-time 30 -H 'x-hqc-technology: solar_battery' "$base/api/_healthcheck")
-          echo "solar production health -> $solar_code"
+          solar_code=$(curl -L -sS -o /tmp/hqc-solar -w '%{http_code}' --max-time 30 -X POST -H 'content-type: application/json' -H 'x-hqc-technology: solar_battery' --data '{"extractedMedia":[{"sourceMediaType":"application/pdf","extractionMethod":"release-smoke-text-v1","pageCount":1,"extractedText":"Solar PV quote: 12 x 425W panels, 5.1 kWp array. Inverter 5 kW. Total price £9,500."}]}' "$base/api/analyse")
+          echo "solar production analysis -> $solar_code"
           test "$solar_code" = '200'
-          grep -q 'Success' /tmp/hqc-solar
+          grep -q '5.1' /tmp/hqc-solar
 
           metrics_code=$(curl -L -sS -o /tmp/hqc-metrics -w '%{http_code}' --max-time 30 "$base/api/metrics")
           echo "durable metrics -> $metrics_code"
