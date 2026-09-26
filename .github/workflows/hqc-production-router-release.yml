@@ -10,6 +10,10 @@ on:
       - 'hqc-deploy-preview/lib/technology-routing.js'
       - 'hqc-deploy-preview/lib/analysis-request-routing.js'
       - 'hqc-deploy-preview/wrangler.production.toml'
+      - 'hqc-deploy-preview/approved-home-layout.js'
+      - 'hqc-deploy-preview/snapshot.mjs'
+      - 'hqc-deploy-preview/solar-preview-journey.js'
+      - 'hqc-deploy-preview/upload-friction-v3.js'
   workflow_dispatch:
 
 permissions:
