@@ -3,7 +3,8 @@
   const TECH='hqc_journey_technology';
   const MEDIA='hqc_solar_extracted_media';
   let lastResult=null,resultVersion=0;
-  const enabled=()=>{try{return new URLSearchParams(location.search).get('solar_preview')==='1'||sessionStorage.getItem(FLAG)==='1'}catch{return false}};
+  const enabled=()=>{try{const q=new URLSearchParams(location.search);return q.get('technology')==='solar_battery'||q.get('solar_preview')==='1'||sessionStorage.getItem(FLAG)==='1'||sessionStorage.getItem(TECH)==='solar_battery'}catch{return false}};
+  const publicMode=()=>{try{return new URLSearchParams(location.search).get('technology')==='solar_battery'}catch{return false}};
   const setPreview=()=>{try{sessionStorage.setItem(FLAG,'1');sessionStorage.setItem(TECH,'solar_battery')}catch{}};
   const clearPreview=()=>{try{sessionStorage.removeItem(FLAG);sessionStorage.removeItem(TECH)}catch{}};
   function decorateHome(){
@@ -22,14 +23,14 @@
       if(compare){const b=compare.querySelector('b'),span=compare.querySelector('span'),strong=compare.querySelector('strong');if(b)b.textContent='Compare solar / battery quotes';if(span)span.textContent='Upload two or more quotes and compare price, equipment, scope and documented evidence side by side.';if(strong)strong.textContent='Start solar quote comparison →';}
     }
     let badge=document.querySelector('#hqc-solar-preview-badge');
-    if(!badge){badge=document.createElement('div');badge.id='hqc-solar-preview-badge';badge.textContent='SOLAR / BATTERY PREVIEW — NOT PUBLIC';badge.style.cssText='display:inline-block;margin:0 0 12px;padding:6px 10px;border-radius:999px;background:#fff4cc;color:#6a4b00;font:800 11px/1.2 system-ui';h.insertAdjacentElement('beforebegin',badge);}
+    if(!badge){badge=document.createElement('div');badge.id='hqc-solar-preview-badge';badge.textContent=publicMode()?'SOLAR / BATTERY QUOTE CHECK':'SOLAR / BATTERY PREVIEW — NOT PUBLIC';badge.style.cssText='display:inline-block;margin:0 0 12px;padding:6px 10px;border-radius:999px;background:#fff4cc;color:#6a4b00;font:800 11px/1.2 system-ui';h.insertAdjacentElement('beforebegin',badge);}
   }
   function decorateUpload(){
     if(!enabled())return;
     setPreview();
     const card=[...document.querySelectorAll('.card')].find(x=>/Add your quotes/i.test(x.querySelector('h1')?.textContent||''));if(!card)return;
     const h=card.querySelector('h1');if(h)h.textContent='Add your solar or battery quotes';
-    const intro=h?.nextElementSibling;if(intro)intro.textContent='Upload a genuine installer screenshot, photo or PDF. This private preview checks documented Solar/Battery evidence; it does not certify the design or installer.';
+    const intro=h?.nextElementSibling;if(intro)intro.textContent=publicMode()?'Upload a text-based installer PDF. Image-only scans and photos are not supported yet, so we never guess missing quote evidence.':'Upload a text-based installer PDF. Image-only scans and photos remain blocked in this private preview rather than guessed.';
   }
   const esc=v=>String(v??'').replace(/[&<>"']/g,ch=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[ch]));
   const media=()=>{try{const v=JSON.parse(sessionStorage.getItem(MEDIA)||'[]');return Array.isArray(v)?v:[]}catch{return[]}};
@@ -51,7 +52,7 @@
     }).join('');
     const compare=Array.isArray(lastResult.comparison)?'<p style="margin:14px 0 0;font-weight:800;color:#07503b">'+esc(lastResult.conclusion||'Compare evidenced scope and omissions before deciding.')+'</p>':'';
     host.dataset.hqcResultVersion=String(resultVersion);
-    host.innerHTML='<div style="font-size:11px;font-weight:900;letter-spacing:.05em;color:#6a4b00">PRIVATE SOLAR / BATTERY PREVIEW</div><h2 style="margin:5px 0 8px">Independent quote evidence check</h2><p style="margin:0 0 16px;color:#526579">This checks what is written in the quote. It does not certify electrical design, roof suitability, DNO approval, MCS status, generation or savings.</p><div style="display:grid;gap:14px">'+cards+'</div>'+compare;
+    host.innerHTML='<div style="font-size:11px;font-weight:900;letter-spacing:.05em;color:#6a4b00">'+(publicMode()?'SOLAR / BATTERY QUOTE CHECK':'PRIVATE SOLAR / BATTERY PREVIEW')+'</div><h2 style="margin:5px 0 8px">Independent quote evidence check</h2><p style="margin:0 0 16px;color:#526579">This checks what is written in the quote. It does not certify electrical design, roof suitability, DNO approval, MCS status, generation or savings.</p><div style="display:grid;gap:14px">'+cards+'</div>'+compare;
     host.scrollIntoView({behavior:'smooth',block:'start'});
   }
   function addTechnologyHeader(){
