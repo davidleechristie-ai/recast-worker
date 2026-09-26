@@ -5,6 +5,7 @@ export { HqcMetrics };
 import { analysisRequestRoute, technologyRouteErrorResponse, technologyHintFromRequest } from './lib/analysis-request-routing.js';
 import { normaliseTechnology, HQC_TECHNOLOGIES } from './lib/technology-routing.js';
 import { handleSolarBatteryAnalysisRequest } from './lib/solar-battery-request-handler.js';
+import { handleEvChargepointAnalysisRequest } from './lib/ev-chargepoint-request-handler.js';
 
 export default {
   async fetch(request, env, ctx) {
@@ -25,6 +26,15 @@ export default {
     // 409 isolation behaviour. Heat Pump never enters this branch.
     const hintedTechnology = normaliseTechnology(technologyHintFromRequest(request, incoming));
     const solarTechnology = hintedTechnology === HQC_TECHNOLOGIES.SOLAR_BATTERY || hintedTechnology === HQC_TECHNOLOGIES.BATTERY;
+    const evTechnology = hintedTechnology === HQC_TECHNOLOGIES.EV_CHARGEPOINT;
+    const evEnabled = String(env.HQC_EV_CHARGEPOINT_ANALYSIS_INTERNAL || '') === '1';
+    if (evTechnology && evEnabled) {
+      const response = await handleEvChargepointAnalysisRequest(request);
+      const headers = new Headers(response.headers);
+      headers.set('x-hqc-analysis-technology', hintedTechnology);
+      headers.set('x-hqc-analysis-adapter', 'ev_chargepoint_internal');
+      return new Response(response.body, { status: response.status, statusText: response.statusText, headers });
+    }
     const solarEnabled = String(env.HQC_SOLAR_ANALYSIS_PUBLIC || '') === '1' || String(env.HQC_SOLAR_ANALYSIS_INTERNAL || '') === '1';
     if (solarTechnology && solarEnabled) {
       const response = await handleSolarBatteryAnalysisRequest(request);
