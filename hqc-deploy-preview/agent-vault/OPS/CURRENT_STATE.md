@@ -29,10 +29,13 @@ First genuine £4.99 Decision Pack purchase, then £100 cumulative validation re
 - Customer-ingestion boundary remains: browser intake supplies media to the existing journey, while the private Solar handler accepts JSON `quoteText` / provenance-bearing `extractedMedia`. The next safe product implementation remains trusted extraction-output → JSON `extractedMedia` → Solar handler → rendered results, never Solar fallback to Heat Pump.
 - Solar Decision Pack content remains Heat-Pump-specific and gated.
 
+## Renewable release policy
+Each new home renewable/low-carbon technology now ships independently as soon as it passes the documented Renewable Vertical MVP Production Benchmark: explicit isolation, technology-specific evidence model, ≥95% required-field fixture extraction when explicitly present with zero fabricated material values, evidence-backed decision correctness, UK guardrails, complete customer journey, correct commercial boundary, durable technology telemetry, regression coverage, rendered mobile/desktop canary verification, and post-deploy production-host verification. P0/P1 correctness/safety defects block release. Per-technology kill switches are preferred. Solar PV + Battery is first in this iterative queue because it is closest to MVP.
+
 ## Active workstreams
 1. **P0 commercial activation:** reduce Heat Pump checker-start → upload friction; measured boundary remains 11%.
 2. Continue qualified Heat Pump acquisition while measuring upload → genuine analysis → checkout → purchase.
-3. Build the private Solar customer-ingestion adapter: selected media → trustworthy extracted text/provenance → JSON `extractedMedia` → Solar handler → rendered results, with fail-closed isolation.
+3. Take Solar PV + Battery through the remaining MVP benchmark gates and release to production immediately when all are green; then progress the next ranked renewable vertical.
 4. Verify technology propagation into durable funnel/checkout events end-to-end.
 5. Begin Financial Assumptions Check only after trustworthy Solar customer ingestion is executable end-to-end.
 
