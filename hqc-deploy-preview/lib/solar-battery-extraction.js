@@ -20,8 +20,8 @@ export function extractSolarBatteryEvidence(quoteText = '', technology = 'solar_
     usableCapacityKwh: num(batteryMatch[3] || batteryMatch[6])
   } : null;
   const annualGenerationKwh = num(match(text, /(?:(?:estimated\s+)?annual\s+(?:PV\s+)?generation(?:\s+estimate)?|generation)\s+(?:estimate\s+)?(?:of\s+)?(\d[\d,]*)\s*kWh/i));
-  const selfConsumptionPercent = num(match(text, /(\d+(?:\.\d+)?)%\s+self-consumption/i));
-  const exportPercent = num(match(text, /(\d+(?:\.\d+)?)%\s+export/i));
+  const selfConsumptionPercent = num(match(text, /(?:self-consumption(?:\s+(?:assumption|assumed))?\s*[:=]?\s*(\d+(?:\.\d+)?)%|(\d+(?:\.\d+)?)%\s+self-consumption)/i, 1) ?? match(text, /(?:self-consumption(?:\s+(?:assumption|assumed))?\s*[:=]?\s*(\d+(?:\.\d+)?)%|(\d+(?:\.\d+)?)%\s+self-consumption)/i, 2));
+  const exportPercent = num(match(text, /(?:export(?:\s+(?:assumption|assumed))?\s*[:=]?\s*(\d+(?:\.\d+)?)%|(\d+(?:\.\d+)?)%\s+export)/i, 1) ?? match(text, /(?:export(?:\s+(?:assumption|assumed))?\s*[:=]?\s*(\d+(?:\.\d+)?)%|(\d+(?:\.\d+)?)%\s+export)/i, 2));
   const priceGbp = num(match(text, /(?:total|installed|price)\s+£([\d,]+)/i));
   const dnoTreatment = /G99/i.test(text) ? (/approval\s+(?:is\s+)?not\s+(?:stated\s+as\s+)?(?:obtained|evidenced)/i.test(text) ? 'G99 application required; approval not evidenced' : 'G99 application stated') : (/G98/i.test(text) ? 'G98 notification after commissioning' : null);
   const generationBasis = match(text, /(using\s+stated\s+MCS\s+methodology)/i);
