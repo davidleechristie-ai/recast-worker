@@ -35,3 +35,11 @@ test('unsupported technology still fails closed at Worker boundary', async () =>
   const payload = await response.json();
   assert.equal(payload.error, 'unsupported_or_missing_technology');
 });
+
+
+test('Worker serves Solar/Battery through independent public production gate', async () => {
+  const response = await worker.fetch(solarRequest(), { HQC_SOLAR_ANALYSIS_PUBLIC: '1' }, {});
+  assert.equal(response.status, 200);
+  assert.equal(response.headers.get('x-hqc-analysis-technology'), 'solar_battery');
+  assert.equal(response.headers.get('x-hqc-analysis-adapter'), 'solar_battery');
+});
