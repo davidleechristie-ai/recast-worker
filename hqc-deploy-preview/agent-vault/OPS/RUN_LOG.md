@@ -83,3 +83,12 @@
 - RELEASE RULE: zero known P0/P1 correctness or safety defects. Unsupported inputs may fail closed at MVP if clearly disclosed. A technology is LIVE MVP only after production verification.
 - DELIVERY: Solar PV + Battery remains first because it is closest to the benchmark. Once released, continuously rank and progress the next technology by observed demand × revenue potential × speed-to-MVP ÷ implementation/risk.
 - SOP: SHIP_CHANGE now requires the benchmark for every new renewable vertical.
+
+## 2026-09-26 — Solar PV + Battery production gate passed
+- PRODUCTION: release run 36240154137 SUCCESS on homequotecheck.co.uk.
+- REGRESSION: Heat Pump/default health HTTP 200.
+- SOLAR: real production POST analysis HTTP 200; release assertion verified expected 5.1 kWp evidence from synthetic provenance-bearing text-PDF fixture.
+- METRICS: durable metrics endpoint HTTP 200.
+- UI: renewable-generic rendered custom-domain canary run 36231458276 previously SUCCESS.
+- STATUS: Solar PV + Battery promoted to LIVE MVP for supported text-PDF ingestion. Image-only scans/photos remain deliberately fail-closed; no unsupported evidence is guessed.
+- NEXT: progress WS5 Financial Assumptions Check, then richer technology-specific Decision Pack, while maintaining first-customer acquisition/conversion work and Heat Pump regression protection.
