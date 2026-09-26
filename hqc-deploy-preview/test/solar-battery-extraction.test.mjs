@@ -29,3 +29,26 @@ test('extracts both comparison quotes independently', () => {
   assert.equal(b.evidence.priceGbp, 11900);
   assert.match(b.evidence.dnoTreatment, /G99/);
 });
+
+
+test('MVP benchmark: >=95% of explicitly expected material fields are correct with zero fabricated values', () => {
+  const leaves=(obj,prefix='')=>Object.entries(obj||{}).flatMap(([k,v])=>{ const path=prefix?prefix+'.'+k:k; if(v && typeof v==='object' && !Array.isArray(v)) return leaves(v,path); return [[path,v]]; });
+  const get=(obj,path)=>path.split('.').reduce((v,k)=>v==null?null:v[k],obj);
+  let expected=0,correct=0;
+  for(const fixture of fixtures.filter(f=>f.quoteText)){
+    const result=extractSolarBatteryEvidence(fixture.quoteText,fixture.technology);
+    for(const [path,value] of leaves(fixture.expected)){
+      if(path==='requiredGaps'||path.endsWith('Mentioned')||path.endsWith('Model')||path==='mcsStatus') continue;
+      expected++;
+      const actual=get(result.evidence,path);
+      if(JSON.stringify(actual)===JSON.stringify(value)) correct++;
+    }
+    if(fixture.expected.panel===null) assert.equal(result.evidence.panel,null);
+    if(fixture.expected.arrayKwp===null) assert.equal(result.evidence.arrayKwp,null);
+    if(fixture.expected.dnoTreatment===null) assert.equal(result.evidence.dnoTreatment,null);
+    if(fixture.expected.inverter===null) assert.equal(result.evidence.inverter,null);
+    if(fixture.expected.annualGenerationKwh===null) assert.equal(result.evidence.annualGenerationKwh,null);
+  }
+  const accuracy=correct/expected;
+  assert.ok(accuracy>=0.95,'material-field accuracy '+(accuracy*100).toFixed(1)+'% is below 95% ('+correct+'/'+expected+')');
+});
