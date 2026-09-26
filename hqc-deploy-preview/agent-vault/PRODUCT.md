@@ -50,3 +50,10 @@ Preserve independence and privacy. Commercial relationships must never influence
 
 ## Deployment
 Use GitHub/Cloudflare via hqc-deploy-preview and Worker hqc-production with preview/canary before material releases. Never use AppDeploy. Preserve homequotecheck.co.uk and www routing.
+
+## EV chargepoint + smart charging evidence model — next iterative vertical
+Status: BUILD / NON-PUBLIC until the Renewable Vertical MVP Production Benchmark passes.
+
+Where explicitly evidenced in the installer quote, extract/compare: chargepoint make/model; rated charging power (kW); tethered/untethered and connector/cable details; smart functionality/connectivity; electricity-supplier interoperability wording; load management/current limiting; solar/PV integration where offered; consumer-unit/supply/cabling/earthing works and material exclusions; DNO notification/application treatment; installation location/route and ground/civil works; equipment and installation warranties; total price/payment terms; grant/eligibility claims and installer/model eligibility wording where applicable.
+
+Guardrails: do not certify electrical safety, wiring-regulation compliance, DNO acceptance, grant eligibility, vehicle compatibility, achievable charge rate, tariff savings or smart-charge regulation compliance from quote text alone. Charging speed depends on both chargepoint and vehicle capability. Grant availability/eligibility is time- and circumstance-specific and must be treated as current-source-dependent rather than assumed.
