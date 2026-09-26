@@ -7,6 +7,7 @@ export const HQC_TECHNOLOGIES = Object.freeze({
   HEAT_PUMP: 'heat_pump',
   SOLAR_BATTERY: 'solar_battery',
   BATTERY: 'battery',
+  EV_CHARGEPOINT: 'ev_chargepoint',
 });
 
 export const HEAT_PUMP_API_BASE = 'https://api-v2.appdeploy.ai/app/heat-pump-second-opinion-v43csv';
@@ -28,6 +29,12 @@ export function analysisRouteForTechnology(value, env = {}, options = {}) {
 
   if (technology === HQC_TECHNOLOGIES.HEAT_PUMP) {
     return { ok: true, technology, apiBase: HEAT_PUMP_API_BASE, adapter: 'heat_pump_legacy' };
+  }
+
+  // Non-public correctness gate: EV Chargepoint is registered for explicit isolation but
+  // cannot route to Solar/Battery or Heat Pump until its dedicated adapter is verified.
+  if (technology === HQC_TECHNOLOGIES.EV_CHARGEPOINT) {
+    return { ok: false, status: 409, technology, error: 'technology_analysis_not_ready' };
   }
 
   // Non-public correctness gate: never allow Solar/Battery to fall through to the
