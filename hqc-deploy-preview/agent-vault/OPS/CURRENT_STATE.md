@@ -54,3 +54,8 @@ No OPS/LEARNINGS.md update this run. The new evidence does not establish, overtu
 
 ## Guardrails
 GitHub + Cloudflare only; never AppDeploy. UI production changes require rendered verification. Preserve independence/privacy/evidence guardrails.
+
+## 2026-09-26 production milestone — Solar PV + Battery LIVE MVP
+Production release run 36240154137 passed on the real homequotecheck.co.uk hostname. Heat Pump/default health returned HTTP 200, Solar PV + Battery production analysis returned HTTP 200 and the release assertion verified the expected 5.1 kWp evidence, and durable metrics returned HTTP 200. The renewable-generic rendered canary had already passed in run 36231458276. Solar therefore clears the production-host release gate and is now LIVE MVP for the supported text-PDF journey; unsupported image-only/photo inputs remain fail-closed.
+
+Commercial priority remains first genuine purchase. Do not change the £4.99 Heat Pump price without willingness-to-pay evidence. Next Purchase Adviser priority is Financial Assumptions Check for Solar, using explicit assumptions/ranges and authoritative UK methodology, followed by a technology-correct richer Decision Pack.
