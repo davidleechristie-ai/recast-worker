@@ -27,3 +27,7 @@ For UI changes render representative desktop/tablet/mobile widths and key commer
 
 Use GitHub/Cloudflare via hqc-deploy-preview and Worker hqc-production, with preview/canary for material releases. Never use AppDeploy. Preserve homequotecheck.co.uk and www routing.
 After release verify production and log evidence.
+
+
+## New renewable vertical release gate
+For every new HQC technology, apply the Renewable Vertical MVP Production Benchmark in `STRATEGY/PURCHASE_ADVISER_ROADMAP.md` in addition to this SOP. A technology cannot be marked LIVE until its benchmark evidence is recorded, preview/canary rendered verification is green, production is deployed, and the real production hostname journey is re-verified. Prefer a per-technology kill switch so one vertical can be disabled without affecting existing live technologies.
