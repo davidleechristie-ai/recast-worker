@@ -8,8 +8,10 @@ Home Quote Check is an **independent home-energy quote checking platform**, not 
 
 Vertical rollout:
 1. **Heat pumps** — live vertical #1.
-2. **Solar PV + battery storage** — vertical #2 now in build/validation. Battery-only should reuse this capability where practical.
-3. Further technologies such as EV charging or insulation are deferred until measured demand justifies expansion.
+2. **Solar PV + battery storage** — active build/validation vertical.
+3. **All material home renewable / low-carbon technologies** — now strategic scope, delivered through technology-specific evidence adapters and staged release gates. Include, where applicable: solar thermal; home battery/storage; EV chargepoints and smart charging; air-source, ground-source and water-source heat pumps; biomass heating; micro-CHP where marketed as a home low-carbon system; small-scale wind; micro-hydro; heat-recovery/ventilation technologies when sold as an energy-saving system; insulation/fabric upgrades; glazing/doors; draught-proofing; heating controls/smart thermostats; hot-water cylinders/thermal stores; infrared/electric heating proposals; and integrated/multi-technology retrofit packages.
+
+The platform may accept and compare mixed-technology proposals, but must never force one technology's evidence model onto another. Unknown/unsupported evidence remains unknown and new technologies stay non-public until their analysis and guardrails are verified.
 
 Do not become a generic home-improvement quote marketplace. The reusable consumer job is: **Already have a quote? Independently check and compare it before you commit.**
 
