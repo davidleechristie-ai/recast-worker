@@ -1,5 +1,5 @@
 {
-  "fetchedAt": "2026-09-26T07:51:29Z",
+  "fetchedAt": "2026-09-26T13:13:30Z",
   "metrics": {
     "genuineAnalyses": 6,
     "shareOpens": 0,
@@ -15,13 +15,13 @@
     "note": "Cumulative Cloudflare-side counters from measurementStartedAt; QA/demo/test events are excluded. Extended funnel counters use their own same-epoch denominator from extendedMeasurementStartedAt."
   },
   "growthReport": {
-    "generatedAt": "2026-09-26T07:51:29.165Z",
+    "generatedAt": "2026-09-26T13:13:30.618Z",
     "measurementStartedAt": "2026-09-11T18:33:07.244Z",
     "extendedMeasurementStartedAt": "2026-09-11T20:34:24.536Z",
     "durable": true,
     "total": {
-      "landings": 83,
-      "cta": 56,
+      "landings": 91,
+      "cta": 57,
       "uploads": 6,
       "genuine": 6,
       "extendedGenuine": 5,
@@ -35,7 +35,7 @@
       "checkouts": 0
     },
     "rates": {
-      "landingToCta": 67,
+      "landingToCta": 63,
       "ctaToUpload": 11,
       "uploadToGenuine": 100,
       "extendedGenuineToMultiQuote": 20,
@@ -45,8 +45,8 @@
     },
     "sources": [
       {
-        "landings": 63,
-        "cta": 56,
+        "landings": 71,
+        "cta": 57,
         "uploads": 6,
         "genuine": 6,
         "extendedGenuine": 5,
@@ -59,9 +59,9 @@
         "outboundClicks": 0,
         "checkouts": 0,
         "source": "direct",
-        "landingToCta": 89,
+        "landingToCta": 80,
         "ctaToUpload": 11,
-        "landingToGenuine": 10
+        "landingToGenuine": 8
       },
       {
         "landings": 5,
@@ -294,8 +294,8 @@
     ],
     "technologies": [
       {
-        "landings": 30,
-        "cta": 41,
+        "landings": 38,
+        "cta": 42,
         "uploads": 1,
         "genuine": 1,
         "extendedGenuine": 1,
