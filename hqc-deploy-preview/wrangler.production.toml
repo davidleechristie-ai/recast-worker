@@ -9,6 +9,7 @@ routes = [
 
 [vars]
 HQC_ENV = "production"
+HQC_SOLAR_ANALYSIS_PUBLIC = "1"
 STRIPE_DECISION_PACK_PRICE_ID = "price_1UFsZ2CnmTy7aZ0HpfSQ5E8Z"
 
 [secrets]
