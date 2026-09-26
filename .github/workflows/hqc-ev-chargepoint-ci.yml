@@ -6,6 +6,10 @@ on:
       - 'hqc-deploy-preview/lib/ev-chargepoint-extraction.js'
       - 'hqc-deploy-preview/lib/ev-chargepoint-analysis.js'
       - 'hqc-deploy-preview/test/ev-chargepoint-analysis.test.mjs'
+      - 'hqc-deploy-preview/lib/ev-chargepoint-request-handler.js'
+      - 'hqc-deploy-preview/test/ev-chargepoint-request-handler.test.mjs'
+      - 'hqc-deploy-preview/test/worker-entry-ev-gate.test.mjs'
+      - 'hqc-deploy-preview/worker-entry.js'
       - 'hqc-deploy-preview/test/ev-chargepoint-extraction.test.mjs'
       - 'hqc-deploy-preview/test/fixtures/ev-chargepoint-cases.json'
       - '.github/workflows/hqc-ev-chargepoint-ci.yml'
@@ -18,4 +22,4 @@ jobs:
       - uses: actions/setup-node@v4
         with:
           node-version: '22'
-      - run: node --test hqc-deploy-preview/test/ev-chargepoint-extraction.test.mjs hqc-deploy-preview/test/ev-chargepoint-analysis.test.mjs
+      - run: node --test hqc-deploy-preview/test/ev-chargepoint-extraction.test.mjs hqc-deploy-preview/test/ev-chargepoint-analysis.test.mjs hqc-deploy-preview/test/ev-chargepoint-request-handler.test.mjs hqc-deploy-preview/test/worker-entry-ev-gate.test.mjs
