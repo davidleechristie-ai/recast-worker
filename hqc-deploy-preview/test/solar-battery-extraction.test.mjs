@@ -41,7 +41,7 @@ test('MVP benchmark: >=95% of explicitly expected material fields are correct wi
       if(path==='requiredGaps'||path.endsWith('Mentioned')||path.endsWith('Model')||path==='mcsStatus') continue;
       expected++;
       const actual=get(result.evidence,path);
-      if(JSON.stringify(actual)===JSON.stringify(value)) correct++; else console.error('MVP_MISMATCH',fixture.id,path,'expected=',JSON.stringify(value),'actual=',JSON.stringify(actual));
+      if(value===null ? actual==null : JSON.stringify(actual)===JSON.stringify(value)) correct++; else console.error('MVP_MISMATCH',fixture.id,path,'expected=',JSON.stringify(value),'actual=',JSON.stringify(actual));
     }
     if(fixture.expected.panel===null) assert.equal(result.evidence.panel,null);
     if(fixture.expected.arrayKwp===null) assert.equal(result.evidence.arrayKwp,null);
