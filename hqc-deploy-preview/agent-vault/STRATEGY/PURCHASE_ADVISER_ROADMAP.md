@@ -12,6 +12,27 @@ Status: LIVE. Protect the existing working path.
 ### Vertical 2 — Solar PV + Battery
 Status: BUILD / NON-PUBLIC. Battery-only reuses this adapter where practical. Never represent automated output as design/structural approval, DNO approval, MCS certification, grant eligibility, or guaranteed generation/savings.
 
+## Renewable Vertical MVP Production Benchmark
+A new technology is eligible for iterative production release only when **all** of these gates are green. Passing means MVP-quality and safe to expose publicly; it does not require feature parity with mature Heat Pump.
+
+1. **Technology isolation:** explicit routing; no fallback into another technology; mixed quotes preserve per-technology provenance.
+2. **Evidence model:** technology-specific checklist covers the material equipment, capacity/specification, price/scope, assumptions, exclusions, warranties and relevant UK scheme/regulatory wording. Missing evidence remains unknown, never invented.
+3. **Extraction quality:** representative complete, partial, malformed and multi-quote fixtures pass. For the benchmark fixture set, ≥95% of required material fields are correctly captured when explicitly present, with **0 fabricated material values**. Any unsupported media/path fails clearly and safely.
+4. **Decision correctness:** single-quote findings, gaps and installer questions are evidence-backed; comparison accurately describes material differences without inventing a winner. Zero known P0/P1 correctness defects.
+5. **Guardrails:** current authoritative UK sources researched for that technology; output clearly separates quote evidence from estimates/advice and does not claim certification, approval, eligibility, structural/electrical/design safety or guaranteed savings/performance unless independently evidenced.
+6. **Journey completeness:** real customer upload/manual entry → technology detection/selection → analysis → results works end-to-end. Two quotes → comparison works where comparison is offered. No dead-end primary CTA.
+7. **Commercial boundary:** free/paid features are explicit. If Decision Pack/checkout is enabled, content is technology-specific and checkout metadata records the technology; otherwise paid CTA stays hidden rather than reusing incorrect content.
+8. **Observability/privacy:** durable synthetic-excluded funnel events carry technology + source from landing/start through genuine analysis and checkout where applicable; no new unnecessary PII.
+9. **Regression:** Heat Pump and every already-live vertical remain green; representative cross-technology isolation tests pass.
+10. **Rendered release gate:** mobile + desktop preview/canary journey passes, then production deployment follows `SOPS/SHIP_CHANGE.md`; production hostname/routes and the new technology journey are verified after binding. P0/P1 blocks or any production 5xx/routing failure require rollback/fix.
+11. **Post-release watch:** release behind a technology flag/kill switch where practical; monitor genuine analyses, failures and support signals. A material correctness/safety regression disables only that vertical without destabilising others.
+
+### Iterative release policy
+- Do **not** wait for every renewable technology to be finished. Build the highest-priority not-yet-live vertical, take it through the MVP benchmark, deploy it to production, measure it, then continue to the next vertical.
+- Release order is continuously re-ranked by observed quote demand × revenue potential × speed-to-MVP ÷ implementation/risk, while Solar PV + Battery remains next because it is already closest to the benchmark.
+- A vertical becomes **LIVE MVP** only after production verification, not when code/CI exists. Record benchmark evidence and production run IDs in this roadmap and OPS/RUN_LOG.md.
+- MVP release does not require OCR for every possible document type if supported text-PDF/manual paths are clearly disclosed and unsupported paths fail closed; broaden ingestion iteratively after launch.
+
 ## WS1 — Shared evidence schema and analysis boundary
 Status: IN PROGRESS.
 - [ ] Define technology-neutral Quote/EvidenceItem/Claim/Assumption/Gap/ComparisonDimension/Question/DecisionFinding objects and provenance.
