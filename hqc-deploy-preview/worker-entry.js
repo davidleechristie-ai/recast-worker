@@ -25,11 +25,12 @@ export default {
     // 409 isolation behaviour. Heat Pump never enters this branch.
     const hintedTechnology = normaliseTechnology(technologyHintFromRequest(request, incoming));
     const solarTechnology = hintedTechnology === HQC_TECHNOLOGIES.SOLAR_BATTERY || hintedTechnology === HQC_TECHNOLOGIES.BATTERY;
-    if (solarTechnology && String(env.HQC_SOLAR_ANALYSIS_INTERNAL || '') === '1') {
+    const solarEnabled = String(env.HQC_SOLAR_ANALYSIS_PUBLIC || '') === '1' || String(env.HQC_SOLAR_ANALYSIS_INTERNAL || '') === '1';
+    if (solarTechnology && solarEnabled) {
       const response = await handleSolarBatteryAnalysisRequest(request);
       const headers = new Headers(response.headers);
       headers.set('x-hqc-analysis-technology', hintedTechnology);
-      headers.set('x-hqc-analysis-adapter', 'solar_battery_internal');
+      headers.set('x-hqc-analysis-adapter', String(env.HQC_SOLAR_ANALYSIS_PUBLIC || '') === '1' ? 'solar_battery' : 'solar_battery_internal');
       return new Response(response.body, { status: response.status, statusText: response.statusText, headers });
     }
 
