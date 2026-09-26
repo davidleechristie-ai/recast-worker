@@ -1,9 +1,9 @@
 {
-  "fetchedAt": "2026-09-26T07:44:57.295708Z",
+  "fetchedAt": "2026-09-26T13:07:37.610673Z",
   "growthReport": {
     "durable": true,
     "extendedMeasurementStartedAt": "2026-09-11T20:34:24.536Z",
-    "generatedAt": "2026-09-26T07:44:57.262Z",
+    "generatedAt": "2026-09-26T13:07:37.578Z",
     "loop": [
       "Acquire qualified homeowners",
       "Measure source funnels",
@@ -17,7 +17,7 @@
       "decisionCaseToShareIntent": 40,
       "extendedGenuineToDecisionCase": 100,
       "extendedGenuineToMultiQuote": 20,
-      "landingToCta": 67,
+      "landingToCta": 63,
       "shareOpenToRecipientStart": null,
       "uploadToGenuine": 100
     },
@@ -30,15 +30,15 @@
     "sources": [
       {
         "checkouts": 0,
-        "cta": 56,
+        "cta": 57,
         "ctaToUpload": 11,
         "decisionCases": 5,
         "extendedGenuine": 5,
         "genuine": 6,
         "installerQuestions": 0,
-        "landingToCta": 89,
-        "landingToGenuine": 10,
-        "landings": 63,
+        "landingToCta": 80,
+        "landingToGenuine": 8,
+        "landings": 71,
         "multiQuoteAnalyses": 1,
         "outboundClicks": 0,
         "recipientStarts": 0,
@@ -279,12 +279,12 @@
     "technologies": [
       {
         "checkouts": 0,
-        "cta": 41,
+        "cta": 42,
         "decisionCases": 1,
         "extendedGenuine": 1,
         "genuine": 1,
         "installerQuestions": 0,
-        "landings": 30,
+        "landings": 38,
         "multiQuoteAnalyses": 1,
         "outboundClicks": 0,
         "recipientStarts": 0,
@@ -296,12 +296,12 @@
     ],
     "total": {
       "checkouts": 0,
-      "cta": 56,
+      "cta": 57,
       "decisionCases": 5,
       "extendedGenuine": 5,
       "genuine": 6,
       "installerQuestions": 0,
-      "landings": 83,
+      "landings": 91,
       "multiQuoteAnalyses": 1,
       "outboundClicks": 0,
       "recipientStarts": 0,
