@@ -116,3 +116,6 @@ Every material release follows Measure → Diagnose → Research → Prioritise 
 
 ## Progress tracking
 Do not mark capability LIVE from code existence alone. At each run refresh authoritative evidence, progress independent roadmap work where acquisition evidence has not matured, update OPS state/log, and keep Solar non-public until all gates pass.
+
+## 2026-09-26 milestone
+Solar PV + Battery has passed the LIVE MVP production gate for the supported text-PDF journey: rendered custom-domain canary 36231458276 passed; production release 36240154137 returned Heat Pump/default 200, Solar production analysis 200 with expected 5.1 kWp evidence, and durable metrics 200. Unsupported image-only/photo inputs remain fail-closed. WS3 now moves from gated MVP delivery into production observation/refinement. WS5 Financial Assumptions Check is the next Purchase Adviser build priority; richer WS7 cross-technology Decision Pack follows once assumptions are evidence-backed.
