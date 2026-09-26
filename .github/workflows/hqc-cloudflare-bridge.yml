@@ -95,8 +95,13 @@ jobs:
           dig +short homequotecheck.co.uk CNAME || true
           echo '--- Production smoke ---'
           for path in / /health /api/_healthcheck /is-this-a-good-heat-pump-quote.html; do
-            code=$(curl -L -sS -o /tmp/hqc-production-check -w '%{http_code}' --max-time 30 "https://homequotecheck.co.uk$path")
-            echo "$path -> $code"
+            code='000'
+            for attempt in 1 2 3 4 5; do
+              code=$(curl -L -sS -o /tmp/hqc-production-check -w '%{http_code}' --max-time 30 "https://homequotecheck.co.uk$path" || true)
+              echo "$path -> $code (attempt $attempt)"
+              [ "$code" = '200' ] && break
+              sleep 3
+            done
             test "$code" = '200'
           done
           health=$(curl -L -sS --max-time 30 https://homequotecheck.co.uk/health)
