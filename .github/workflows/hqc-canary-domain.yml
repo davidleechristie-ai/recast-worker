@@ -213,6 +213,26 @@ jobs:
             await context.close();
           }
           {
+            const context=await browser.newContext({viewport:{width:390,height:844},isMobile:true,hasTouch:true,serviceWorkers:'block'});
+            const page=await context.newPage();
+            await page.goto('https://cf-preview.homequotecheck.co.uk/?qa=1&ev_preview=1',{waitUntil:'domcontentloaded',timeout:30000});
+            await page.getByRole('button',{name:/start single quote check/i}).first().click();
+            const choose=page.locator('#hqc-choose-file');await choose.waitFor({state:'visible',timeout:15000});
+            if(!/text-based ev charger pdf/i.test(await page.locator('#hqc-approved-upload-zone').innerText()))throw new Error('EV upload does not disclose its supported PDF format');
+            let pick=page.waitForEvent('filechooser',{timeout:5000});await choose.click();
+            await (await pick).setFiles({name:'ev-installer.pdf',mimeType:'application/pdf',buffer:await makeTextPdf('Installation of Zappi V2 EV charger 7.4 kW charging. Smart charging not included. Total £1,250.')});
+            await page.waitForFunction(()=>{try{return JSON.parse(sessionStorage.getItem('hqc_ev_extracted_media')||'[]')[0]?.extractedText?.includes('Zappi V2')}catch{return false}},{timeout:15000});
+            const checked=await page.evaluate(async()=>{const r=await fetch('/api/analyse',{method:'POST',body:'native-upstream-body'});return {status:r.status,body:await r.json()}});
+            if(checked.status!==200||checked.body?.evidence?.powerKw!==7.4||checked.body?.evidence?.smart!==null)throw new Error('Selected EV PDF was not analysed with exclusions preserved');
+            await page.locator('#hqc-ev-analysis-result').waitFor({state:'visible',timeout:10000});
+            pick=page.waitForEvent('filechooser',{timeout:5000});await choose.click();
+            await (await pick).setFiles({name:'scan.png',mimeType:'image/png',buffer:Buffer.from('iVBORw0KGgoAAAANSUhEUgAAAAEAAAABCAQAAAC1HAwCAAAAC0lEQVR42mP8/x8AAusB9Wl2+XkAAAAASUVORK5CYII=','base64')});
+            await page.getByText(/text-based installer PDFs only/i).waitFor({state:'visible',timeout:5000});
+            const stale=await page.evaluate(()=>sessionStorage.getItem('hqc_ev_extracted_media'));
+            if(stale!==null)throw new Error('Unsupported EV image retained stale PDF evidence');
+            await context.close();
+          }
+          {
             const context=await browser.newContext({viewport:{width:390,height:844},serviceWorkers:'block'});const page=await context.newPage();
             await page.goto('https://cf-preview.homequotecheck.co.uk/?qa=1',{waitUntil:'domcontentloaded',timeout:30000});
             if(await page.locator('#hqc-ev-analysis-result').count())throw new Error('Private EV results leaked into default journey');
