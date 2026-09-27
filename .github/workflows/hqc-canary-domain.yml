@@ -198,6 +198,27 @@ jobs:
             if(!techText.includes('heat pump')||!techText.includes('solar pv / battery'))throw new Error(`Technology selector is incomplete: ${techText}`);
             await context.close();
           }
+          for (const viewport of [{width:390,height:844},{width:1366,height:900}]) {
+            const context=await browser.newContext({viewport,serviceWorkers:'block'});
+            const page=await context.newPage();
+            await page.goto('https://cf-preview.homequotecheck.co.uk/?qa=1&ev_preview=1',{waitUntil:'domcontentloaded',timeout:30000});
+            const heading=page.locator('.copy h1,.copy h2').first();await heading.waitFor({state:'visible',timeout:20000});
+            if(!/ev charger/i.test(await heading.innerText()))throw new Error('EV private proposition did not render');
+            await page.evaluate(()=>sessionStorage.setItem('hqc_ev_extracted_media',JSON.stringify([{sourceMediaType:'application/pdf',extractionMethod:'pdfjs-text-v1',pageCount:1,extractedText:'Installation of Zappi V2 EV charger 7.4 kW charging. Tethered Type 2 cable. Smart charging with app control and dynamic load management. DNO notification included. Equipment warranty 3 years. Total £1,250.'}])));
+            const probe=await page.evaluate(async()=>{const r=await fetch('/api/analyse',{method:'POST',body:'native-upstream-body'});return {status:r.status,body:await r.json(),adapter:r.headers.get('x-hqc-analysis-adapter')};});
+            if(probe.status!==200||probe.body?.evidence?.powerKw!==7.4||probe.body?.evidence?.priceGbp!==1250||probe.adapter!=='ev_chargepoint_internal')throw new Error('EV browser bridge did not reach isolated EV adapter: '+JSON.stringify(probe));
+            const result=page.locator('#hqc-ev-analysis-result');await result.waitFor({state:'visible',timeout:10000});
+            const txt=(await result.innerText()).toLowerCase();if(!txt.includes('7.4 kw')||!txt.includes('£1,250')||!txt.includes('evidence gaps')||!txt.includes('questions to ask the installer'))throw new Error('EV result did not render required evidence UX');
+            const overflow=await page.evaluate(()=>document.documentElement.scrollWidth-window.innerWidth);if(overflow>1)throw new Error('EV rendered journey horizontal overflow: '+overflow);
+            await context.close();
+          }
+          {
+            const context=await browser.newContext({viewport:{width:390,height:844},serviceWorkers:'block'});const page=await context.newPage();
+            await page.goto('https://cf-preview.homequotecheck.co.uk/?qa=1',{waitUntil:'domcontentloaded',timeout:30000});
+            if(await page.locator('#hqc-ev-analysis-result').count())throw new Error('Private EV results leaked into default journey');
+            const tech=(await page.locator('#hqc-technology-choice').innerText()).toLowerCase();if(tech.includes('ev charger')||tech.includes('chargepoint'))throw new Error('EV leaked into public technology selector before promotion');
+            await context.close();
+          }
           await browser.close();
-          console.log('HQC canary quote intake, compare-mode, Solar preview isolation and Decision Pack checkout regression paths passed.');
+          console.log('HQC canary quote intake, compare-mode, Solar and EV private isolation, rendered EV mobile/desktop, and Decision Pack regression paths passed.');
           NODE
