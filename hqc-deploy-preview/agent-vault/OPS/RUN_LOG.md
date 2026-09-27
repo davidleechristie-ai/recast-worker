@@ -98,3 +98,10 @@
 - RELEASE: EV stays non-public; no production deployment or rendered canary was run. Solar PV + Battery remains the latest production-confirmed renewable MVP.
 - COMMERCIAL: no new authoritative payment or funnel refresh this session; first genuine purchase remains the priority, with last recorded revenue £0 and start→upload 11% as historical evidence only.
 - NEXT: broaden EV real quote fixtures and complete rendered mobile/desktop journey, while continuing the Heat Pump activation and Solar financial-assumptions workstreams. Do not mark EV live until the full renewable benchmark passes.
+## 2026-09-27 — EV real-PDF canary and stale-media protection
+- CHANGE: private EV intake now advertises text-based PDFs, rejects image/mixed uploads, and clears prior EV extracted media on unsupported selection or PDF processing failure. Public EV CTA and production EV adapter flag stay closed.
+- LOCAL: upload-event regression failed before the boundary fix, then EV suite passed 14/14; browser-script syntax and diff checks passed.
+- CI: EV chargepoint CI `36301117657`, production router release `36301117668`, and Cloudflare bridge `36301117720` succeeded. Initial custom-domain canary `36301117711` failed after a successful PDF analysis because the test looked for the picker on the results screen. A corrected second-check canary `36301218274` succeeded.
+- CANARY EVIDENCE: actual mobile file-picker text PDF → browser extraction → EV analysis and rendered result passed. Starting another check in the same session and selecting an image cleared the earlier evidence and displayed a supported-format message. Existing mobile/desktop injected EV and Heat Pump/Solar regression checks also passed in the same canary.
+- COMMERCIAL: authoritative revenue/funnel metrics were not refreshed in this development cycle. Continue first-purchase activation in parallel; do not infer demand from synthetic canary activity.
+- NEXT: broaden EV representative quote/exclusion fixtures and verify comparison, paid-boundary and durable technology events before the public MVP decision.
