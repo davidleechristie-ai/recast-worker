@@ -3,6 +3,9 @@
 Updated: 2026-09-27 Europe/London
 
 ## Latest development update — EV evidence correctness
+- 2026-09-27 follow-up: EV browser file selection now passed the custom-domain canary (`36301218274`): a text PDF was selected, extracted, analysed by the EV adapter, and rendered on mobile; a later image selection in the same session cleared old extracted evidence and showed the supported-format message. EV CI (`36301117657`), production router release (`36301117668`) and Cloudflare bridge (`36301117720`) succeeded for the upload boundary change. EV remains non-public.
+- The first expanded canary (`36301117711`) failed because its test tried to reopen a picker from the results screen. The corrected test starts a new check in the same session and passed; no product fix was required for that test navigation.
+- Remaining EV release gates include broader representative quote fixtures/decision correctness, complete comparison and commercial boundary, durable technology telemetry, and a production-host public journey verification before enabling the EV flag. These results do not yet establish real-world extraction accuracy.
 - EV Chargepoint + Smart Charging remains BUILD / NON-PUBLIC. The extractor now leaves smart charging, dynamic load management and solar/PV integration unknown when the quote explicitly excludes them; an unrelated mention of existing solar panels is no longer treated as charger integration.
 - Local EV test suite passed 13/13, including the new exclusion regression and existing request-gate/isolation cases. The fixture benchmark remains 30/30, but this small synthetic set does not establish real-world extraction quality or satisfy the rendered customer-journey release gate.
 - No public EV CTA or production flag was enabled. Revenue, funnel and production metrics were not refreshed in this development session; the figures below are the last recorded snapshot, not current measurements.
