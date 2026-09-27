@@ -225,6 +225,9 @@ jobs:
             const checked=await page.evaluate(async()=>{const r=await fetch('/api/analyse',{method:'POST',body:'native-upstream-body'});return {status:r.status,body:await r.json()}});
             if(checked.status!==200||checked.body?.evidence?.powerKw!==7.4||checked.body?.evidence?.smart!==null)throw new Error('Selected EV PDF was not analysed with exclusions preserved');
             await page.locator('#hqc-ev-analysis-result').waitFor({state:'visible',timeout:10000});
+            await page.goto('https://cf-preview.homequotecheck.co.uk/?qa=1&ev_preview=1',{waitUntil:'domcontentloaded',timeout:30000});
+            await page.getByRole('button',{name:/start single quote check/i}).first().click();
+            await choose.waitFor({state:'visible',timeout:15000});
             pick=page.waitForEvent('filechooser',{timeout:5000});await choose.click();
             await (await pick).setFiles({name:'scan.png',mimeType:'image/png',buffer:Buffer.from('iVBORw0KGgoAAAANSUhEUgAAAAEAAAABCAQAAAC1HAwCAAAAC0lEQVR42mP8/x8AAusB9Wl2+XkAAAAASUVORK5CYII=','base64')});
             await page.getByText(/text-based installer PDFs only/i).waitFor({state:'visible',timeout:5000});
