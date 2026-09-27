@@ -92,3 +92,9 @@
 - UI: renewable-generic rendered custom-domain canary run 36231458276 previously SUCCESS.
 - STATUS: Solar PV + Battery promoted to LIVE MVP for supported text-PDF ingestion. Image-only scans/photos remain deliberately fail-closed; no unsupported evidence is guessed.
 - NEXT: progress WS5 Financial Assumptions Check, then richer technology-specific Decision Pack, while maintaining first-customer acquisition/conversion work and Heat Pump regression protection.
+## 2026-09-27 — EV evidence exclusions preserved
+- DEVELOPMENT: EV extractor no longer promotes explicitly excluded smart charging, dynamic load management or solar/PV integration into positive evidence. Existing solar panels alone do not imply charger PV integration.
+- VERIFICATION: test added first and failed on the false positive; EV extraction, analysis, request handler and Worker gate tests then passed 13/13 locally. Existing fixture accuracy 30/30 remains narrowly synthetic.
+- RELEASE: EV stays non-public; no production deployment or rendered canary was run. Solar PV + Battery remains the latest production-confirmed renewable MVP.
+- COMMERCIAL: no new authoritative payment or funnel refresh this session; first genuine purchase remains the priority, with last recorded revenue £0 and start→upload 11% as historical evidence only.
+- NEXT: broaden EV real quote fixtures and complete rendered mobile/desktop journey, while continuing the Heat Pump activation and Solar financial-assumptions workstreams. Do not mark EV live until the full renewable benchmark passes.

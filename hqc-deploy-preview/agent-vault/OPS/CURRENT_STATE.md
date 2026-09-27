@@ -1,6 +1,12 @@
 # Current state
 
-Updated: 2026-09-26 08:55 Europe/London
+Updated: 2026-09-27 Europe/London
+
+## Latest development update — EV evidence correctness
+- EV Chargepoint + Smart Charging remains BUILD / NON-PUBLIC. The extractor now leaves smart charging, dynamic load management and solar/PV integration unknown when the quote explicitly excludes them; an unrelated mention of existing solar panels is no longer treated as charger integration.
+- Local EV test suite passed 13/13, including the new exclusion regression and existing request-gate/isolation cases. The fixture benchmark remains 30/30, but this small synthetic set does not establish real-world extraction quality or satisfy the rendered customer-journey release gate.
+- No public EV CTA or production flag was enabled. Revenue, funnel and production metrics were not refreshed in this development session; the figures below are the last recorded snapshot, not current measurements.
+- Next EV step: expand representative quote fixtures across included/excluded scope and compare outcomes, then verify actual upload → analysis → result on mobile and desktop canary before considering release.
 
 North star: Sustain at least **£1,000 genuine monthly revenue**. Immediate milestone: first genuine purchase and £100 cumulative validation revenue.
 
