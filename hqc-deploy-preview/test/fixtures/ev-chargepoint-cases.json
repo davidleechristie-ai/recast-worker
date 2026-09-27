@@ -47,6 +47,38 @@
         "warrantyYears": 2,
         "priceGbp": 1099
       }
+    },
+    {
+      "id": "multiword-model-and-exclusion",
+      "quoteText": "Supply and install: Ohme Home Pro 7kW EV charger. Type 2 tethered cable. Smart charging included. Dynamic load balancing included. PV surplus charging excluded. DNO application to be completed by installer. Equipment warranty 3 years. Total installed price £1,249.",
+      "expected": {
+        "make": "Ohme",
+        "model": "Home Pro",
+        "powerKw": 7,
+        "tethered": true,
+        "connector": "Type 2",
+        "smart": true,
+        "loadManagement": "dynamic load management stated",
+        "pvIntegration": null,
+        "warrantyYears": 3,
+        "priceGbp": 1249
+      }
+    },
+    {
+      "id": "socket-and-existing-solar",
+      "quoteText": "Customer currently has solar PV. Installer to supply Wallbox Pulsar Plus 7.4kW EV charger. Untethered Type 2 socket. Smart charging excluded. DNO notification by installer. Workmanship warranty 2 years. Quote total £999.",
+      "expected": {
+        "make": "Wallbox",
+        "model": "Pulsar Plus",
+        "powerKw": 7.4,
+        "tethered": false,
+        "connector": "Type 2",
+        "smart": null,
+        "loadManagement": null,
+        "pvIntegration": null,
+        "warrantyYears": 2,
+        "priceGbp": 999
+      }
     }
   ]
 }

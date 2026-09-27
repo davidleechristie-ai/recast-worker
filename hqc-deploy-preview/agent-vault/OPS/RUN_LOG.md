@@ -105,3 +105,10 @@
 - CANARY EVIDENCE: actual mobile file-picker text PDF → browser extraction → EV analysis and rendered result passed. Starting another check in the same session and selecting an image cleared the earlier evidence and displayed a supported-format message. Existing mobile/desktop injected EV and Heat Pump/Solar regression checks also passed in the same canary.
 - COMMERCIAL: authoritative revenue/funnel metrics were not refreshed in this development cycle. Continue first-purchase activation in parallel; do not infer demand from synthetic canary activity.
 - NEXT: broaden EV representative quote/exclusion fixtures and verify comparison, paid-boundary and durable technology events before the public MVP decision.
+## 2026-09-27 — broaden EV evidence fixture coverage
+- HYPOTHESIS: the original three EV fixtures overstated extraction quality because multiword charger models and connector/socket wording were absent.
+- RED: two new synthetic quote variants reduced the 50-field benchmark to 44/50 (88%); make/model and connector evidence were missing.
+- CHANGE: bounded extraction patterns capture those explicitly stated fields. Evidence-only two-quote comparison now has a regression for distinct charger models and excluded smart/PV features.
+- LOCAL VERIFICATION: fixture benchmark 50/50 and EV suite 17/17; no public EV flag or CTA change. This does not establish real-world accuracy or close telemetry/commercial gates.
+- COMMERCIAL: no payment/funnel refresh this development run; first purchase and the measured Heat Pump start→upload bottleneck remain parallel priorities.
+- NEXT: broaden fixtures with independently sourced, appropriately de-identified quote wording; verify durable technology events and commercial boundary before any EV public release.
