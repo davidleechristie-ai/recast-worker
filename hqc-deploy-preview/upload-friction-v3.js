@@ -3,8 +3,8 @@
   const VERSION='upload-friction-v4.1', HANDOFF='hqc_analysis_handoff_pending', SOLAR_MEDIA='hqc_solar_extracted_media', EV_MEDIA='hqc_ev_extracted_media';
   const qs=(s,r=document)=>r.querySelector(s),qsa=(s,r=document)=>[...r.querySelectorAll(s)],text=n=>(n?.textContent||'').replace(/\s+/g,' ').trim();
   const comparing=()=>sessionStorage.getItem('hqc_journey_mode')==='compare'||sessionStorage.getItem('hqc_compare_intent')==='1';
-  const solarPreview=()=>{try{return sessionStorage.getItem('hqc_solar_preview')==='1'||new URLSearchParams(location.search).get('solar_preview')==='1'}catch{return false}};
-  const evPreview=()=>{try{return sessionStorage.getItem('hqc_ev_preview')==='1'||new URLSearchParams(location.search).get('ev_preview')==='1'||new URLSearchParams(location.search).get('technology')==='ev_chargepoint'||sessionStorage.getItem('hqc_journey_technology')==='ev_chargepoint'}catch{return false}};
+  const solarPreview=()=>{try{const tech=new URLSearchParams(location.search).get('technology');if(tech)return tech==='solar_battery';return sessionStorage.getItem('hqc_solar_preview')==='1'||new URLSearchParams(location.search).get('solar_preview')==='1'}catch{return false}};
+  const evPreview=()=>{try{const tech=new URLSearchParams(location.search).get('technology');if(tech)return tech==='ev_chargepoint';return sessionStorage.getItem('hqc_ev_preview')==='1'||new URLSearchParams(location.search).get('ev_preview')==='1'||new URLSearchParams(location.search).get('technology')==='ev_chargepoint'||sessionStorage.getItem('hqc_journey_technology')==='ev_chargepoint'}catch{return false}};
   const readSolarMedia=()=>{try{const v=JSON.parse(sessionStorage.getItem(SOLAR_MEDIA)||'[]');return Array.isArray(v)?v:[]}catch{return[]}};
   const clearSolarMedia=()=>{try{sessionStorage.removeItem(SOLAR_MEDIA)}catch{}};
   const addSolarMedia=media=>{try{const list=comparing()?readSolarMedia():[];list.push(media);sessionStorage.setItem(SOLAR_MEDIA,JSON.stringify(list))}catch{}};

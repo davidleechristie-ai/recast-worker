@@ -1,7 +1,7 @@
 (()=>{
 const OFFER_ID='hqc-decision-pack-offer',CASE='hqcDecisionPackCaseId',PAID='hqcDecisionPackPaid',EVENT='/api/event',TECH='hqc_journey_technology';
 const qa=/[?&](?:qa|release_probe|upload_handoff_smoke)=/i.test(location.search);
-const technology=()=>{try{const q=new URLSearchParams(location.search);if(q.get('ev_preview')==='1')return'ev_chargepoint';if(q.get('solar_preview')==='1')return'solar_battery';const v=sessionStorage.getItem(TECH)||'heat_pump';return ['heat_pump','solar_battery','battery','ev_chargepoint'].includes(v)?v:'heat_pump'}catch{return'heat_pump'}};
+const technology=()=>{try{const q=new URLSearchParams(location.search);if(q.has('technology'))return q.get('technology');if(q.get('ev_preview')==='1')return'ev_chargepoint';if(q.get('solar_preview')==='1')return'solar_battery';const v=sessionStorage.getItem(TECH)||'heat_pump';return ['heat_pump','solar_battery','battery','ev_chargepoint'].includes(v)?v:'heat_pump'}catch{return'heat_pump'}};
 const caseId=(()=>{let v=localStorage.getItem(CASE);if(!v){v=(crypto.randomUUID?crypto.randomUUID():`${Date.now()}-${Math.random().toString(36).slice(2)}`);localStorage.setItem(CASE,v)}return v})();
 const readQuotes=()=>{try{return JSON.parse(localStorage.getItem('hqc_case')||'[]')}catch{return[]}};
 const event=async(name,extra={})=>{try{await fetch(EVENT,{method:'POST',headers:{'content-type':'application/json'},body:JSON.stringify({event:name,caseId,technology:technology(),isTest:qa,...extra}),keepalive:true})}catch{}};
