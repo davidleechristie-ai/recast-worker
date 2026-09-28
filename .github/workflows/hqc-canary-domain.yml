@@ -69,6 +69,11 @@ jobs:
         run: node test/canary-solar-live.mjs
         env:
           HQC_CANARY_ORIGIN: https://cf-preview.homequotecheck.co.uk
+      - name: Verify private Solar thermal evidence and comparison boundary
+        working-directory: hqc-deploy-preview
+        run: node test/canary-solar-thermal-private.mjs
+        env:
+          HQC_CANARY_ORIGIN: https://cf-preview.homequotecheck.co.uk
       - name: Verify quote intake paths in mobile browser
         working-directory: hqc-deploy-preview
         shell: bash
