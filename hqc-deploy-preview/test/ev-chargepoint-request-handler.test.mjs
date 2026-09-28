@@ -1,1 +1,12 @@
 import test from 'node:test';import assert from 'node:assert/strict';import {handleEvChargepointAnalysisRequest} from '../lib/ev-chargepoint-request-handler.js';const req=(body)=>new Request('https://example.test/api/analyse',{method:'POST',headers:{'content-type':'application/json','x-hqc-technology':'ev_chargepoint'},body:typeof body==='string'?body:JSON.stringify(body)});test('EV PDF-derived evidence keeps provenance',async()=>{const r=await handleEvChargepointAnalysisRequest(req({extractedMedia:{sourceMediaType:'application/pdf',extractedText:'Installation of Zappi V2 EV charger 7.4 kW charging. Tethered Type 2 cable. Total £1,250.',extractionMethod:'pdf-text',pageCount:2}}));assert.equal(r.status,200);const j=await r.json();assert.equal(j.evidence.powerKw,7.4);assert.equal(j.evidence.priceGbp,1250);assert.equal(j.extractionProvenance.pageCount,2)});test('EV comparison is evidence-only',async()=>{const r=await handleEvChargepointAnalysisRequest(req({quotes:[{quoteText:'Installation of Zappi V2 EV charger 7.4 kW charging. Total £1,250.'},{quoteText:'Install Ohme HomePro chargepoint 7 kW charging. Total £1,099.'}]}));assert.equal(r.status,200);const j=await r.json();assert.match(j.conclusion,/No automatic winner/);assert.equal(j.analyses.length,2)});test('EV malformed and empty extracted media fail closed',async()=>{assert.equal((await handleEvChargepointAnalysisRequest(req('{bad'))).status,400);const r=await handleEvChargepointAnalysisRequest(req({extractedMedia:{sourceMediaType:'application/pdf',extractedText:'',extractionMethod:'pdf-text'}}));assert.equal(r.status,400)});
+test('private EV handler includes technology-specific decision brief without checkout',async()=>{
+  const r=await handleEvChargepointAnalysisRequest(req({quotes:[
+    {quoteId:'A',quoteText:'Install Zappi V2 charger 7 kW charging. Cable run included. Total £1,250.'},
+    {quoteId:'B',quoteText:'Install Ohme HomePro chargepoint 7.4 kW charging. Total £1,099.'}
+  ]}));
+  const body=await r.json();
+  assert.equal(body.decisionBrief.availability,'private_preview');
+  assert.equal(body.decisionBrief.quoteSummaries.length,2);
+  assert.ok(body.decisionBrief.comparisonFocus.some(item=>item.dimension==='price'));
+  assert.doesNotMatch(JSON.stringify(body.decisionBrief),/checkout|heat loss|radiator|recommended winner/i);
+});
