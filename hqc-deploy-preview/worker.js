@@ -5,9 +5,9 @@ export const isQaRequest=(request,mode)=>{if(mode!=='production')return true;con
 const validCaseId=v=>typeof v==='string'&&/^[A-Za-z0-9_-]{8,80}$/.test(v);
 const safeEqual=(a,b)=>{if(a.length!==b.length)return false;let d=0;for(let i=0;i<a.length;i++)d|=a.charCodeAt(i)^b.charCodeAt(i);return d===0;};
 const hex=bytes=>[...new Uint8Array(bytes)].map(b=>b.toString(16).padStart(2,'0')).join('');
-const emptyTotals=()=>({landings:0,cta:0,pickerOpens:0,fileSelections:0,manualOpens:0,uploads:0,genuine:0,extendedGenuine:0,multiQuoteAnalyses:0,evAnalyses:0,evComparisons:0,decisionCases:0,installerQuestions:0,shareIntent:0,shareOpens:0,recipientStarts:0,outboundClicks:0,checkouts:0});
+const emptyTotals=()=>({landings:0,cta:0,pickerOpens:0,fileSelections:0,manualOpens:0,uploads:0,genuine:0,extendedGenuine:0,multiQuoteAnalyses:0,evAnalyses:0,evComparisons:0,thermalAnalyses:0,thermalComparisons:0,decisionCases:0,installerQuestions:0,shareIntent:0,shareOpens:0,recipientStarts:0,outboundClicks:0,checkouts:0});
 const cleanSource=v=>String(v||'direct').slice(0,40).replace(/[^A-Za-z0-9_.:-]/g,'_')||'direct';
-const cleanTechnology=v=>{const x=String(v||'heat_pump').toLowerCase().replace(/[- ]/g,'_');return ['heat_pump','solar_battery','battery','ev_chargepoint'].includes(x)?x:'unspecified';};
+const cleanTechnology=v=>{const x=String(v||'heat_pump').toLowerCase().replace(/[- ]/g,'_');return ['heat_pump','solar_battery','battery','ev_chargepoint','solar_thermal'].includes(x)?x:'unspecified';};
 
 export class HqcMetrics {
   constructor(ctx){this.ctx=ctx;}
@@ -45,6 +45,7 @@ export class HqcMetrics {
     else if(event==='partner_outbound_click')inc('outboundClicks');
     else if(event==='detail_checkout_created'||event==='decision_pack_checkout_created')inc('checkouts');
     else if(event==='ev_pdf_analysis_completed'){inc('evAnalyses');if(Number(payload.quoteCount)>=2)inc('evComparisons');}
+    else if(event==='solar_thermal_pdf_analysis_completed'){inc('thermalAnalyses');if(Number(payload.quoteCount)>=2)inc('thermalComparisons');}
     else if(event==='analysis_qualified_real_quote'&&payload.analysisId){
       const value=String(payload.analysisId).slice(0,80);
       const id='analysis:'+value;
