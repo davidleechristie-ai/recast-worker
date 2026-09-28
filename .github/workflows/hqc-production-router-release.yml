@@ -45,6 +45,7 @@ jobs:
           node --test test/technology-routing.test.mjs test/analysis-request-routing.test.mjs
           node --test test/intake-diagnostics.test.mjs
           node --test test/decision-pack-technology.test.mjs test/renewable-decision-pack-boundary.test.mjs
+          node --test test/ev-durable-completion.test.mjs
           node --test test/ev-chargepoint-extraction.test.mjs test/ev-chargepoint-analysis.test.mjs test/ev-chargepoint-request-handler.test.mjs test/ev-upload-boundary.test.mjs test/worker-entry-ev-gate.test.mjs
       - name: Require same-commit custom-domain canary before shared payment release
         if: github.event_name == 'push'
@@ -112,6 +113,12 @@ jobs:
           echo "durable metrics -> $metrics_code"
           test "$metrics_code" = '200'
           grep -q '"durable":true' /tmp/hqc-metrics
+
+          growth_code=$(curl -L -sS -o /tmp/hqc-growth -w '%{http_code}' --max-time 30 "$base/api/growth-report")
+          echo "durable growth report -> $growth_code"
+          test "$growth_code" = '200'
+          grep -q '"evAnalyses":' /tmp/hqc-growth
+          grep -q '"evComparisons":' /tmp/hqc-growth
 
           intake_ready=false
           for attempt in 1 2 3 4 5 6; do
