@@ -89,3 +89,6 @@ PR #45 adds anonymous server-side completed EV text-PDF analysis and comparison 
 
 ## 2026-09-28 EV quote wording expansion
 Two public-document-derived, de-identified paraphrases and an adversarial multi-option case now cover explicit installation scope, labelled charger, VAT-inclusive total, warranty wording and alternative prices/powers. The extractor leaves alternatives unknown rather than selecting the first. The five original synthetic fixtures still score 50/50; this is not representative real-world ≥95% accuracy. EV CI `36449962342`, canary `36449962434` and production `36449962200` passed; the public route stays closed.
+
+## 2026-09-28 private EV decision brief draft
+The guarded EV adapter now returns a deterministic brief of quote-specific questions and material evidenced differences, and the private preview renders it. It neither ranks installers nor provides a payment link. EV CI `36452276493`, canary `36452276483` and production `36452276466` passed; the public EV route remains closed. This does not satisfy the representative quote accuracy or paid-output release gates.
