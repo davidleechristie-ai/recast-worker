@@ -16,7 +16,7 @@ function sourceFromRequest(request, incoming) {
   return 'direct';
 }
 
-async function recordEvPdfCompletion(request, response, env, incoming, headers) {
+async function recordPdfCompletion(request, response, env, incoming, headers, technology, event) {
   if (incoming.pathname !== '/api/analyse' || !response.ok || isQaRequest(request, env.HQC_ENV || 'preview')) return;
   const result = await response.clone().json();
   const provenance = Array.isArray(result.extractionProvenance)
@@ -25,14 +25,14 @@ async function recordEvPdfCompletion(request, response, env, incoming, headers) 
   if (!provenance.length || !provenance.every(item => item?.sourceMediaType === 'application/pdf')) return;
   try {
     await recordDurableMetric(env, {
-      event: 'ev_pdf_analysis_completed',
+      event,
       source: sourceFromRequest(request, incoming),
-      technology: 'ev_chargepoint',
+      technology,
       quoteCount: provenance.length,
       isTest: false,
     });
   } catch (error) {
-    console.error('EV completion metric write failed', error);
+    console.error('PDF completion metric write failed', error);
     headers.set('x-hqc-metrics-write', 'failed');
   }
 }
@@ -62,6 +62,7 @@ export default {
       const headers = new Headers(response.headers);
       headers.set('x-hqc-analysis-technology', hintedTechnology);
       headers.set('x-hqc-analysis-adapter', 'solar_thermal_internal');
+      await recordPdfCompletion(request, response, env, incoming, headers, 'solar_thermal', 'solar_thermal_pdf_analysis_completed');
       return new Response(response.body, { status: response.status, statusText: response.statusText, headers });
     }
     const evPublic = String(env.HQC_EV_CHARGEPOINT_ANALYSIS_PUBLIC || '') === '1';
@@ -71,7 +72,7 @@ export default {
       const headers = new Headers(response.headers);
       headers.set('x-hqc-analysis-technology', hintedTechnology);
       headers.set('x-hqc-analysis-adapter', evPublic ? 'ev_chargepoint' : 'ev_chargepoint_internal');
-      await recordEvPdfCompletion(request, response, env, incoming, headers);
+      await recordPdfCompletion(request, response, env, incoming, headers, 'ev_chargepoint', 'ev_pdf_analysis_completed');
       return new Response(response.body, { status: response.status, statusText: response.statusText, headers });
     }
     const solarEnabled = String(env.HQC_SOLAR_ANALYSIS_PUBLIC || '') === '1' || String(env.HQC_SOLAR_ANALYSIS_INTERNAL || '') === '1';
