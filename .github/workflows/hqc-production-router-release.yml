@@ -43,6 +43,7 @@ jobs:
           node --test solar-evidence-model.test.js test/solar-battery-extraction.test.mjs
           node --test test/technology-routing.test.mjs test/analysis-request-routing.test.mjs
           node --test test/intake-diagnostics.test.mjs
+          node --test test/decision-pack-technology.test.mjs test/renewable-decision-pack-boundary.test.mjs
           node --test test/ev-chargepoint-extraction.test.mjs test/ev-chargepoint-analysis.test.mjs test/ev-chargepoint-request-handler.test.mjs test/ev-upload-boundary.test.mjs test/worker-entry-ev-gate.test.mjs
       - name: Snapshot production frontend before Worker release
         working-directory: hqc-deploy-preview
@@ -78,6 +79,13 @@ jobs:
           echo "solar production analysis -> $solar_code"
           test "$solar_code" = '200'
           grep -q '5.1' /tmp/hqc-solar
+
+          for technology in solar_battery battery ev_chargepoint; do
+            pack_code=$(curl -L -sS -o /tmp/hqc-renewable-pack -w '%{http_code}' --max-time 30 -X POST -H 'content-type: application/json' --data "{\"caseId\":\"release-guard-123456\",\"technology\":\"$technology\"}" "$base/api/decision-pack/checkout")
+            echo "$technology Decision Pack boundary -> $pack_code"
+            test "$pack_code" = '409'
+            grep -q '"error":"decision_pack_unavailable_for_technology"' /tmp/hqc-renewable-pack
+          done
 
           ev_code=$(curl -L -sS -o /tmp/hqc-ev -w '%{http_code}' --max-time 30 -X POST -H 'content-type: application/json' -H 'x-hqc-technology: ev_chargepoint' --data '{"quoteText":"Installation of Zappi V2 EV charger 7.4 kW charging. Total £1,250."}' "$base/api/analyse")
           echo "EV closed production gate -> $ev_code"
