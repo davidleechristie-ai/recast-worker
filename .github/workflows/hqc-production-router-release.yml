@@ -15,6 +15,7 @@ on:
       - 'hqc-deploy-preview/solar-preview-journey.js'
       - 'hqc-deploy-preview/ev-chargepoint-preview-journey.js'
       - 'hqc-deploy-preview/solar-thermal-preview-journey.js'
+      - 'hqc-deploy-preview/test/canary-solar-thermal-private.mjs'
       - 'hqc-deploy-preview/lib/ev-chargepoint-*.js'
       - 'hqc-deploy-preview/lib/solar-thermal-*.js'
       - 'hqc-deploy-preview/upload-friction-v3.js'
