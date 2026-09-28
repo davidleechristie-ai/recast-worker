@@ -6,6 +6,7 @@ import { analysisRequestRoute, technologyRouteErrorResponse, technologyHintFromR
 import { normaliseTechnology, HQC_TECHNOLOGIES } from './lib/technology-routing.js';
 import { handleSolarBatteryAnalysisRequest } from './lib/solar-battery-request-handler.js';
 import { handleEvChargepointAnalysisRequest } from './lib/ev-chargepoint-request-handler.js';
+import { handleSolarThermalAnalysisRequest } from './lib/solar-thermal-request-handler.js';
 
 function sourceFromRequest(request, incoming) {
   try {
@@ -56,6 +57,13 @@ export default {
     const hintedTechnology = normaliseTechnology(technologyHintFromRequest(request, incoming));
     const solarTechnology = hintedTechnology === HQC_TECHNOLOGIES.SOLAR_BATTERY || hintedTechnology === HQC_TECHNOLOGIES.BATTERY;
     const evTechnology = hintedTechnology === HQC_TECHNOLOGIES.EV_CHARGEPOINT;
+    if (hintedTechnology === HQC_TECHNOLOGIES.SOLAR_THERMAL && String(env.HQC_SOLAR_THERMAL_ANALYSIS_INTERNAL || '') === '1') {
+      const response = await handleSolarThermalAnalysisRequest(request);
+      const headers = new Headers(response.headers);
+      headers.set('x-hqc-analysis-technology', hintedTechnology);
+      headers.set('x-hqc-analysis-adapter', 'solar_thermal_internal');
+      return new Response(response.body, { status: response.status, statusText: response.statusText, headers });
+    }
     const evPublic = String(env.HQC_EV_CHARGEPOINT_ANALYSIS_PUBLIC || '') === '1';
     const evEnabled = evPublic || String(env.HQC_EV_CHARGEPOINT_ANALYSIS_INTERNAL || '') === '1';
     if (evTechnology && evEnabled) {
