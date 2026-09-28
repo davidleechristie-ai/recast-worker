@@ -172,6 +172,7 @@ jobs:
             if(analysed.status!==200||analysed.body?.evidence?.arrayKwp!==5.1)throw new Error('Extracted Solar PDF did not reach technology-specific analysis');
             const result=page.locator('#hqc-solar-analysis-result');await result.waitFor({state:'visible',timeout:10000});
             const resultText=await result.innerText();if(!resultText.includes('5.1 kWp')||!/evidence gaps/i.test(resultText))throw new Error('Extracted Solar PDF result did not render');
+            if(await page.locator('#hqc-decision-pack-offer').isVisible())throw new Error('Heat Pump paid Decision Pack leaked into Solar journey');
             await context.close();
           }
           {
@@ -186,6 +187,7 @@ jobs:
             await rendered.waitFor({state:'visible',timeout:10000});
             const renderedText=await rendered.innerText();
             if(!renderedText.includes('5.1 kWp')||!/questions to ask the installer/i.test(renderedText))throw new Error('Solar-specific evidence result did not render');
+            if(await page.locator('#hqc-decision-pack-offer').isVisible())throw new Error('Heat Pump paid Decision Pack leaked into Solar preview');
             await context.close();
           }
           {
@@ -212,6 +214,7 @@ jobs:
             if(probe.status!==200||probe.body?.evidence?.powerKw!==7.4||probe.body?.evidence?.priceGbp!==1250||probe.adapter!=='ev_chargepoint_internal')throw new Error('EV browser bridge did not reach isolated EV adapter: '+JSON.stringify(probe));
             const result=page.locator('#hqc-ev-analysis-result');await result.waitFor({state:'visible',timeout:10000});
             const txt=(await result.innerText()).toLowerCase();if(!txt.includes('7.4 kw')||!txt.includes('£1,250')||!txt.includes('evidence gaps')||!txt.includes('questions to ask the installer'))throw new Error('EV result did not render required evidence UX');
+            if(await page.locator('#hqc-decision-pack-offer').isVisible())throw new Error('Heat Pump paid Decision Pack leaked into EV preview');
             await page.evaluate(()=>sessionStorage.setItem('hqc_ev_extracted_media',JSON.stringify([
               {sourceMediaType:'application/pdf',extractionMethod:'pdfjs-text-v1',pageCount:1,extractedText:'Installation of Zappi V2 EV charger 7.4 kW charging. Cable run included. Consumer unit upgrade excluded. Total £1,250.'},
               {sourceMediaType:'application/pdf',extractionMethod:'pdfjs-text-v1',pageCount:1,extractedText:'Install Ohme HomePro chargepoint 7 kW charging. Consumer unit upgrade included. Total £1,099.'}
