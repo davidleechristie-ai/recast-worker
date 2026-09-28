@@ -1,4 +1,4 @@
-import legacyWorker, { HqcMetrics } from './worker.js';
+import legacyWorker, { HqcMetrics, isQaRequest, recordDurableMetric } from './worker.js';
 
 // Preserve the Durable Object class export used by existing preview deployments.
 export { HqcMetrics };
@@ -6,6 +6,35 @@ import { analysisRequestRoute, technologyRouteErrorResponse, technologyHintFromR
 import { normaliseTechnology, HQC_TECHNOLOGIES } from './lib/technology-routing.js';
 import { handleSolarBatteryAnalysisRequest } from './lib/solar-battery-request-handler.js';
 import { handleEvChargepointAnalysisRequest } from './lib/ev-chargepoint-request-handler.js';
+
+function sourceFromRequest(request, incoming) {
+  try {
+    const ref = new URL(request.headers.get('referer') || '');
+    if (ref.origin === incoming.origin) return ref.searchParams.get('src') || ref.searchParams.get('source') || 'direct';
+  } catch {}
+  return 'direct';
+}
+
+async function recordEvPdfCompletion(request, response, env, incoming, headers) {
+  if (incoming.pathname !== '/api/analyse' || !response.ok || isQaRequest(request, env.HQC_ENV || 'preview')) return;
+  const result = await response.clone().json();
+  const provenance = Array.isArray(result.extractionProvenance)
+    ? result.extractionProvenance.map(item => item.provenance)
+    : [result.extractionProvenance];
+  if (!provenance.length || !provenance.every(item => item?.sourceMediaType === 'application/pdf')) return;
+  try {
+    await recordDurableMetric(env, {
+      event: 'ev_pdf_analysis_completed',
+      source: sourceFromRequest(request, incoming),
+      technology: 'ev_chargepoint',
+      quoteCount: provenance.length,
+      isTest: false,
+    });
+  } catch (error) {
+    console.error('EV completion metric write failed', error);
+    headers.set('x-hqc-metrics-write', 'failed');
+  }
+}
 
 export default {
   async fetch(request, env, ctx) {
@@ -33,6 +62,7 @@ export default {
       const headers = new Headers(response.headers);
       headers.set('x-hqc-analysis-technology', hintedTechnology);
       headers.set('x-hqc-analysis-adapter', 'ev_chargepoint_internal');
+      await recordEvPdfCompletion(request, response, env, incoming, headers);
       return new Response(response.body, { status: response.status, statusText: response.statusText, headers });
     }
     const solarEnabled = String(env.HQC_SOLAR_ANALYSIS_PUBLIC || '') === '1' || String(env.HQC_SOLAR_ANALYSIS_INTERNAL || '') === '1';
