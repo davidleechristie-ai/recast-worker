@@ -153,3 +153,11 @@
 - LOCAL: red-first cases then 38 targeted EV, Solar, durable completion and paid-boundary regressions passed; the five original synthetic fixtures remain 50/50 on their original fields. Two paraphrased public-document-derived examples and one adversarial option case are still far short of representative real-world ≥95% validation.
 - RELEASE: EV CI `36449962342`, rendered custom-domain canary `36449962434`, Cloudflare bridge `36449962155` and production release `36449962200` passed. The real hostname retained EV 409 and Heat Pump/Solar health. EV public analysis remains off.
 - NEXT: collect permissioned/de-identified contemporary real quote samples across installers and formats, cover more exclusions and conditional costs, and separately build an EV-specific paid output.
+
+## 2026-09-28 — private EV decision brief draft
+- PURPOSE: progress a technology-correct decision output without selling Heat Pump-specific content or promoting EV before representative accuracy is established.
+- CHANGE: PR #49 adds a deterministic EV brief built only from quote evidence, explicit gaps, installer questions and material comparison differences. It preserves missing values and provides no automatic winner. The private result renders a compact reviewable brief; EV checkout and public flag remain closed.
+- RED/LOCAL: brief unit tests and request-handler contract failed first, then 41 targeted EV, Solar, telemetry and paid-boundary regressions passed; preview script syntax and diff checks passed.
+- RELEASE: EV CI `36452276493`, rendered mobile/desktop custom-domain canary `36452276483`, Cloudflare bridge `36452276634` and production release `36452276466` passed. Real-host Heat Pump/Solar health, EV 409 and renewable checkout boundary remained green.
+- LIMIT: this is a private draft, not a monetisable Decision Pack. Contemporary representative real quotes, validation of decision usefulness and a technology-correct commercial offer remain open before public release.
+- NEXT: obtain permissioned/de-identified real quote coverage and review the brief against actual homeowner decision needs.
