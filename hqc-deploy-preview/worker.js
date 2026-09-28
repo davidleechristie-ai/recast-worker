@@ -122,6 +122,10 @@ async function createDecisionPackCheckout(request,env,mode,incoming){
   if(mode!=='production')return json({error:'payments_disabled_outside_production',test:true},409);
   if(!env.STRIPE_SECRET_KEY||!env.STRIPE_DECISION_PACK_PRICE_ID)return json({error:'payment_configuration_missing'},503);
   let payload={};try{payload=await request.json();}catch{return json({error:'invalid_json'},400);}
+  // The purchasable pack currently contains Heat Pump design questions.
+  // Preserve legacy missing-technology Heat Pump requests.
+  const technology=payload.technology==null?'heat_pump':String(payload.technology).trim().toLowerCase().replace(/[- ]/g,'_');
+  if(technology!=='heat_pump')return json({error:'decision_pack_unavailable_for_technology',technology},409);
   const caseId=payload.caseId;if(!validCaseId(caseId))return json({error:'invalid_case_reference'},400);if(isQaRequest(request,mode))return json({error:'qa_checkout_blocked'},409);
   const form=new URLSearchParams();form.set('mode','payment');form.set('line_items[0][price]',env.STRIPE_DECISION_PACK_PRICE_ID);form.set('line_items[0][quantity]','1');form.set('success_url',`${incoming.origin}/?decision_pack=success&session_id={CHECKOUT_SESSION_ID}`);form.set('cancel_url',`${incoming.origin}/?decision_pack=cancelled`);form.set('client_reference_id',caseId);form.set('metadata[case_id]',caseId);form.set('metadata[product]','decision_pack');form.set('payment_intent_data[metadata][case_id]',caseId);form.set('payment_intent_data[metadata][product]','decision_pack');
   const response=await fetch(`${STRIPE_API}/checkout/sessions`,{method:'POST',headers:{authorization:`Bearer ${env.STRIPE_SECRET_KEY}`,'content-type':'application/x-www-form-urlencoded','idempotency-key':`hqc-decision-pack-${caseId}`},body:form.toString()});const data=await response.json();if(!response.ok||!data.url)return json({error:'stripe_checkout_failed'},502);
