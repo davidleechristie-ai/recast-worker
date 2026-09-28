@@ -1,6 +1,12 @@
 # Current state
 
-Updated: 2026-09-27 Europe/London
+Updated: 2026-09-28 Europe/London
+
+## 2026-09-28 commercial activation measurement
+- Latest durable synthetic-excluded commercial snapshot (`hqc-ops/commercial-live.json`, fetched 06:54:32Z): **97 landings → 57 checker starts → 6 uploads → 6 genuine analyses → 0 checkouts**. Start→upload is **6/57 (10.5%)**. This remains the earliest measured constraint; a higher landing count has not yet produced another genuine analysis.
+- Added anonymous intake-stage counters for file-picker opens, file selections and manual-entry opens, segmented by source and technology. The dedicated Cloudflare metrics path stores only those event dimensions; it excludes QA traffic and no filename, file body or homeowner detail is recorded. Existing upload and genuine-analysis counters remain unchanged.
+- Local contract and browser-event tests pass. Production observations for the new counters are pending deployment and genuine traffic; do not treat zero immediately after launch as user behaviour or infer a conversion improvement from instrumentation alone.
+- Next decision: after a useful sample of genuine checker starts, compare picker-open, file-selected and manual-open counts with uploads to locate the precise abandonment point. Maintain the current £4.99 Heat Pump offer and first-purchase priority while EV stays non-public.
 
 ## Latest development update — EV evidence correctness
 - 2026-09-27 benchmark expansion: two additional synthetic installer-quote patterns cover multiword charger models, compact kW notation, Type 2 tethered cable/untethered socket wording and excluded PV/smart features. The fixture benchmark fell to 44/50 (88%) before the extractor change and reached 50/50 afterward; local EV suite passed 17/17 including evidence-only comparison. These are synthetic fixtures, not a measured real-world 95% extraction result. EV remains BUILD / NON-PUBLIC pending the remaining MVP gates.
