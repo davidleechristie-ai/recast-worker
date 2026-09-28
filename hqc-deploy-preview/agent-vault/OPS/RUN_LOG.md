@@ -119,3 +119,8 @@
 - VERIFICATION: local metric, browser-event and Cloudflare event-path tests passed 3/3; EV regression suite passed 17/17. Canary and production-host verification remain pending at this point in the log.
 - EXPECTED IMPACT: pinpoint the first actionable intake step to improve the probability of a genuine analysis and first £4.99 purchase; no claimed revenue lift yet.
 - NEXT: verify production delivery, collect genuine stage counts, then choose one targeted intake fix. Continue EV gates independently without making its public CTA visible.
+## 2026-09-28 — intake release verification timing
+- INITIAL RELEASE: production router `36416543633` and custom-domain canary `36416543978` failed immediate new intake verification. Production Heat Pump HTTP 200, Solar analysis HTTP 200 and durable metrics HTTP 200 passed before the new check; Cloudflare bridge succeeded.
+- INVESTIGATION: after deployment, both hosts served `__hqc_intake_diagnostics.js`; canary and production QA POSTs returned HTTP 200 with `{"recorded":false,"test":true}`. The gate checked the new asset immediately after observing only the Worker health, so asset/route propagation was not part of readiness.
+- CORRECTION: bounded readiness loops now require the new script in the homepage, the actual script asset and an excluded QA event before declaring the host ready. Failure after the retry budget remains a failed release.
+- NEXT: rerun production and canary workflows on the corrected commit, then monitor genuine intake stages without interpreting synthetic probes as demand.
