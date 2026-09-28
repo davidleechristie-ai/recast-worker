@@ -105,10 +105,11 @@ jobs:
             grep -q '"error":"decision_pack_unavailable_for_technology"' /tmp/hqc-renewable-pack
           done
 
-          ev_code=$(curl -L -sS -o /tmp/hqc-ev -w '%{http_code}' --max-time 30 -X POST -H 'content-type: application/json' -H 'x-hqc-technology: ev_chargepoint' --data '{"quoteText":"Installation of Zappi V2 EV charger 7.4 kW charging. Total £1,250."}' "$base/api/analyse")
-          echo "EV closed production gate -> $ev_code"
-          test "$ev_code" = '409'
+          ev_code=$(curl -L -sS -o /tmp/hqc-ev -w '%{http_code}' --max-time 30 -X POST -H 'content-type: application/json' -H 'x-hqc-technology: ev_chargepoint' --data '{"extractedMedia":{"sourceMediaType":"application/pdf","extractionMethod":"release-smoke-text-v1","pageCount":1,"extractedText":"Installation of Zappi V2 EV charger 7.4 kW charging. Total £1,250."}}' "$base/api/analyse")
+          echo "EV public production analysis -> $ev_code"
+          test "$ev_code" = '200'
           grep -q '"technology":"ev_chargepoint"' /tmp/hqc-ev
+          grep -q '"powerKw":7.4' /tmp/hqc-ev
 
           metrics_code=$(curl -L -sS -o /tmp/hqc-metrics -w '%{http_code}' --max-time 30 "$base/api/metrics")
           echo "durable metrics -> $metrics_code"
@@ -127,10 +128,49 @@ jobs:
             script=$(curl -L -sS --max-time 30 "$base/__hqc_intake_diagnostics.js?release_probe=$attempt" || true)
             ev_script=$(curl -L -sS --max-time 30 "$base/__hqc_ev_preview.js?release_probe=$attempt" || true)
             intake=$(curl -L -sS --max-time 30 -X POST -H 'content-type: application/json' -H "referer: $base/?qa=1" --data '{"event":"intake_file_selected","technology":"heat_pump","source":"release_smoke"}' "$base/api/event" || true)
-            if grep -q '__hqc_intake_diagnostics.js' <<< "$home" && grep -q 'intake_file_selected' <<< "$script" && grep -q 'Compare quote evidence' <<< "$ev_script" && grep -q '"test":true' <<< "$intake"; then intake_ready=true; break; fi
+            layout=$(curl -L -sS --max-time 30 "$base/__hqc_approved_layout.js?release_probe=$attempt" || true)
+            if grep -q '__hqc_intake_diagnostics.js' <<< "$home" && grep -q 'intake_file_selected' <<< "$script" && grep -q 'EV CHARGEPOINT QUOTE CHECK' <<< "$ev_script" && grep -q 'data-tech="ev_chargepoint"' <<< "$layout" && grep -q '"test":true' <<< "$intake"; then intake_ready=true; break; fi
             echo "Awaiting production intake asset and excluded QA event (attempt $attempt)"
             sleep 5
           done
           test "$intake_ready" = 'true'
 
           echo 'HQC production technology-router verification passed.'
+      - name: Verify public EV quote journey on production hostname
+        working-directory: hqc-deploy-preview
+        shell: bash
+        run: |
+          set -euo pipefail
+          npm install --no-save playwright@1.55.0 pdf-lib@1.17.1
+          npx playwright install --with-deps chromium
+          node --input-type=module <<'NODE'
+          import { chromium } from 'playwright';
+          import { PDFDocument, StandardFonts } from 'pdf-lib';
+          const pdf=await PDFDocument.create();const page=pdf.addPage([500,300]);
+          page.drawText('Installation of Zappi V2 EV charger 7.4 kW charging. Total £1,250.',{x:30,y:250,size:12,font:await pdf.embedFont(StandardFonts.Helvetica)});
+          const buffer=Buffer.from(await pdf.save());
+          const browser=await chromium.launch({headless:true});
+          try {
+            for(const viewport of [{width:390,height:844},{width:1366,height:900}]) {
+              const context=await browser.newContext({viewport,serviceWorkers:'block'});
+              try {
+                const tab=await context.newPage();
+                await tab.goto('https://homequotecheck.co.uk/?qa=1',{waitUntil:'domcontentloaded',timeout:30000});
+                const ev=tab.locator('#hqc-technology-choice [data-tech="ev_chargepoint"]');await ev.waitFor({state:'visible',timeout:20000});await ev.click();
+                await tab.waitForURL(/technology=ev_chargepoint/);
+                await tab.getByRole('button',{name:/start single quote check/i}).first().click();
+                const choose=tab.locator('#hqc-choose-file');await choose.waitFor({state:'visible',timeout:15000});
+                const picker=tab.waitForEvent('filechooser');await choose.click();
+                await (await picker).setFiles({name:'release-ev.pdf',mimeType:'application/pdf',buffer});
+                await tab.waitForFunction(()=>JSON.parse(sessionStorage.getItem('hqc_ev_extracted_media')||'[]')[0]?.extractedText?.includes('Zappi V2'),{timeout:15000});
+                const result=await tab.evaluate(async()=>{const r=await fetch('/api/analyse',{method:'POST',body:'native-upstream-body'});return {status:r.status,body:await r.json(),adapter:r.headers.get('x-hqc-analysis-adapter')}});
+                if(result.status!==200||result.adapter!=='ev_chargepoint'||result.body?.evidence?.powerKw!==7.4||result.body?.evidence?.priceGbp!==1250)throw new Error('Production EV PDF analysis failed: '+JSON.stringify(result));
+                const output=tab.locator('#hqc-ev-analysis-result');await output.waitFor({state:'visible',timeout:10000});
+                if(!/EV CHARGEPOINT QUOTE CHECK/.test(await output.innerText()))throw new Error('Public EV result missing');
+                if(await tab.locator('#hqc-decision-pack-offer').isVisible())throw new Error('Heat Pump paid offer leaked');
+                if(await tab.evaluate(()=>document.documentElement.scrollWidth-innerWidth)>1)throw new Error('EV horizontal overflow');
+              } finally {await context.close()}
+            }
+          } finally {await browser.close()}
+          console.log('Production public EV text-PDF upload, analysis and result verified on mobile and desktop.');
+          NODE
