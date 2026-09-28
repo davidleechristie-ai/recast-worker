@@ -46,6 +46,7 @@ jobs:
           node --test test/intake-diagnostics.test.mjs
           node --test test/decision-pack-technology.test.mjs test/renewable-decision-pack-boundary.test.mjs
           node --test test/ev-durable-completion.test.mjs
+          node --test test/ev-decision-brief.test.mjs
           node --test test/ev-chargepoint-extraction.test.mjs test/ev-chargepoint-analysis.test.mjs test/ev-chargepoint-request-handler.test.mjs test/ev-upload-boundary.test.mjs test/worker-entry-ev-gate.test.mjs
       - name: Require same-commit custom-domain canary before shared payment release
         if: github.event_name == 'push'
