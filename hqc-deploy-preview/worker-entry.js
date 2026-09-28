@@ -56,12 +56,13 @@ export default {
     const hintedTechnology = normaliseTechnology(technologyHintFromRequest(request, incoming));
     const solarTechnology = hintedTechnology === HQC_TECHNOLOGIES.SOLAR_BATTERY || hintedTechnology === HQC_TECHNOLOGIES.BATTERY;
     const evTechnology = hintedTechnology === HQC_TECHNOLOGIES.EV_CHARGEPOINT;
-    const evEnabled = String(env.HQC_EV_CHARGEPOINT_ANALYSIS_INTERNAL || '') === '1';
+    const evPublic = String(env.HQC_EV_CHARGEPOINT_ANALYSIS_PUBLIC || '') === '1';
+    const evEnabled = evPublic || String(env.HQC_EV_CHARGEPOINT_ANALYSIS_INTERNAL || '') === '1';
     if (evTechnology && evEnabled) {
       const response = await handleEvChargepointAnalysisRequest(request);
       const headers = new Headers(response.headers);
       headers.set('x-hqc-analysis-technology', hintedTechnology);
-      headers.set('x-hqc-analysis-adapter', 'ev_chargepoint_internal');
+      headers.set('x-hqc-analysis-adapter', evPublic ? 'ev_chargepoint' : 'ev_chargepoint_internal');
       await recordEvPdfCompletion(request, response, env, incoming, headers);
       return new Response(response.body, { status: response.status, statusText: response.statusText, headers });
     }
