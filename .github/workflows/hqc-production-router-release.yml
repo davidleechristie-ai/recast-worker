@@ -5,6 +5,7 @@ on:
     branches: [main]
     paths:
       - '.github/workflows/hqc-production-router-release.yml'
+      - '.github/workflows/hqc-canary-domain.yml'
       - 'hqc-deploy-preview/worker.js'
       - 'hqc-deploy-preview/worker-entry.js'
       - 'hqc-deploy-preview/lib/technology-routing.js'
