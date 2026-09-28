@@ -83,3 +83,6 @@ EV quote evidence now models explicit cabling, consumer-unit and earthing inclus
 
 ## 2026-09-28 renewable commercial boundary
 The existing £4.99 Decision Pack still contains Heat Pump-specific advice. PR #43 suppresses it for Solar/Battery and the private EV journey and makes explicit renewable checkout requests fail closed before Stripe; Heat Pump checkout remains available. Custom-domain canary `36423276671` and production-host release `36423276665` passed, including explicit renewable checkout 409 before Stripe. Solar free quote analysis remains live, EV remains non-public. A technology-correct paid pack and durable funnel attribution remain open renewable MVP gates.
+
+## 2026-09-28 EV durable completion increment
+PR #45 adds anonymous server-side completed EV text-PDF analysis and comparison counters by technology/source. QA, failed and raw-text-only requests are excluded; they are not treated as genuine customer analyses. Local regressions and EV/Solar CI passed; custom-domain canary `36445629648` and production-host release `36445629626` passed. EV remains non-public. Representative real-quote accuracy and EV-specific paid output remain the release blockers.
