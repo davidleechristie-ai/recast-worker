@@ -80,5 +80,51 @@
         "priceGbp": 999
       }
     }
+  ],
+  "publicDocumentDerived": [
+    {
+      "id": "domestic-installation-plan-2025",
+      "source": "https://docs.planning.org.uk/20251001/8/T2MXSCMFGCZ00/2ahjy7z3xxgk97sz.pdf",
+      "note": "Paraphrased from a public domestic installation plan; names, address and document wording are omitted. Not a representative sample or current regulatory reference.",
+      "quoteText": "Supply and install a dedicated consumer unit for the EV charger. Install 10 metres of 6 mm cable in surface trunking. Charger: Ohme ePod untethered (proposal labels it 7kWh). A CT clamp for load balancing is included. Submit DNO notification. Three-year warranty. Total payable (incl VAT) £1,329.60. Optional surge protector costs £72 extra.",
+      "expected": {
+        "make": "Ohme",
+        "model": "ePod",
+        "powerKw": null,
+        "tethered": false,
+        "connector": null,
+        "smart": null,
+        "loadManagement": "load balancing clamp stated",
+        "pvIntegration": null,
+        "dnoTreatment": "DNO notification",
+        "warrantyYears": 3,
+        "priceGbp": 1329.6,
+        "cablingScope": {"status": "included", "quoteText": "Install 10 metres of 6 mm cable in surface trunking."},
+        "consumerUnitScope": {"status": "included", "quoteText": "Supply and install a dedicated consumer unit for the EV charger."},
+        "earthingScope": null
+      }
+    },
+    {
+      "id": "alternative-charger-prices-2019",
+      "source": "https://belindahallam.wordpress.com/wp-content/uploads/2019/02/ev-charging-point_design-access-statement_revised_app-a-f.pdf",
+      "note": "Paraphrased from a public historical quotation; all personal details and document wording are omitted. Grant-era amounts are historical examples, not current advice.",
+      "quoteText": "Pod Point proposes one charger for the private supply. Install a new consumer unit with Type A RCD. Run a cable to the parking area, fixed to the structure. Options: S3 3.7kW charger £279 with grant or £779 without grant; S7 7kW charger £359 with grant or £859 without grant. Optional groundworks £443.20 extra. Price depends on the selected option.",
+      "expected": {
+        "make": null,
+        "model": null,
+        "powerKw": null,
+        "tethered": null,
+        "connector": null,
+        "smart": null,
+        "loadManagement": null,
+        "pvIntegration": null,
+        "dnoTreatment": null,
+        "warrantyYears": null,
+        "priceGbp": null,
+        "cablingScope": {"status": "included", "quoteText": "Run a cable to the parking area, fixed to the structure."},
+        "consumerUnitScope": {"status": "included", "quoteText": "Install a new consumer unit with Type A RCD."},
+        "earthingScope": null
+      }
+    }
   ]
 }
