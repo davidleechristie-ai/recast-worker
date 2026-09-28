@@ -18,14 +18,14 @@ try{
     await page.getByRole('button',{name:/start solar thermal quote check/i}).first().click();
     const choose=page.locator('#hqc-choose-file');await choose.waitFor({state:'visible',timeout:15000});
     const picker=page.waitForEvent('filechooser',{timeout:5000});await choose.click();
-    await (await picker).setFiles({name:'solar-thermal-installer.pdf',mimeType:'application/pdf',buffer:await pdf('Solar thermal evacuated tube collectors aperture area 4.2 m2. Solar hot water cylinder 250 litres. Solar heat 1900 kWh/year. Total £6,750.')});
+    await (await picker).setFiles({name:'solar-thermal-installer.pdf',mimeType:'application/pdf',buffer:await pdf('Solar thermal evacuated tube collectors aperture area 4.2 m2. Solar hot water cylinder 250 litres. Solar heat 1900 kWh/year. Total £6,750. Roof mounting included. Scaffolding excluded. Solar pipework included. Collector warranty 10 years. Cylinder warranty 5 years. Workmanship warranty 2 years. Estimate assumes a 4 person household and 160 litres/day hot-water demand.')});
     await page.waitForFunction(()=>{try{return JSON.parse(sessionStorage.getItem('hqc_solar_thermal_extracted_media')||'[]')[0]?.extractedText?.includes('4.2 m2')}catch{return false}},undefined,{timeout:15000});
     const extracted=await page.evaluate(()=>JSON.parse(sessionStorage.getItem('hqc_solar_thermal_extracted_media'))[0]);
     assert.equal(extracted.sourceMediaType,'application/pdf');assert.equal(extracted.extractionMethod,'pdfjs-text-v1');assert.equal(extracted.pageCount,1);
     const analysed=await page.evaluate(async()=>{const r=await fetch('/api/analyse',{method:'POST',body:'native-upstream-body'});return {status:r.status,adapter:r.headers.get('x-hqc-analysis-adapter'),body:await r.json()}});
     assert.equal(analysed.status,200);assert.equal(analysed.adapter,'solar_thermal_internal');assert.equal(analysed.body.evidence.collectorAreaM2,4.2);assert.equal(analysed.body.evidence.cylinderLitres,250);
     const result=page.locator('#hqc-thermal-analysis-result');await result.waitFor({state:'visible',timeout:10000});
-    const text=await result.innerText();for(const term of ['4.2 m²','250 litres','1,900 kWh/year','£6,750','installer claim','Questions to ask the installer'])assert.ok(text.includes(term),`missing thermal result: ${term}`);
+    const text=await result.innerText();for(const term of ['4.2 m²','250 litres','1,900 kWh/year','£6,750','installer claim','Scaffolding','excluded','Collector warranty','10 years','4 occupants','160 litres/day','Questions to ask the installer'])assert.ok(text.includes(term),`missing thermal result: ${term}`);
     assert.equal(await page.locator('#hqc-decision-pack-offer').isVisible(),false);
     await page.evaluate(items=>sessionStorage.setItem('hqc_solar_thermal_extracted_media',JSON.stringify(items)),[media('Solar thermal flat plate collector aperture area 4.2 m2. Solar cylinder 250 litres. Solar heat 1900 kWh/year. Total £6,750.'),media('Solar thermal evacuated tube collector aperture area 3.4 m2. Solar cylinder 200 litres. Solar heat 1600 kWh/year. Total £5,950.')]);
     const compared=await page.evaluate(async()=>{const r=await fetch('/api/analyse',{method:'POST',body:'native-upstream-body'});return {status:r.status,body:await r.json()}});
