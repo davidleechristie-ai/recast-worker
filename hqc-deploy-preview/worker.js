@@ -5,7 +5,7 @@ const isQaRequest=(request,mode)=>{if(mode!=='production')return true;const ref=
 const validCaseId=v=>typeof v==='string'&&/^[A-Za-z0-9_-]{8,80}$/.test(v);
 const safeEqual=(a,b)=>{if(a.length!==b.length)return false;let d=0;for(let i=0;i<a.length;i++)d|=a.charCodeAt(i)^b.charCodeAt(i);return d===0;};
 const hex=bytes=>[...new Uint8Array(bytes)].map(b=>b.toString(16).padStart(2,'0')).join('');
-const emptyTotals=()=>({landings:0,cta:0,uploads:0,genuine:0,extendedGenuine:0,multiQuoteAnalyses:0,decisionCases:0,installerQuestions:0,shareIntent:0,shareOpens:0,recipientStarts:0,outboundClicks:0,checkouts:0});
+const emptyTotals=()=>({landings:0,cta:0,pickerOpens:0,fileSelections:0,manualOpens:0,uploads:0,genuine:0,extendedGenuine:0,multiQuoteAnalyses:0,decisionCases:0,installerQuestions:0,shareIntent:0,shareOpens:0,recipientStarts:0,outboundClicks:0,checkouts:0});
 const cleanSource=v=>String(v||'direct').slice(0,40).replace(/[^A-Za-z0-9_.:-]/g,'_')||'direct';
 const cleanTechnology=v=>{const x=String(v||'heat_pump').toLowerCase().replace(/[- ]/g,'_');return ['heat_pump','solar_battery','battery','ev_chargepoint'].includes(x)?x:'unspecified';};
 
@@ -37,6 +37,9 @@ export class HqcMetrics {
     const inc=name=>{total[name]=(total[name]||0)+1;row[name]=(row[name]||0)+1;techRow[name]=(techRow[name]||0)+1;changed=true;};
     if(event==='landing_view')inc('landings');
     else if(event==='checker_cta_clicked'){inc('cta');if(source==='shared_case')inc('recipientStarts');}
+    else if(event==='intake_picker_opened')inc('pickerOpens');
+    else if(event==='intake_file_selected')inc('fileSelections');
+    else if(event==='intake_manual_opened')inc('manualOpens');
     else if(event==='upload_started')inc('uploads');
     else if(event==='share_intent')inc('shareIntent');
     else if(event==='partner_outbound_click')inc('outboundClicks');
@@ -150,6 +153,14 @@ export default {async fetch(request,env){
   if(incoming.pathname==='/api/decision-pack/checkout'&&request.method==='POST')return createDecisionPackCheckout(request,env,mode,incoming);
   if(incoming.pathname==='/api/decision-pack/status'&&request.method==='GET')return decisionPackStatus(request,env,mode,incoming);
   if(incoming.pathname==='/api/stripe/webhook'&&request.method==='POST')return stripeWebhook(request,env,mode);
+  if(incoming.pathname==='/api/event'&&request.method==='POST'){
+    let payload;try{payload=await request.clone().json()}catch{return json({error:'invalid_json'},400)}
+    if(['intake_picker_opened','intake_file_selected','intake_manual_opened'].includes(payload?.event)){
+      const safe={event:payload.event,source:cleanSource(payload.source),technology:cleanTechnology(payload.technology),isTest:isQaRequest(request,mode)||payload.isTest===true};
+      try{if(!safe.isTest)await recordDurableMetric(env,safe)}catch(e){console.error('intake metrics write failed',e);return json({error:'metrics_unavailable'},503)}
+      return json({recorded:!safe.isTest,test:safe.isTest},200,{'x-hqc-cloudflare-edge':mode});
+    }
+  }
   if(incoming.pathname.startsWith('/api/')){const target=API_BASE+incoming.pathname+incoming.search,headers=new Headers(request.headers);headers.delete('host');headers.delete('origin');let body,forcedTest=false,eventPayload=null;if(!['GET','HEAD'].includes(request.method)){if(incoming.pathname==='/api/event'&&request.method==='POST'){try{const payload=await request.clone().json();forcedTest=isQaRequest(request,mode);if(forcedTest)payload.isTest=true;eventPayload=payload;body=JSON.stringify(payload);headers.set('content-type','application/json');}catch{body=request.body;}}else body=request.body;}const init={method:request.method,headers,redirect:'manual'};if(body!==undefined)init.body=body;const response=await fetch(target,init),outHeaders=new Headers(response.headers);if(eventPayload&&response.ok&&!eventPayload.isTest){try{await recordDurableMetric(env,eventPayload);}catch(e){console.error('durable metrics write failed',e);outHeaders.set('x-hqc-metrics-write','failed');}}outHeaders.set('x-hqc-cloudflare-edge',mode);if(forcedTest)outHeaders.set('x-hqc-qa-event','excluded');outHeaders.set('cache-control','no-store');return new Response(response.body,{status:response.status,statusText:response.statusText,headers:outHeaders});}
   const response=await env.ASSETS.fetch(request),headers=new Headers(response.headers);headers.set('x-hqc-cloudflare-edge',mode);if(incoming.pathname==='/'||incoming.pathname.endsWith('.html'))headers.set('cache-control','no-store');return new Response(response.body,{status:response.status,statusText:response.statusText,headers});
 }};

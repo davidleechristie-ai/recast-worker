@@ -58,6 +58,11 @@ jobs:
           enhancement=$(curl -L -sS --max-time 30 "$base/__hqc_enhancements.js")
           grep -q 'Quote evidence completeness' <<< "$enhancement"
           grep -q 'Enter figures manually' <<< "$enhancement"
+          intake=$(curl -fsSL --max-time 30 "$base/__hqc_intake_diagnostics.js")
+          grep -q 'intake_file_selected' <<< "$intake"
+          grep -q '__hqc_intake_diagnostics.js' <<< "$home"
+          event=$(curl -fsSL --max-time 30 -X POST -H 'content-type: application/json' --data '{"event":"intake_file_selected","technology":"heat_pump","source":"canary_smoke"}' "$base/api/event")
+          grep -q '"test":true' <<< "$event"
           api=$(curl -L -sS --max-time 30 "$base/api/_healthcheck")
           grep -q 'Success' <<< "$api"
           echo 'HQC custom-domain canary passed: assets, health, API proxy and enhancement bundle verified.'

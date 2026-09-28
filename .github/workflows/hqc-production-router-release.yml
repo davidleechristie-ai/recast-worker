@@ -14,6 +14,7 @@ on:
       - 'hqc-deploy-preview/snapshot.mjs'
       - 'hqc-deploy-preview/solar-preview-journey.js'
       - 'hqc-deploy-preview/upload-friction-v3.js'
+      - 'hqc-deploy-preview/intake-diagnostics.js'
   workflow_dispatch:
 
 permissions:
@@ -39,6 +40,7 @@ jobs:
         run: |
           node --test solar-evidence-model.test.js test/solar-battery-extraction.test.mjs
           node --test test/technology-routing.test.mjs test/analysis-request-routing.test.mjs
+          node --test test/intake-diagnostics.test.mjs
       - name: Snapshot production frontend before Worker release
         working-directory: hqc-deploy-preview
         env:
@@ -78,5 +80,11 @@ jobs:
           echo "durable metrics -> $metrics_code"
           test "$metrics_code" = '200'
           grep -q '"durable":true' /tmp/hqc-metrics
+
+          home=$(curl -fsSL --max-time 30 "$base/")
+          grep -q '__hqc_intake_diagnostics.js' <<< "$home"
+          curl -fsSL --max-time 30 "$base/__hqc_intake_diagnostics.js" | grep -q 'intake_file_selected'
+          intake=$(curl -fsSL --max-time 30 -X POST -H 'content-type: application/json' -H "referer: $base/?qa=1" --data '{"event":"intake_file_selected","technology":"heat_pump","source":"release_smoke"}' "$base/api/event")
+          grep -q '"test":true' <<< "$intake"
 
           echo 'HQC production technology-router verification passed.'
