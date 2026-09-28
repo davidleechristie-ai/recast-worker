@@ -3,6 +3,36 @@
 const money=s=>Number(s.replace(/,/g,''));
 const sentences=text=>String(text||'').match(/(?:\d\.\d|[^.!?\n])+[.!?]?/g)?.map(s=>s.trim()).filter(Boolean)||[];
 const unique=(items)=>[...new Set(items.map(x=>x.value))];
+const thermalScopeLine=s=>!/(?:solar\s*PV|photovoltaic|electricity|kWp)/i.test(s);
+function scopedCommitment(lines,subject){
+  const hits=[];
+  for(const line of lines){if(!thermalScopeLine(line)||!subject.test(line))continue;
+    const included=/\b(?:included|provided|will be installed|will be provided)\b/i.test(line);
+    const excluded=/\b(?:excluded|not included|not provided|not covered)\b/i.test(line);
+    const conditional=/\b(?:subject to (?:site )?survey|subject to inspection|to be confirmed|optional|after survey)\b/i.test(line);
+    const states=[included&&!/\bnot included\b/i.test(line),excluded,conditional].filter(Boolean).length;
+    if(states!==1){if(states>1)hits.push({status:'ambiguous'});continue}
+    hits.push({status:conditional?'conditional':excluded?'excluded':'included',quoteText:line});
+  }
+  return hits.length&&new Set(hits.map(x=>x.status)).size===1&&hits[0].status!=='ambiguous'?hits[0]:null;
+}
+function warranty(lines,subject){
+  const hits=[];
+  for(const line of lines){if(!thermalScopeLine(line)||!subject.test(line)||!/\bwarranty\b/i.test(line))continue;
+    const years=[...line.matchAll(/\b(\d{1,2})\s*(?:years?|yrs?)\b/gi)].map(x=>Number(x[1]));
+    if(years.length!==1||/\b(?:optional|subject to|or|up to|from)\b/i.test(line)){hits.push({years:null});continue}
+    hits.push({years:years[0],quoteText:line});
+  }
+  return hits.length&&hits.every(x=>x.years===hits[0].years)&&hits[0].years!==null?hits[0]:null;
+}
+function assumption(lines,pattern){
+  const hits=[];
+  for(const line of lines){if(!thermalScopeLine(line)||!/\b(?:assum(?:e|es|ed|ption)|based on|estimate)\b/i.test(line))continue;
+    const values=[...line.matchAll(pattern)].map(x=>Number(x[1]));
+    if(values.length)hits.push({values,quoteText:line});
+  }
+  return hits.length===1&&hits[0].values.length===1?{value:hits[0].values[0],quoteText:hits[0].quoteText}:null;
+}
 function capture(lines,pattern,parse,scope=()=>true){
   const hits=[];
   for(const line of lines){if(!scope(line))continue;for(const match of line.matchAll(pattern))hits.push({value:parse(match),text:line})}
@@ -23,8 +53,19 @@ export function extractSolarThermalQuote(text){
   const backup=backupLines.length===1&&/\b(?:included|connected|provided)\b/i.test(backupLines[0])&&
     !/\b(?:excluded|not included|not connected|not provided|subject to|optional)\b/i.test(backupLines[0])
     ?'Included: '+backupLines[0]:null;
+  const installationScope={
+    roofMounting:scopedCommitment(lines,/\b(?:roof mounting|roof fixings?|roof brackets?)\b/i),
+    scaffolding:scopedCommitment(lines,/\b(?:scaffold(?:ing)?|access tower)\b/i),
+    pipework:scopedCommitment(lines,/\b(?:solar pipework|solar thermal pipework|thermal pipework)\b/i),
+    pumpControls:scopedCommitment(lines,/\b(?:pump station|solar pump|solar controls?|pump and controls)\b/i),
+    commissioning:scopedCommitment(lines,/\bcommissioning\b/i)
+  };
+  const warranties={collector:warranty(lines,/\bcollectors?\b/i),cylinder:warranty(lines,/\bcylinder\b/i),workmanship:warranty(lines,/\b(?:workmanship|installation work)\b/i)};
+  const occupants=assumption(lines,/\b(\d{1,2})\s*(?:person|people|occupant)(?:\s+household)?\b/gi);
+  const hotWater=assumption(lines,/\b(\d{2,4})\s*(?:litres?|liters?|l)\s*(?:\/|per\s*)\s*day\b/gi);
+  const heatAssumptions={occupants:occupants?.value??null,hotWaterLitresPerDay:hotWater?.value??null,provenance:{occupants:occupants?.quoteText??null,hotWaterLitresPerDay:hotWater?.quoteText??null}};
   const rhi=lines.find(s=>/\b(?:domestic\s+)?RHI\b|renewable heat incentive/i.test(s))||null;
-  const values={collectorType:type?.value??null,collectorAreaM2:area?.value??null,cylinderLitres:cylinder?.value??null,annualSolarHeatKwh:annual?.value??null,priceGbp:price?.value??null,backupHeat:backup,mcsClaim:null,rhiClaim:rhi};
+  const values={collectorType:type?.value??null,collectorAreaM2:area?.value??null,cylinderLitres:cylinder?.value??null,annualSolarHeatKwh:annual?.value??null,priceGbp:price?.value??null,backupHeat:backup,installationScope,warranties,heatAssumptions,mcsClaim:null,rhiClaim:rhi};
   const provenance={collectorType:type?.text??null,collectorAreaM2:area?.text??null,cylinderLitres:cylinder?.text??null,annualSolarHeatKwh:annual?.text??null,priceGbp:price?.text??null,backupHeat:backupLines.length===1?backupLines[0]:null};
   const questions=[];
   if(!type||!area)questions.push('Which solar thermal collector type and aperture area are included in the final quote?');
