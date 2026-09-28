@@ -276,3 +276,8 @@ jobs:
           await browser.close();
           console.log('HQC canary quote intake, compare-mode, Solar and EV public selection, rendered EV mobile/desktop, and Decision Pack regression paths passed.');
           NODE
+      - name: Verify private solar thermal browser upload and results
+        working-directory: hqc-deploy-preview
+        run: node test/canary-solar-thermal-browser.mjs
+        env:
+          HQC_CANARY_ORIGIN: https://cf-preview.homequotecheck.co.uk
