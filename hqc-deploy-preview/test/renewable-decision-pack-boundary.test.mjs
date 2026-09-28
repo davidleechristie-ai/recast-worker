@@ -10,7 +10,7 @@ const request=(technology)=>new Request('https://homequotecheck.co.uk/api/decisi
 });
 const env={HQC_ENV:'production',STRIPE_SECRET_KEY:'test-key',STRIPE_DECISION_PACK_PRICE_ID:'price_test'};
 
-for(const technology of ['ev_chargepoint','solar_battery','battery','made_up']){
+for(const technology of ['ev_chargepoint','solar_battery','battery','solar_thermal','made_up']){
   test('no Heat Pump Decision Pack checkout for '+technology,async()=>{
     const original=globalThis.fetch;
     globalThis.fetch=()=>{throw new Error('Renewable checkout reached Stripe')};
@@ -34,7 +34,7 @@ test('Heat Pump checkout still creates a session',async()=>{
 });
 
 const source=fs.readFileSync(new URL('../decision-pack.js',import.meta.url),'utf8');
-for(const technology of ['ev_chargepoint','solar_battery','battery']){
+for(const technology of ['ev_chargepoint','solar_battery','battery','solar_thermal']){
   test('no Heat Pump Decision Pack offer for '+technology,()=>{
     const children=[];
     const store=new Map([['hqc_journey_technology',technology]]);

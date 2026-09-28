@@ -3,7 +3,7 @@
   const TECH='hqc_journey_technology';
   const MEDIA='hqc_solar_extracted_media';
   let lastResult=null,resultVersion=0;
-  const enabled=()=>{try{const q=new URLSearchParams(location.search);if(q.has('technology'))return q.get('technology')==='solar_battery';return q.get('solar_preview')==='1'||sessionStorage.getItem(FLAG)==='1'||sessionStorage.getItem(TECH)==='solar_battery'}catch{return false}};
+  const enabled=()=>{try{const q=new URLSearchParams(location.search);if(q.has('technology'))return q.get('technology')==='solar_battery';if(q.get('thermal_preview')==='1'||sessionStorage.getItem(TECH)==='solar_thermal')return false;return q.get('solar_preview')==='1'||sessionStorage.getItem(FLAG)==='1'||sessionStorage.getItem(TECH)==='solar_battery'}catch{return false}};
   const publicMode=()=>{try{return new URLSearchParams(location.search).get('technology')==='solar_battery'}catch{return false}};
   const setPreview=()=>{try{sessionStorage.setItem(FLAG,'1');sessionStorage.setItem(TECH,'solar_battery')}catch{}};
   const clearPreview=()=>{try{sessionStorage.removeItem(FLAG);sessionStorage.removeItem(TECH)}catch{}};

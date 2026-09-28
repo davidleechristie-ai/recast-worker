@@ -2,7 +2,7 @@
  const qs=(s,r=document)=>r.querySelector(s),qsa=(s,r=document)=>[...r.querySelectorAll(s)];
  function direct(parent,node){let n=node;while(n&&n.parentElement!==parent)n=n.parentElement;return n||node}
  function technology(){try{return new URLSearchParams(location.search).get('technology')||sessionStorage.getItem('hqc_journey_technology')||''}catch{return''}}
- function selectTechnology(value){try{sessionStorage.setItem('hqc_journey_technology',value);sessionStorage.removeItem('hqc_solar_preview');sessionStorage.removeItem('hqc_ev_preview');sessionStorage.removeItem('hqc_ev_extracted_media');sessionStorage.removeItem('hqc_solar_extracted_media')}catch{}location.href='/?technology='+encodeURIComponent(value)}
+ function selectTechnology(value){try{sessionStorage.setItem('hqc_journey_technology',value);sessionStorage.removeItem('hqc_solar_preview');sessionStorage.removeItem('hqc_ev_preview');sessionStorage.removeItem('hqc_ev_extracted_media');sessionStorage.removeItem('hqc_solar_extracted_media');sessionStorage.removeItem('hqc_solar_thermal_preview');sessionStorage.removeItem('hqc_solar_thermal_extracted_media')}catch{}location.href='/?technology='+encodeURIComponent(value)}
  function choose(mode,btn){
   sessionStorage.setItem('hqc_journey_mode',mode);
   if(mode==='compare')sessionStorage.setItem('hqc_compare_intent','1');else sessionStorage.removeItem('hqc_compare_intent');
