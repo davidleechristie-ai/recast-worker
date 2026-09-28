@@ -112,3 +112,10 @@
 - LOCAL VERIFICATION: fixture benchmark 50/50 and EV suite 17/17; no public EV flag or CTA change. This does not establish real-world accuracy or close telemetry/commercial gates.
 - COMMERCIAL: no payment/funnel refresh this development run; first purchase and the measured Heat Pump start→upload bottleneck remain parallel priorities.
 - NEXT: broaden fixtures with independently sourced, appropriately de-identified quote wording; verify durable technology events and commercial boundary before any EV public release.
+## 2026-09-28 — instrument the measured start-to-upload gap
+- EVIDENCE: durable commercial snapshot fetched 06:54:32Z shows 97 landings, 57 starts, 6 uploads, 6 genuine analyses and 0 checkouts; start→upload is 10.5%. Current authoritative payment evidence was not refreshed in this run; historical £0 revenue is not asserted as a new Stripe read.
+- DIAGNOSIS: existing metrics cannot distinguish opening the picker, choosing a file and opening manual entry. A further UI change would overlap the active activation hypothesis without identifying where the drop occurs.
+- CHANGE: added source/technology-segmented anonymous counts for those three intake stages. Stage events are handled by Cloudflare durable metrics without depending on the legacy analysis API. QA events are excluded, and file contents, names and homeowner details are absent from the payload and storage.
+- VERIFICATION: local metric, browser-event and Cloudflare event-path tests passed 3/3; EV regression suite passed 17/17. Canary and production-host verification remain pending at this point in the log.
+- EXPECTED IMPACT: pinpoint the first actionable intake step to improve the probability of a genuine analysis and first £4.99 purchase; no claimed revenue lift yet.
+- NEXT: verify production delivery, collect genuine stage counts, then choose one targeted intake fix. Continue EV gates independently without making its public CTA visible.
