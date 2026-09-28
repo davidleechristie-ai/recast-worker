@@ -14,6 +14,7 @@ on:
       - 'hqc-deploy-preview/snapshot.mjs'
       - 'hqc-deploy-preview/solar-preview-journey.js'
       - 'hqc-deploy-preview/ev-chargepoint-preview-journey.js'
+      - 'hqc-deploy-preview/solar-thermal-preview-journey.js'
       - 'hqc-deploy-preview/lib/ev-chargepoint-*.js'
       - 'hqc-deploy-preview/lib/solar-thermal-*.js'
       - 'hqc-deploy-preview/upload-friction-v3.js'
@@ -44,7 +45,7 @@ jobs:
         run: |
           node --test solar-evidence-model.test.js test/solar-battery-extraction.test.mjs
           node --test test/technology-routing.test.mjs test/analysis-request-routing.test.mjs
-          node --test test/solar-thermal-foundation.test.mjs test/solar-thermal-analysis.test.mjs test/solar-thermal-request-handler.test.mjs
+          node --test test/solar-thermal-foundation.test.mjs test/solar-thermal-analysis.test.mjs test/solar-thermal-request-handler.test.mjs test/solar-thermal-browser-bridge.test.mjs
           node --test test/intake-diagnostics.test.mjs
           node --test test/decision-pack-technology.test.mjs test/renewable-decision-pack-boundary.test.mjs
           node --test test/ev-durable-completion.test.mjs
@@ -134,9 +135,10 @@ jobs:
             home=$(curl -L -sS --max-time 30 "$base/?release_probe=$attempt" || true)
             script=$(curl -L -sS --max-time 30 "$base/__hqc_intake_diagnostics.js?release_probe=$attempt" || true)
             ev_script=$(curl -L -sS --max-time 30 "$base/__hqc_ev_preview.js?release_probe=$attempt" || true)
+            thermal_script=$(curl -L -sS --max-time 30 "$base/__hqc_thermal_preview.js?release_probe=$attempt" || true)
             intake=$(curl -L -sS --max-time 30 -X POST -H 'content-type: application/json' -H "referer: $base/?qa=1" --data '{"event":"intake_file_selected","technology":"heat_pump","source":"release_smoke"}' "$base/api/event" || true)
             layout=$(curl -L -sS --max-time 30 "$base/__hqc_approved_layout.js?release_probe=$attempt" || true)
-            if grep -q '__hqc_intake_diagnostics.js' <<< "$home" && grep -q 'intake_file_selected' <<< "$script" && grep -q 'EV CHARGEPOINT QUOTE CHECK' <<< "$ev_script" && grep -q 'data-tech="ev_chargepoint"' <<< "$layout" && grep -q '"test":true' <<< "$intake"; then intake_ready=true; break; fi
+            if grep -q '__hqc_intake_diagnostics.js' <<< "$home" && grep -q '__hqc_thermal_preview.js' <<< "$home" && grep -q 'intake_file_selected' <<< "$script" && grep -q 'EV CHARGEPOINT QUOTE CHECK' <<< "$ev_script" && grep -q 'PRIVATE SOLAR THERMAL PREVIEW' <<< "$thermal_script" && grep -q 'data-tech="ev_chargepoint"' <<< "$layout" && ! grep -q 'data-tech="solar_thermal"' <<< "$layout" && grep -q '"test":true' <<< "$intake"; then intake_ready=true; break; fi
             echo "Awaiting production intake asset and excluded QA event (attempt $attempt)"
             sleep 5
           done
