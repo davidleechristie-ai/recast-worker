@@ -10,6 +10,7 @@ routes = [
 HQC_ENV = "canary"
 HQC_SOLAR_ANALYSIS_INTERNAL = "1"
 HQC_EV_CHARGEPOINT_ANALYSIS_INTERNAL = "1"
+HQC_SOLAR_THERMAL_ANALYSIS_INTERNAL = "1"
 
 [[durable_objects.bindings]]
 name = "HQC_METRICS"
