@@ -1,0 +1,19 @@
+# Solar thermal water heating — guarded vertical discovery
+
+Updated: 2026-09-28 Europe/London. Status: foundation only; no public selector, handler, checkout or analysis output.
+
+## Why this is a separate quote check
+Solar thermal collectors heat water through a cylinder/store and generally work with backup heating. Flat plates and evacuated tubes, cylinder and boiler/heat-pump integration, pipe routing, seasonal hot-water assumptions, roof/plumbing scope, warranties and maintenance are material quote questions. The Solar PV/Battery adapter measures electricity generation and cannot safely interpret these fields.
+
+Sources reviewed:
+- Energy Saving Trust, *Solar water heating*, updated 20 May 2026: https://energysavingtrust.org.uk/advice/solar-water-heating/
+- MCS, *MIS 3001: 2025 Solar Heating Installation Standard*, issue 1.0: https://mcscertified.com/wp-content/uploads/2025/02/MIS-3001-2025-V1.0.pdf . Check the MCS library for a newer applicable issue before any public release.
+- Ofgem, *Domestic RHI closure*: https://www.ofgem.gov.uk/environmental-and-social-schemes/domestic-renewable-heat-incentive-domestic-rhi/domestic-renewable-heat-incentive-domestic-rhi-domestic-rhi-closure . The scheme closed to new applicants on 31 March 2022; existing participants and change-of-ownership cases are distinct.
+
+## Evidence model and guardrails
+Initial required quote fields: collector technology and labelled aperture/absorber area; cylinder volume and integration; backup heater and control; stated annual solar heat yield and household assumptions; pump/pipework/roof/scaffold/commissioning inclusion and exclusions; water/overheat safeguards as installer confirmation questions; installer/product warranty; VAT-inclusive installed price and contingencies. Preserve exact provenance and separate proposed alternatives. Do not infer electricity generation from thermal yield or claim actual hot-water coverage, roof strength, water safety, planning permission, MCS certification, savings, or grant eligibility.
+
+The dormant first extractor captures only unambiguous collector type/area, cylinder size, labelled annual heat and installed price, preserving line evidence. A historical RHI claim triggers a question; it never becomes a positive benefit. It does not analyse or approve installations. PV-only and mixed PV/thermal descriptions must leave unsupported values unknown.
+
+## Release gates and next build
+The current foundation registers `solar_thermal` as a fail-closed 409 technology and has a small synthetic test set. Still needed: representative contemporary permissioned/de-identified quote coverage and ≥95% required-field benchmark, richer scope/warranty/assumption extraction, evidence-backed analysis and two-quote comparison, text-PDF customer bridge, durable attribution, commercial separation, mobile/desktop canary and real-host journey. Keep the public selector and paid product off until these pass. Demand is unmeasured; do not present solar thermal as the next proven revenue lever ahead of Heat Pump activation or Solar financial assumptions.

@@ -15,6 +15,7 @@ on:
       - 'hqc-deploy-preview/solar-preview-journey.js'
       - 'hqc-deploy-preview/ev-chargepoint-preview-journey.js'
       - 'hqc-deploy-preview/lib/ev-chargepoint-*.js'
+      - 'hqc-deploy-preview/lib/solar-thermal-*.js'
       - 'hqc-deploy-preview/upload-friction-v3.js'
       - 'hqc-deploy-preview/intake-diagnostics.js'
   workflow_dispatch:
@@ -43,6 +44,7 @@ jobs:
         run: |
           node --test solar-evidence-model.test.js test/solar-battery-extraction.test.mjs
           node --test test/technology-routing.test.mjs test/analysis-request-routing.test.mjs
+          node --test test/solar-thermal-foundation.test.mjs
           node --test test/intake-diagnostics.test.mjs
           node --test test/decision-pack-technology.test.mjs test/renewable-decision-pack-boundary.test.mjs
           node --test test/ev-durable-completion.test.mjs
@@ -110,6 +112,11 @@ jobs:
           test "$ev_code" = '200'
           grep -q '"technology":"ev_chargepoint"' /tmp/hqc-ev
           grep -q '"powerKw":7.4' /tmp/hqc-ev
+
+          thermal_code=$(curl -L -sS -o /tmp/hqc-thermal -w '%{http_code}' --max-time 30 -X POST -H 'content-type: application/json' -H 'x-hqc-technology: solar_thermal' --data '{"quoteText":"Evacuated tube solar thermal collectors, 4.2 m2. Total price £6,750."}' "$base/api/analyse")
+          echo "Solar thermal guarded boundary -> $thermal_code"
+          test "$thermal_code" = '409'
+          grep -q '"technology":"solar_thermal"' /tmp/hqc-thermal
 
           metrics_code=$(curl -L -sS -o /tmp/hqc-metrics -w '%{http_code}' --max-time 30 "$base/api/metrics")
           echo "durable metrics -> $metrics_code"

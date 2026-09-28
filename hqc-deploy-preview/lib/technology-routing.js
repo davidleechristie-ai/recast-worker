@@ -1,13 +1,14 @@
 // Technology routing contract for HQC analysis.
 // This module is deliberately side-effect free so it can be verified before it is wired
-// into the production Worker. Heat Pump keeps the existing upstream. Solar/Battery is
-// explicitly blocked until a technology-specific adapter is configured and verified.
+// into the production Worker. Heat Pump keeps the existing upstream. Dedicated
+// public Worker handlers run before this fallback router where enabled.
 
 export const HQC_TECHNOLOGIES = Object.freeze({
   HEAT_PUMP: 'heat_pump',
   SOLAR_BATTERY: 'solar_battery',
   BATTERY: 'battery',
   EV_CHARGEPOINT: 'ev_chargepoint',
+  SOLAR_THERMAL: 'solar_thermal',
 });
 
 export const HEAT_PUMP_API_BASE = 'https://api-v2.appdeploy.ai/app/heat-pump-second-opinion-v43csv';
@@ -31,9 +32,15 @@ export function analysisRouteForTechnology(value, env = {}, options = {}) {
     return { ok: true, technology, apiBase: HEAT_PUMP_API_BASE, adapter: 'heat_pump_legacy' };
   }
 
-  // Non-public correctness gate: EV Chargepoint is registered for explicit isolation but
-  // cannot route to Solar/Battery or Heat Pump until its dedicated adapter is verified.
+  // EV's dedicated Worker handler runs before this fallback router when enabled.
+  // Never let a disabled EV handler fall through to Solar/Battery or Heat Pump.
   if (technology === HQC_TECHNOLOGIES.EV_CHARGEPOINT) {
+    return { ok: false, status: 409, technology, error: 'technology_analysis_not_ready' };
+  }
+
+  // Solar thermal has a separate hot-water evidence model. It has no public
+  // request handler yet and must never fall into the PV/Battery adapter.
+  if (technology === HQC_TECHNOLOGIES.SOLAR_THERMAL) {
     return { ok: false, status: 409, technology, error: 'technology_analysis_not_ready' };
   }
 
