@@ -86,3 +86,6 @@ The existing £4.99 Decision Pack still contains Heat Pump-specific advice. PR #
 
 ## 2026-09-28 EV durable completion increment
 PR #45 adds anonymous server-side completed EV text-PDF analysis and comparison counters by technology/source. QA, failed and raw-text-only requests are excluded; they are not treated as genuine customer analyses. Local regressions and EV/Solar CI passed; custom-domain canary `36445629648` and production-host release `36445629626` passed. EV remains non-public. Representative real-quote accuracy and EV-specific paid output remain the release blockers.
+
+## 2026-09-28 EV quote wording expansion
+Two public-document-derived, de-identified paraphrases and an adversarial multi-option case now cover explicit installation scope, labelled charger, VAT-inclusive total, warranty wording and alternative prices/powers. The extractor leaves alternatives unknown rather than selecting the first. The five original synthetic fixtures still score 50/50; this is not representative real-world ≥95% accuracy. EV CI `36449962342`, canary `36449962434` and production `36449962200` passed; the public route stays closed.
