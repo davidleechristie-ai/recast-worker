@@ -209,6 +209,8 @@ jobs:
             await page.goto('https://cf-preview.homequotecheck.co.uk/?qa=1&ev_preview=1',{waitUntil:'domcontentloaded',timeout:30000});
             const heading=page.locator('.copy h1,.copy h2').first();await heading.waitFor({state:'visible',timeout:20000});
             if(!/ev charger/i.test(await heading.innerText()))throw new Error('EV private proposition did not render');
+            const beforeEvMetrics=await page.evaluate(async()=>{const r=await fetch('/api/growth-report');return r.ok?(await r.json()).total:null});
+            if(typeof beforeEvMetrics?.evAnalyses!=='number'||typeof beforeEvMetrics?.evComparisons!=='number')throw new Error('EV durable completion schema unavailable on canary');
             await page.evaluate(()=>sessionStorage.setItem('hqc_ev_extracted_media',JSON.stringify([{sourceMediaType:'application/pdf',extractionMethod:'pdfjs-text-v1',pageCount:1,extractedText:'Installation of Zappi V2 EV charger 7.4 kW charging. Tethered Type 2 cable. Smart charging with app control and dynamic load management. DNO notification included. Equipment warranty 3 years. Total £1,250.'}])));
             const probe=await page.evaluate(async()=>{const r=await fetch('/api/analyse',{method:'POST',body:'native-upstream-body'});return {status:r.status,body:await r.json(),adapter:r.headers.get('x-hqc-analysis-adapter')};});
             if(probe.status!==200||probe.body?.evidence?.powerKw!==7.4||probe.body?.evidence?.priceGbp!==1250||probe.adapter!=='ev_chargepoint_internal')throw new Error('EV browser bridge did not reach isolated EV adapter: '+JSON.stringify(probe));
@@ -223,6 +225,8 @@ jobs:
             if(compared.status!==200||compared.body?.analyses?.length!==2||compared.body?.comparison?.find(x=>x.dimension==='consumer unit works')?.values?.[0]?.value!=='Excluded: Consumer unit upgrade excluded.')throw new Error('EV two-quote scope comparison failed');
             const table=result.getByRole('table');await table.waitFor({state:'visible',timeout:10000});
             const tableText=await table.innerText();if(!tableText.includes('consumer unit works')||!tableText.includes('Excluded: Consumer unit upgrade excluded.')||!tableText.includes('Included: Consumer unit upgrade included.')||!tableText.includes('Not evidenced'))throw new Error('EV two-quote table omitted evidence or missing states');
+            const afterEvMetrics=await page.evaluate(async()=>{const r=await fetch('/api/growth-report');return r.ok?(await r.json()).total:null});
+            if(afterEvMetrics?.evAnalyses!==beforeEvMetrics.evAnalyses||afterEvMetrics?.evComparisons!==beforeEvMetrics.evComparisons)throw new Error('QA EV analyses were counted as durable customer completions');
             const overflow=await page.evaluate(()=>document.documentElement.scrollWidth-window.innerWidth);if(overflow>1)throw new Error('EV rendered journey horizontal overflow: '+overflow);
             await context.close();
           }
