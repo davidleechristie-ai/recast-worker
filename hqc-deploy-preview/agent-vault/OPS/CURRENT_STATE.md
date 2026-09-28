@@ -80,3 +80,6 @@ Commercial priority remains first genuine purchase. Do not change the £4.99 Hea
 
 ## 2026-09-28 EV private scope/comparison increment
 EV quote evidence now models explicit cabling, consumer-unit and earthing inclusion, exclusion or survey condition with original quote text; conflicting sentence-level claims remain unknown. The private two-quote preview exposes each dimension side by side. EV CI passed (`36417811227`); rendered custom-domain canary `36417811250` and dormant production release `36417988515` passed. The real hostname served the EV asset and kept the EV route closed at 409. Keep EV public access closed pending representative extraction, commercial boundary, durable funnel/checkout and full production-host journey gates.
+
+## 2026-09-28 renewable commercial boundary
+The existing £4.99 Decision Pack still contains Heat Pump-specific advice. PR #43 suppresses it for Solar/Battery and the private EV journey and makes explicit renewable checkout requests fail closed before Stripe; Heat Pump checkout remains available. Custom-domain canary `36423276671` and production-host release `36423276665` passed, including explicit renewable checkout 409 before Stripe. Solar free quote analysis remains live, EV remains non-public. A technology-correct paid pack and durable funnel attribution remain open renewable MVP gates.
