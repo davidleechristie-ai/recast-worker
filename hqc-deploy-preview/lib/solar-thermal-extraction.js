@@ -19,9 +19,13 @@ export function extractSolarThermalQuote(text){
   const cylinder=capture(lines,/\b(\d{2,4})\s*(?:litres?|liters?|l)\b/gi,m=>Number(m[1]),cylinderLine);
   const annual=capture(lines,/\b([\d,]+)\s*kWh\s*(?:\/\s*(?:year|yr|annum)|per\s+(?:year|annum))\b/gi,m=>money(m[1]),s=>/\b(?:solar\s+heat|solar\s+thermal\s+(?:yield|output)|hot\s+water\s+(?:yield|output))\b/i.test(s)&&!/\b(?:solar\s*PV|photovoltaic|electricity)\b/i.test(s));
   const price=thermal&&!pv?capture(lines,/£\s*([\d,]+(?:\.\d{2})?)/g,m=>money(m[1]),s=>/\b(?:total|installed price|quotation|quote price)\b/i.test(s)):null;
+  const backupLines=lines.filter(s=>/\b(?:boiler|heat pump|immersion heater)\b/i.test(s)&&/\b(?:backup|top[ -]?up|connect(?:ed|ion)?|integrat(?:ed|ion)?)\b/i.test(s)&&!/\b(?:solar\s*PV|photovoltaic)\b/i.test(s));
+  const backup=backupLines.length===1&&/\b(?:included|connected|provided)\b/i.test(backupLines[0])&&
+    !/\b(?:excluded|not included|not connected|not provided|subject to|optional)\b/i.test(backupLines[0])
+    ?'Included: '+backupLines[0]:null;
   const rhi=lines.find(s=>/\b(?:domestic\s+)?RHI\b|renewable heat incentive/i.test(s))||null;
-  const values={collectorType:type?.value??null,collectorAreaM2:area?.value??null,cylinderLitres:cylinder?.value??null,annualSolarHeatKwh:annual?.value??null,priceGbp:price?.value??null,backupHeat:null,mcsClaim:null,rhiClaim:rhi};
-  const provenance={collectorType:type?.text??null,collectorAreaM2:area?.text??null,cylinderLitres:cylinder?.text??null,annualSolarHeatKwh:annual?.text??null,priceGbp:price?.text??null};
+  const values={collectorType:type?.value??null,collectorAreaM2:area?.value??null,cylinderLitres:cylinder?.value??null,annualSolarHeatKwh:annual?.value??null,priceGbp:price?.value??null,backupHeat:backup,mcsClaim:null,rhiClaim:rhi};
+  const provenance={collectorType:type?.text??null,collectorAreaM2:area?.text??null,cylinderLitres:cylinder?.text??null,annualSolarHeatKwh:annual?.text??null,priceGbp:price?.text??null,backupHeat:backupLines.length===1?backupLines[0]:null};
   const questions=[];
   if(!type||!area)questions.push('Which solar thermal collector type and aperture area are included in the final quote?');
   if(!cylinder)questions.push('What hot water cylinder and backup heat integration are included?');
