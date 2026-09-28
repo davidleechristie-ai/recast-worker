@@ -1,6 +1,6 @@
 (()=>{
  const qs=(s,r=document)=>r.querySelector(s),qsa=(s,r=document)=>[...r.querySelectorAll(s)];
- const technology=()=>{try{const q=new URLSearchParams(location.search);if(q.has('technology'))return q.get('technology');if(q.get('ev_preview')==='1')return'ev_chargepoint';if(q.get('solar_preview')==='1')return'solar_battery';return sessionStorage.getItem('hqc_journey_technology')||'heat_pump'}catch{return'heat_pump'}};
+ const technology=()=>{try{const q=new URLSearchParams(location.search);if(q.has('technology'))return q.get('technology');if(q.get('thermal_preview')==='1')return'solar_thermal';if(q.get('ev_preview')==='1')return'ev_chargepoint';if(q.get('solar_preview')==='1')return'solar_battery';return sessionStorage.getItem('hqc_journey_technology')||'heat_pump'}catch{return'heat_pump'}};
  const isHeatPump=()=>technology()==='heat_pump';
  const packControl=el=>/decision pack|personalised installer questions|print(?:able)? decision|unlock.*decision/i.test((el.textContent||'').trim());
  const paid=()=>{try{const p=JSON.parse(localStorage.getItem('hqcDecisionPackPaid')||'null'),c=localStorage.getItem('hqcDecisionPackCaseId');return !!p&&p.caseId===c}catch{return false}};
