@@ -7,9 +7,9 @@
     "revenue_definition": "Genuine recurring revenue only: current subscription plus paid succeeded latest invoice charge, excluding fully refunded and inactive/cancelled subscriptions."
   },
   "funnel": {
-    "search_impressions": 599,
+    "search_impressions": 604,
     "organic_clicks": 3,
-    "organic_ctr": 0.005008347245409015,
+    "organic_ctr": 0.004966887417218543,
     "indexed_target_pages": null,
     "successful_tool_uses": 9,
     "workflow_starts": 0,
@@ -218,9 +218,9 @@
     "search_console": {
       "period_days": 28,
       "clicks": 3,
-      "impressions": 599,
-      "ctr": 0.005008347245409015,
-      "average_position": 62.87312186978297,
+      "impressions": 604,
+      "ctr": 0.004966887417218543,
+      "average_position": 62.65562913907285,
       "top_pages": [
         {
           "clicks": 1,
@@ -238,9 +238,9 @@
         },
         {
           "clicks": 1,
-          "impressions": 139,
-          "ctr": 0.007194244604316547,
-          "average_position": 74.53956834532374,
+          "impressions": 141,
+          "ctr": 0.0070921985815602835,
+          "average_position": 74.58865248226951,
           "page": "https://tryrecast.app/tools/json-diff.html"
         },
         {
@@ -294,9 +294,9 @@
         },
         {
           "clicks": 0,
-          "impressions": 21,
+          "impressions": 24,
           "ctr": 0,
-          "average_position": 61.95238095238095,
+          "average_position": 55.333333333333336,
           "page": "https://tryrecast.app/blog/flatten-nested-json.html"
         },
         {
@@ -482,6 +482,13 @@
           "ctr": 0,
           "average_position": 81,
           "query": "compare 2 json files"
+        },
+        {
+          "clicks": 0,
+          "impressions": 1,
+          "ctr": 0,
+          "average_position": 83,
+          "query": "compare 2 json objects online"
         },
         {
           "clicks": 0,
@@ -1031,9 +1038,9 @@
         },
         {
           "clicks": 0,
-          "impressions": 17,
+          "impressions": 18,
           "ctr": 0,
-          "average_position": 73.05882352941177,
+          "average_position": 73.05555555555556,
           "query": "json diff"
         },
         {
@@ -1119,13 +1126,6 @@
           "ctr": 0,
           "average_position": 77,
           "query": "json schema compare"
-        },
-        {
-          "clicks": 0,
-          "impressions": 1,
-          "ctr": 0,
-          "average_position": 71,
-          "query": "json schema creation"
         }
       ],
       "top_page_queries": [
@@ -2011,6 +2011,14 @@
         },
         {
           "clicks": 0,
+          "impressions": 1,
+          "ctr": 0,
+          "average_position": 83,
+          "page": "https://tryrecast.app/tools/json-diff.html",
+          "query": "compare 2 json objects online"
+        },
+        {
+          "clicks": 0,
           "impressions": 2,
           "ctr": 0,
           "average_position": 72,
@@ -2179,9 +2187,9 @@
         },
         {
           "clicks": 0,
-          "impressions": 17,
+          "impressions": 18,
           "ctr": 0,
-          "average_position": 73.05882352941177,
+          "average_position": 73.05555555555556,
           "page": "https://tryrecast.app/tools/json-diff.html",
           "query": "json diff"
         },
