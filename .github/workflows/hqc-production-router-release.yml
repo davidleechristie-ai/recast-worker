@@ -47,7 +47,7 @@ jobs:
         run: |
           node --test solar-evidence-model.test.js test/solar-battery-extraction.test.mjs
           node --test test/technology-routing.test.mjs test/analysis-request-routing.test.mjs
-          node --test test/solar-thermal-foundation.test.mjs test/solar-thermal-analysis.test.mjs test/solar-thermal-request-handler.test.mjs test/solar-thermal-browser-bridge.test.mjs test/solar-thermal-scope.test.mjs test/solar-thermal-rendered-scope.test.mjs
+          node --test test/solar-thermal-foundation.test.mjs test/solar-thermal-analysis.test.mjs test/solar-thermal-decision-brief.test.mjs test/solar-thermal-request-handler.test.mjs test/solar-thermal-browser-bridge.test.mjs test/solar-thermal-scope.test.mjs test/solar-thermal-rendered-scope.test.mjs
           node --test test/intake-diagnostics.test.mjs
           node --test test/decision-pack-technology.test.mjs test/renewable-decision-pack-boundary.test.mjs
           node --test test/ev-durable-completion.test.mjs
