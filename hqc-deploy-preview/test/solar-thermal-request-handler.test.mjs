@@ -9,10 +9,12 @@ const req=(body,headers={})=>new Request('https://homequotecheck.co.uk/api/analy
 test('private PDF-derived solar thermal request returns isolated evidence and provenance',async()=>{
  const response=await handleSolarThermalAnalysisRequest(req({technology:'solar_thermal',extractedMedia:media(quote)}));
  assert.equal(response.status,200);const data=await response.json();assert.equal(data.technology,'solar_thermal');assert.equal(data.evidence.collectorAreaM2,4.2);assert.equal(data.extractionProvenance.sourceMediaType,'application/pdf');
+ assert.equal(data.decisionBrief.availability,'private_preview');assert.equal(data.decisionBrief.quoteSummaries.length,1);
 });
 test('two thermal PDFs compare only stated evidence and keep separate provenance',async()=>{
  const response=await handleSolarThermalAnalysisRequest(req({quotes:[{quoteId:'A',extractedMedia:media(quote)},{quoteId:'B',extractedMedia:media('Solar hot water flat plate collectors, aperture area 3.8 m². Total installed price £5,950.')}]}));
  assert.equal(response.status,200);const data=await response.json();assert.equal(data.analyses.length,2);assert.equal(data.extractionProvenance.length,2);assert.equal(data.comparison.find(x=>x.dimension==='cylinder litres').values[1].value,null);
+ assert.equal(data.decisionBrief.quoteSummaries.length,2);assert.ok(data.decisionBrief.comparisonFocus.some(x=>x.dimension==='installed price'));
 });
 test('malformed, unsupported and nonthermal inputs fail closed',async()=>{
  const wrong=await handleSolarThermalAnalysisRequest(req({technology:'solar_battery',quoteText:quote}));assert.equal(wrong.status,400);

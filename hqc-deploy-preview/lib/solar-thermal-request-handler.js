@@ -1,4 +1,5 @@
 import {analyseSolarThermalQuote,compareSolarThermalQuotes} from './solar-thermal-analysis.js';
+import {buildSolarThermalDecisionBrief} from './solar-thermal-decision-brief.js';
 import {normaliseExtractedMedia} from './solar-battery-media-ingestion.js';
 const json=(value,status=200)=>new Response(JSON.stringify(value),{status,headers:{'content-type':'application/json; charset=utf-8','cache-control':'no-store'}});
 function unpack(quote){
@@ -21,10 +22,10 @@ export async function handleSolarThermalAnalysisRequest(request){
    const inputs=body.quotes.map((q,i)=>({...unpack(q),quoteId:q?.quoteId||`quote_${i+1}`}));
    const invalid=inputs.find(x=>x.error);if(invalid)return json({error:invalid.error},invalid.status);
    const result=compareSolarThermalQuotes(inputs);if(!result.ok)return json({error:'solar_thermal_evidence_required'},422);
-   result.extractionProvenance=inputs.map(x=>({quoteId:x.quoteId,provenance:x.provenance}));return json(result);
+   result.extractionProvenance=inputs.map(x=>({quoteId:x.quoteId,provenance:x.provenance}));result.decisionBrief=buildSolarThermalDecisionBrief(result);return json(result);
  }
  const input=unpack(body);if(input.error)return json({error:input.error},input.status);
  const result=analyseSolarThermalQuote({quoteText:input.quoteText,quoteId:body.quoteId||null});
  if(!result.ok)return json({error:result.error},422);
- result.extractionProvenance=input.provenance;return json(result);
+ result.extractionProvenance=input.provenance;result.decisionBrief=buildSolarThermalDecisionBrief(result);return json(result);
 }
