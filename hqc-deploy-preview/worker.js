@@ -5,7 +5,7 @@ export const isQaRequest=(request,mode)=>{if(mode!=='production')return true;con
 const validCaseId=v=>typeof v==='string'&&/^[A-Za-z0-9_-]{8,80}$/.test(v);
 const safeEqual=(a,b)=>{if(a.length!==b.length)return false;let d=0;for(let i=0;i<a.length;i++)d|=a.charCodeAt(i)^b.charCodeAt(i);return d===0;};
 const hex=bytes=>[...new Uint8Array(bytes)].map(b=>b.toString(16).padStart(2,'0')).join('');
-const emptyTotals=()=>({landings:0,cta:0,pickerOpens:0,fileSelections:0,manualOpens:0,uploads:0,genuine:0,extendedGenuine:0,multiQuoteAnalyses:0,evAnalyses:0,evComparisons:0,thermalAnalyses:0,thermalComparisons:0,decisionCases:0,installerQuestions:0,shareIntent:0,shareOpens:0,recipientStarts:0,outboundClicks:0,checkouts:0,singleStarts:0,comparisonStarts:0,resultViews:0,commercialNextStepViews:0,alternativeQuoteIntent:0});
+const emptyTotals=()=>({landings:0,cta:0,pickerOpens:0,fileSelections:0,manualOpens:0,uploads:0,genuine:0,extendedGenuine:0,multiQuoteAnalyses:0,evAnalyses:0,evComparisons:0,thermalAnalyses:0,thermalComparisons:0,decisionCases:0,installerQuestions:0,shareIntent:0,shareOpens:0,recipientStarts:0,outboundClicks:0,checkouts:0,singleStarts:0,comparisonStarts:0,resultViews:0,commercialNextStepViews:0,alternativeQuoteIntent:0,uploadHandoffs:0,analysisReady:0,analysisAutoStarts:0,analysisErrors:0,resultVisible:0});
 const cleanSource=v=>String(v||'direct').slice(0,40).replace(/[^A-Za-z0-9_.:-]/g,'_')||'direct';
 const cleanTechnology=v=>{const x=String(v||'heat_pump').toLowerCase().replace(/[- ]/g,'_');return ['heat_pump','solar_battery','battery','ev_chargepoint','solar_thermal'].includes(x)?x:'unspecified';};
 
@@ -49,6 +49,11 @@ export class HqcMetrics {
     else if(event==='results_summary_viewed')inc('resultViews');
     else if(event==='commercial_next_step_viewed')inc('commercialNextStepViews');
     else if(event==='alternative_quote_intent')inc('alternativeQuoteIntent');
+    else if(event==='upload_handoff_started')inc('uploadHandoffs');
+    else if(event==='analysis_ready'||event==='analysis_ready_after_upload')inc('analysisReady');
+    else if(event==='analysis_auto_started')inc('analysisAutoStarts');
+    else if(event==='analysis_error_visible')inc('analysisErrors');
+    else if(event==='results_visible')inc('resultVisible');
     else if(event==='ev_pdf_analysis_completed'){inc('evAnalyses');if(Number(payload.quoteCount)>=2)inc('evComparisons');}
     else if(event==='solar_thermal_pdf_analysis_completed'){inc('thermalAnalyses');if(Number(payload.quoteCount)>=2)inc('thermalComparisons');}
     else if(event==='analysis_qualified_real_quote'&&payload.analysisId){
@@ -100,7 +105,7 @@ async function durableMetricsResponse(env){
 async function durableGrowthResponse(env){
   const s=await metricsSnapshot(env),t=s.total;
   const sources=s.sources.map(r=>({...r,landingToCta:r.landings?Math.round(r.cta/r.landings*100):null,ctaToUpload:r.cta?Math.round(r.uploads/r.cta*100):null,landingToGenuine:r.landings?Math.round(r.genuine/r.landings*100):null}));
-  const rates={landingToCta:t.landings?Math.round(t.cta/t.landings*100):null,ctaToUpload:t.cta?Math.round(t.uploads/t.cta*100):null,uploadToGenuine:t.uploads?Math.round(t.genuine/t.uploads*100):null,landingToSingleStart:t.landings?Math.round(t.singleStarts/t.landings*100):null,singleStartToGenuine:t.singleStarts?Math.round(t.genuine/t.singleStarts*100):null,genuineToResultView:t.genuine?Math.round(t.resultViews/t.genuine*100):null,resultToAlternativeIntent:t.resultViews?Math.round(t.alternativeQuoteIntent/t.resultViews*100):null,extendedGenuineToMultiQuote:t.extendedGenuine?Math.round(t.multiQuoteAnalyses/t.extendedGenuine*100):null,extendedGenuineToDecisionCase:t.extendedGenuine?Math.round(t.decisionCases/t.extendedGenuine*100):null,decisionCaseToShareIntent:t.decisionCases?Math.round(t.shareIntent/t.decisionCases*100):null,shareOpenToRecipientStart:t.shareOpens?Math.round(t.recipientStarts/t.shareOpens*100):null};
+  const rates={landingToCta:t.landings?Math.round(t.cta/t.landings*100):null,ctaToUpload:t.cta?Math.round(t.uploads/t.cta*100):null,uploadToGenuine:t.uploads?Math.round(t.genuine/t.uploads*100):null,landingToSingleStart:t.landings?Math.round(t.singleStarts/t.landings*100):null,singleStartToGenuine:t.singleStarts?Math.round(t.genuine/t.singleStarts*100):null,genuineToResultView:t.genuine?Math.round(t.resultViews/t.genuine*100):null,resultToAlternativeIntent:t.resultViews?Math.round(t.alternativeQuoteIntent/t.resultViews*100):null,uploadHandoffToReady:t.uploadHandoffs?Math.round(t.analysisReady/t.uploadHandoffs*100):null,readyToAutoStart:t.analysisReady?Math.round(t.analysisAutoStarts/t.analysisReady*100):null,autoStartToResult:t.analysisAutoStarts?Math.round(t.resultVisible/t.analysisAutoStarts*100):null,extendedGenuineToMultiQuote:t.extendedGenuine?Math.round(t.multiQuoteAnalyses/t.extendedGenuine*100):null,extendedGenuineToDecisionCase:t.extendedGenuine?Math.round(t.decisionCases/t.extendedGenuine*100):null,decisionCaseToShareIntent:t.decisionCases?Math.round(t.shareIntent/t.decisionCases*100):null,shareOpenToRecipientStart:t.shareOpens?Math.round(t.recipientStarts/t.shareOpens*100):null};
   const recommendations=[];
   if(t.landings>=15&&t.cta/Math.max(1,t.landings)<.3)recommendations.push('Landing-to-CTA is weak: improve message match, trust proof and CTA prominence before adding more traffic.');
   else if(t.cta>=5&&t.uploads/Math.max(1,t.cta)<.5)recommendations.push('CTA-to-upload is weak: reduce intake friction and clarify privacy/file requirements.');
