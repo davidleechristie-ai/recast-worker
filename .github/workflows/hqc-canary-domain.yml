@@ -1,13 +1,6 @@
 name: HQC custom-domain canary
 
 on:
-  push:
-    branches: [main]
-    paths:
-      - 'hqc-deploy-preview/**'
-      - '!hqc-deploy-preview/agent-vault/**'
-      - '.github/workflows/hqc-canary-domain.yml'
-      - '.github/workflows/hqc-production-router-release.yml'
   workflow_dispatch:
 
 permissions:
