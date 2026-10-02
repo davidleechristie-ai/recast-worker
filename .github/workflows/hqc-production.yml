@@ -1,10 +1,6 @@
 name: HQC production deploy
 
 on:
-  push:
-    branches: [main]
-    paths:
-      - 'hqc-deploy-preview/PRODUCTION_RELEASE'
   workflow_dispatch:
 
 permissions:
