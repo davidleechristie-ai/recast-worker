@@ -1,12 +1,6 @@
 name: HQC Cloudflare bridge
 
 on:
-  push:
-    branches: [main]
-    paths:
-      - '.github/workflows/hqc-cloudflare-bridge.yml'
-      - 'hqc-deploy-preview/**'
-      - '!hqc-deploy-preview/agent-vault/**'
   workflow_dispatch:
 
 permissions:
