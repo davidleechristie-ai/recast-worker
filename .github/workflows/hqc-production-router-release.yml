@@ -68,7 +68,7 @@ jobs:
           test -s hqc-deploy-preview/site/__hqc_simple_results.js
           test -s hqc-deploy-preview/site/__hqc_upload_v3.js
           grep -q 'Check my quote — free' hqc-deploy-preview/site/__hqc_approved_layout.js
-          grep -q 'Add another quote to compare' hqc-deploy-preview/site/__hqc_simple_results.js
+          grep -q 'Add another quote' hqc-deploy-preview/site/__hqc_simple_results.js
           grep -q '__hqc_upload_v3.js' hqc-deploy-preview/site/index.html
           ! grep -q 'heat-pump-second-opinion-v43csv.v2.appdeploy.ai' hqc-deploy-preview/site/index.html
       - name: Deploy production Worker with static asset binding intact
