@@ -9,12 +9,18 @@
   sessionStorage.setItem('hqc_journey_mode','compare');sessionStorage.setItem('hqc_compare_intent','1');sessionStorage.setItem('hqc_add_second','1');sessionStorage.setItem('hqc_pending_quotes',JSON.stringify(read()));
   location.assign('/?hqc_start=1&src=results_compare&add_quote=1');
  }
+ function showInstallerInterest(box){
+  emit('installer_alternative_interest',{offer:'future_installer_match'});
+  let panel=qs('#hqc-installer-interest-response');
+  if(!panel){panel=document.createElement('div');panel.id='hqc-installer-interest-response';panel.style.cssText='margin-top:12px;padding:14px;border-radius:10px;background:#eef8f4;border:1px solid #cfe3da;color:#17352d';panel.innerHTML='<b style="display:block;margin-bottom:5px">Thanks — installer matching is not live yet.</b><span style="display:block;color:#5c6d82;font-size:13px;line-height:1.45">We are measuring demand before introducing it. No contact details have been collected or shared.</span><button data-hqc-compare-now style="margin-top:10px;min-height:44px;padding:10px 14px;border:0;border-radius:9px;background:#087f5b;color:#fff;font-weight:800;cursor:pointer">Compare another quote now →</button>';box.appendChild(panel);qs('[data-hqc-compare-now]',panel)?.addEventListener('click',addQuote);}
+  panel.scrollIntoView({behavior:'smooth',block:'nearest'});
+ }
  function addRevenuePrompt(summary){
   if(qs('#hqc-revenue-next-step'))return;
   const box=document.createElement('section');box.id='hqc-revenue-next-step';box.style.cssText='margin:14px 0 0;padding:18px;border:1px solid #cfe3da;border-radius:12px;background:#fff;color:#102642';
-  box.innerHTML='<div style="font-size:11px;font-weight:900;letter-spacing:.06em;text-transform:uppercase;color:#087f5b">Before you commit</div><h3 style="margin:5px 0 7px;font-size:20px">Want a second quote to compare?</h3><p style="margin:0 0 12px;color:#5c6d82;line-height:1.5">Add another installer quote and HQC will show the differences that matter side by side. No account and no sales handoff.</p><button data-hqc-add-alternative style="width:100%;min-height:48px;padding:12px 16px;border:0;border-radius:9px;background:#0b2548;color:#fff;font-weight:800;cursor:pointer">Add another quote to compare →</button>';
+  box.innerHTML='<div style="font-size:11px;font-weight:900;letter-spacing:.06em;text-transform:uppercase;color:#087f5b">Before you commit</div><h3 style="margin:5px 0 7px;font-size:20px">Want a second quote to compare?</h3><p style="margin:0 0 12px;color:#5c6d82;line-height:1.5">You can add another quote yourself now. We are also testing whether homeowners would value an optional introduction to another installer.</p><div style="display:grid;grid-template-columns:1fr 1fr;gap:8px"><button data-hqc-add-alternative style="min-height:48px;padding:12px 16px;border:0;border-radius:9px;background:#0b2548;color:#fff;font-weight:800;cursor:pointer">Add another quote →</button><button data-hqc-installer-interest style="min-height:48px;padding:12px 16px;border:1px solid #b8d5ca;border-radius:9px;background:#fff;color:#17352d;font-weight:800;cursor:pointer">I’d like another installer quote</button></div><small style="display:block;margin-top:9px;color:#6a7889">No details are shared unless we launch the service and ask for your permission.</small>';
   summary.insertAdjacentElement('afterend',box);
-  qs('[data-hqc-add-alternative]',box)?.addEventListener('click',addQuote);
+  qs('[data-hqc-add-alternative]',box)?.addEventListener('click',addQuote);qs('[data-hqc-installer-interest]',box)?.addEventListener('click',()=>showInstallerInterest(box));
   emit('commercial_next_step_viewed',{offer:'add_alternative_quote'});
  }
  function apply(){const top=qs('.resultsTop');if(!top)return;const quotes=read(),count=Math.max(1,quotes.length),compare=sessionStorage.getItem('hqc_journey_mode')==='compare'||sessionStorage.getItem('hqc_compare_intent')==='1';
