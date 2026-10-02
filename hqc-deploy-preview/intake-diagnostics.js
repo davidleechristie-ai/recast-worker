@@ -13,5 +13,5 @@
   });
   let lastStage='';
   const observe=()=>{const text=(document.body?.innerText||'').replace(/\s+/g,' ');let stage='';if(/ready to analyse|analyse my quote|analyse my quotes/i.test(text))stage='analysis_ready';else if(/your quote check|your quote comparison|comparison complete/i.test(text))stage='results_visible';else if(/could not|failed|try again|error/i.test(text)&&/quote|analysis|upload/i.test(text))stage='analysis_error_visible';if(stage&&stage!==lastStage){lastStage=stage;emit(stage);}};
-  new MutationObserver(observe).observe(document.documentElement,{childList:true,subtree:true});setTimeout(observe,300);
+  if(typeof MutationObserver!=='undefined')new MutationObserver(observe).observe(document.documentElement,{childList:true,subtree:true});if(typeof setTimeout!=='undefined')setTimeout(observe,300);
 })();

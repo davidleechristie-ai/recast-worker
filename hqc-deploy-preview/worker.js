@@ -50,7 +50,7 @@ export class HqcMetrics {
     else if(event==='commercial_next_step_viewed')inc('commercialNextStepViews');
     else if(event==='alternative_quote_intent')inc('alternativeQuoteIntent');
     else if(event==='upload_handoff_started')inc('uploadHandoffs');
-    else if(event==='analysis_ready'||event==='analysis_ready_after_upload')inc('analysisReady');
+    else if(event==='analysis_ready_after_upload')inc('analysisReady');
     else if(event==='analysis_auto_started')inc('analysisAutoStarts');
     else if(event==='analysis_error_visible')inc('analysisErrors');
     else if(event==='results_visible')inc('resultVisible');
