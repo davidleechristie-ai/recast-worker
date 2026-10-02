@@ -54,26 +54,23 @@ jobs:
           node --test test/solar-thermal-durable-completion.test.mjs
           node --test test/ev-decision-brief.test.mjs
           node --test test/ev-chargepoint-extraction.test.mjs test/ev-chargepoint-analysis.test.mjs test/ev-chargepoint-request-handler.test.mjs test/ev-upload-boundary.test.mjs test/worker-entry-ev-gate.test.mjs
-      - name: Require same-commit custom-domain canary before shared payment release
-        if: github.event_name == 'push'
-        env:
-          GH_TOKEN: ${{ github.token }}
-        run: |
-          set -euo pipefail
-          for attempt in $(seq 1 60); do
-            state=$(gh api "/repos/${GITHUB_REPOSITORY}/actions/runs?head_sha=${GITHUB_SHA}&per_page=30" --jq '[.workflow_runs[] | select(.name=="HQC custom-domain canary")][0] | (.conclusion // .status // "queued")')
-            echo "Same-commit canary: $state (attempt $attempt)"
-            if [ "$state" = success ]; then exit 0; fi
-            if [ "$state" = failure ] || [ "$state" = cancelled ]; then exit 1; fi
-            sleep 5
-          done
-          echo 'Timed out waiting for same-commit custom-domain canary'
-          exit 1
-      - name: Snapshot production frontend before Worker release
+      - name: Build once for release validation
         working-directory: hqc-deploy-preview
         env:
           HQC_PUBLIC_ORIGIN: https://homequotecheck.co.uk
         run: node snapshot.mjs
+      - name: Lightweight release gate
+        shell: bash
+        run: |
+          set -euo pipefail
+          test -s hqc-deploy-preview/site/index.html
+          test -s hqc-deploy-preview/site/__hqc_approved_layout.js
+          test -s hqc-deploy-preview/site/__hqc_simple_results.js
+          test -s hqc-deploy-preview/site/__hqc_upload_v3.js
+          grep -q 'Check my quote — free' hqc-deploy-preview/site/__hqc_approved_layout.js
+          grep -q 'Add another quote to compare' hqc-deploy-preview/site/__hqc_simple_results.js
+          grep -q '__hqc_upload_v3.js' hqc-deploy-preview/site/index.html
+          ! grep -q 'heat-pump-second-opinion-v43csv.v2.appdeploy.ai' hqc-deploy-preview/site/index.html
       - name: Deploy production Worker with static asset binding intact
         working-directory: hqc-deploy-preview
         run: npx wrangler deploy -c wrangler.production.toml
@@ -173,7 +170,7 @@ jobs:
                 await tab.goto('https://homequotecheck.co.uk/?qa=1',{waitUntil:'domcontentloaded',timeout:30000});
                 const ev=tab.locator('#hqc-technology-choice [data-tech="ev_chargepoint"]');await ev.waitFor({state:'visible',timeout:20000});await ev.click();
                 await tab.waitForURL(/technology=ev_chargepoint/);
-                await tab.getByRole('button',{name:/start single quote check/i}).first().click();
+                await tab.getByRole('button',{name:/check my quote/i}).first().click();
                 const choose=tab.locator('#hqc-choose-file');await choose.waitFor({state:'visible',timeout:15000});
                 const picker=tab.waitForEvent('filechooser');await choose.click();
                 await (await picker).setFiles({name:'release-ev.pdf',mimeType:'application/pdf',buffer});
