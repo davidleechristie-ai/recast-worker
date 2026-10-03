@@ -8,7 +8,7 @@ on:
     paths:
       - '.github/workflows/hqc-live-metrics.yml'
   workflow_run:
-    workflows: ['HQC production deploy']
+    workflows: ['HQC production router release']
     types: [completed]
   workflow_dispatch:
 
@@ -17,7 +17,7 @@ permissions:
 
 concurrency:
   group: hqc-live-metrics
-  cancel-in-progress: false
+  cancel-in-progress: true
 
 jobs:
   metrics:
@@ -52,26 +52,26 @@ jobs:
             | .autonomousDecisionGate = (
                 if $r.metrics.genuineAnalyses >= 100 then
                   {status:"SCALE_HOLD_PIVOT_REVIEW", bottleneck:"validation threshold reached", action:"Perform SCALE/HOLD/PIVOT review before further autonomous growth changes."}
-                elif $r.growthReport.total.landings >= 15 and (($r.growthReport.total.cta / $r.growthReport.total.landings) < 0.30) then
-                  {status:"ACT", bottleneck:"landing -> checker start", action:"Prioritise message-match, trust and CTA clarity on existing landing/decision pages before expanding acquisition."}
-                elif $r.growthReport.total.cta >= 5 and (($r.growthReport.total.uploads / $r.growthReport.total.cta) < 0.50) then
-                  {status:"ACT", bottleneck:"checker start -> quote submission", action:"Prioritise quote-intake friction and instrumentation; do not add acquisition pages merely to increase traffic."}
-                elif $r.growthReport.total.uploads >= 3 and $r.growthReport.total.genuine == 0 then
-                  {status:"ACT", bottleneck:"quote submission -> genuine analysis", action:"Investigate the post-submission analysis handoff before adding acquisition. Preserve evidence guardrails and do not create QA analyses that could contaminate the genuine-analysis metric."}
+                elif $r.growthReport.total.singleStarts >= 5 and (($r.growthReport.total.pickerOpens / $r.growthReport.total.singleStarts) < 0.70) then
+                  {status:"ACT", bottleneck:"quote-check start -> file picker", action:"Reduce the extra interaction between starting a quote check and opening the file picker. Keep privacy reassurance adjacent to the upload action."}
+                elif $r.growthReport.total.pickerOpens >= 5 and (($r.growthReport.total.fileSelections / $r.growthReport.total.pickerOpens) < 0.70) then
+                  {status:"ACT", bottleneck:"file picker -> file selected", action:"Clarify supported formats and mobile photo/PDF selection. Do not add acquisition while users are abandoning the picker."}
+                elif $r.growthReport.total.fileSelections >= 3 and (($r.growthReport.total.uploadHandoffs / $r.growthReport.total.fileSelections) < 0.90) then
+                  {status:"ACT", bottleneck:"file selected -> upload handoff", action:"Fix the file-selection handoff before changing results or acquisition."}
+                elif $r.growthReport.total.uploadHandoffs >= 3 and (($r.growthReport.total.analysisReady / $r.growthReport.total.uploadHandoffs) < 0.90) then
+                  {status:"ACT", bottleneck:"upload handoff -> analysis ready", action:"Fix the post-upload transition into analysis; preserve evidence guardrails."}
+                elif $r.growthReport.total.analysisReady >= 3 and (($r.growthReport.total.analysisAutoStarts / $r.growthReport.total.analysisReady) < 0.90) then
+                  {status:"ACT", bottleneck:"analysis ready -> analysis start", action:"Remove avoidable analysis confirmation friction for single-quote checks."}
+                elif $r.growthReport.total.analysisAutoStarts >= 3 and (($r.growthReport.total.resultVisible / $r.growthReport.total.analysisAutoStarts) < 0.85) then
+                  {status:"ACT", bottleneck:"analysis start -> visible result", action:"Prioritise analysis reliability and error recovery before acquisition or monetisation changes."}
+                elif $r.growthReport.total.resultViews >= 10 and (($r.growthReport.total.installerAlternativeInterest / $r.growthReport.total.resultViews) >= 0.15) then
+                  {status:"ACT", bottleneck:"validated installer-alternative demand", action:"Run a small consent-based manual installer introduction pilot before building marketplace automation."}
+                elif $r.growthReport.total.resultViews >= 10 and (($r.growthReport.total.installerAlternativeInterest / $r.growthReport.total.resultViews) < 0.15) then
+                  {status:"HOLD", bottleneck:"weak installer-alternative demand", action:"Do not build an installer marketplace. Keep focus on independent checking and quote comparison."}
                 elif $r.growthReport.total.extendedGenuine >= 5 and (($r.growthReport.total.multiQuoteAnalyses / $r.growthReport.total.extendedGenuine) < 0.40) then
                   {status:"ACT", bottleneck:"genuine analysis -> second quote/comparison", action:"Strengthen multi-quote progression without changing evidence or design-certification guardrails."}
-                elif $r.growthReport.total.extendedGenuine >= 5 and (($r.growthReport.total.decisionCases / $r.growthReport.total.extendedGenuine) < 0.80) then
-                  {status:"ACT", bottleneck:"genuine analysis -> Decision Case", action:"Diagnose the result-to-Decision-Case handoff before optimising sharing or acquisition."}
-                elif $r.growthReport.total.decisionCases >= 5 and (($r.growthReport.total.shareIntent / $r.growthReport.total.decisionCases) < 0.20) then
-                  {status:"ACT", bottleneck:"Decision Case -> installer questions/share", action:"Improve the privacy-safe installer-question and sharing handoff without adding customer identity collection."}
-                elif $r.growthReport.total.shareOpens >= 5 and (($r.growthReport.total.recipientStarts / $r.growthReport.total.shareOpens) < 0.20) then
-                  {status:"ACT", bottleneck:"share open -> recipient checker start", action:"Improve the shared-case recipient handoff into their own quote check."}
-                elif $r.growthReport.total.genuine >= 10 and (($r.growthReport.total.outboundClicks / $r.growthReport.total.genuine) < 0.10) then
-                  {status:"ACT", bottleneck:"genuine analysis -> commercial/outbound action", action:"Improve clearly separated outbound installer-finding intent without influencing comparison results."}
-                elif $r.growthReport.total.landings >= 15 and ([ $r.growthReport.sources[] | select((.source|startswith("organic_")) and .genuine > 0) ] | length) == 0 then
-                  {status:"ACT", bottleneck:"qualified non-brand organic acquisition", action:"Improve existing high-intent decision pages and internal handoff before adding new acquisition pages."}
                 else
-                  {status:"HOLD", bottleneck:"insufficient clean durable sample", action:"Do not churn production. Continue measurement until the earliest adequately sampled funnel stage identifies a justified change."}
+                  {status:"HOLD", bottleneck:"insufficient clean post-redesign sample", action:"Do not churn production. Continue measurement until the new Upload -> Check -> Answer funnel has enough genuine activity to identify a justified change."}
                 end
               )
             ' > hqc-ops/live-metrics.json

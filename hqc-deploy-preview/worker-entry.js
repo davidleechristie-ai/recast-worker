@@ -8,12 +8,54 @@ import { handleSolarBatteryAnalysisRequest } from './lib/solar-battery-request-h
 import { handleEvChargepointAnalysisRequest } from './lib/ev-chargepoint-request-handler.js';
 import { handleSolarThermalAnalysisRequest } from './lib/solar-thermal-request-handler.js';
 
+const EDGE_FUNNEL_EVENTS = new Set([
+  'intake_picker_opened',
+  'intake_file_selected',
+  'intake_manual_opened',
+  'single_quote_start_clicked',
+  'comparison_start_clicked',
+  'results_summary_viewed',
+  'commercial_next_step_viewed',
+  'alternative_quote_intent',
+  'upload_handoff_started',
+  'analysis_ready_after_upload',
+  'analysis_auto_started',
+  'analysis_error_visible',
+  'results_visible',
+  'installer_alternative_interest',
+]);
+
 function sourceFromRequest(request, incoming) {
   try {
     const ref = new URL(request.headers.get('referer') || '');
     if (ref.origin === incoming.origin) return ref.searchParams.get('src') || ref.searchParams.get('source') || 'direct';
   } catch {}
   return 'direct';
+}
+
+async function recordEdgeFunnelEvent(request, env, incoming) {
+  if (incoming.pathname !== '/api/event' || request.method !== 'POST') return null;
+  let payload;
+  try { payload = await request.clone().json(); } catch { return null; }
+  if (!EDGE_FUNNEL_EVENTS.has(String(payload?.event || ''))) return null;
+  const isTest = isQaRequest(request, env.HQC_ENV || 'preview') || payload.isTest === true;
+  if (!isTest) {
+    try {
+      await recordDurableMetric(env, {
+        event: String(payload.event),
+        source: String(payload.source || sourceFromRequest(request, incoming) || 'direct'),
+        technology: String(payload.technology || 'heat_pump'),
+        isTest: false,
+      });
+    } catch (error) {
+      console.error('edge funnel metric write failed', error);
+      return new Response(JSON.stringify({ error: 'metrics_unavailable' }), { status: 503, headers: { 'content-type': 'application/json', 'cache-control': 'no-store' } });
+    }
+  }
+  return new Response(JSON.stringify({ recorded: !isTest, test: isTest }), {
+    status: 200,
+    headers: { 'content-type': 'application/json', 'cache-control': 'no-store', 'x-hqc-cloudflare-edge': env.HQC_ENV || 'preview' },
+  });
 }
 
 async function recordPdfCompletion(request, response, env, incoming, headers, technology, event) {
@@ -42,13 +84,18 @@ export default {
     const incoming = new URL(request.url);
     if (!incoming.pathname.startsWith('/api/')) return legacyWorker.fetch(request, env, ctx);
 
+    if (incoming.pathname === '/api/event' && request.method === 'POST') {
+      const edgeResponse = await recordEdgeFunnelEvent(request, env, incoming);
+      if (edgeResponse) return edgeResponse;
+      return legacyWorker.fetch(request, env, ctx);
+    }
+
     if (
       incoming.pathname === '/api/metrics' ||
       incoming.pathname === '/api/growth-report' ||
       incoming.pathname === '/api/decision-pack/checkout' ||
       incoming.pathname === '/api/decision-pack/status' ||
-      incoming.pathname === '/api/stripe/webhook' ||
-      incoming.pathname === '/api/event'
+      incoming.pathname === '/api/stripe/webhook'
     ) return legacyWorker.fetch(request, env, ctx);
 
     // Non-public internal Solar/Battery boundary. It is deliberately disabled unless an
