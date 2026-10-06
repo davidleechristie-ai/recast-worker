@@ -1,13 +1,8 @@
 import * as Engine from './engine.js';
+import { SUPPORTED_MODES, normalizePipeline } from './operation-registry.js';
 
 const MAX_WORKFLOW_STEPS = 16;
 const MAX_WORKFLOW_INPUT_BYTES = 64 * 1024;
-const SUPPORTED_MODES = new Set([
-  'json2csv','csv2json','json2xml','xml2json','flatten','unflatten','json2yaml','yaml2json','json2markdown','markdown2json',
-  'transformSelect','transformRemove','transformRename','transformFilter','transformSort','transformConvertType','transformAddField','transformCombine',
-  'jsonPath','validateJsonStep','validateXmlStep','sortJson','formatJson'
-]);
-
 function clone(v) { return JSON.parse(JSON.stringify(v)); }
 function asArray(data) { return Array.isArray(data) ? data : [data]; }
 function wrapLike(original, result) { return Array.isArray(original) ? result : (result[0] !== undefined ? result[0] : result); }
@@ -90,7 +85,7 @@ function executeWorkflow(def,input){
     try{current=runStep(current,def.steps[i]);steps.push({index:i,mode:def.steps[i].mode,ok:true,durationMs:Date.now()-started});}
     catch(e){steps.push({index:i,mode:def.steps[i].mode,ok:false,durationMs:Date.now()-started,error:e.message||String(e)});const err=new Error('step '+(i+1)+' ('+def.steps[i].mode+') failed: '+(e.message||String(e)));err.stepResults=steps;throw err;}
   }
-  return {output:current,stepResults:steps};
+  return {output:current,stepResults:steps,pipeline:normalizePipeline(def)};
 }
 
 export { MAX_WORKFLOW_STEPS, MAX_WORKFLOW_INPUT_BYTES, SUPPORTED_MODES, validateWorkflowDefinition, executeWorkflow };
