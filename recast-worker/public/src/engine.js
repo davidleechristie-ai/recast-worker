@@ -594,8 +594,27 @@
     const delim = opts.delimiter || ',';
     const A = csvToRows(csvA, delim), B = csvToRows(csvB, delim);
     const key = opts.keyColumn || A.headers[0];
-    const mapA = new Map(A.rows.map(function (r) { return [r[key], r]; }));
-    const mapB = new Map(B.rows.map(function (r) { return [r[key], r]; }));
+    // A Map silently overwrites duplicate identifiers, yielding false reconciliation
+    // results. Fail explicitly until the UI supports a duplicate-resolution workflow.
+    if (!key || !A.headers.includes(key) || !B.headers.includes(key)) {
+      throw new Error('CSV comparison key column "' + key + '" must exist in both files.');
+    }
+    function keyedRows(rows, side) {
+      const map = new Map();
+      rows.forEach(function (row, index) {
+        const value = row[key];
+        if (value === undefined || value === null || String(value).trim() === '') {
+          throw new Error('CSV comparison: blank "' + key + '" identifier in ' + side + ' file at data row ' + (index + 1) + '.');
+        }
+        if (map.has(value)) {
+          throw new Error('CSV comparison: duplicate "' + key + '" identifier "' + value + '" in ' + side + ' file at data row ' + (index + 1) + '. Select a genuinely unique key before comparing.');
+        }
+        map.set(value, row);
+      });
+      return map;
+    }
+    const mapA = keyedRows(A.rows, 'original');
+    const mapB = keyedRows(B.rows, 'modified');
     const added = [], removed = [], changed = [];
 
     const headerSet = new Set(A.headers);
