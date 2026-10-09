@@ -1,5 +1,5 @@
 {
-  "fetchedAt": "2026-10-08T22:12:40Z",
+  "fetchedAt": "2026-10-09T02:18:12Z",
   "metrics": {
     "genuineAnalyses": 6,
     "shareOpens": 0,
@@ -15,12 +15,12 @@
     "note": "Cumulative Cloudflare-side counters from measurementStartedAt; QA/demo/test events are excluded. Extended funnel counters use their own same-epoch denominator from extendedMeasurementStartedAt."
   },
   "growthReport": {
-    "generatedAt": "2026-10-08T22:12:40.651Z",
+    "generatedAt": "2026-10-09T02:18:12.402Z",
     "measurementStartedAt": "2026-09-11T18:33:07.244Z",
     "extendedMeasurementStartedAt": "2026-09-11T20:34:24.536Z",
     "durable": true,
     "total": {
-      "landings": 155,
+      "landings": 156,
       "cta": 61,
       "pickerOpens": 0,
       "fileSelections": 0,
@@ -139,13 +139,13 @@
         "analysisErrors": 0,
         "resultVisible": 0,
         "installerAlternativeInterest": 0,
-        "source": "professional",
+        "source": "organic_heatloss",
         "landingToCta": 0,
         "ctaToUpload": null,
         "landingToGenuine": 0
       },
       {
-        "landings": 5,
+        "landings": 6,
         "cta": 0,
         "pickerOpens": 0,
         "fileSelections": 0,
@@ -176,7 +176,7 @@
         "analysisErrors": 0,
         "resultVisible": 0,
         "installerAlternativeInterest": 0,
-        "source": "organic_heatloss",
+        "source": "professional",
         "landingToCta": 0,
         "ctaToUpload": null,
         "landingToGenuine": 0
@@ -702,7 +702,7 @@
     ],
     "technologies": [
       {
-        "landings": 102,
+        "landings": 103,
         "cta": 46,
         "pickerOpens": 0,
         "fileSelections": 0,
