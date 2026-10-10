@@ -1,0 +1,32 @@
+name: HQC intake event integrity
+on:
+  pull_request:
+    paths:
+      - 'hqc-deploy-preview/upload-friction-v3.js'
+      - 'hqc-deploy-preview/intake-diagnostics.js'
+      - '.github/workflows/hqc-intake-event-integrity.yml'
+permissions:
+  contents: read
+jobs:
+  validate:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: '22'
+      - run: node --check hqc-deploy-preview/upload-friction-v3.js
+      - run: node --check hqc-deploy-preview/intake-diagnostics.js
+      - name: Verify single trusted-event owner and PDF recursion guard
+        run: |
+          node - <<'NODE'
+          const assert=require('node:assert/strict'),fs=require('node:fs');
+          const up=fs.readFileSync('hqc-deploy-preview/upload-friction-v3.js','utf8');
+          const diag=fs.readFileSync('hqc-deploy-preview/intake-diagnostics.js','utf8');
+          assert.match(up,/if\(ev\.isTrusted\)\{emit\('intake_file_selected'/);
+          assert.match(up,/emit\('upload_handoff_started'/);
+          assert.match(up,/if\(input\.dataset\.hqcPdfConverted==='1'\)/);
+          assert.doesNotMatch(diag,/emit\('intake_file_selected'/);
+          assert.doesNotMatch(diag,/emit\('upload_handoff_started'/);
+          console.log('HQC event ownership contract passed');
+          NODE
