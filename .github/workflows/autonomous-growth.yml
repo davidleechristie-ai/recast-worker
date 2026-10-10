@@ -93,6 +93,7 @@ jobs:
             echo "GPT-6 Astra is not yet available to this API key (HTTP $status); using GPT-5.6 Sol for this run."
           fi
       - name: Run Recast growth agent
+        id: growth
         continue-on-error: true
         uses: openai/codex-action@v1
         with:
@@ -126,13 +127,23 @@ jobs:
               echo "Review the AI step for API credit/model-access issues. Fresh GSC/GA4/Stripe evidence remains persisted even when that optional step fails."
             fi
           } >> "$GITHUB_STEP_SUMMARY"
+      - name: Flag failed growth execution rather than falsely passing
+        if: steps.growth.outcome == 'failure'
+        run: |
+          echo 'Recast AI growth execution failed. Metrics collection succeeded but no autonomous improvement was executed.' >&2
+          exit 1
       - name: Enforce autonomous scope
         run: node recast-worker/guard-autonomous-diff.mjs
       - name: Validate growth scoreboard
         run: node -e "JSON.parse(require('fs').readFileSync('recast-worker/GROWTH_SCOREBOARD.json','utf8')); console.log('Growth scoreboard JSON valid')"
-      - name: Test proposed changes
+      - name: Test proposed changes only if source changed
         working-directory: recast-worker
-        run: npm test
+        run: |
+          if git diff --quiet -- public src scripts; then
+            echo 'No growth source changes; initial test suite already passed.'
+          else
+            npm test
+          fi
       - name: Commit safe change
         id: commit
         shell: bash
