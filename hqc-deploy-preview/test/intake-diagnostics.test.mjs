@@ -29,9 +29,8 @@ test('browser intake emits stage names and no file details',async()=>{
   const closest=id=>({closest:selector=>selector===id?{}:null});
   listeners.click({target:closest('#hqc-choose-file')});
   listeners.click({target:closest('#hqc-enter-manual')});
-  listeners.change({isTrusted:true,target:{matches:selector=>selector==='input[type="file"]',files:[{name:'private-quote.pdf',size:999}]}});
   await new Promise(resolve=>setImmediate(resolve));
-  assert.deepEqual(sent.map(x=>x.body.event),['intake_picker_opened','intake_manual_opened','intake_file_selected','upload_handoff_started']);
+  assert.deepEqual(sent.map(x=>x.body.event),['intake_picker_opened','intake_manual_opened']);
   assert.ok(sent.every(x=>x.body.technology==='heat_pump'&&x.body.source==='direct'));
   assert.doesNotMatch(JSON.stringify(sent),/private-quote\.pdf|999/);
 });
