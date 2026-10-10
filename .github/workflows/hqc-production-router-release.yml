@@ -21,6 +21,7 @@ on:
       - 'hqc-deploy-preview/lib/solar-thermal-*.js'
       - 'hqc-deploy-preview/upload-friction-v3.js'
       - 'hqc-deploy-preview/intake-diagnostics.js'
+      - 'hqc-deploy-preview/test/intake-diagnostics.test.mjs'
   workflow_dispatch:
 
 permissions:
