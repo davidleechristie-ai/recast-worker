@@ -47,8 +47,12 @@ jobs:
           test -s hqc-deploy-preview/site/resources/homepage-house-only.svg
           grep -q '__hqc_simple_results.js' hqc-deploy-preview/site/index.html
           grep -q '__hqc_approved_layout.js' hqc-deploy-preview/site/index.html
-          grep -q 'Start single quote check' hqc-deploy-preview/site/__hqc_approved_layout.js
-          grep -q 'Start quote comparison' hqc-deploy-preview/site/__hqc_approved_layout.js
+          grep -q '__hqc_mobile_homepage.js' hqc-deploy-preview/site/index.html
+          test -s hqc-deploy-preview/site/__hqc_mobile_homepage.js
+          grep -q 'data-tech="solar_battery"' hqc-deploy-preview/site/__hqc_mobile_homepage.js
+          grep -q 'data-tech="ev_chargepoint"' hqc-deploy-preview/site/__hqc_mobile_homepage.js
+          grep -q 'hqc-primary-start' hqc-deploy-preview/site/__hqc_approved_layout.js
+          grep -q 'hqc-secondary-compare' hqc-deploy-preview/site/__hqc_approved_layout.js
           grep -q 'Your quote check' hqc-deploy-preview/site/__hqc_simple_results.js
           grep -q 'Your quote comparison' hqc-deploy-preview/site/__hqc_simple_results.js
           grep -q 'Get my Decision Pack — £4.99' hqc-deploy-preview/site/__hqc_paid_comparison.js
@@ -116,8 +120,8 @@ jobs:
           test "$ready" = 'true'
           for path in / /api/_healthcheck /robots.txt /sitemap.xml /__hqc_approved_layout.js /__hqc_simple_results.js /__hqc_paid_comparison.js; do code=$(curl -L -sS -o /tmp/hqc-prod -w '%{http_code}' --max-time 30 "$base$path"); echo "$path -> $code"; test "$code" = '200'; done
           approved=$(curl -L -sS --max-time 30 "$base/__hqc_approved_layout.js")
-          grep -q 'Start single quote check' <<< "$approved"
-          grep -q 'Start quote comparison' <<< "$approved"
+          grep -q 'hqc-primary-start' <<< "$approved"
+          grep -q 'hqc-secondary-compare' <<< "$approved"
           results=$(curl -L -sS --max-time 30 "$base/__hqc_simple_results.js")
           grep -q 'Your quote check' <<< "$results"
           comparison=$(curl -L -sS --max-time 30 "$base/__hqc_paid_comparison.js")
