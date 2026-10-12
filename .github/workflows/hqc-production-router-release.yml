@@ -170,9 +170,16 @@ jobs:
               try {
                 const tab=await context.newPage();
                 await tab.goto('https://homequotecheck.co.uk/?qa=1',{waitUntil:'domcontentloaded',timeout:30000});
-                const ev=tab.locator('#hqc-technology-choice [data-tech="ev_chargepoint"]');await ev.waitFor({state:'visible',timeout:20000});await ev.click();
-                await tab.waitForURL(/technology=ev_chargepoint/);
-                await tab.getByRole('button',{name:/check my quote/i}).first().click();
+                const mobileLanding=tab.locator('#hqc-mobile-landing');
+                if(await mobileLanding.isVisible()){
+                  const ev=mobileLanding.locator('[data-tech="ev_chargepoint"]');await ev.waitFor({state:'visible',timeout:20000});await ev.click();
+                  await tab.waitForURL(/technology=ev_chargepoint/);
+                  const start=tab.locator('#hqc-mobile-landing [data-go="single"]');await start.waitFor({state:'visible',timeout:15000});await start.click();
+                }else{
+                  const ev=tab.locator('#hqc-technology-choice [data-tech="ev_chargepoint"]');await ev.waitFor({state:'visible',timeout:20000});await ev.click();
+                  await tab.waitForURL(/technology=ev_chargepoint/);
+                  await tab.getByRole('button',{name:/check my quote/i}).first().click();
+                }
                 const choose=tab.locator('#hqc-choose-file');await choose.waitFor({state:'visible',timeout:15000});
                 const picker=tab.waitForEvent('filechooser');await choose.click();
                 await (await picker).setFiles({name:'release-ev.pdf',mimeType:'application/pdf',buffer});
