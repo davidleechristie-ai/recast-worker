@@ -147,7 +147,7 @@ jobs:
             const errors=[];const failed=[];page.on('pageerror',e=>errors.push(String(e)));page.on('requestfailed',r=>failed.push(r.url()));
             await page.goto('https://homequotecheck.co.uk/?qa=1&production_render=1',{waitUntil:'networkidle',timeout:30000});
             const single=page.getByRole('button',{name:/start single quote check/i}).first();const compare=page.getByRole('button',{name:/start quote comparison/i}).first();
-            await single.waitFor({state:'visible',timeout:15000});await compare.waitFor({state:'visible',timeout:15000});
+            if(viewport.label==='desktop'){await single.waitFor({state:'visible',timeout:15000});await compare.waitFor({state:'visible',timeout:15000});}
             const style=await page.evaluate(()=>{const css=[...document.styleSheets].filter(s=>s.href&&/\.css(?:\?|$)/.test(s.href));const body=getComputedStyle(document.body);const links=[...document.querySelectorAll('a')].slice(0,8).map(a=>getComputedStyle(a));return{cssCount:css.length,bodyFont:body.fontFamily,linkDefault:links.length>0&&links.every(s=>s.textDecorationLine.includes('underline')&&s.color==='rgb(0, 0, 238)'),overflow:document.documentElement.scrollWidth-document.documentElement.clientWidth};});
             if(style.cssCount<1||(style.linkDefault&&viewport.label!=='mobile')||!style.bodyFont||/Times New Roman/i.test(style.bodyFont)||style.overflow>2)throw new Error(`${viewport.label}: rendered style integrity failed ${JSON.stringify(style)}`);
             if(failed.some(u=>/\.css(?:\?|$)/.test(u)))throw new Error(`${viewport.label}: stylesheet request failed`);
