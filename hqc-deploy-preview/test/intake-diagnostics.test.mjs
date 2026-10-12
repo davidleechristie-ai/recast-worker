@@ -46,3 +46,14 @@ test('intake events are recorded at Cloudflare without relying on the upstream A
   assert.equal((await worker.fetch(qa,env)).status,200);
   assert.equal((await metrics.snapshot()).total.fileSelections,1);
 });
+
+
+test('upload interception emits picker and manual stages before propagation is stopped',()=>{
+  const source=fs.readFileSync(new URL('../upload-friction-v3.js',import.meta.url),'utf8');
+  const picker=source.match(/choose\.addEventListener\('click',[\s\S]*?\},true\)/)?.[0]||'';
+  const manual=source.match(/manual\.addEventListener\('click',[\s\S]*?\},true\)/)?.[0]||'';
+  assert.match(picker,/emit\('intake_picker_opened'\)/);
+  assert.ok(picker.indexOf("emit('intake_picker_opened')")<picker.indexOf('stopImmediatePropagation()'));
+  assert.match(manual,/emit\('intake_manual_opened'\)/);
+  assert.ok(manual.indexOf("emit('intake_manual_opened')")<manual.indexOf('stopImmediatePropagation()'));
+});
