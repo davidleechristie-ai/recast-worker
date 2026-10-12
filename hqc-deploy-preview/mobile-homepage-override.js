@@ -1,6 +1,10 @@
 (()=>{
  const mobile=()=>window.innerWidth<760;
  if(location.pathname!=='/'||!mobile())return;
+ const destination=new URLSearchParams(location.search);
+ if(destination.has('technology')&&destination.has('start')){
+   let tries=0;const handoff=setInterval(()=>{tries++;const original=document.getElementById(destination.get('start')==='compare'?'hqc-secondary-compare':'hqc-primary-start')||document.querySelector('.copy button.primary');if(original){clearInterval(handoff);original.click()}else if(tries>=25)clearInterval(handoff)},300);return;
+ }
  const css=`@media(min-width:760px){#hqc-mobile-landing{display:none!important}}@media(max-width:759px){
  #hqc-mobile-landing{position:fixed;z-index:2147480000;inset:0;background:white;overflow:auto;overscroll-behavior:contain;color:#0b2548;font:normal 15px/1.45 system-ui,-apple-system,Segoe UI,sans-serif}
  #hqc-mobile-landing *{box-sizing:border-box}#hqc-mobile-landing .inner{max-width:430px;margin:auto;padding:20px 20px 95px}
