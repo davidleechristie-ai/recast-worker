@@ -11,6 +11,7 @@
  #hqc-mobile-landing h1{font-size:clamp(32px,9vw,40px);letter-spacing:-.04em;line-height:1.04;margin:15px 0 16px;font-weight:850;color:#0b2548}
  #hqc-mobile-landing p{color:#52647a;margin:4px 0 12px}#hqc-mobile-landing .lead{font-size:16px;line-height:1.5;margin-bottom:20px}
  #hqc-mobile-landing button{cursor:pointer}#hqc-mobile-landing .primary{width:100%;border:0;border-radius:12px;background:#07835f;padding:16px;color:white;font-size:17px;font-weight:800}
+ #hqc-mobile-landing .technology-picker{padding:14px;background:#eff9f5;border-radius:14px;margin:16px 0}#hqc-mobile-landing .technology-picker>b{font-size:13px;display:block;margin-bottom:10px}#hqc-mobile-landing .technology-options{display:flex;flex-wrap:wrap;gap:7px}#hqc-mobile-landing .technology-options button{border:1px solid #a6cdc0;border-radius:999px;padding:9px 11px;background:white;color:#0b2548;font-size:12px;font-weight:750}#hqc-mobile-landing .technology-options button[aria-pressed="true"]{background:#087f5b;color:white;border-color:#087f5b}
  #hqc-mobile-landing .upload-note{text-align:center;font-size:12px;margin:10px 0 18px}
  #hqc-mobile-landing .scene{position:relative;background:#eef8f3;border-radius:18px;overflow:hidden;height:215px;margin:20px 0}
  #hqc-mobile-landing .scene img{width:100%;height:100%;object-fit:contain}
@@ -31,8 +32,8 @@
  #hqc-mobile-landing .sticky{position:sticky;bottom:0;background:linear-gradient(transparent,#fff 18%);padding:12px 20px max(14px,env(safe-area-inset-bottom));margin-top:-70px}
  }`;
  const template=`<div class="inner"><div class="brand"><span class="mark">⌂</span><div><b>Home Quote Check</b><small>Be sure before you sign.</small></div></div>
- <span class="tag">HEAT PUMPS</span><h1>Is your heat pump quote a good deal?</h1>
- <p class="lead">Know what you’re paying for, what’s missing and what to ask before you commit.</p>
+ <span class="tag">HOME ENERGY QUOTES</span><h1>Is your home energy quote a good deal?</h1>
+ <p class="lead">From heat pumps to solar panels and EV chargers, understand the price, gaps and questions before you commit.</p><div class="technology-picker"><b>What are you getting a quote for?</b><div class="technology-options"><button type="button" data-tech="heat_pump" aria-pressed="true">Heat pump</button><button type="button" data-tech="solar_battery" aria-pressed="false">Solar & battery</button><button type="button" data-tech="ev_chargepoint" aria-pressed="false">EV charger</button></div></div>
  <button class="primary" data-go="single">Check my quote — free →</button><p class="upload-note">Upload a photo, screenshot or PDF · About a minute to start</p>
  <div class="scene"><img src="/resources/homepage-house-only.svg" alt="House with an outdoor heat pump"><div class="result-mini"><b>✓ Example quote review</b><span>✓ Price checked</span><span>⚠ Missing details highlighted</span><span>✓ Questions to ask</span></div></div>
  <div class="benefits"><div class="benefit"><span class="symbol">▥</span><div><b>Check the price</b><p>Understand how your quote compares.</p></div></div>
@@ -43,11 +44,14 @@
  <div class="section"><h2>How it works</h2><div class="step"><i>1</i><div><b>Upload your quote</b><p>Take a photo or upload a PDF.</p></div></div><div class="step"><i>2</i><div><b>We check the details</b><p>We review price, scope and key information.</p></div></div><div class="step"><i>3</i><div><b>Get your answers</b><p>See what needs attention before you commit.</p></div></div></div>
  <div class="comparison"><span class="tag">MORE THAN ONE QUOTE?</span><h2>Compare quotes side by side.</h2><p>See differences in price, scope and what's included.</p><button class="secondary" data-go="compare">Compare quotes →</button></div>
  </div><div class="sticky"><button class="primary" data-go="single">Check my quote — free →</button></div>`;
+ function selectedTechnology(){return document.querySelector("#hqc-mobile-landing [data-tech][aria-pressed=\"true\"]")?.dataset.tech||"heat_pump"}
  function go(mode){
+  const technology=selectedTechnology();try{sessionStorage.setItem("hqc_journey_technology",technology);sessionStorage.setItem("hqc_journey_mode",mode);if(mode==="compare")sessionStorage.setItem("hqc_compare_intent","1");else sessionStorage.removeItem("hqc_compare_intent")}catch{}
   const overlay=document.getElementById('hqc-mobile-landing');if(overlay)overlay.remove();
   document.getElementById('hqc-mobile-sticky-cta')?.remove();
   let original=mode==='compare'?document.getElementById('hqc-secondary-compare'):document.getElementById('hqc-primary-start');
   if(!original)original=document.querySelector('.copy button.primary')||[...document.querySelectorAll('button')].find(b=>/get started/i.test(b.textContent||''));
+  if(technology!=="heat_pump"){location.href="/?technology="+encodeURIComponent(technology)+"&start="+encodeURIComponent(mode);return}
   if(original){original.click();return}
   const nav=document.querySelector('header button');if(nav)nav.click();
  }
@@ -58,6 +62,7 @@
   const style=document.createElement('style');style.textContent=css;document.head.appendChild(style);
   const screen=document.createElement('div');screen.id='hqc-mobile-landing';screen.setAttribute('aria-label','Home Quote Check mobile homepage');screen.innerHTML=template;
   document.body.appendChild(screen);
+  screen.querySelectorAll('[data-tech]').forEach(button=>button.addEventListener('click',()=>{screen.querySelectorAll('[data-tech]').forEach(other=>other.setAttribute('aria-pressed',String(other===button)));const img=screen.querySelector('.scene img');if(img)img.alt='Home energy quote illustration — selected '+button.textContent;}));
   screen.querySelectorAll('[data-go]').forEach(button=>button.addEventListener('click',()=>go(button.dataset.go)));
  }
  if(document.readyState==='loading')document.addEventListener('DOMContentLoaded',mount);else mount();
