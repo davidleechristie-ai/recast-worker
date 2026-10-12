@@ -148,7 +148,7 @@ jobs:
             if(style.cssCount<1||style.linkDefault||!style.bodyFont||/Times New Roman/i.test(style.bodyFont)||style.overflow>2)throw new Error(`${viewport.label}: rendered style integrity failed ${JSON.stringify(style)}`);
             if(failed.some(u=>/\.css(?:\?|$)/.test(u)))throw new Error(`${viewport.label}: stylesheet request failed`);
             if(errors.length)throw new Error(`${viewport.label}: ${errors.join(' | ')}`);
-            await single.click();const choose=page.locator('#hqc-choose-file');await choose.waitFor({state:'visible',timeout:15000});
+            if(viewport.label==='mobile'){const landing=page.locator('#hqc-mobile-landing');await landing.waitFor({state:'visible',timeout:15000});const heading=(await landing.locator('h1').innerText()).trim();if(!heading.includes('Is your heat pump quote a good deal?'))throw new Error('mobile landing hero not mounted');await landing.locator('[data-go="single"]').first().click();}else{await single.click();}const choose=page.locator('#hqc-choose-file');await choose.waitFor({state:'visible',timeout:15000});
             console.log(`${viewport.label} production render integrity passed`,style);
             await page.close();
           }
