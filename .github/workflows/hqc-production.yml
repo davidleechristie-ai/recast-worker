@@ -6,6 +6,8 @@ on:
     branches: [main]
     paths:
       - 'hqc-deploy-preview/approved-home-layout.js'
+      - 'hqc-deploy-preview/mobile-homepage-override.js'
+      - 'hqc-deploy-preview/snapshot.mjs'
       - '.github/workflows/hqc-production.yml'
 
 permissions:
