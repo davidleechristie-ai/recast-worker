@@ -84,13 +84,13 @@ jobs:
             await page.goto('http://127.0.0.1:4173/?qa=1&render_gate=1',{waitUntil:'networkidle',timeout:30000});
             const result=await page.evaluate(()=>{
               const css=[...document.styleSheets].filter(s=>s.href&&/\.css(?:\?|$)/.test(s.href));
-              const body=getComputedStyle(document.body);const links=[...document.querySelectorAll('a')].slice(0,8).map(a=>getComputedStyle(a));
+              const visibleRoot=viewport.label==='mobile'?document.querySelector('#hqc-mobile-landing'):document.body;const body=getComputedStyle(visibleRoot||document.body);const links=[...(visibleRoot||document.body).querySelectorAll('a')].slice(0,8).map(a=>getComputedStyle(a));
               const buttons=[...document.querySelectorAll('button')].filter(b=>b.offsetWidth&&b.offsetHeight);
               return {cssCount:css.length,bodyFont:body.fontFamily,bodyMargin:body.margin,linkDefault:links.length>0&&links.every(s=>s.textDecorationLine.includes('underline')&&s.color==='rgb(0, 0, 238)'),buttonCount:buttons.length,overflow:document.documentElement.scrollWidth-document.documentElement.clientWidth};
             });
             if(result.cssCount<1)throw new Error(`${viewport.label}: no stylesheet loaded`);
             if(result.linkDefault&&viewport.label!=='mobile')throw new Error(`${viewport.label}: links render with browser-default styling`);
-            if(!result.bodyFont||/Times New Roman/i.test(result.bodyFont))throw new Error(`${viewport.label}: browser-default body font`);
+            if(!result.bodyFont||/Times New Roman/i.test(result.bodyFont))throw new Error(`${viewport.label}: visible page uses browser-default font`);
             if(result.buttonCount<2)throw new Error(`${viewport.label}: expected commercial CTAs not rendered`);
             if(result.overflow>2)throw new Error(`${viewport.label}: horizontal overflow ${result.overflow}px`);
             if(failed.some(u=>/\.css(?:\?|$)/.test(u)))throw new Error(`${viewport.label}: stylesheet request failed`);
