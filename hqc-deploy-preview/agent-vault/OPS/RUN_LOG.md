@@ -1,5 +1,14 @@
 # Run log
 
+
+## 2026-10-12 15:18 Europe/London — production PDF audit follows visible mobile entry
+- TASK `DOTS-20261012-hqc-mobile-pdf-smoke` completed.
+- MEASURE/DIAGNOSE: product deploy runs 38258036555 and 38258420752 succeeded, but site-consistency runs 38258108878 and 38258497889 failed at the PDF probe. Full logs showed `#hqc-mobile-landing` intercepting clicks on the underlying legacy CTA. The production overlay was visible and behaving as designed.
+- CHANGE: PR #79 changed only `.github/workflows/hqc-site-consistency.yml` so the mobile PDF probe clicks the visible overlay's `data-go="single"` CTA before selecting the PDF.
+- VERIFY: merge `948a58dc34573d927a3dc2b7e3764ffa1808cb68`; exact-head run 38261789587 passed. Job 114853860968 recorded the PDF-to-WebP receipt and complete 23-page/asset/responsive audit success.
+- OUTCOME: production reliability coverage is restored without a product deployment or payment/release change. No genuine purchase, revenue or engagement is inferred from CI.
+- NEXT: progress the earliest verified commercial bottleneck using fresh genuine funnel evidence; do not repeat this repair unless the selector or customer entry path changes.
+
 ## 2026-09-24 22:12 Europe/London — Solar text-PDF path verified
 - Private custom-domain canary run `36060001899` passed browser file selection, PDF.js text extraction/provenance, gated Solar analysis and Solar-specific rendered evidence/results in one flow.
 - Image-only/photo OCR remains fail-closed. Solar remains non-public; Heat Pump production was unchanged.

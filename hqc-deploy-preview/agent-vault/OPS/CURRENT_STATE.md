@@ -1,6 +1,17 @@
 # Current state
 
-Updated: 2026-09-28 Europe/London
+Updated: 2026-10-12 Europe/London
+
+## 2026-10-12 15:18 Europe/London — mobile PDF production smoke repaired
+- TASK: `DOTS-20261012-hqc-mobile-pdf-smoke`; app Home Quote Check; milestone first-purchase journey reliability; state completed.
+- SOURCE: production UI head `67a202c416126e17db74adb2937b1957f6fa1ea0`; CI repair PR #79 merged as `948a58dc34573d927a3dc2b7e3764ffa1808cb68`.
+- ROOT CAUSE: production correctly displayed the approved mobile homepage overlay, while the PDF audit selected the hidden legacy `check.*quote` CTA beneath it. Playwright correctly rejected the obscured click; this was a stale smoke-test selector, not verified customer-path downtime.
+- CHANGE: the audit now enters through visible `#hqc-mobile-landing [data-go="single"]` and retains the existing file-input and PDF-to-WebP assertions. No product UI, payment, routing, analytics, publication or customer-data behavior changed.
+- VERIFY: exact-head main run [38261789587](https://github.com/davidleechristie-ai/recast-worker/actions/runs/38261789587) passed all steps and emitted `PDF_UPLOAD_REGRESSION_VERIFIED eco-stream-quote-pdf.webp image/webp`, then the full 23-page consistency success receipt.
+- DEPLOYMENT: no new product deployment was required for this CI-only repair. The preceding product deployment for `67a202c4` succeeded; green CI does not establish customers, revenue or release demand.
+- COMMERCIAL EVIDENCE: no new authoritative payment or genuine-customer observation was obtained in this repair. Existing revenue values remain source-dated; unavailable values remain null.
+- NEXT: return to qualified acquisition and start→upload conversion work using fresh synthetic-excluded funnel evidence; keep the repaired audit as production reliability coverage.
+
 
 ## 2026-09-28 commercial activation measurement
 - Initial production/canary workflows (`36416543633`, `36416543978`) failed their newly added immediate intake verification after deployment while existing Heat Pump, Solar and durable metrics checks passed. Subsequent direct live checks found the new asset on both hosts and an excluded QA intake event returned `{"recorded":false,"test":true}`. The bounded readiness correction passed production release `36416967831` and rendered custom-domain canary `36416967892`. The intake counters are deployed; genuine stage counts will require fresh traffic.
