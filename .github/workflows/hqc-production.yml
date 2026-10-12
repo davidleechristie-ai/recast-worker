@@ -2,6 +2,11 @@ name: HQC production deploy
 
 on:
   workflow_dispatch:
+  push:
+    branches: [main]
+    paths:
+      - 'hqc-deploy-preview/approved-home-layout.js'
+      - '.github/workflows/hqc-production.yml'
 
 permissions:
   contents: read
