@@ -49,7 +49,9 @@
  <div class="comparison"><span class="tag">MORE THAN ONE QUOTE?</span><h2>Compare quotes side by side.</h2><p>See differences in price, scope and what's included.</p><button class="secondary" data-go="compare">Compare quotes →</button></div>
  </div><div class="sticky"><button class="primary" data-go="single">Check my quote — free →</button></div>`;
  function selectedTechnology(){return document.querySelector("#hqc-mobile-landing [data-tech][aria-pressed=\"true\"]")?.dataset.tech||"heat_pump"}
+ let journeyActive=false;
  function go(mode){
+  journeyActive=true;
   const technology=selectedTechnology();try{sessionStorage.setItem("hqc_journey_technology",technology);sessionStorage.setItem("hqc_journey_mode",mode);if(mode==="compare")sessionStorage.setItem("hqc_compare_intent","1");else sessionStorage.removeItem("hqc_compare_intent")}catch{}
   const overlay=document.getElementById('hqc-mobile-landing');if(overlay)overlay.remove();
   document.getElementById('hqc-mobile-sticky-cta')?.remove();
@@ -61,7 +63,9 @@
  }
  function mount(){
   if(!mobile()||document.getElementById('hqc-mobile-landing'))return;
+  if(journeyActive)return;
   const text=document.body.innerText||'';
+  if(/Upload your quote|Your home|Your quote check|Your quote comparison/i.test(text)&&!/Add your quotes|Understand your quotes before choosing an installer/i.test(text))return;
   if(!/Add your quotes|Check your quote|Understand your quotes/i.test(text))return;
   const style=document.createElement('style');style.textContent=css;document.head.appendChild(style);
   const screen=document.createElement('div');screen.id='hqc-mobile-landing';screen.setAttribute('aria-label','Home Quote Check mobile homepage');screen.innerHTML=template;
@@ -71,4 +75,19 @@
  }
  if(document.readyState==='loading')document.addEventListener('DOMContentLoaded',mount);else mount();
  setTimeout(mount,1200);
+ // The underlying app changes routes without reloading scripts. Remount on return to Home.
+ function onNavigation(){
+  if(!mobile()||location.pathname!=='/')return;
+  const text=document.body.innerText||'';
+  const isHome=/Add your quotes|Understand your quotes before choosing an installer/i.test(text);
+  if(isHome){journeyActive=false;mount()}
+ }
+ let pending=false;
+ new MutationObserver(()=>{if(pending)return;pending=true;requestAnimationFrame(()=>{pending=false;onNavigation()})}).observe(document.body||document.documentElement,{childList:true,subtree:true});
+ addEventListener('popstate',()=>setTimeout(onNavigation,100));
+ document.addEventListener('click',event=>{
+  const button=event.target.closest('button,a');if(!button)return;
+  const name=(button.textContent||'').trim();
+  if(/^Home$/i.test(name))setTimeout(()=>{journeyActive=false;onNavigation()},150);
+ },true);
 })();
