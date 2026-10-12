@@ -2,6 +2,19 @@
 
 Updated: 2026-10-12 Europe/London
 
+## 2026-10-12 21:18 Europe/London — intake stage telemetry restored and production-verified
+- TASK: `DOTS-20261012-hqc-intake-stage-telemetry`; app Home Quote Check; milestone first-purchase journey / start-to-upload diagnosis; state completed.
+- INTENDED OUTCOME: restore trustworthy picker-open and manual-entry stage evidence so the next genuine cohort can distinguish CTA-to-picker friction from picker-to-selection friction before another conversion change.
+- SOURCE: diagnosed from main `0c8d8f743e2ab6e36a23572d03090656b47c4819`; product PR [#81](https://github.com/davidleechristie-ai/recast-worker/pull/81) merged as `a6db1fc725777068d8207bbb55cbac8f87daa396`; release-smoke repairs [#82](https://github.com/davidleechristie-ai/recast-worker/pull/82) and [#83](https://github.com/davidleechristie-ai/recast-worker/pull/83) merged as `5499e422c1777396f86dd45b561545e59d81f43f` and `a411dc36d9e0f34cd8919691d43c4697a9de5055`.
+- ROOT CAUSE: `upload-friction-v3.js` stops propagation on the approved picker/manual controls before the document-bubble listener in `intake-diagnostics.js` can see those clicks. Durable zero stage counts therefore could not be interpreted as user behaviour.
+- CHANGE: the two approved capture-phase interception handlers now emit `intake_picker_opened` and `intake_manual_opened` once before stopping propagation. Upload, analysis, payment, privacy and customer-facing UI behavior are unchanged.
+- CHECKS: failing-first run [38301966065](https://github.com/davidleechristie-ai/recast-worker/actions/runs/38301966065); exact-head PR checks [38302028736](https://github.com/davidleechristie-ai/recast-worker/actions/runs/38302028736), [38302028920](https://github.com/davidleechristie-ai/recast-worker/actions/runs/38302028920) and [38302028710](https://github.com/davidleechristie-ai/recast-worker/actions/runs/38302028710) passed. Independent review found no Critical/Important issues.
+- DEPLOYMENT: first main release [38302272065](https://github.com/davidleechristie-ai/recast-worker/actions/runs/38302272065) deployed but exposed a stale hidden-control EV smoke; follow-up [38302677574](https://github.com/davidleechristie-ai/recast-worker/actions/runs/38302677574) proved mobile selection changes state before the visible CTA navigates. The bounded CI-only repairs now mirror the approved mobile sequence. Final same-commit release [38303031019](https://github.com/davidleechristie-ai/recast-worker/actions/runs/38303031019) passed deployment, Heat Pump/Solar/durable-metrics checks and the public EV text-PDF journey on mobile and desktop.
+- COMMERCIAL EVIDENCE: this restores measurement only. It does not establish a customer, purchase, revenue, or conversion improvement; historical stage zeros remain invalid for behavioural inference.
+- REMAINING GATE: collect fresh source-dated, synthetic-excluded genuine traffic after this release. Compare checker starts → picker opens → file selections/manual opens → uploads, then change one overlapping conversion hypothesis only.
+- NEXT: preserve the £4.99 offer and all payment gates; use the next useful genuine cohort to choose the smallest evidence-backed intake improvement.
+
+
 ## 2026-10-12 15:18 Europe/London — mobile PDF production smoke repaired
 - TASK: `DOTS-20261012-hqc-mobile-pdf-smoke`; app Home Quote Check; milestone first-purchase journey reliability; state completed.
 - SOURCE: production UI head `67a202c416126e17db74adb2937b1957f6fa1ea0`; CI repair PR #79 merged as `948a58dc34573d927a3dc2b7e3764ffa1808cb68`.
