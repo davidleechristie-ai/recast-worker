@@ -1,5 +1,5 @@
 {
-  "fetchedAt": "2026-10-12T05:58:18Z",
+  "fetchedAt": "2026-10-12T15:25:54Z",
   "durable": true,
   "measurementStartedAt": "2026-09-11T18:33:07.244Z",
   "northStar": {
@@ -18,8 +18,8 @@
     "note": "Cumulative Cloudflare-side validation counters. QA/demo/test traffic is excluded; payment intent is not treated as revenue."
   },
   "total": {
-    "landings": 177,
-    "cta": 61,
+    "landings": 193,
+    "cta": 69,
     "pickerOpens": 0,
     "fileSelections": 0,
     "manualOpens": 0,
@@ -27,7 +27,7 @@
     "genuine": 6,
     "extendedGenuine": 5,
     "multiQuoteAnalyses": 1,
-    "evAnalyses": 14,
+    "evAnalyses": 18,
     "evComparisons": 0,
     "thermalAnalyses": 0,
     "thermalComparisons": 0,
@@ -38,8 +38,8 @@
     "recipientStarts": 0,
     "outboundClicks": 0,
     "checkouts": 0,
-    "singleStarts": 0,
-    "comparisonStarts": 0,
+    "singleStarts": 2,
+    "comparisonStarts": 2,
     "resultViews": 0,
     "commercialNextStepViews": 0,
     "alternativeQuoteIntent": 0,
@@ -52,8 +52,8 @@
   },
   "sources": [
     {
-      "landings": 115,
-      "cta": 61,
+      "landings": 131,
+      "cta": 69,
       "pickerOpens": 0,
       "fileSelections": 0,
       "manualOpens": 0,
@@ -61,7 +61,7 @@
       "genuine": 6,
       "extendedGenuine": 5,
       "multiQuoteAnalyses": 1,
-      "evAnalyses": 14,
+      "evAnalyses": 18,
       "evComparisons": 0,
       "thermalAnalyses": 0,
       "thermalComparisons": 0,
@@ -72,8 +72,8 @@
       "recipientStarts": 0,
       "outboundClicks": 0,
       "checkouts": 0,
-      "singleStarts": 0,
-      "comparisonStarts": 0,
+      "singleStarts": 2,
+      "comparisonStarts": 2,
       "resultViews": 0,
       "commercialNextStepViews": 0,
       "alternativeQuoteIntent": 0,
@@ -85,7 +85,7 @@
       "installerAlternativeInterest": 0,
       "source": "direct",
       "landingToCta": 53,
-      "ctaToUpload": 10,
+      "ctaToUpload": 9,
       "landingToGenuine": 5
     },
     {
