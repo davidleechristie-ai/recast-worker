@@ -173,8 +173,8 @@ jobs:
                 const mobileLanding=tab.locator('#hqc-mobile-landing');
                 if(await mobileLanding.isVisible()){
                   const ev=mobileLanding.locator('[data-tech="ev_chargepoint"]');await ev.waitFor({state:'visible',timeout:20000});await ev.click();
+                  const start=tab.locator('#hqc-mobile-landing [data-go="single"]').first();await start.waitFor({state:'visible',timeout:15000});await start.click();
                   await tab.waitForURL(/technology=ev_chargepoint/);
-                  const start=tab.locator('#hqc-mobile-landing [data-go="single"]');await start.waitFor({state:'visible',timeout:15000});await start.click();
                 }else{
                   const ev=tab.locator('#hqc-technology-choice [data-tech="ev_chargepoint"]');await ev.waitFor({state:'visible',timeout:20000});await ev.click();
                   await tab.waitForURL(/technology=ev_chargepoint/);
