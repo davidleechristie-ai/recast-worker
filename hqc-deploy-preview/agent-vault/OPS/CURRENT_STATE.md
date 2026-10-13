@@ -1,6 +1,20 @@
 # Current state
 
-Updated: 2026-10-12 Europe/London
+Updated: 2026-10-13 Europe/London
+
+## 2026-10-13 07:06 Europe/London — superseded £19 Decision Pack branch closed unmerged
+- TASK: `DOTS-20261013-hqc-close-stale-price-pr`; app Home Quote Check; milestone first genuine purchase / pricing safety; state completed.
+- INTENDED OUTCOME: remove an obsolete merge path that could reintroduce a £19 Decision Pack assumption and stale verification workflow while the approved live offer remains £4.99.
+- COMMERCIAL METRIC: latest synthetic-excluded durable funnel fetched 2026-10-13 03:34Z is 193 landings → 69 checker starts → 6 uploads → 6 genuine analyses → 0 checkouts. October operating target is 20 NEW genuine analyses plus the first genuine purchase by 31 October; revenue and payer count were not refreshed by this repository-only task and remain unavailable rather than zero.
+- SOURCE: main `0c30f4899b816faf825ab0b534e5115639f2e781`; stale PR [#26](https://github.com/davidleechristie-ai/recast-worker/pull/26) head `543593a183904eef4d981a4e936aae04dcd5532d`, opened 11 September.
+- DIAGNOSIS: PR #26's checklist explicitly described a £19 Decision Pack and its only recorded check was a failed Cloudflare Workers build. The current approved product contract is a one-off £4.99 Heat Pump Decision Pack, and production code/configuration has advanced materially since that branch.
+- CHANGE/RECEIPT: PR #26 closed unmerged at 2026-10-13 06:05:45Z; its body now records the supersession and warns against reuse.
+- CHECKS: GitHub readback confirms `state=closed`, `merged=false`, head unchanged and the supersession note present. Fresh scheduled HQC commercial/live-metrics workflows [38342331928](https://github.com/davidleechristie-ai/recast-worker/actions/runs/38342331928) and [38342714733](https://github.com/davidleechristie-ai/recast-worker/actions/runs/38342714733) succeeded on current main.
+- DEPLOYMENT: none. No price, Stripe secret, Price ID, Checkout Session, production code, payment gate, customer data or UI changed.
+- RESPONSE: commercial-safety risk removed; no customer, checkout, purchase or revenue improvement is claimed.
+- HUMAN INTERVENTION: not required for this closure.
+- NEXT DECISION: by 18 October, use the first useful post-telemetry genuine cohort to compare starts → picker/manual → selection → upload; preserve £4.99 and choose one evidence-backed intake change only. Independently reconcile authoritative successful non-refunded HQC payment evidence when the correct live Stripe account is accessible.
+
 
 ## 2026-10-12 21:18 Europe/London — intake stage telemetry restored and production-verified
 - TASK: `DOTS-20261012-hqc-intake-stage-telemetry`; app Home Quote Check; milestone first-purchase journey / start-to-upload diagnosis; state completed.
