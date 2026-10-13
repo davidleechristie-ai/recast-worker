@@ -1,5 +1,5 @@
 {
-  "fetchedAt": "2026-10-13T11:56:32Z",
+  "fetchedAt": "2026-10-13T19:22:23Z",
   "metrics": {
     "genuineAnalyses": 6,
     "shareOpens": 0,
@@ -15,12 +15,12 @@
     "note": "Cumulative Cloudflare-side counters from measurementStartedAt; QA/demo/test events are excluded. Extended funnel counters use their own same-epoch denominator from extendedMeasurementStartedAt."
   },
   "growthReport": {
-    "generatedAt": "2026-10-13T11:56:32.183Z",
+    "generatedAt": "2026-10-13T19:22:23.369Z",
     "measurementStartedAt": "2026-09-11T18:33:07.244Z",
     "extendedMeasurementStartedAt": "2026-09-11T20:34:24.536Z",
     "durable": true,
     "total": {
-      "landings": 193,
+      "landings": 195,
       "cta": 69,
       "pickerOpens": 0,
       "fileSelections": 0,
@@ -53,7 +53,7 @@
       "installerAlternativeInterest": 0
     },
     "rates": {
-      "landingToCta": 36,
+      "landingToCta": 35,
       "ctaToUpload": 9,
       "uploadToGenuine": 100,
       "landingToSingleStart": 1,
@@ -139,13 +139,13 @@
         "analysisErrors": 0,
         "resultVisible": 0,
         "installerAlternativeInterest": 0,
-        "source": "professional",
+        "source": "organic_heatloss",
         "landingToCta": 0,
         "ctaToUpload": null,
         "landingToGenuine": 0
       },
       {
-        "landings": 6,
+        "landings": 7,
         "cta": 0,
         "pickerOpens": 0,
         "fileSelections": 0,
@@ -176,13 +176,13 @@
         "analysisErrors": 0,
         "resultVisible": 0,
         "installerAlternativeInterest": 0,
-        "source": "organic_heatloss",
+        "source": "professional",
         "landingToCta": 0,
         "ctaToUpload": null,
         "landingToGenuine": 0
       },
       {
-        "landings": 5,
+        "landings": 6,
         "cta": 0,
         "pickerOpens": 0,
         "fileSelections": 0,
@@ -813,7 +813,7 @@
     ],
     "technologies": [
       {
-        "landings": 140,
+        "landings": 142,
         "cta": 54,
         "pickerOpens": 0,
         "fileSelections": 0,
