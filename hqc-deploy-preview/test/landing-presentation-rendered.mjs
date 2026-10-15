@@ -35,5 +35,34 @@ try{
   }
   await context.close();
  }
+
+ // Verify candidate scripts in the real public page without submitting quotes or telemetry.
+ for(const mode of ['mobile','desktop']){
+  const context=await browser.newContext({viewport:mode==='mobile'?{width:390,height:844}:{width:1280,height:900}});
+  const page=await context.newPage();
+  const scripts={'/__hqc_mobile_homepage.js':'mobile-homepage-override.js','/__hqc_approved_layout.js':'approved-home-layout.js','/__hqc_landing_conversion.js':'landing-conversion.js'};
+  await page.route('https://homequotecheck.co.uk/**',async route=>{
+   const request=route.request(),path=new URL(request.url()).pathname;
+   if(request.method()!=='GET')return route.abort();
+   if(scripts[path])return route.fulfill({contentType:'application/javascript',body:await readFile('hqc-deploy-preview/'+scripts[path],'utf8')});
+   return route.continue();
+  });
+  for(const tech of ['heat_pump','solar_battery','ev_chargepoint']){
+   await page.goto('https://homequotecheck.co.uk/?qa=1&technology='+tech+'&src=qa_presentation',{waitUntil:'networkidle'});
+   const overlay=page.locator('#hqc-mobile-landing');
+   const useOverlay=mode==='mobile'&&await overlay.count();
+   const scope=useOverlay?'#hqc-mobile-landing':'.copy';
+   if(useOverlay)await page.locator(scope+' [data-tech="'+tech+'"]').click();
+   const note=await page.locator(useOverlay?scope+' .upload-note':'#hqc-primary-start span').innerText();
+   if(tech!=='heat_pump'){
+    assert.match(note,/text-based.*PDF/i,'live '+mode+' '+tech);
+    const images=page.locator(useOverlay?scope+' .scene img':'.copy + div img[src*="homepage-house"]');
+    for(const img of await images.all())assert.equal(await img.isVisible(),false);
+   }
+   await page.screenshot({path:'artifacts/landing-presentation/live-'+mode+'-'+tech+'.png',fullPage:true});
+  }
+  await context.close();
+ }
+
  console.log('LANDING_PRESENTATION_RENDERED mobile desktop heat_pump solar_battery ev_chargepoint');
 }finally{await browser.close()}
