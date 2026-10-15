@@ -15,7 +15,12 @@
  function apply(){
   const copy=qs('.copy'),img=qsa('img').find(x=>x.dataset.hqcHeroImage==='true'||/homepage-(?:graphic|house-only)\.(?:png|svg)/i.test(x.getAttribute('src')||''));if(!copy||!img)return;
   let hero=copy.parentElement;while(hero&&hero!==document.body&&!hero.contains(img))hero=hero.parentElement;if(!hero||!hero.contains(img))return;
-  const left=direct(hero,copy),right=direct(hero,img),mobile=innerWidth<760,selectedTech=technology(),renewable=selectedTech==='solar_battery'||selectedTech==='ev_chargepoint',mode=(mobile?'conversion-mobile-v1':'conversion-desktop-v1')+':'+selectedTech;if(hero.dataset.hqcApproved===mode)return;hero.dataset.hqcApproved=mode;
+  const left=direct(hero,copy),right=direct(hero,img),mobile=innerWidth<760,selectedTech=technology(),renewable=selectedTech==='solar_battery'||selectedTech==='ev_chargepoint',mode=(mobile?'conversion-mobile-v1':'conversion-desktop-v1')+':'+selectedTech;if(renewable){
+   const label=selectedTech==='solar_battery'?'solar or battery':'EV charger';
+   qsa('*',copy).filter(el=>/^Compare your heat[-‑– ]pump quotes before you commit\.$/i.test(el.textContent.trim())).forEach(el=>{el.textContent='Understand your '+label+' quote before you commit.'});
+   qsa('p,span,div').filter(el=>el.textContent.trim()==='Upload images or enter facts manually.').forEach(el=>{el.textContent='Upload a text-based installer PDF.'});
+  }
+  if(hero.dataset.hqcApproved===mode)return;hero.dataset.hqcApproved=mode;
   hero.style.cssText=`display:grid!important;grid-template-columns:${mobile?'1fr':'minmax(0,1fr) minmax(0,1.03fr)'}!important;gap:${mobile?'16px':'48px'}!important;align-items:center!important;padding:${mobile?'18px 16px 26px':'56px 48px 62px'}!important;max-width:1220px!important;margin:0 auto!important;`;
   [...hero.children].forEach(c=>c.style.setProperty('display',c===left||c===right?'block':'none','important'));
   left.style.cssText='display:block!important;min-width:0!important;width:100%!important;order:1!important';copy.style.cssText=`display:block!important;margin:0!important;max-width:${mobile?'none':'590px'}!important;`;
