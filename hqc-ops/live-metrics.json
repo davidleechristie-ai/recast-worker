@@ -1,5 +1,5 @@
 {
-  "fetchedAt": "2026-10-15T10:19:41Z",
+  "fetchedAt": "2026-10-15T11:44:14Z",
   "metrics": {
     "genuineAnalyses": 6,
     "shareOpens": 0,
@@ -15,16 +15,16 @@
     "note": "Cumulative Cloudflare-side counters from measurementStartedAt; QA/demo/test events are excluded. Extended funnel counters use their own same-epoch denominator from extendedMeasurementStartedAt."
   },
   "growthReport": {
-    "generatedAt": "2026-10-15T10:19:41.764Z",
+    "generatedAt": "2026-10-15T11:44:14.310Z",
     "measurementStartedAt": "2026-09-11T18:33:07.244Z",
     "extendedMeasurementStartedAt": "2026-09-11T20:34:24.536Z",
     "durable": true,
     "total": {
-      "landings": 209,
-      "cta": 71,
+      "landings": 213,
+      "cta": 75,
       "pickerOpens": 0,
       "fileSelections": 0,
-      "manualOpens": 0,
+      "manualOpens": 1,
       "uploads": 6,
       "genuine": 6,
       "extendedGenuine": 5,
@@ -40,8 +40,8 @@
       "recipientStarts": 0,
       "outboundClicks": 0,
       "checkouts": 0,
-      "singleStarts": 2,
-      "comparisonStarts": 3,
+      "singleStarts": 3,
+      "comparisonStarts": 4,
       "resultViews": 0,
       "commercialNextStepViews": 0,
       "alternativeQuoteIntent": 0,
@@ -53,11 +53,11 @@
       "installerAlternativeInterest": 0
     },
     "rates": {
-      "landingToCta": 34,
+      "landingToCta": 35,
       "ctaToUpload": 8,
       "uploadToGenuine": 100,
       "landingToSingleStart": 1,
-      "singleStartToGenuine": 300,
+      "singleStartToGenuine": 200,
       "genuineToResultView": 0,
       "resultToAlternativeIntent": null,
       "uploadHandoffToReady": null,
@@ -71,11 +71,11 @@
     },
     "sources": [
       {
-        "landings": 135,
-        "cta": 69,
+        "landings": 138,
+        "cta": 73,
         "pickerOpens": 0,
         "fileSelections": 0,
-        "manualOpens": 0,
+        "manualOpens": 1,
         "uploads": 6,
         "genuine": 6,
         "extendedGenuine": 5,
@@ -91,8 +91,8 @@
         "recipientStarts": 0,
         "outboundClicks": 0,
         "checkouts": 0,
-        "singleStarts": 2,
-        "comparisonStarts": 2,
+        "singleStarts": 3,
+        "comparisonStarts": 3,
         "resultViews": 0,
         "commercialNextStepViews": 0,
         "alternativeQuoteIntent": 0,
@@ -103,8 +103,8 @@
         "resultVisible": 0,
         "installerAlternativeInterest": 0,
         "source": "direct",
-        "landingToCta": 51,
-        "ctaToUpload": 9,
+        "landingToCta": 53,
+        "ctaToUpload": 8,
         "landingToGenuine": 4
       },
       {
@@ -219,7 +219,7 @@
         "landingToGenuine": 0
       },
       {
-        "landings": 5,
+        "landings": 6,
         "cta": 0,
         "pickerOpens": 0,
         "fileSelections": 0,
@@ -250,7 +250,7 @@
         "analysisErrors": 0,
         "resultVisible": 0,
         "installerAlternativeInterest": 0,
-        "source": "organic_compare_static",
+        "source": "organic_radiators",
         "landingToCta": 0,
         "ctaToUpload": null,
         "landingToGenuine": 0
@@ -287,7 +287,7 @@
         "analysisErrors": 0,
         "resultVisible": 0,
         "installerAlternativeInterest": 0,
-        "source": "organic_radiators",
+        "source": "organic_compare_static",
         "landingToCta": 0,
         "ctaToUpload": null,
         "landingToGenuine": 0
@@ -813,11 +813,11 @@
     ],
     "technologies": [
       {
-        "landings": 156,
-        "cta": 56,
+        "landings": 160,
+        "cta": 60,
         "pickerOpens": 0,
         "fileSelections": 0,
-        "manualOpens": 0,
+        "manualOpens": 1,
         "uploads": 1,
         "genuine": 1,
         "extendedGenuine": 1,
@@ -833,8 +833,8 @@
         "recipientStarts": 0,
         "outboundClicks": 0,
         "checkouts": 0,
-        "singleStarts": 1,
-        "comparisonStarts": 3,
+        "singleStarts": 2,
+        "comparisonStarts": 4,
         "resultViews": 0,
         "commercialNextStepViews": 0,
         "alternativeQuoteIntent": 0,
