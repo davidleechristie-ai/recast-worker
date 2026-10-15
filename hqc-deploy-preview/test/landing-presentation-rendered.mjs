@@ -66,6 +66,8 @@ try{
    const note=await page.locator(useOverlay?scope+' .upload-note':'#hqc-primary-start span').innerText();
    if(tech!=='heat_pump'){
     assert.match(note,/text-based.*PDF/i,'live '+mode+' '+tech);
+    if(mode==='desktop')assert.doesNotMatch(await page.locator('.copy').innerText(),/Compare your heat-pump quotes/i,'renewable secondary heading must match category');
+    if(mode==='desktop')assert.doesNotMatch(await page.locator('body').innerText(),/Upload images or enter facts manually\./,'renewable process step must describe supported PDF');
     const images=page.locator(useOverlay?scope+' .scene img':'.copy + div img[src*="homepage-house"]');
     for(const img of await images.all())assert.equal(await img.isVisible(),false);
    }
