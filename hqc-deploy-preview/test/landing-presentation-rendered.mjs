@@ -22,7 +22,7 @@ try{
    if(tech!=='heat_pump'){
     assert.match(note,/text-based.*PDF/i,mode+' '+tech+' must explain text PDF support');
     assert.doesNotMatch(note,/photo|screenshot/i);
-    const visibleHeatPump=await page.locator('img[src*="homepage-house"]').evaluateAll(imgs=>imgs.some(img=>!!(img.offsetWidth||img.offsetHeight)&&getComputedStyle(img).visibility!=='hidden'&&getComputedStyle(img).display!=='none'&&!!img.closest('body')&&!img.closest('[hidden]')&&(!img.parentElement||getComputedStyle(img.parentElement).display!=='none')));
+    const visibleHeatPump=await page.locator((mode==='mobile'?scope+' ':'')+'img[src*="homepage-house"]').evaluateAll(imgs=>imgs.some(img=>!!(img.offsetWidth||img.offsetHeight)&&getComputedStyle(img).visibility!=='hidden'&&getComputedStyle(img).display!=='none'&&!!img.closest('body')&&!img.closest('[hidden]')&&(!img.parentElement||getComputedStyle(img.parentElement).display!=='none')));
     assert.equal(visibleHeatPump,false,mode+' '+tech+' must not display heat-pump imagery');
     const heading=await page.locator(scope+' h1').innerText();
     assert.doesNotMatch(heading,/heat pump/i);

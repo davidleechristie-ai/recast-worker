@@ -48,6 +48,14 @@
  <div class="section"><h2>How it works</h2><div class="step"><i>1</i><div><b>Upload your quote</b><p>Take a photo or upload a PDF.</p></div></div><div class="step"><i>2</i><div><b>We check the details</b><p>We review price, scope and key information.</p></div></div><div class="step"><i>3</i><div><b>Get your answers</b><p>See what needs attention before you commit.</p></div></div></div>
  <div class="comparison"><span class="tag">MORE THAN ONE QUOTE?</span><h2>Compare quotes side by side.</h2><p>See differences in price, scope and what's included.</p><button class="secondary" data-go="compare">Compare quotes →</button></div>
  </div><div class="sticky"><button class="primary" data-go="single">Check my quote — free →</button></div>`;
+ function updatePresentation(screen,technology){
+  const renewable=technology==='solar_battery'||technology==='ev_chargepoint';
+  const label=technology==='solar_battery'?'solar or battery':technology==='ev_chargepoint'?'EV charger':'home energy';
+  screen.querySelector('h1').textContent='Is your '+label+' quote a good deal?';
+  screen.querySelector('.upload-note').textContent=renewable?'Upload a text-based installer PDF · Photos and scanned PDFs are not supported':'Upload a photo, screenshot or PDF · About a minute to start';
+  screen.querySelector('.scene').hidden=renewable;
+  screen.querySelector('.step p').textContent=renewable?'Upload a text-based installer PDF.':'Take a photo or upload a PDF.';
+ }
  function selectedTechnology(){return document.querySelector("#hqc-mobile-landing [data-tech][aria-pressed=\"true\"]")?.dataset.tech||"heat_pump"}
  let journeyActive=false;
  function go(mode){
@@ -70,7 +78,9 @@
   const style=document.createElement('style');style.textContent=css;document.head.appendChild(style);
   const screen=document.createElement('div');screen.id='hqc-mobile-landing';screen.setAttribute('aria-label','Home Quote Check mobile homepage');screen.innerHTML=template;
   document.body.appendChild(screen);
-  screen.querySelectorAll('[data-tech]').forEach(button=>button.addEventListener('click',()=>{screen.querySelectorAll('[data-tech]').forEach(other=>other.setAttribute('aria-pressed',String(other===button)));const img=screen.querySelector('.scene img');if(img)img.alt='Home energy quote illustration — selected '+button.textContent;}));
+  screen.querySelectorAll('[data-tech]').forEach(button=>button.addEventListener('click',()=>{screen.querySelectorAll('[data-tech]').forEach(other=>other.setAttribute('aria-pressed',String(other===button)));updatePresentation(screen,button.dataset.tech);}));
+  const preferred=destination.get('technology')||sessionStorage.getItem('hqc_journey_technology')||'heat_pump';
+  const selected=screen.querySelector('[data-tech="'+preferred+'"]')||screen.querySelector('[data-tech="heat_pump"]');selected.click();
   screen.querySelectorAll('[data-go]').forEach(button=>button.addEventListener('click',()=>go(button.dataset.go)));
  }
  if(document.readyState==='loading')document.addEventListener('DOMContentLoaded',mount);else mount();

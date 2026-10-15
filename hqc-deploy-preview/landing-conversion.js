@@ -52,7 +52,10 @@
         if(!reassurance){
           reassurance=document.createElement('div');
           reassurance.id='hqc-start-reassurance';
+          const selectedTech=new URLSearchParams(location.search).get('technology')||sessionStorage.getItem('hqc_journey_technology')||'heat_pump';
+          const renewable=selectedTech==='solar_battery'||selectedTech==='ev_chargepoint';
           reassurance.innerHTML='<b>See the gaps before you commit.</b><span> Takes about a minute to start · screenshot, photo or PDF · no account required.</span>';
+          if(renewable)reassurance.innerHTML='<b>See the gaps before you commit.</b><span> Upload a text-based installer PDF · photos and scanned PDFs are not supported · no account required.</span>';
           reassurance.style.cssText='margin:0 0 12px;max-width:520px;font-size:13px;line-height:1.45;color:#42566f';
           btn.insertAdjacentElement('beforebegin',reassurance);
         }
