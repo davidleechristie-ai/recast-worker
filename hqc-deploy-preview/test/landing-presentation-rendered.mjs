@@ -32,6 +32,16 @@ try{
    }
    await page.screenshot({path:'artifacts/landing-presentation/'+mode+'-'+tech+'.png',fullPage:true});
    assert.match(page.url(),/src=test_kept/);
+   if(tech==='solar_battery'){
+    if(mode==='mobile'){
+     await page.locator(scope+' [data-tech="heat_pump"]').click();
+     await page.locator(scope+' [data-go="single"]').first().click();
+    }else{
+     await page.locator('#hqc-technology-choice [data-tech="heat_pump"]').click();
+    }
+    await page.waitForURL(url=>url.searchParams.get('technology')==='heat_pump');
+    assert.equal(new URL(page.url()).searchParams.get('src'),'test_kept','category handoff retains attribution');
+   }
   }
   await context.close();
  }
