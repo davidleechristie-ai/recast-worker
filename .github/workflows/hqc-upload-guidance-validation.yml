@@ -3,6 +3,9 @@ on:
   pull_request:
     paths:
       - 'hqc-deploy-preview/upload-friction-v3.js'
+      - 'hqc-deploy-preview/mobile-homepage-override.js'
+      - 'hqc-deploy-preview/approved-home-layout.js'
+      - 'hqc-deploy-preview/test/landing-presentation-rendered.mjs'
       - 'hqc-deploy-preview/test/renewable-upload-boundary.test.mjs'
       - '.github/workflows/hqc-upload-guidance-validation.yml'
 permissions:
@@ -33,3 +36,15 @@ jobs:
           assert.match(s,/input\.click\(\)/);
           console.log('HQC upload guidance checks passed');
           NODE
+      - name: Install existing browser test tooling
+        run: |
+          npm install --no-save playwright@1.55.0
+          npx playwright install --with-deps chromium
+      - name: Render category-correct landing presentation
+        run: node hqc-deploy-preview/test/landing-presentation-rendered.mjs
+      - name: Retain rendered presentation evidence
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: hqc-landing-presentation
+          path: artifacts/landing-presentation
