@@ -65,7 +65,7 @@
   document.getElementById('hqc-mobile-sticky-cta')?.remove();
   let original=mode==='compare'?document.getElementById('hqc-secondary-compare'):document.getElementById('hqc-primary-start');
   if(!original)original=document.querySelector('.copy button.primary')||[...document.querySelectorAll('button')].find(b=>/get started/i.test(b.textContent||''));
-  if(technology!=="heat_pump"){location.href="/?technology="+encodeURIComponent(technology)+"&start="+encodeURIComponent(mode);return}
+  if(technology!=="heat_pump"||(destination.get('technology')&&destination.get('technology')!==technology)){const next=new URL(location.href);next.searchParams.set('technology',technology);next.searchParams.set('start',mode);location.href=next.pathname+next.search;return}
   if(original){original.click();return}
   const nav=document.querySelector('header button');if(nav)nav.click();
  }
