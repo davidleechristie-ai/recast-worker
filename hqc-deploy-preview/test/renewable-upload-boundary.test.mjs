@@ -16,4 +16,6 @@ test('public renewable intake remains text-PDF only and never opens the heat-pum
 test('solar upload guidance names its supported input instead of promising photos', () => {
   assert.match(source, /solarPreview\(\)\?'<div[^']*Upload a text-based solar or battery PDF/);
   assert.match(source, /Solar and battery checks accept text-based installer PDFs only\./);
+  assert.match(source, /const title=\[\.\.\.help\.children\]\.find\(node=>node\.tagName==='B'\)/);
+  assert.match(source, /cardIntro\.textContent=renewableTextPdf\(\)\?'Upload one text-based installer PDF\./);
 });
