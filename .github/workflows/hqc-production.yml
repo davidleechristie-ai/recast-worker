@@ -2,23 +2,63 @@ name: HQC production deploy
 
 on:
   workflow_dispatch:
+  pull_request:
+    paths:
+      - 'hqc-deploy-preview/compare-heat-pump-quotes.html'
+      - 'hqc-deploy-preview/is-this-a-good-heat-pump-quote.html'
+      - 'hqc-deploy-preview/heat-pump-quote-checklist.html'
+      - 'hqc-deploy-preview/what-should-a-heat-pump-quote-include.html'
+      - 'hqc-deploy-preview/heat-pump-heat-loss-calculation-flow-temperature.html'
+      - 'hqc-deploy-preview/test/quote-guides.test.mjs'
+      - 'hqc-deploy-preview/test/quote-guides-rendered.mjs'
+      - 'hqc-deploy-preview/snapshot.mjs'
+      - '.github/workflows/hqc-production.yml'
   push:
     branches: [main]
     paths:
       - 'hqc-deploy-preview/approved-home-layout.js'
       - 'hqc-deploy-preview/mobile-homepage-override.js'
       - 'hqc-deploy-preview/snapshot.mjs'
+      - 'hqc-deploy-preview/compare-heat-pump-quotes.html'
+      - 'hqc-deploy-preview/is-this-a-good-heat-pump-quote.html'
+      - 'hqc-deploy-preview/heat-pump-quote-checklist.html'
+      - 'hqc-deploy-preview/what-should-a-heat-pump-quote-include.html'
+      - 'hqc-deploy-preview/heat-pump-heat-loss-calculation-flow-temperature.html'
+      - 'hqc-deploy-preview/test/quote-guides.test.mjs'
+      - 'hqc-deploy-preview/test/quote-guides-rendered.mjs'
       - '.github/workflows/hqc-production.yml'
 
 permissions:
   contents: read
 
 concurrency:
-  group: hqc-production
+  group: ${{ github.event_name == 'pull_request' && format('hqc-production-pr-{0}', github.event.pull_request.number) || 'hqc-production' }}
   cancel-in-progress: true
 
 jobs:
+  quote-guides:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 22
+      - name: Check content contracts
+        run: node --test hqc-deploy-preview/test/quote-guides.test.mjs
+      - name: Install existing browser QA tooling
+        run: |
+          npm install --no-save playwright@1.55.0
+          npx playwright install --with-deps chromium
+      - name: Render all five guides on mobile and desktop
+        run: node hqc-deploy-preview/test/quote-guides-rendered.mjs
+      - uses: actions/upload-artifact@v4
+        if: always()
+        with:
+          name: hqc-quote-guides-rendered
+          path: artifacts/quote-guides
   deploy:
+    if: github.event_name != 'pull_request'
+    needs: quote-guides
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v4
@@ -108,3 +148,4 @@ jobs:
           growth=$(curl -L -sS --max-time 30 "$base/api/growth-report")
           ! grep -q 'qa_production_guard' <<< "$growth"
           echo 'HQC production HTTP verification passed.'
+
