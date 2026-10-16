@@ -22,8 +22,10 @@ try{
    if(tech==='heat_pump')await page.locator(root+' .hqc-visible-guides').waitFor({state:'visible'});else assert.equal(await page.locator(root+' .hqc-visible-guides:visible').count(),0);
    const preview=page.locator(width<760?'#hqc-mobile-landing .hqc-example-output':'#hqc-desktop-example');
    await preview.waitFor({state:'visible'});
+   await page.waitForTimeout(3500); // Let legacy layout retries settle before inspecting final state.
    assert.match(await preview.innerText(),/ILLUSTRATIVE EXAMPLE/);
    assert.match(await preview.innerText(),/No account required/);
+   if(width>=760){assert.equal(await page.locator('img[data-hqc-hero-image]').isVisible(),false,'legacy hero image stays hidden');assert.equal(await preview.evaluate(el=>[...el.children].every(child=>{const a=child.getBoundingClientRect(),b=el.getBoundingClientRect();return a.left>=b.left-1&&a.right<=b.right+1&&a.top>=b.top-1&&a.bottom<=b.bottom+1;})),true,'complete report content fits inside the preview');}
    const bounds=await preview.boundingBox();assert.ok(bounds.width>250,'report is not squeezed into a legacy illustration slot');assert.ok(bounds.x>=0&&bounds.x+bounds.width<=width,'example stays within viewport');if(width>=760&&await page.locator('#hqc-hero-steps').count())assert.equal(await page.locator('#hqc-hero-steps').isVisible(),false,'old illustration overlay is hidden');
    assert.equal(await preview.evaluate(el=>el.scrollWidth>el.clientWidth),false,'example report is not clipped');
    assert.equal(await preview.evaluate(el=>{const r=el.getBoundingClientRect();for(let p=el;p&&p!==document.body;p=p.parentElement){const b=p.getBoundingClientRect(),c=getComputedStyle(p);if(c.overflowY==='hidden'&&(r.top<b.top-1||r.bottom>b.bottom+1))return false;}return getComputedStyle(el.parentElement).display!=='flex';}),true,'legacy artwork fitter does not crop the report');
