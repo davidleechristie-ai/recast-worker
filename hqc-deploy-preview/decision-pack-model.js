@@ -4,14 +4,14 @@
  const scopeFields=[['electricalWork','Electrical work'],['emitterChanges','Radiator / emitter changes'],['pipework','Pipework'],['cylinder','Hot-water cylinder'],['groundworks','External / ground works'],['commissioning','Commissioning and handover'],['warranty','Warranty and aftercare']];
  const designFields=[['heatLossKw','Whole-home heat loss'],['roomByRoom','Room-by-room heat-loss evidence'],['designOutdoorC','Outdoor design temperature'],['flowTemperatureC','Design flow temperature'],['model','Exact heat-pump model']];
  function scope(q,key,label){
-  const raw=q[key],evidence=absent(raw)?'':String(raw).slice(0,1600);
+  const raw=['string','number'].includes(typeof q[key])?q[key]:null,evidence=absent(raw)?'':String(raw).slice(0,1600);
   let status='Not stated';
   if(evidence){
    if(/not found|not provided|not stated|not evidenced|unknown/i.test(evidence))status='Not stated';
-   else if(/excluded|not included|customer to arrange|by others/i.test(evidence))status='Excluded';
+   else if(/assum|may |might |if required|not clear|unclear|not confirmed|\?/i.test(evidence))status='Assumed';
    else if(/provisional|allowance|subject to (?:survey|confirmation)|to be confirmed/i.test(evidence))status='Provisional';
-   else if(/assum|may |might |if required|not clear|unclear/i.test(evidence))status='Assumed';
-   else if(/included|provided|covered|fixed price/i.test(evidence))status='Confirmed';
+   else if(/excluded|not included|not covered|does not include|customer to arrange|by others/i.test(evidence))status='Excluded';
+   else if(/included|provided|covered|fixed price/i.test(evidence)&&!(/\bno\b|\bnot\b/i.test(evidence)))status='Confirmed';
    else status='Assumed';
   }
   return {key,label,status,evidence:evidence||'Not found in the extracted quote details. Ask for written confirmation.'};
@@ -26,7 +26,7 @@
    const questions=evidence.filter(x=>x.missing).map(x=>'Please provide or confirm '+x.label.toLowerCase()+' and the supporting design information.');
    scopeItems.filter(x=>x.status!=='Confirmed').forEach(x=>questions.push('Please confirm '+x.label.toLowerCase()+': what is included in the quoted total, what is excluded or provisional, and how any extra cost will be agreed?'));
    questions.push('Please confirm the final price, all exclusions and provisional sums, payment stages and cancellation terms in writing.');
-   return {name,price:Number(q.price)>0?'£'+Number(q.price).toLocaleString('en-GB'):'Not stated',model:absent(q.model)?'Not stated':String(q.model),scope:scopeItems,evidence,questions};
+   return {name,price:Number.isFinite(Number(q.price))&&Number(q.price)>0?'£'+Number(q.price).toLocaleString('en-GB'):'Not stated',model:absent(q.model)?'Not stated':String(q.model),scope:scopeItems,evidence,questions};
   })};
  }
  function markup(r){

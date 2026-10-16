@@ -27,3 +27,11 @@ test('assumptions are labelled and hostile quote text is escaped in markup',()=>
  assert.ok(html.includes('&lt;img'));
  assert.ok(!html.includes('<img'));
 });
+test('negative and uncertain scope wording never becomes a confirmed inclusion',()=>{
+ const build=value=>context.HqcPackModel.build([{electricalWork:value}]).quotes[0].scope.find(x=>x.key==='electricalWork').status;
+ assert.equal(build('Electrical work not covered'),'Excluded');
+ assert.equal(build('Assumed electrical work excluded'),'Assumed');
+ assert.equal(build('Electrical work included?'),'Assumed');
+ assert.equal(build({included:true}),'Not stated');
+ assert.equal(context.HqcPackModel.build([{price:'Infinity'}]).quotes[0].price,'Not stated');
+});
