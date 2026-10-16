@@ -1,0 +1,10 @@
+{
+  "status": "prepared-copy-only-not-active-prices",
+  "current_price_gbp": 4.99,
+  "variants": [
+    {"price_gbp": 19, "cta": "Get the Decision Pack — £19"},
+    {"price_gbp": 29, "cta": "Get the Decision Pack — £29"},
+    {"price_gbp": 39, "cta": "Get the Decision Pack — £39"}
+  ],
+  "activation": "Verify the matching server-side Stripe price and display/checkout/receipt/fulfilment contract before changing live copy. Preserve existing purchases."
+}
