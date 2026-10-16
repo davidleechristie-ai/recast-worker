@@ -4,7 +4,7 @@ import assert from 'node:assert/strict';
 const browser=await chromium.launch({headless:true});
 await mkdir('artifacts/conversion-journey',{recursive:true});
 const code=n=>readFile('hqc-deploy-preview/'+n,'utf8');
-const scripts={'/__hqc_landing_conversion.js':'landing-conversion.js','/__hqc_mobile_homepage.js':'mobile-homepage-override.js','/__hqc_approved_layout.js':'approved-home-layout.js','/__hqc_simple_results.js':'simple-results-journey.js','/__hqc_decision_pack.js':'decision-pack.js','/__hqc_paid_comparison.js':'paid-comparison-gate.js'};
+const scripts={'/__hqc_artwork_fit.js':'artwork-fit.js','/__hqc_landing_conversion.js':'landing-conversion.js','/__hqc_mobile_homepage.js':'mobile-homepage-override.js','/__hqc_approved_layout.js':'approved-home-layout.js','/__hqc_simple_results.js':'simple-results-journey.js','/__hqc_decision_pack.js':'decision-pack.js','/__hqc_paid_comparison.js':'paid-comparison-gate.js'};
 const quotes=[{installer:'Illustrative Installer A',price:12400,model:'Model 8',electricalWork:'Electrical work included in quoted price',emitterChanges:'Provisional allowance £500',flowTemperatureC:45},{installer:'Illustrative Installer B',price:11900,model:'Model 8',electricalWork:'Excluded: customer to arrange'},{installer:'Illustrative Installer C',price:13000,roomByRoom:'Not provided'}];
 try{
  for(const width of [390,1440]){
@@ -34,6 +34,11 @@ try{
    await page.screenshot({path:'artifacts/conversion-journey/home-'+width+'-'+tech+'.png',fullPage:width>=760});
    if(tech==='heat_pump'){await page.locator(root+' .hqc-visible-guides').scrollIntoViewIfNeeded();await page.screenshot({path:'artifacts/conversion-journey/guides-'+width+'-'+tech+'.png'});}
   }
+  await page.setContent(await code('decision-pack.html'));
+  assert.match(await page.locator('h1').innerText(),/before you pay a deposit/);
+  assert.match(await page.locator('main').innerText(),/£4.99 one-off/);
+  assert.equal(await page.evaluate(()=>document.documentElement.scrollWidth>innerWidth),false,'sales page fits mobile');
+  await page.screenshot({path:'artifacts/conversion-journey/sales-'+width+'.png',fullPage:true});
   await page.close();
   for(const tech of ['heat_pump','solar_battery','ev_chargepoint']){
    const p=await browser.newPage({viewport:{width,height:900},acceptDownloads:true});

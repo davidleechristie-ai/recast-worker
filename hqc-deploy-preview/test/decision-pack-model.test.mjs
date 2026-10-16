@@ -35,3 +35,11 @@ test('negative and uncertain scope wording never becomes a confirmed inclusion',
  assert.equal(build({included:true}),'Not stated');
  assert.equal(context.HqcPackModel.build([{price:'Infinity'}]).quotes[0].price,'Not stated');
 });
+test('legacy artwork fitter leaves the report-owned container unchanged',async()=>{
+ const source=await readFile(new URL('../artwork-fit.js',import.meta.url),'utf8');
+ const mutations=[];
+ const style={setProperty:(...args)=>mutations.push(args)};
+ const img={style,dataset:{},getAttribute:()=>'/resources/homepage-house-only.svg',closest:()=>({querySelector:()=>({id:'hqc-desktop-example'})}),parentElement:{style,removeAttribute:()=>{},setAttribute:()=>{}}};
+ vm.runInNewContext(source,{document:{querySelectorAll:()=>[img],documentElement:{}},innerWidth:1440,requestAnimationFrame:fn=>fn(),MutationObserver:class{observe(){}},addEventListener:()=>{}});
+ assert.equal(mutations.length,0,'existing report and hidden image remain untouched');
+});

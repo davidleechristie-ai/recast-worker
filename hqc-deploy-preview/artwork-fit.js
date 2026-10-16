@@ -3,6 +3,8 @@
   const fit=()=>{
     const img=[...document.querySelectorAll('img')].find(x=>/homepage-(?:graphic\.png|house-only\.svg)/i.test(x.getAttribute('src')||''));
     if(!img)return;
+    // The report preview now owns this container; retain legacy fitting elsewhere.
+    if(img.closest('[data-hqc-approved]')?.querySelector('#hqc-desktop-example'))return;
     const art=img.parentElement;
     if(!art)return;
     if(!/homepage-house-only\.svg/i.test(img.getAttribute('src')||'')) img.setAttribute('src',HOUSE);
