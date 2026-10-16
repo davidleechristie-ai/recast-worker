@@ -26,6 +26,7 @@ try{
    assert.match(await preview.innerText(),/No account required/);
    const bounds=await preview.boundingBox();assert.ok(bounds.width>250,'report is not squeezed into a legacy illustration slot');assert.ok(bounds.x>=0&&bounds.x+bounds.width<=width,'example stays within viewport');if(width>=760&&await page.locator('#hqc-hero-steps').count())assert.equal(await page.locator('#hqc-hero-steps').isVisible(),false,'old illustration overlay is hidden');
    assert.equal(await preview.evaluate(el=>el.scrollWidth>el.clientWidth),false,'example report is not clipped');
+   assert.equal(await preview.evaluate(el=>{const r=el.getBoundingClientRect();for(let p=el;p&&p!==document.body;p=p.parentElement){const b=p.getBoundingClientRect(),c=getComputedStyle(p);if(c.overflowY==='hidden'&&(r.top<b.top-1||r.bottom>b.bottom+1))return false;}return getComputedStyle(el.parentElement).display!=='flex';}),true,'legacy artwork fitter does not crop the report');
    if(tech!=='heat_pump')assert.doesNotMatch(await preview.innerText(),/heat-loss calculation/);
    assert.equal(await page.evaluate(()=>document.documentElement.scrollWidth>innerWidth),false);
    await page.screenshot({path:'artifacts/conversion-journey/home-'+width+'-'+tech+'.png',fullPage:width>=760});
