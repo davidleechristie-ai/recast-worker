@@ -21,7 +21,7 @@
   return {generatedAt:new Date().toISOString(),quotes:input.map((q,i)=>{
    q=q&&typeof q==='object'?q:{};
    const name=String(q.installer||q.fileName||'Quote '+(i+1)).slice(0,240);
-   const evidence=designFields.map(([key,label])=>({label,value:absent(q[key])?'Not stated':String(q[key]),missing:absent(q[key])||/not provided|not found|not evidenced|unknown/i.test(String(q[key]))}));
+   const evidence=designFields.map(([key,label])=>({label,value:absent(q[key])?'Not stated':String(q[key])+((typeof q[key]==='number'&&key==='heatLossKw')?' kW':(typeof q[key]==='number'&&/TemperatureC|OutdoorC/.test(key))?' °C':''),missing:absent(q[key])||/not provided|not found|not evidenced|unknown/i.test(String(q[key]))}));
    const scopeItems=scopeFields.map(([key,label])=>scope(q,key,label));
    const questions=evidence.filter(x=>x.missing).map(x=>'Please provide or confirm '+x.label.toLowerCase()+' and the supporting design information.');
    scopeItems.filter(x=>x.status!=='Confirmed').forEach(x=>questions.push('Please confirm '+x.label.toLowerCase()+': what is included in the quoted total, what is excluded or provisional, and how any extra cost will be agreed?'));
@@ -45,8 +45,9 @@
    ctx.font=(heading?'bold 29px':'23px')+' system-ui, sans-serif';
    let line='';const pieces=text.match(/\S+\s*/g)||[''];
    const wrapped=[];
-   for(const piece of pieces){for(const ch of piece){if(ctx.measureText(line+ch).width>990&&line){wrapped.push(line.trimEnd());line='';}line+=ch;}}
+   for(const piece of pieces){if(line&&ctx.measureText(line+piece).width>990){wrapped.push(line.trimEnd());line='';}if(ctx.measureText(piece).width<=990){line+=piece;continue}for(const ch of piece){if(ctx.measureText(line+ch).width>990&&line){wrapped.push(line.trimEnd());line='';}line+=ch;}}
    if(line)wrapped.push(line.trimEnd());
+   if(y+wrapped.length*(heading?42:34)+32>1540&&wrapped.length<40){page();ctx.font=(heading?'bold 29px':'23px')+' system-ui, sans-serif';}
    if(heading)y+=18;
    for(const line of wrapped){if(y>1540){page();ctx.font=(heading?'bold 29px':'23px')+' system-ui, sans-serif';}ctx.fillText(line,100,y);y+=heading?42:34;}
    y+=14;
@@ -55,7 +56,7 @@
   const join=parts=>{const n=parts.reduce((v,p)=>v+p.length,0),b=new Uint8Array(n);let i=0;for(const p of parts){b.set(p,i);i+=p.length}return b};
   objects.push(enc('<< /Type /Catalog /Pages 2 0 R >>'));
   objects.push(enc('<< /Type /Pages /Count '+pages.length+' /Kids ['+pages.map((_,i)=>(3+i*3)+' 0 R').join(' ')+'] >>'));
-  pages.forEach((c,i)=>{const id=3+i*3,binary=atob(c.toDataURL('image/jpeg',0.92).split(',')[1]),bytes=Uint8Array.from(binary,x=>x.charCodeAt(0)),stream='q 595 0 0 842 0 0 cm /P'+i+' Do Q';
+  pages.forEach((c,i)=>{const footer=c.getContext('2d');footer.font='19px system-ui, sans-serif';footer.fillStyle='#52647a';footer.fillText('Home Quote Check · Decision Pack · Page '+(i+1)+' of '+pages.length,100,1615);const id=3+i*3,binary=atob(c.toDataURL('image/jpeg',0.92).split(',')[1]),bytes=Uint8Array.from(binary,x=>x.charCodeAt(0)),stream='q 595 0 0 842 0 0 cm /P'+i+' Do Q';
    objects.push(enc('<< /Type /Page /Parent 2 0 R /MediaBox [0 0 595 842] /Resources << /XObject << /P'+i+' '+(id+1)+' 0 R >> >> /Contents '+(id+2)+' 0 R >>'));
    objects.push(join([enc('<< /Type /XObject /Subtype /Image /Width 1190 /Height 1684 /ColorSpace /DeviceRGB /BitsPerComponent 8 /Filter /DCTDecode /Length '+bytes.length+' >>\nstream\n'),bytes,enc('\nendstream')]));
    objects.push(enc('<< /Length '+enc(stream).length+' >>\nstream\n'+stream+'\nendstream'));
