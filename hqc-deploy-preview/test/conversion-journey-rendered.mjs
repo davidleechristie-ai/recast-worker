@@ -4,7 +4,7 @@ import assert from 'node:assert/strict';
 const browser=await chromium.launch({headless:true});
 await mkdir('artifacts/conversion-journey',{recursive:true});
 const code=n=>readFile('hqc-deploy-preview/'+n,'utf8');
-const scripts={'/__hqc_artwork_fit.js':'artwork-fit.js','/__hqc_landing_conversion.js':'landing-conversion.js','/__hqc_mobile_homepage.js':'mobile-homepage-override.js','/__hqc_approved_layout.js':'approved-home-layout.js','/__hqc_simple_results.js':'simple-results-journey.js','/__hqc_decision_pack.js':'decision-pack.js','/__hqc_paid_comparison.js':'paid-comparison-gate.js'};
+const scripts={'/__hqc_conversion_examples.js':'conversion-examples.js','/__hqc_artwork_fit.js':'artwork-fit.js','/__hqc_landing_conversion.js':'landing-conversion.js','/__hqc_mobile_homepage.js':'mobile-homepage-override.js','/__hqc_approved_layout.js':'approved-home-layout.js','/__hqc_simple_results.js':'simple-results-journey.js','/__hqc_decision_pack.js':'decision-pack.js','/__hqc_paid_comparison.js':'paid-comparison-gate.js'};
 const quotes=[{installer:'Illustrative Installer A',price:12400,model:'Model 8',electricalWork:'Electrical work included in quoted price',emitterChanges:'Provisional allowance £500',flowTemperatureC:45},{installer:'Illustrative Installer B',price:11900,model:'Model 8',electricalWork:'Excluded: customer to arrange'},{installer:'Illustrative Installer C',price:13000,roomByRoom:'Not provided'}];
 async function layoutEvidence(page,label){
  const data=await page.evaluate(()=>{
@@ -45,7 +45,34 @@ try{
   });
   for(const tech of ['heat_pump','solar_battery','ev_chargepoint']){
    await page.goto('https://homequotecheck.co.uk/?qa=1&technology='+tech+'&src=qa_conversion',{waitUntil:'networkidle'});
-   await page.addScriptTag({content:await code('conversion-examples.js')});
+   if(tech==='heat_pump'){
+    const home=page.locator('#hqc-clean-home');
+    await home.waitFor({state:'visible',timeout:10000});
+    await page.waitForTimeout(1500);
+    assert.equal(await page.locator('h1:visible').count(),1);
+    assert.equal(await home.locator('h1').innerText(),'See what’s missing in your quote');
+    assert.equal(await home.locator('.hqc-home-guide').count(),4);
+    assert.equal(await home.locator('.hqc-home-benefit').count(),4);
+    assert.equal(await home.locator('.hqc-home-report').count(),1);
+    assert.match(await home.locator('.hqc-home-report').innerText(),/Illustrative example/);
+    assert.match(await home.locator('.hqc-home-report').innerText(),/3 details to clarify/);
+    assert.equal(await page.locator('#hqc-desktop-example:visible,#hqc-mobile-landing:visible,.hqc-mob-sample:visible').count(),0,'legacy examples are absent');
+    assert.equal(await page.evaluate(()=>document.documentElement.scrollWidth>innerWidth),false,'homepage has no horizontal overflow');
+    const cta=home.locator('#hqc-primary-start');
+    const before=await cta.boundingBox();assert.ok(before.y+before.height<900,'free CTA appears in first screen');
+    await page.screenshot({path:'artifacts/conversion-journey/home-'+width+'-'+tech+'.png',fullPage:true});
+    await page.setViewportSize({width:width-1,height:900});await page.setViewportSize({width,height:900});
+    assert.equal(await cta.evaluate(el=>{const r=el.getBoundingClientRect();return document.elementFromPoint(r.x+r.width/2,r.y+r.height/2)?.closest('button')===el}),true,'free CTA remains unoccluded after capture and resize');
+    await cta.click();await page.locator('#hqc-choose-file').waitFor({state:'visible'});
+    assert.equal(await home.count(),0,'homepage releases ownership on upload');
+    assert.match(page.url(),/src=qa_conversion/,'upload preserves attribution');
+    await page.getByRole('link',{name:'Home',exact:true}).click();
+    await page.locator('#hqc-clean-home').waitFor({state:'visible'});
+    await page.locator('#hqc-clean-home [data-home-start="compare"]').click();
+    await page.locator('#hqc-choose-file').waitFor({state:'visible'});
+    assert.match(await page.locator('body').innerText(),/Add the quotes you want to compare/);
+    continue;
+   }
    const root=width<760?'#hqc-mobile-landing':'.copy';
    if(tech==='heat_pump')await page.locator(root+' .hqc-visible-guides').waitFor({state:'visible'});else assert.equal(await page.locator(root+' .hqc-visible-guides:visible').count(),0);
    const preview=page.locator(width<760?'#hqc-mobile-landing .hqc-example-output':'#hqc-desktop-example');
@@ -121,3 +148,4 @@ try{
  }
  console.log('CONVERSION_JOURNEY_RENDERED mobile/desktop all technologies, visible guides, illustrative previews, offers, three-quote fulfilment and PDF downloads passed');
 }finally{await browser.close()}
+
