@@ -12,8 +12,97 @@
   if(core){core.click();return}
   btn?.closest('a')?.click();
  }
+ // A single responsive owner for the Heat Pump homepage. The native app keeps
+ // the upload/compare handlers; this view releases ownership when it navigates.
+ function cleanHome(copy){
+  if(qs('#hqc-clean-home'))return;
+  let style=qs('#hqc-clean-home-style');
+  if(!style){
+   style=document.createElement('style');style.id='hqc-clean-home-style';
+   style.textContent=`
+    body[data-hqc-home="clean"]{margin:0!important;background:#fff!important}
+    body[data-hqc-home="clean"]>:not(#hqc-clean-home):not(style):not(script){display:none!important}
+    #hqc-clean-home{color:#132f3c;background:#fff;font:16px/1.5 system-ui,-apple-system,Segoe UI,sans-serif}
+    #hqc-clean-home *{box-sizing:border-box}
+    #hqc-clean-home a{color:inherit;text-underline-offset:4px}
+    #hqc-clean-home button{font:inherit;cursor:pointer}
+    #hqc-clean-home button:focus-visible,#hqc-clean-home a:focus-visible{outline:3px solid #d69a36;outline-offset:5px}
+    #hqc-clean-home .hqc-home-wrap{width:min(1180px,calc(100% - 80px));margin:auto}
+    #hqc-clean-home header{display:flex;align-items:center;justify-content:space-between;gap:24px;min-height:96px;border-bottom:1px solid #e8eeeb}
+    #hqc-clean-home .hqc-home-brand{display:flex;align-items:center;gap:12px;text-decoration:none;flex-shrink:0}
+    #hqc-clean-home .hqc-home-mark{width:43px;height:43px;display:grid;place-items:center;border:2px solid #087f5b;border-radius:12px;color:#087f5b}
+    #hqc-clean-home .hqc-home-brand b{display:block;font-size:19px;letter-spacing:-.03em}
+    #hqc-clean-home .hqc-home-brand small{display:block;color:#63736d;font-size:11px;margin-top:1px}
+    #hqc-clean-home header nav{display:flex;align-items:center;gap:28px;font-size:14px;font-weight:600}
+    #hqc-clean-home header nav a{text-decoration:none}
+    #hqc-clean-home .hqc-home-cta{display:inline-flex;align-items:center;justify-content:center;gap:18px;min-height:56px;border:0;border-radius:9px;padding:16px 26px;background:#087f5b;color:#fff;font-weight:750;font-size:17px;text-decoration:none;transition:background .15s}
+    #hqc-clean-home .hqc-home-cta:hover{background:#066447}
+    #hqc-clean-home .hqc-home-header-cta{min-height:44px;font-size:14px;padding:11px 20px}
+    #hqc-clean-home .hqc-home-hero{display:grid;grid-template-columns:1fr 1fr;gap:62px;align-items:center;padding:64px 0 62px}
+    #hqc-clean-home .hqc-home-eyebrow{color:#087153;font-size:12px;letter-spacing:.12em;font-weight:750;text-transform:uppercase;margin:0 0 18px}
+    #hqc-clean-home h1{font-size:clamp(44px,4.4vw,64px);font-weight:780;line-height:1.06;letter-spacing:-.045em;margin:0 0 22px;max-width:550px;color:#132f3c}
+    #hqc-clean-home .hqc-home-lead{font-size:18px;line-height:1.6;color:#5b6f69;max-width:490px;margin:0 0 26px}
+    #hqc-clean-home .hqc-home-upload-note{font-size:12px;color:#62756d;margin:12px 0 22px}
+    #hqc-clean-home .hqc-home-trust{display:flex;gap:7px;flex-wrap:wrap}
+    #hqc-clean-home .hqc-home-trust span{background:#eff6f2;border:1px solid #e2eee7;border-radius:99px;padding:6px 10px;font-size:11px;color:#4a6558;white-space:nowrap}
+    #hqc-clean-home .hqc-home-scene{position:relative;min-width:0;height:410px;border-radius:28px;background:linear-gradient(145deg,#f0f8f3,#e6f2eb);padding:18px 18px 100px}
+    #hqc-clean-home .hqc-home-scene img{display:block;position:static;width:100%;height:100%;object-fit:contain}
+    #hqc-clean-home .hqc-home-report{position:absolute;right:14px;bottom:0;width:min(310px,90%);padding:20px 22px;background:white;border:1px solid #e0e9e3;border-radius:14px;box-shadow:0 14px 35px #143c2920}
+    #hqc-clean-home .hqc-home-report small{display:block;color:#697a71;font-size:10px;letter-spacing:.08em;text-transform:uppercase}
+    #hqc-clean-home .hqc-home-report h2{font-size:21px;letter-spacing:-.03em;margin:6px 0 14px;color:#132f3c;line-height:1.2}
+    #hqc-clean-home .hqc-home-report ul{list-style:none;padding:0;margin:0;font-size:12px;color:#52685b}
+    #hqc-clean-home .hqc-home-report li{padding:7px 0;display:flex;align-items:center;gap:9px;border-top:1px solid #eef2ee}
+    #hqc-clean-home .hqc-home-report li::before{content:'!';display:grid;place-items:center;width:17px;height:17px;border-radius:50%;background:#fff2d8;color:#90620d;font-size:10px;font-weight:800;flex:none}
+    #hqc-clean-home .hqc-home-report strong{display:block;font-size:12px;margin-top:12px;color:#087153}
+    #hqc-clean-home .hqc-home-steps{background:#153e34;color:#fff;scroll-margin-top:16px}
+    #hqc-clean-home .hqc-home-steps ol{display:grid;grid-template-columns:repeat(3,1fr);list-style:none;margin:0 auto;padding:19px 0;max-width:900px}
+    #hqc-clean-home .hqc-home-steps li{display:flex;align-items:center;justify-content:center;gap:12px;font-size:14px;font-weight:650}
+    #hqc-clean-home .hqc-home-steps li+li{border-left:1px solid #ffffff26}
+    #hqc-clean-home .hqc-home-steps span{display:grid;place-items:center;width:23px;height:23px;border:1px solid #8bbba7;border-radius:50%;font-size:11px;color:#c7e4d7}
+    #hqc-clean-home .hqc-home-benefits{display:grid;grid-template-columns:repeat(4,1fr);gap:16px;padding:40px 0}
+    #hqc-clean-home .hqc-home-benefit{border:1px solid #e1eae4;border-radius:12px;padding:22px 16px;display:flex;flex-direction:column;align-items:flex-start;gap:13px;font-size:14px;font-weight:650;background:#fff}
+    #hqc-clean-home .hqc-home-icon{color:#087153;width:30px;height:30px}
+    #hqc-clean-home .hqc-home-guides{padding:24px 0 54px}
+    #hqc-clean-home .hqc-home-guides h2{font-size:30px;line-height:1.2;letter-spacing:-.035em;margin:0 0 26px;color:#132f3c}
+    #hqc-clean-home .hqc-home-guide-grid{display:grid;grid-template-columns:repeat(4,1fr);gap:16px}
+    #hqc-clean-home .hqc-home-guide{display:block;text-decoration:none;border-top:2px solid #dceae0;padding:19px 8px 17px 0}
+    #hqc-clean-home .hqc-home-guide:hover{border-color:#087f5b}
+    #hqc-clean-home .hqc-home-guide b{display:block;font-size:16px;line-height:1.35;margin-bottom:9px}
+    #hqc-clean-home .hqc-home-guide p{font-size:13px;line-height:1.55;color:#63736b;margin:0}
+    #hqc-clean-home .hqc-home-other{display:flex;justify-content:space-between;gap:16px;flex-wrap:wrap;border-top:1px solid #e8eeeb;margin-top:18px;padding-top:20px;color:#5b6f65;font-size:13px}
+    #hqc-clean-home .hqc-home-text-button{padding:0;border:0;background:none;color:#087153;font-weight:650;text-decoration:underline;text-underline-offset:4px;font-size:13px}
+    #hqc-clean-home .hqc-home-other-types{display:flex;gap:14px;align-items:center;flex-wrap:wrap}
+    #hqc-clean-home .hqc-home-final{background:#edf6ef;text-align:center;padding:44px 20px}
+    #hqc-clean-home .hqc-home-final h2{font-size:31px;letter-spacing:-.035em;margin:0 0 22px;line-height:1.2}
+    #hqc-clean-home .hqc-home-final p{font-size:12px;color:#5e7466;margin:13px 0 0}
+    #hqc-clean-home footer{display:flex;justify-content:space-between;gap:30px;padding:30px 0 34px;font-size:12px;color:#63736b}
+    #hqc-clean-home footer b{color:#264638;font-size:14px}
+    #hqc-clean-home footer p{margin:5px 0;max-width:620px}
+    #hqc-clean-home footer nav{display:flex;gap:20px;align-items:flex-start;flex-shrink:0}
+    @media(max-width:1000px){#hqc-clean-home .hqc-home-wrap{width:calc(100% - 48px)}#hqc-clean-home .hqc-home-hero{gap:30px}#hqc-clean-home .hqc-home-scene{height:370px}#hqc-clean-home .hqc-home-guide-grid{grid-template-columns:repeat(2,1fr)}}
+    @media(max-width:759px){#hqc-clean-home .hqc-home-wrap{width:calc(100% - 40px)}#hqc-clean-home header{min-height:80px;gap:12px}#hqc-clean-home .hqc-home-brand{gap:8px}#hqc-clean-home .hqc-home-mark{width:31px;height:34px;border-radius:9px}#hqc-clean-home .hqc-home-brand b{font-size:14px}#hqc-clean-home .hqc-home-brand small{font-size:9px}#hqc-clean-home header nav{display:none}#hqc-clean-home .hqc-home-header-cta{font-size:12px;padding:10px 12px;min-height:42px}#hqc-clean-home .hqc-home-hero{grid-template-columns:1fr;gap:30px;padding:34px 0 38px}#hqc-clean-home .hqc-home-eyebrow{font-size:10px;letter-spacing:.08em;margin-bottom:16px}#hqc-clean-home h1{font-size:clamp(38px,10vw,54px);max-width:440px;margin-bottom:18px}#hqc-clean-home .hqc-home-lead{font-size:16px;margin-bottom:22px}#hqc-clean-home #hqc-primary-start{width:100%}#hqc-clean-home .hqc-home-upload-note{text-align:center;font-size:11px;margin-bottom:17px}#hqc-clean-home .hqc-home-trust{gap:5px;justify-content:center}#hqc-clean-home .hqc-home-trust span{font-size:10px;padding:6px 8px}#hqc-clean-home .hqc-home-scene{height:350px;max-width:470px;width:100%;margin:auto;padding:12px 10px 110px}#hqc-clean-home .hqc-home-report{right:8px;padding:17px 18px}#hqc-clean-home .hqc-home-steps ol{padding:17px 0}#hqc-clean-home .hqc-home-steps li{font-size:12px;gap:7px}#hqc-clean-home .hqc-home-steps span{width:20px;height:20px;font-size:10px}#hqc-clean-home .hqc-home-benefits{grid-template-columns:repeat(2,1fr);gap:12px;padding:28px 0}#hqc-clean-home .hqc-home-benefit{padding:17px 14px;font-size:13px;min-height:116px}#hqc-clean-home .hqc-home-guides{padding:15px 0 34px}#hqc-clean-home .hqc-home-guides h2{font-size:27px;max-width:340px}#hqc-clean-home .hqc-home-guide-grid{grid-template-columns:1fr;gap:0}#hqc-clean-home .hqc-home-guide{padding:17px 0}#hqc-clean-home .hqc-home-other{flex-direction:column;gap:22px}#hqc-clean-home .hqc-home-final{padding:35px 20px}#hqc-clean-home .hqc-home-final h2{font-size:28px}#hqc-clean-home .hqc-home-final .hqc-home-cta{width:100%;max-width:400px}#hqc-clean-home footer{flex-direction:column;gap:18px;padding:25px 0}#hqc-clean-home footer nav{gap:24px}}
+    @media(prefers-reduced-motion:reduce){#hqc-clean-home *{transition:none!important}}
+   `;document.head.appendChild(style);
+  }
+  const icon=path=>'<svg class="hqc-home-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" aria-hidden="true">'+path+'</svg>';
+  const home=document.createElement('div');home.id='hqc-clean-home';
+  home.innerHTML=`
+   <header class="hqc-home-wrap"><a class="hqc-home-brand" href="/" aria-label="Home Quote Check home"><span class="hqc-home-mark" aria-hidden="true">${icon('<path d="m4 11 8-7 8 7v9H4z"/><path d="M9 20v-7h6v7"/>')}</span><span><b>Home Quote Check</b><small>Be sure before you sign.</small></span></a><nav aria-label="Main navigation"><a href="#hqc-how">How it works</a><a href="/?legal=privacy">Privacy</a></nav><button class="hqc-home-cta hqc-home-header-cta" type="button" data-home-start="single">Check my quote</button></header>
+   <main><section class="hqc-home-wrap hqc-home-hero" aria-labelledby="hqc-home-heading"><div><p class="hqc-home-eyebrow">Independent · Impartial · On your side</p><h1 id="hqc-home-heading">See what’s missing in your quote</h1><p class="hqc-home-lead">Upload your heat-pump quote and get clear gaps and questions before you pay a deposit.</p><button id="hqc-primary-start" class="hqc-home-cta" type="button" data-home-start="single">Check my quote — free <span aria-hidden="true">→</span></button><p class="hqc-home-upload-note">Screenshot, photo or PDF · No account needed</p><div class="hqc-home-trust" aria-label="Our commitments"><span>Independent</span><span>Private</span><span>No account</span><span>No sales call</span></div></div><div class="hqc-home-scene"><img src="/resources/homepage-house-only.svg" alt="Modern house with an outdoor air-source heat pump" width="640" height="400" fetchpriority="high"><section class="hqc-home-report" aria-label="Illustrative example of a free quote check"><small>Illustrative example</small><h2>3 details to clarify</h2><ul><li>Heat-loss calculation missing</li><li>Flow temperature not stated</li><li>Electrical work inclusion unclear</li></ul><strong>✓ Questions ready to send</strong></section></div></section>
+   <section class="hqc-home-steps" id="hqc-how" aria-label="How it works"><ol><li><span>1</span>Upload</li><li><span>2</span>We check</li><li><span>3</span>You decide</li></ol></section>
+   <div class="hqc-home-wrap"><section class="hqc-home-benefits" aria-label="What your free check gives you"><div class="hqc-home-benefit">${icon('<rect x="5" y="3" width="14" height="18" rx="2"/><path d="M9 8h6M9 12h4M9 16h2"/>')}<span>Missing evidence highlighted</span></div><div class="hqc-home-benefit">${icon('<path d="M4 5h16v12H9l-5 4z"/><path d="M8 9h8M8 13h5"/>')}<span>Clear questions to send</span></div><div class="hqc-home-benefit">${icon('<rect x="3" y="4" width="7" height="16" rx="1"/><rect x="14" y="4" width="7" height="16" rx="1"/><path d="M5 9h3m8 0h3M5 13h3m8 3h3"/>')}<span>Scope differences revealed</span></div><div class="hqc-home-benefit">${icon('<path d="m12 3 8 3v6c0 5-8 9-8 9s-8-4-8-9V6z"/><path d="m8 12 3 3 5-6"/>')}<span>Stay in control before paying</span></div></section>
+   <section class="hqc-home-guides" aria-labelledby="hqc-home-guides-heading"><h2 id="hqc-home-guides-heading">Understand your quotes before you commit</h2><div class="hqc-home-guide-grid"><a class="hqc-home-guide" href="/compare-heat-pump-quotes"><b>Compare heat-pump quotes ↗</b><p>Check whether different prices cover the same work.</p></a><a class="hqc-home-guide" href="/is-this-a-good-heat-pump-quote"><b>Is this a good quote? ↗</b><p>Look beyond the total to the supporting evidence.</p></a><a class="hqc-home-guide" href="/heat-pump-quote-checklist"><b>Your quote checklist ↗</b><p>Know what to check before paying a deposit.</p></a><a class="hqc-home-guide" href="/heat-pump-heat-loss-calculation-flow-temperature"><b>Heat loss and flow temperature ↗</b><p>Understand the design information worth asking for.</p></a></div><div class="hqc-home-other"><button class="hqc-home-text-button" type="button" id="hqc-secondary-compare" data-home-start="compare">Have more than one quote? Compare multiple quotes →</button><div class="hqc-home-other-types"><span>Other quote types:</span><button class="hqc-home-text-button" type="button" data-tech="solar_battery">Solar / battery</button><button class="hqc-home-text-button" type="button" data-tech="ev_chargepoint">EV charger</button></div></div></section></div>
+   <section class="hqc-home-final"><h2>Ready to check your quote?</h2><button class="hqc-home-cta" type="button" data-home-start="single">Check my quote — free <span aria-hidden="true">→</span></button><p>Upload your quote · Completely free · No account</p></section></main>
+   <footer class="hqc-home-wrap"><div><b>Home Quote Check</b><p>Independent quote checks for homeowners.</p><p>Your quote stays private. We don’t pass your details to installers.</p><p>A gap analysis helps you identify questions. It does not certify the installation design or grant eligibility.</p></div><nav aria-label="Footer navigation"><a href="/?legal=privacy">Privacy</a><a href="#hqc-how">How it works</a><a href="/heat-pump-quote-checklist">Quote guides</a></nav></footer>`;
+  qsa('[data-home-start]',home).forEach(button=>button.onclick=()=>choose(button.dataset.homeStart,button));
+  qsa('[data-tech]',home).forEach(button=>button.onclick=()=>selectTechnology(button.dataset.tech));
+  qs('#hqc-mobile-landing')?.remove();qs('#hqc-mobile-sticky-cta')?.remove();
+  document.body.dataset.hqcHome='clean';document.body.appendChild(home);
+ }
  function apply(){
-  const copy=qs('.copy');if(!copy)return;
+  const copy=qs('.copy');
+  if(!copy||technology()!=='heat_pump'){qs('#hqc-clean-home')?.remove();delete document.body.dataset.hqcHome;if(!copy)return;}
+  if(technology()==='heat_pump'){cleanHome(copy);return;}
   // Generated mobile illustrations inside the copy are not hero layout anchors.
   const candidates=qsa('img').filter(x=>!copy.contains(x));
   const img=candidates.find(x=>x.dataset.hqcHeroImage==='true')||candidates.find(x=>/homepage-(?:graphic|house-only)\.(?:png|svg)/i.test(x.getAttribute('src')||''));if(!img)return;
@@ -58,4 +147,5 @@
  }
  let queued=false;function tick(){if(queued)return;queued=true;requestAnimationFrame(()=>{queued=false;apply()})}new MutationObserver(tick).observe(document.documentElement,{childList:true,subtree:true});addEventListener('resize',()=>{const c=qs('.copy');if(c){let h=c.parentElement;while(h&&h!==document.body&&!h.querySelector('img'))h=h.parentElement;if(h)delete h.dataset.hqcApproved}tick()},{passive:true});tick();
 })();
+
 
