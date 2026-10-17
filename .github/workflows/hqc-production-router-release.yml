@@ -179,7 +179,10 @@ jobs:
                 }else{
                   const ev=tab.locator('#hqc-technology-choice [data-tech="ev_chargepoint"]');await ev.waitFor({state:'visible',timeout:20000});await ev.click();
                   await tab.waitForURL(/technology=ev_chargepoint/);
-                  await tab.getByRole('button',{name:/check my quote/i}).first().click();
+                  const start=viewport.width<760
+                    ? tab.locator('#hqc-mobile-landing [data-go="single"]').first()
+                    : tab.getByRole('button',{name:/check my quote/i}).first();
+                  await start.waitFor({state:'visible',timeout:15000});await start.click();
                 }
                 const choose=tab.locator('#hqc-choose-file');await choose.waitFor({state:'visible',timeout:15000});
                 const picker=tab.waitForEvent('filechooser');await choose.click();
