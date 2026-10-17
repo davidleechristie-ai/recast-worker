@@ -28,7 +28,7 @@ function assertFreePath(state,label){
  }
 }
 try{
- for(const width of [390,1440]){
+ for(const width of [320,390,768,1440]){
   const page=await browser.newPage({viewport:{width,height:900}});
   await page.addInitScript(()=>{
    window.__hqcStyleTrace=[];
@@ -44,6 +44,7 @@ try{
    return route.continue();
   });
   for(const tech of ['heat_pump','solar_battery','ev_chargepoint']){
+   if((width===320||width===768)&&tech!=='heat_pump')continue;
    await page.goto('https://homequotecheck.co.uk/?qa=1&technology='+tech+'&src=qa_conversion',{waitUntil:'networkidle'});
    if(tech==='heat_pump'){
     const home=page.locator('#hqc-clean-home');
@@ -97,6 +98,7 @@ try{
    }
    if(tech==='heat_pump'){await page.locator(root+' .hqc-visible-guides').scrollIntoViewIfNeeded();await page.screenshot({path:'artifacts/conversion-journey/guides-'+width+'-'+tech+'.png'});}
   }
+  if(width===320||width===768){await page.close();continue;}
   await page.setContent(await code('decision-pack.html'));
   assert.match(await page.locator('h1').innerText(),/before you pay a deposit/);
   assert.match(await page.locator('main').innerText(),/£4.99 one-off/);

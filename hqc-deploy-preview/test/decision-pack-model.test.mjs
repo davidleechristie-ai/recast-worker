@@ -40,6 +40,13 @@ test('legacy artwork fitter leaves the report-owned container unchanged',async()
  const mutations=[];
  const style={setProperty:(...args)=>mutations.push(args)};
  const img={style,dataset:{},getAttribute:()=>'/resources/homepage-house-only.svg',closest:()=>({querySelector:()=>({id:'hqc-desktop-example'})}),parentElement:{style,removeAttribute:()=>{},setAttribute:()=>{}}};
- vm.runInNewContext(source,{document:{querySelectorAll:()=>[img],documentElement:{}},innerWidth:1440,requestAnimationFrame:fn=>fn(),MutationObserver:class{observe(){}},addEventListener:()=>{}});
+ vm.runInNewContext(source,{document:{getElementById:()=>null,querySelectorAll:()=>[img],documentElement:{}},innerWidth:1440,requestAnimationFrame:fn=>fn(),MutationObserver:class{observe(){}},addEventListener:()=>{}});
  assert.equal(mutations.length,0,'existing report and hidden image remain untouched');
 });
+test('legacy artwork fitter defers to the unified homepage owner',async()=>{
+ const source=await readFile(new URL('../artwork-fit.js',import.meta.url),'utf8');
+ let imageQueries=0;
+ vm.runInNewContext(source,{document:{getElementById:id=>id==='hqc-clean-home'?{}:null,querySelectorAll:()=>{imageQueries++;return[]},documentElement:{}},requestAnimationFrame:fn=>fn(),MutationObserver:class{observe(){}},addEventListener:()=>{}});
+ assert.equal(imageQueries,0,'the legacy fitter does not inspect or restyle the new homepage illustration');
+});
+
