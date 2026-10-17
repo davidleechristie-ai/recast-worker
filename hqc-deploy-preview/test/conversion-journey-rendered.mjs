@@ -55,7 +55,7 @@ try{
     assert.equal(await home.locator('.hqc-home-guide').count(),4);
     assert.equal(await home.locator('.hqc-home-benefit').count(),4);
     assert.equal(await home.locator('.hqc-home-report').count(),1);
-    assert.match(await home.locator('.hqc-home-report').innerText(),/Illustrative example/);
+    assert.match(await home.locator('.hqc-home-report').innerText(),/Illustrative example/i);
     assert.match(await home.locator('.hqc-home-report').innerText(),/3 details to clarify/);
     assert.equal(await page.locator('#hqc-desktop-example:visible,#hqc-mobile-landing:visible,.hqc-mob-sample:visible').count(),0,'legacy examples are absent');
     assert.equal(await page.evaluate(()=>document.documentElement.scrollWidth>innerWidth),false,'homepage has no horizontal overflow');

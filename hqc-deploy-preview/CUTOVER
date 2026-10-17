@@ -1,2 +1,0 @@
-2026-09-23T11:12:00+01:00
-Deploy corrected upload Back navigation. Back must return to clean homepage from both single and comparison intake; canary browser test must prove navigation.
