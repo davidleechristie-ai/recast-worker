@@ -1,0 +1,42 @@
+name: Ad-hoc UI consistency
+
+on:
+  push:
+    branches:
+      - adhoc-ui-consistency
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+concurrency:
+  group: adhoc-ui-consistency
+  cancel-in-progress: true
+
+jobs:
+  quality_gate:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v5
+        with:
+          ref: adhoc-ui-consistency
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 20
+      - name: Install dependencies
+        working-directory: recast-worker
+        run: npm install --no-package-lock
+      - name: Full regression and UI consistency tests
+        working-directory: recast-worker
+        run: npm test
+      - name: Wrangler build validation
+        working-directory: recast-worker
+        run: npx wrangler deploy --dry-run
+      - name: Confirm UI assets and wrapper
+        working-directory: recast-worker
+        run: |
+          test -f public/ui-consistency.css
+          test -f public/ui-consistency.js
+          test -f src/worker-ui.js
+          grep -q 'src/worker-ui.js' wrangler.jsonc
+          echo 'Ad-hoc UI consistency gate passed.'

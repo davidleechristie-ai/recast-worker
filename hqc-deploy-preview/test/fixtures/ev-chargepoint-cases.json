@@ -1,0 +1,130 @@
+{
+  "cases": [
+    {
+      "id": "complete",
+      "quoteText": "Installation of Zappi V2 EV charger 7.4 kW charging. Tethered Type 2 cable. Smart charging with app control and dynamic load management. Solar PV integration included. DNO notification included. Equipment warranty 3 years. Total £1,250.",
+      "expected": {
+        "make": "Zappi",
+        "model": "V2",
+        "powerKw": 7.4,
+        "tethered": true,
+        "connector": "Type 2",
+        "smart": true,
+        "loadManagement": "dynamic load management stated",
+        "pvIntegration": "solar/PV integration stated",
+        "warrantyYears": 3,
+        "priceGbp": 1250
+      }
+    },
+    {
+      "id": "partial",
+      "quoteText": "Untethered EV chargepoint. Installed price £899. Cabling route subject to survey.",
+      "expected": {
+        "make": null,
+        "model": null,
+        "powerKw": null,
+        "tethered": false,
+        "connector": null,
+        "smart": null,
+        "loadManagement": null,
+        "pvIntegration": null,
+        "warrantyYears": null,
+        "priceGbp": 899
+      }
+    },
+    {
+      "id": "alternative",
+      "quoteText": "Install Ohme HomePro chargepoint 7 kW charging with Type 2 connector, smart charging and app control. DNO application handled by installer. Installation warranty 2 years. Total £1,099.",
+      "expected": {
+        "make": "Ohme",
+        "model": "HomePro",
+        "powerKw": 7,
+        "tethered": null,
+        "connector": "Type 2",
+        "smart": true,
+        "loadManagement": null,
+        "pvIntegration": null,
+        "warrantyYears": 2,
+        "priceGbp": 1099
+      }
+    },
+    {
+      "id": "multiword-model-and-exclusion",
+      "quoteText": "Supply and install: Ohme Home Pro 7kW EV charger. Type 2 tethered cable. Smart charging included. Dynamic load balancing included. PV surplus charging excluded. DNO application to be completed by installer. Equipment warranty 3 years. Total installed price £1,249.",
+      "expected": {
+        "make": "Ohme",
+        "model": "Home Pro",
+        "powerKw": 7,
+        "tethered": true,
+        "connector": "Type 2",
+        "smart": true,
+        "loadManagement": "dynamic load management stated",
+        "pvIntegration": null,
+        "warrantyYears": 3,
+        "priceGbp": 1249
+      }
+    },
+    {
+      "id": "socket-and-existing-solar",
+      "quoteText": "Customer currently has solar PV. Installer to supply Wallbox Pulsar Plus 7.4kW EV charger. Untethered Type 2 socket. Smart charging excluded. DNO notification by installer. Workmanship warranty 2 years. Quote total £999.",
+      "expected": {
+        "make": "Wallbox",
+        "model": "Pulsar Plus",
+        "powerKw": 7.4,
+        "tethered": false,
+        "connector": "Type 2",
+        "smart": null,
+        "loadManagement": null,
+        "pvIntegration": null,
+        "warrantyYears": 2,
+        "priceGbp": 999
+      }
+    }
+  ],
+  "publicDocumentDerived": [
+    {
+      "id": "domestic-installation-plan-2025",
+      "source": "https://docs.planning.org.uk/20251001/8/T2MXSCMFGCZ00/2ahjy7z3xxgk97sz.pdf",
+      "note": "Paraphrased from a public domestic installation plan; names, address and document wording are omitted. Not a representative sample or current regulatory reference.",
+      "quoteText": "Supply and install a dedicated consumer unit for the EV charger. Install 10 metres of 6 mm cable in surface trunking. Charger: Ohme ePod untethered (proposal labels it 7kWh). A CT clamp for load balancing is included. Submit DNO notification. Three-year warranty. Total payable (incl VAT) £1,329.60. Optional surge protector costs £72 extra.",
+      "expected": {
+        "make": "Ohme",
+        "model": "ePod",
+        "powerKw": null,
+        "tethered": false,
+        "connector": null,
+        "smart": null,
+        "loadManagement": "load balancing clamp stated",
+        "pvIntegration": null,
+        "dnoTreatment": "DNO notification",
+        "warrantyYears": 3,
+        "priceGbp": 1329.6,
+        "cablingScope": {"status": "included", "quoteText": "Install 10 metres of 6 mm cable in surface trunking."},
+        "consumerUnitScope": {"status": "included", "quoteText": "Supply and install a dedicated consumer unit for the EV charger."},
+        "earthingScope": null
+      }
+    },
+    {
+      "id": "alternative-charger-prices-2019",
+      "source": "https://belindahallam.wordpress.com/wp-content/uploads/2019/02/ev-charging-point_design-access-statement_revised_app-a-f.pdf",
+      "note": "Paraphrased from a public historical quotation; all personal details and document wording are omitted. Grant-era amounts are historical examples, not current advice.",
+      "quoteText": "Pod Point proposes one charger for the private supply. Install a new consumer unit with Type A RCD. Run a cable to the parking area, fixed to the structure. Options: S3 3.7kW charger £279 with grant or £779 without grant; S7 7kW charger £359 with grant or £859 without grant. Optional groundworks £443.20 extra. Price depends on the selected option.",
+      "expected": {
+        "make": null,
+        "model": null,
+        "powerKw": null,
+        "tethered": null,
+        "connector": null,
+        "smart": null,
+        "loadManagement": null,
+        "pvIntegration": null,
+        "dnoTreatment": null,
+        "warrantyYears": null,
+        "priceGbp": null,
+        "cablingScope": {"status": "included", "quoteText": "Run a cable to the parking area, fixed to the structure."},
+        "consumerUnitScope": {"status": "included", "quoteText": "Install a new consumer unit with Type A RCD."},
+        "earthingScope": null
+      }
+    }
+  ]
+}

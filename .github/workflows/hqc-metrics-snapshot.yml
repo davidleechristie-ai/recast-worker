@@ -1,0 +1,90 @@
+name: HQC North Star metrics snapshot
+
+# Post-deploy measurement trigger: 2026-09-12T00:35+01:00
+on:
+  push:
+    branches: [main]
+    paths:
+      - '.github/workflows/hqc-metrics-snapshot.yml'
+  schedule:
+    - cron: '17 * * * *'
+  workflow_dispatch:
+
+permissions:
+  contents: write
+
+jobs:
+  snapshot:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          fetch-depth: 1
+      - name: Read durable production North Star metrics
+        shell: bash
+        run: |
+          set -euo pipefail
+          base='https://homequotecheck.co.uk'
+          mkdir -p hqc-metrics
+          curl -fsSL --max-time 30 "$base/api/metrics" | tee hqc-metrics/metrics.json
+          echo
+          curl -fsSL --max-time 30 "$base/api/growth-report" | tee hqc-metrics/growth-report.json
+          echo
+          jq -e '.durable == true and (.measurementStartedAt|length)>0' hqc-metrics/metrics.json >/dev/null
+          jq -e '.durable == true and (.measurementStartedAt|length)>0' hqc-metrics/growth-report.json >/dev/null
+          python - <<'PY'
+          import json, datetime
+          m=json.load(open('hqc-metrics/metrics.json'))
+          g=json.load(open('hqc-metrics/growth-report.json'))
+          print('NORTH_STAR_METRICS')
+          print('measurementStartedAt='+str(m.get('measurementStartedAt')))
+          for k in ('genuineAnalyses','shareOpens','outboundClicks'):
+              print(f'{k}={m.get(k)}')
+          print('VALIDATION_TARGETS', json.dumps(m.get('targets',{}), sort_keys=True))
+          print('GROWTH_RECOMMENDATIONS', json.dumps(g.get('recommendations',[]), sort_keys=True))
+          print('SOURCE_FUNNELS', json.dumps(g.get('sources',[]), sort_keys=True))
+          payload={
+            'fetchedAt': datetime.datetime.now(datetime.timezone.utc).isoformat().replace('+00:00','Z'),
+            'metrics': m,
+            'growthReport': g,
+          }
+          with open('hqc-deploy-preview/live-metrics.json','w') as f:
+              json.dump(payload,f,indent=2,sort_keys=True)
+              f.write('\n')
+          PY
+      - name: Persist latest production metrics
+        shell: bash
+        run: |
+          set -euo pipefail
+          snapshot_file='hqc-deploy-preview/live-metrics.json'
+          cp "$snapshot_file" /tmp/hqc-live-metrics.json
+          git config user.name 'github-actions[bot]'
+          git config user.email '41898282+github-actions[bot]@users.noreply.github.com'
+
+          for attempt in 1 2 3; do
+            git fetch origin main
+            git reset --hard origin/main
+            cp /tmp/hqc-live-metrics.json "$snapshot_file"
+
+            if git diff --quiet -- "$snapshot_file"; then
+              echo 'No metrics change to persist'
+              exit 0
+            fi
+
+            git add "$snapshot_file"
+            git commit -m 'Update HQC durable live metrics snapshot'
+            if git push origin HEAD:main; then
+              exit 0
+            fi
+
+            echo "Metrics push raced with another main update; retrying ($attempt/3)"
+            sleep $((attempt * 2))
+          done
+
+          echo 'Unable to persist metrics after 3 race-safe retries' >&2
+          exit 1
+      - uses: actions/upload-artifact@v4
+        with:
+          name: hqc-north-star-metrics
+          path: hqc-metrics/
+          retention-days: 30

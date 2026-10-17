@@ -1,0 +1,26 @@
+name = "hqc-custom-domain-canary"
+main = "worker-entry.js"
+compatibility_date = "2026-09-08"
+workers_dev = true
+routes = [
+  { pattern = "cf-preview.homequotecheck.co.uk", custom_domain = true }
+]
+
+[vars]
+HQC_ENV = "canary"
+HQC_SOLAR_ANALYSIS_INTERNAL = "1"
+HQC_EV_CHARGEPOINT_ANALYSIS_INTERNAL = "1"
+HQC_SOLAR_THERMAL_ANALYSIS_INTERNAL = "1"
+
+[[durable_objects.bindings]]
+name = "HQC_METRICS"
+class_name = "HqcMetrics"
+
+[[migrations]]
+tag = "v1"
+new_sqlite_classes = ["HqcMetrics"]
+
+[assets]
+directory = "./site"
+binding = "ASSETS"
+not_found_handling = "single-page-application"

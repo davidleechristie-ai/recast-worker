@@ -1,0 +1,75 @@
+name: Recast commercial metrics every four hours
+
+# Non-AI commercial evidence collection; legacy AI growth execution removed.
+on:
+  push:
+    branches:
+      - main
+    paths:
+      - '.github/workflows/autonomous-growth.yml'
+  schedule:
+    - cron: '20 */4 * * *'
+  workflow_dispatch:
+
+permissions:
+  contents: write
+
+concurrency:
+  group: recast-autonomous-growth
+  cancel-in-progress: false
+
+jobs:
+  improve:
+    runs-on: ubuntu-latest
+    timeout-minutes: 45
+    steps:
+      - name: Check out main
+        uses: actions/checkout@v5
+        with:
+          ref: main
+          fetch-depth: 20
+      - name: Set up Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: 22
+          cache: npm
+          cache-dependency-path: recast-worker/package-lock.json
+      - name: Install dependencies
+        working-directory: recast-worker
+        timeout-minutes: 5
+        run: npm ci --no-audit --no-fund
+      - name: Baseline test suite
+        working-directory: recast-worker
+        run: npm test
+      - name: Refresh authoritative growth scoreboard
+        working-directory: recast-worker
+        env:
+          GOOGLE_SERVICE_ACCOUNT_JSON: ${{ secrets.GOOGLE_SERVICE_ACCOUNT_JSON }}
+          GSC_SITE_URL: ${{ vars.GSC_SITE_URL }}
+          GA4_PROPERTY_ID: ${{ secrets.GA4_PROPERTY_ID }}
+          STRIPE_SECRET_KEY: ${{ secrets.STRIPE_SECRET_KEY }}
+          PRICE_MAP: '{"price_1U41Bw07vRRG7JsXH0iAKy7g":"pro_monthly","price_1U41Bx07vRRG7JsXlwnms0uo":"pro_yearly","price_1U41Bs07vRRG7JsXnYpcoHh1":"api_monthly","price_1U41Br07vRRG7JsXV1vskFmE":"api_yearly","price_1U4Kub07vRRG7JsXtMatleol":"day_pass"}'
+        run: node scripts/refresh-growth-scoreboard.mjs
+      - name: Validate refreshed growth scoreboard
+        run: node -e "JSON.parse(require('fs').readFileSync('recast-worker/GROWTH_SCOREBOARD.json','utf8')); console.log('Growth scoreboard JSON valid')"
+      - name: Persist authoritative metrics
+        id: metrics
+        shell: bash
+        run: |
+          if git diff --quiet -- recast-worker/GROWTH_SCOREBOARD.json; then
+            echo "changed=false" >> "$GITHUB_OUTPUT"
+            echo "No scoreboard change to persist."
+            exit 0
+          fi
+          git config user.name "recast-growth-bot"
+          git config user.email "recast-growth-bot@users.noreply.github.com"
+          git add recast-worker/GROWTH_SCOREBOARD.json
+          git commit -m "Refresh authoritative Recast growth metrics"
+          git push origin HEAD:main
+          echo "changed=true" >> "$GITHUB_OUTPUT"
+      - name: Report verified metrics refresh
+        if: always()
+        run: |
+          echo "## Recast non-AI commercial evidence" >> "$GITHUB_STEP_SUMMARY"
+          echo "Metrics changed: ${{ steps.metrics.outputs.changed || 'not reached' }}" >> "$GITHUB_STEP_SUMMARY"
+          echo "No AI optimisation, automatic product release or customer-facing growth change is performed by this workflow." >> "$GITHUB_STEP_SUMMARY"

@@ -1,0 +1,3 @@
+# SOP — Content and SEO
+
+Refresh measured search evidence and current SERPs. Select a consumer decision problem with plausible commercial value. Decide improve-existing vs new substantive page/tool; no thin programmatic SEO. Record fixed baseline and review point. Create accurate, independent content that helps users assess quotes; do not imply design certification, grant eligibility or installer endorsement. Add appropriate metadata/canonical/schema/internal links and a clear checker CTA. Test indexability, links, mobile rendering and journey. Ship via SHIP_CHANGE.md and do not rewrite an active target before review unless fixing a defect.

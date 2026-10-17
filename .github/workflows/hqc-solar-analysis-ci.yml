@@ -1,0 +1,62 @@
+name: HQC Solar analysis CI
+
+on:
+  push:
+    branches: [main]
+    paths:
+      - '.github/workflows/hqc-solar-analysis-ci.yml'
+      - 'hqc-deploy-preview/worker-entry.js'
+      - 'hqc-deploy-preview/decision-pack.js'
+      - 'hqc-deploy-preview/lib/solar-battery-*.js'
+      - 'hqc-deploy-preview/lib/technology-routing.js'
+      - 'hqc-deploy-preview/lib/analysis-request-routing.js'
+      - 'hqc-deploy-preview/test/solar-battery-*.mjs'
+      - 'hqc-deploy-preview/test/decision-pack-technology.test.mjs'
+      - 'hqc-deploy-preview/test/worker-entry-solar-gate.test.mjs'
+      - 'hqc-deploy-preview/test/technology-routing.test.mjs'
+      - 'hqc-deploy-preview/test/analysis-request-routing.test.mjs'
+      - 'hqc-deploy-preview/test/fixtures/solar-battery-cases.json'
+      - 'hqc-deploy-preview/test/fixtures/solar-battery-extractor-output.json'
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+jobs:
+  verify:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 22
+      - name: Verify executable Solar analysis
+        working-directory: hqc-deploy-preview
+        run: node --test test/solar-battery-analysis.test.mjs
+      - name: Verify gated request boundary
+        working-directory: hqc-deploy-preview
+        run: node --test test/solar-battery-request-handler.test.mjs
+      - name: Verify media extraction contract
+        working-directory: hqc-deploy-preview
+        run: node --test test/solar-battery-media-ingestion.test.mjs
+      - name: Verify representative PDF/photo extractor outputs end to end
+        working-directory: hqc-deploy-preview
+        run: node --test test/solar-battery-extractor-e2e.test.mjs
+      - name: Verify Worker gate and isolation
+        working-directory: hqc-deploy-preview
+        run: node --test test/worker-entry-solar-gate.test.mjs
+      - name: Verify Solar extraction
+        working-directory: hqc-deploy-preview
+        run: node --test test/solar-battery-extraction.test.mjs
+      - name: Verify Solar evidence contract
+        working-directory: hqc-deploy-preview
+        run: node --test test/solar-battery-evidence.test.mjs
+      - name: Verify Solar fixture contract
+        working-directory: hqc-deploy-preview
+        run: node --test test/solar-battery-fixture-contract.test.mjs
+      - name: Verify technology isolation
+        working-directory: hqc-deploy-preview
+        run: node --test test/technology-routing.test.mjs test/analysis-request-routing.test.mjs
+      - name: Verify Decision Pack technology propagation
+        working-directory: hqc-deploy-preview
+        run: node --test test/decision-pack-technology.test.mjs

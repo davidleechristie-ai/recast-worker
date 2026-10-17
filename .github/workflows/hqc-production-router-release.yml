@@ -1,0 +1,198 @@
+name: HQC production router release
+
+on:
+  push:
+    branches: [main]
+    paths:
+      - '.github/workflows/hqc-production-router-release.yml'
+      - '.github/workflows/hqc-canary-domain.yml'
+      - 'hqc-deploy-preview/worker.js'
+      - 'hqc-deploy-preview/worker-entry.js'
+      - 'hqc-deploy-preview/lib/technology-routing.js'
+      - 'hqc-deploy-preview/lib/analysis-request-routing.js'
+      - 'hqc-deploy-preview/wrangler.production.toml'
+      - 'hqc-deploy-preview/approved-home-layout.js'
+      - 'hqc-deploy-preview/snapshot.mjs'
+      - 'hqc-deploy-preview/solar-preview-journey.js'
+      - 'hqc-deploy-preview/ev-chargepoint-preview-journey.js'
+      - 'hqc-deploy-preview/solar-thermal-preview-journey.js'
+      - 'hqc-deploy-preview/test/canary-solar-thermal-private.mjs'
+      - 'hqc-deploy-preview/lib/ev-chargepoint-*.js'
+      - 'hqc-deploy-preview/lib/solar-thermal-*.js'
+      - 'hqc-deploy-preview/upload-friction-v3.js'
+      - 'hqc-deploy-preview/intake-diagnostics.js'
+      - 'hqc-deploy-preview/test/intake-diagnostics.test.mjs'
+      - 'hqc-deploy-preview/test/renewable-upload-boundary.test.mjs'
+  workflow_dispatch:
+
+permissions:
+  contents: read
+  actions: read
+
+concurrency:
+  group: hqc-production-router
+  cancel-in-progress: true
+
+jobs:
+  release:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 22
+      - name: Install
+        working-directory: hqc-deploy-preview
+        run: npm install
+      - name: Test technology evidence and routing
+        working-directory: hqc-deploy-preview
+        run: |
+          node --test solar-evidence-model.test.js test/solar-battery-extraction.test.mjs
+          node --test test/technology-routing.test.mjs test/analysis-request-routing.test.mjs
+          node --test test/solar-thermal-foundation.test.mjs test/solar-thermal-analysis.test.mjs test/solar-thermal-decision-brief.test.mjs test/solar-thermal-request-handler.test.mjs test/solar-thermal-browser-bridge.test.mjs test/solar-thermal-scope.test.mjs test/solar-thermal-rendered-scope.test.mjs
+          node --test test/intake-diagnostics.test.mjs test/renewable-upload-boundary.test.mjs
+          node --test test/decision-pack-technology.test.mjs test/renewable-decision-pack-boundary.test.mjs
+          node --test test/ev-durable-completion.test.mjs
+          node --test test/solar-thermal-durable-completion.test.mjs
+          node --test test/ev-decision-brief.test.mjs
+          node --test test/ev-chargepoint-extraction.test.mjs test/ev-chargepoint-analysis.test.mjs test/ev-chargepoint-request-handler.test.mjs test/ev-upload-boundary.test.mjs test/worker-entry-ev-gate.test.mjs
+      - name: Build once for release validation
+        working-directory: hqc-deploy-preview
+        env:
+          HQC_PUBLIC_ORIGIN: https://homequotecheck.co.uk
+        run: node snapshot.mjs
+      - name: Lightweight release gate
+        shell: bash
+        run: |
+          set -euo pipefail
+          test -s hqc-deploy-preview/site/index.html
+          test -s hqc-deploy-preview/site/__hqc_approved_layout.js
+          test -s hqc-deploy-preview/site/__hqc_simple_results.js
+          test -s hqc-deploy-preview/site/__hqc_upload_v3.js
+          grep -q 'Check my quote — free' hqc-deploy-preview/site/__hqc_approved_layout.js
+          grep -q 'Add another quote' hqc-deploy-preview/site/__hqc_simple_results.js
+          grep -q '__hqc_upload_v3.js' hqc-deploy-preview/site/index.html
+          ! grep -q 'heat-pump-second-opinion-v43csv.v2.appdeploy.ai' hqc-deploy-preview/site/index.html
+      - name: Deploy production Worker with static asset binding intact
+        working-directory: hqc-deploy-preview
+        run: npx wrangler deploy -c wrangler.production.toml
+        env:
+          CLOUDFLARE_API_TOKEN: ${{ secrets.CLOUDFLARE_API_TOKEN }}
+          CLOUDFLARE_ACCOUNT_ID: ${{ secrets.CLOUDFLARE_ACCOUNT_ID }}
+      - name: Verify production Heat Pump compatibility and Solar MVP
+        shell: bash
+        run: |
+          set -euo pipefail
+          base='https://homequotecheck.co.uk'
+          ok=false
+          for attempt in 1 2 3 4 5; do
+            health=$(curl -L -sS --max-time 30 "$base/health" || true)
+            if grep -q '"environment":"production"' <<< "$health" && grep -q '"durableMetrics":true' <<< "$health"; then ok=true; break; fi
+            echo "Awaiting production Worker (attempt $attempt): $health"
+            sleep 5
+          done
+          test "$ok" = 'true'
+
+          hp_code=$(curl -L -sS -o /tmp/hqc-hp -w '%{http_code}' --max-time 30 "$base/api/_healthcheck")
+          echo "heat-pump/default health -> $hp_code"
+          test "$hp_code" = '200'
+          grep -q 'Success' /tmp/hqc-hp
+
+          solar_code=$(curl -L -sS -o /tmp/hqc-solar -w '%{http_code}' --max-time 30 -X POST -H 'content-type: application/json' -H 'x-hqc-technology: solar_battery' --data '{"extractedMedia":{"sourceMediaType":"application/pdf","extractionMethod":"release-smoke-text-v1","pageCount":1,"extractedText":"Solar PV quote: 12 x 425W panels, 5.1 kWp array. Inverter 5 kW. Total price £9,500."}}' "$base/api/analyse")
+          echo "solar production analysis -> $solar_code"
+          test "$solar_code" = '200'
+          grep -q '5.1' /tmp/hqc-solar
+
+          for technology in solar_battery battery ev_chargepoint; do
+            pack_code=$(curl -L -sS -o /tmp/hqc-renewable-pack -w '%{http_code}' --max-time 30 -X POST -H 'content-type: application/json' --data "{\"caseId\":\"release-guard-123456\",\"technology\":\"$technology\"}" "$base/api/decision-pack/checkout")
+            echo "$technology Decision Pack boundary -> $pack_code"
+            test "$pack_code" = '409'
+            grep -q '"error":"decision_pack_unavailable_for_technology"' /tmp/hqc-renewable-pack
+          done
+
+          ev_code=$(curl -L -sS -o /tmp/hqc-ev -w '%{http_code}' --max-time 30 -X POST -H 'content-type: application/json' -H 'x-hqc-technology: ev_chargepoint' --data '{"extractedMedia":{"sourceMediaType":"application/pdf","extractionMethod":"release-smoke-text-v1","pageCount":1,"extractedText":"Installation of Zappi V2 EV charger 7.4 kW charging. Total £1,250."}}' "$base/api/analyse")
+          echo "EV public production analysis -> $ev_code"
+          test "$ev_code" = '200'
+          grep -q '"technology":"ev_chargepoint"' /tmp/hqc-ev
+          grep -q '"powerKw":7.4' /tmp/hqc-ev
+
+          thermal_code=$(curl -L -sS -o /tmp/hqc-thermal -w '%{http_code}' --max-time 30 -X POST -H 'content-type: application/json' -H 'x-hqc-technology: solar_thermal' --data '{"quoteText":"Evacuated tube solar thermal collectors, 4.2 m2. Total price £6,750."}' "$base/api/analyse")
+          echo "Solar thermal guarded boundary -> $thermal_code"
+          test "$thermal_code" = '409'
+          grep -q '"technology":"solar_thermal"' /tmp/hqc-thermal
+
+          metrics_code=$(curl -L -sS -o /tmp/hqc-metrics -w '%{http_code}' --max-time 30 "$base/api/metrics")
+          echo "durable metrics -> $metrics_code"
+          test "$metrics_code" = '200'
+          grep -q '"durable":true' /tmp/hqc-metrics
+
+          growth_ready=false
+          for attempt in 1 2 3 4 5 6 7 8 9 10 11 12; do
+            growth_code=$(curl -L -sS -o /tmp/hqc-growth -w '%{http_code}' --max-time 30 "$base/api/growth-report" || true)
+            if [ "$growth_code" = '200' ] && grep -q '"evAnalyses":' /tmp/hqc-growth && grep -q '"evComparisons":' /tmp/hqc-growth && grep -q '"thermalAnalyses":' /tmp/hqc-growth && grep -q '"thermalComparisons":' /tmp/hqc-growth; then growth_ready=true; break; fi
+            echo "Awaiting durable growth schema after Worker rollout (attempt $attempt)"
+            sleep 5
+          done
+          test "$growth_ready" = 'true'
+
+          intake_ready=false
+          for attempt in 1 2 3 4 5 6; do
+            home=$(curl -L -sS --max-time 30 "$base/?release_probe=$attempt" || true)
+            script=$(curl -L -sS --max-time 30 "$base/__hqc_intake_diagnostics.js?release_probe=$attempt" || true)
+            upload_script=$(curl -L -sS --max-time 30 "$base/__hqc_upload_v3.js?release_probe=$attempt" || true)
+            ev_script=$(curl -L -sS --max-time 30 "$base/__hqc_ev_preview.js?release_probe=$attempt" || true)
+            thermal_script=$(curl -L -sS --max-time 30 "$base/__hqc_thermal_preview.js?release_probe=$attempt" || true)
+            intake=$(curl -L -sS --max-time 30 -X POST -H 'content-type: application/json' -H "referer: $base/?qa=1" --data '{"event":"intake_file_selected","technology":"heat_pump","source":"release_smoke"}' "$base/api/event" || true)
+            layout=$(curl -L -sS --max-time 30 "$base/__hqc_approved_layout.js?release_probe=$attempt" || true)
+            if grep -q '__hqc_intake_diagnostics.js' <<< "$home" && grep -q '__hqc_thermal_preview.js' <<< "$home" && grep -q 'intake_picker_opened' <<< "$script" && grep -q 'intake_file_selected' <<< "$upload_script" && grep -q 'EV CHARGEPOINT QUOTE CHECK' <<< "$ev_script" && grep -q 'PRIVATE SOLAR THERMAL PREVIEW' <<< "$thermal_script" && grep -q 'data-tech="ev_chargepoint"' <<< "$layout" && ! grep -q 'data-tech="solar_thermal"' <<< "$layout" && grep -q '"test":true' <<< "$intake"; then intake_ready=true; break; fi
+            echo "Awaiting production intake asset and excluded QA event (attempt $attempt)"
+            sleep 5
+          done
+          test "$intake_ready" = 'true'
+
+          echo 'HQC production technology-router verification passed.'
+      - name: Verify public EV quote journey on production hostname
+        working-directory: hqc-deploy-preview
+        shell: bash
+        run: |
+          set -euo pipefail
+          npm install --no-save playwright@1.55.0 pdf-lib@1.17.1
+          npx playwright install --with-deps chromium
+          node --input-type=module <<'NODE'
+          import { chromium } from 'playwright';
+          import { PDFDocument, StandardFonts } from 'pdf-lib';
+          const pdf=await PDFDocument.create();const page=pdf.addPage([500,300]);
+          page.drawText('Installation of Zappi V2 EV charger 7.4 kW charging. Total £1,250.',{x:30,y:250,size:12,font:await pdf.embedFont(StandardFonts.Helvetica)});
+          const buffer=Buffer.from(await pdf.save());
+          const browser=await chromium.launch({headless:true});
+          try {
+            for(const viewport of [{width:390,height:844},{width:1366,height:900}]) {
+              const context=await browser.newContext({viewport,serviceWorkers:'block'});
+              try {
+                const tab=await context.newPage();
+                await tab.goto('https://homequotecheck.co.uk/?qa=1',{waitUntil:'domcontentloaded',timeout:30000});
+                const mobileLanding=tab.locator('#hqc-mobile-landing');
+                if(await mobileLanding.isVisible()){
+                  const ev=mobileLanding.locator('[data-tech="ev_chargepoint"]');await ev.waitFor({state:'visible',timeout:20000});await ev.click();
+                  const start=tab.locator('#hqc-mobile-landing [data-go="single"]').first();await start.waitFor({state:'visible',timeout:15000});await start.click();
+                  await tab.waitForURL(/technology=ev_chargepoint/);
+                }else{
+                  const ev=tab.locator('#hqc-technology-choice [data-tech="ev_chargepoint"]');await ev.waitFor({state:'visible',timeout:20000});await ev.click();
+                  await tab.waitForURL(/technology=ev_chargepoint/);
+                  await tab.getByRole('button',{name:/check my quote/i}).first().click();
+                }
+                const choose=tab.locator('#hqc-choose-file');await choose.waitFor({state:'visible',timeout:15000});
+                const picker=tab.waitForEvent('filechooser');await choose.click();
+                await (await picker).setFiles({name:'release-ev.pdf',mimeType:'application/pdf',buffer});
+                await tab.waitForFunction(()=>JSON.parse(sessionStorage.getItem('hqc_ev_extracted_media')||'[]')[0]?.extractedText?.includes('Zappi V2'),{timeout:15000});
+                const result=await tab.evaluate(async()=>{const r=await fetch('/api/analyse',{method:'POST',body:'native-upstream-body'});return {status:r.status,body:await r.json(),adapter:r.headers.get('x-hqc-analysis-adapter')}});
+                if(result.status!==200||result.adapter!=='ev_chargepoint'||result.body?.evidence?.powerKw!==7.4||result.body?.evidence?.priceGbp!==1250)throw new Error('Production EV PDF analysis failed: '+JSON.stringify(result));
+                const output=tab.locator('#hqc-ev-analysis-result');await output.waitFor({state:'visible',timeout:10000});
+                if(!/EV CHARGEPOINT QUOTE CHECK/.test(await output.innerText()))throw new Error('Public EV result missing');
+                if(await tab.locator('#hqc-decision-pack-offer').isVisible())throw new Error('Heat Pump paid offer leaked');
+                if(await tab.evaluate(()=>document.documentElement.scrollWidth-innerWidth)>1)throw new Error('EV horizontal overflow');
+              } finally {await context.close()}
+            }
+          } finally {await browser.close()}
+          console.log('Production public EV text-PDF upload, analysis and result verified on mobile and desktop.');
+          NODE

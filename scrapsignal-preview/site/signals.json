@@ -1,0 +1,42 @@
+{
+  "generated_at": "2026-09-15T17:00:39+00:00",
+  "signal_count": 2,
+  "validation_state": "WAIT_FOR_MORE_EVIDENCE",
+  "quality_note": "Only source-quality-approved register changes are shown. Two bulk source swings were quarantined rather than presented as sales opportunities.",
+  "source": "Environment Agency scrap metal dealers public register",
+  "source_url": "https://environment.data.gov.uk/public-register/scrap-metal-dealers/registration",
+  "signals": [
+    {
+      "id": "SCR0005-mids-auto-services",
+      "date": "2026-09-13",
+      "name": "Mids Auto Services Limited",
+      "event": "NEW SITE",
+      "address": "Marske Inn Farm, Marske Lane, REDCAR, TS11 8AA",
+      "region": "North East",
+      "score": 100,
+      "confidence": "High",
+      "licence_number": "SCR0005",
+      "fact": "A new Site licence record for this organisation appeared between two stable Environment Agency register snapshots.",
+      "why": "A newly listed licensed site may create a timely window to investigate requirements for waste reporting software, weighing/site equipment and compliance support.",
+      "needs": ["DWT / waste software", "Weighing systems", "Site equipment", "Compliance services"],
+      "opener": "Are the operational systems and suppliers for the Redcar site already in place?",
+      "source_url": "https://environment.data.gov.uk/public-register/scrap-metal-dealers/registration"
+    },
+    {
+      "id": "LSC232768-mytum-selby-goole",
+      "date": "2026-09-14",
+      "name": "Mytum and Selby (Goole) Ltd",
+      "event": "NEW SITE",
+      "address": "Goole Fields, Jerry Lane, Goole, East Riding of Yorkshire, DN14 8BJ",
+      "region": "Yorkshire",
+      "score": 100,
+      "confidence": "High",
+      "licence_number": "LSC232768",
+      "fact": "A new Site licence record for this organisation appeared between two stable Environment Agency register snapshots.",
+      "why": "A newly listed licensed site may create a timely window to investigate requirements for waste reporting software, weighing/site equipment and compliance support.",
+      "needs": ["DWT / waste software", "Weighing systems", "Site equipment", "Compliance services"],
+      "opener": "Are the operational systems and suppliers for the Goole site already in place?",
+      "source_url": "https://environment.data.gov.uk/public-register/scrap-metal-dealers/registration"
+    }
+  ]
+}

@@ -1,0 +1,36 @@
+name: HQC recovery inventory
+
+on:
+  push:
+    branches: [main]
+    paths:
+      - '.github/workflows/hqc-recovery-inventory.yml'
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+jobs:
+  inventory:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 22
+      - name: Install Wrangler
+        working-directory: hqc-deploy-preview
+        run: npm install
+      - name: Inventory production deployments and versions
+        working-directory: hqc-deploy-preview
+        env:
+          CLOUDFLARE_API_TOKEN: ${{ secrets.CLOUDFLARE_API_TOKEN }}
+          CLOUDFLARE_ACCOUNT_ID: ${{ secrets.CLOUDFLARE_ACCOUNT_ID }}
+        run: |
+          set -euo pipefail
+          echo '=== DEPLOYMENTS ==='
+          npx wrangler deployments status -c wrangler.production.toml || true
+          echo '=== VERSIONS ==='
+          npx wrangler versions list -c wrangler.production.toml || true
+          echo '=== IMPORTANT ==='
+          echo 'Inventory only. This workflow performs no deployment, rollback, asset upload, or production mutation.'

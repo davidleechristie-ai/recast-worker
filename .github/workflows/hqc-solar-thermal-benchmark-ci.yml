@@ -1,0 +1,29 @@
+name: HQC solar thermal benchmark CI
+
+on:
+  push:
+    branches: [main]
+    paths:
+      - '.github/workflows/hqc-solar-thermal-benchmark-ci.yml'
+      - 'hqc-deploy-preview/scripts/solar-thermal-benchmark.mjs'
+      - 'hqc-deploy-preview/test/solar-thermal-benchmark.test.mjs'
+      - 'hqc-deploy-preview/lib/solar-thermal-extraction.js'
+  pull_request:
+    paths:
+      - '.github/workflows/hqc-solar-thermal-benchmark-ci.yml'
+      - 'hqc-deploy-preview/scripts/solar-thermal-benchmark.mjs'
+      - 'hqc-deploy-preview/test/solar-thermal-benchmark.test.mjs'
+      - 'hqc-deploy-preview/lib/solar-thermal-extraction.js'
+
+permissions:
+  contents: read
+
+jobs:
+  harness:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 22
+      - run: node --test hqc-deploy-preview/test/solar-thermal-benchmark.test.mjs

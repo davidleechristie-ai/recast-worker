@@ -1,0 +1,16 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">
+  <url><loc>https://tryrecast.app/seo/</loc><lastmod>2026-09-02</lastmod><priority>0.8</priority></url>
+  <url><loc>https://tryrecast.app/seo/json-api-to-csv.html</loc><lastmod>2026-09-02</lastmod></url>
+  <url><loc>https://tryrecast.app/seo/csv-to-json-api-payload.html</loc><lastmod>2026-09-02</lastmod></url>
+  <url><loc>https://tryrecast.app/seo/json-to-yaml-config.html</loc><lastmod>2026-09-02</lastmod></url>
+  <url><loc>https://tryrecast.app/seo/flatten-nested-json-for-csv.html</loc><lastmod>2026-09-02</lastmod></url>
+  <url><loc>https://tryrecast.app/seo/extract-jsonpath-api-response.html</loc><lastmod>2026-09-02</lastmod></url>
+  <url><loc>https://tryrecast.app/seo/validate-api-json.html</loc><lastmod>2026-09-02</lastmod></url>
+  <url><loc>https://tryrecast.app/seo/validate-json-schema-api-payload.html</loc><lastmod>2026-09-02</lastmod></url>
+  <url><loc>https://tryrecast.app/seo/compare-api-responses.html</loc><lastmod>2026-09-02</lastmod></url>
+  <url><loc>https://tryrecast.app/seo/automate-json-csv-conversion.html</loc><lastmod>2026-09-02</lastmod></url>
+  <url><loc>https://tryrecast.app/seo/schedule-data-validation.html</loc><lastmod>2026-09-02</lastmod></url>
+  <url><loc>https://tryrecast.app/seo/recast-api-data-conversion.html</loc><lastmod>2026-09-02</lastmod></url>
+  <url><loc>https://tryrecast.app/seo/recast-api-ci-cd.html</loc><lastmod>2026-09-02</lastmod></url>
+</urlset>

@@ -1,0 +1,36 @@
+name: Recast Release 4 Programmatic SEO
+
+on:
+  push:
+    branches:
+      - release-4-programmatic-seo
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+concurrency:
+  group: recast-release4-seo
+  cancel-in-progress: true
+
+jobs:
+  quality_gate:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v5
+        with:
+          ref: release-4-programmatic-seo
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 20
+      - name: Install dependencies
+        working-directory: recast-worker
+        run: npm install --no-package-lock
+      - name: Full tests and SEO guardrails
+        working-directory: recast-worker
+        run: npm test
+      - name: Wrangler build validation
+        working-directory: recast-worker
+        run: npx wrangler deploy --dry-run --outdir=.wrangler-dry-run
+      - name: Summary
+        run: echo "Release 4 programmatic SEO cluster and technical routing passed."

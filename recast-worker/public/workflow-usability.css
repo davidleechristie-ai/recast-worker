@@ -1,0 +1,294 @@
+/* Workflow / Recipe usability pass — progressive enhancement only.
+   The underlying recipe format and execution engine are unchanged. */
+body.workflow-usability-ready #recipeToggleBtn,
+body.workflow-usability-ready #transformBuilderToggleBtn {
+  display: none !important;
+}
+
+body.workflow-usability-ready #recipeBuilder2ToggleBtn {
+  border-color: rgba(139,92,246,.65) !important;
+  color: #c4b5fd !important;
+  background: rgba(139,92,246,.10) !important;
+  font-weight: 700;
+}
+
+body.workflow-builder-open .minimal-home {
+  display: none !important;
+}
+
+body.workflow-builder-open .home-workbench-section {
+  margin-top: 28px !important;
+}
+
+.workflow-builder-anchor {
+  display: block;
+  position: relative;
+  top: -96px;
+  visibility: hidden;
+}
+
+.rb2.workflow-usability-enhanced {
+  margin-top: 20px;
+  border-color: rgba(139,92,246,.62);
+  border-radius: 14px;
+  box-shadow: 0 18px 50px rgba(0,0,0,.18);
+  overflow: clip;
+}
+
+.rb2.workflow-usability-enhanced .rb2-head {
+  gap: 10px;
+  padding: 14px 16px;
+  background: linear-gradient(180deg, rgba(139,92,246,.10), rgba(139,92,246,.025));
+}
+
+.rb2.workflow-usability-enhanced .rb2-head .title {
+  flex: 1 1 260px;
+  min-width: 0;
+  font-size: 15px;
+  line-height: 1.25;
+}
+
+.rb2.workflow-usability-enhanced .rb2-head input[type="text"] {
+  flex: 1 1 190px;
+  width: auto !important;
+  min-width: 150px;
+  max-width: 300px;
+}
+
+.workflow-builder-context {
+  display: grid;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  gap: 10px;
+  padding: 12px 16px;
+  border-bottom: 1px solid rgba(var(--border-rgb),.18);
+  background: rgba(var(--border-rgb),.045);
+}
+
+.workflow-builder-context div {
+  min-width: 0;
+}
+
+.workflow-builder-context strong {
+  display: block;
+  margin-bottom: 3px;
+  color: var(--text);
+  font: 700 12px/1.3 'IBM Plex Sans', sans-serif;
+}
+
+.workflow-builder-context span {
+  display: block;
+  color: var(--text-muted);
+  font-size: 11px;
+  line-height: 1.45;
+}
+
+.workflow-builder-privacy {
+  grid-column: 1 / -1;
+  padding-top: 8px;
+  border-top: 1px solid rgba(var(--border-rgb),.14);
+  color: var(--text-muted);
+  font-size: 11px;
+}
+
+.rb2.workflow-usability-enhanced .rb2-body {
+  grid-template-columns: minmax(0, 1.05fr) minmax(0, 1fr);
+  min-height: 500px;
+  max-height: none;
+}
+
+.rb2.workflow-usability-enhanced .rb2-flow,
+.rb2.workflow-usability-enhanced .rb2-side,
+.rb2.workflow-usability-enhanced #rb2StepNodes,
+.rb2.workflow-usability-enhanced .rb2-step,
+.rb2.workflow-usability-enhanced .rb2-step-body {
+  min-width: 0;
+}
+
+.rb2.workflow-usability-enhanced .rb2-flow {
+  padding: 22px 18px;
+}
+
+.rb2.workflow-usability-enhanced .rb2-node,
+.rb2.workflow-usability-enhanced #rb2StepNodes,
+.rb2.workflow-usability-enhanced .rb2-add-step-row {
+  max-width: 420px;
+}
+
+.rb2.workflow-usability-enhanced .rb2-node-endpoint {
+  position: relative;
+  padding: 13px 14px;
+}
+
+.workflow-endpoint-action {
+  margin-top: 8px;
+  padding: 5px 8px;
+  border: 1px solid rgba(var(--border-rgb),.28);
+  border-radius: 5px;
+  background: transparent;
+  color: var(--text-muted);
+  font: 600 10.5px/1.2 'IBM Plex Mono', monospace;
+  cursor: pointer;
+}
+
+.workflow-endpoint-action:hover,
+.workflow-endpoint-action:focus-visible {
+  color: var(--text);
+  border-color: rgba(139,92,246,.7);
+}
+
+.workflow-empty-state {
+  width: 100%;
+  padding: 16px;
+  border: 1px dashed rgba(139,92,246,.42);
+  border-radius: 10px;
+  background: rgba(139,92,246,.055);
+  text-align: left;
+}
+
+.workflow-empty-state strong {
+  display: block;
+  margin-bottom: 4px;
+  color: var(--text);
+  font-size: 13px;
+}
+
+.workflow-empty-state p {
+  margin: 0 0 12px;
+  color: var(--text-muted);
+  font-size: 11.5px;
+  line-height: 1.5;
+}
+
+.workflow-starters {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 7px;
+}
+
+.workflow-starter {
+  min-width: 0;
+  padding: 9px 10px;
+  border: 1px solid rgba(var(--border-rgb),.28);
+  border-radius: 7px;
+  background: var(--bg);
+  color: var(--text);
+  font: 600 11px/1.35 'IBM Plex Sans', sans-serif;
+  text-align: left;
+  cursor: pointer;
+}
+
+.workflow-starter:hover,
+.workflow-starter:focus-visible {
+  border-color: rgba(139,92,246,.72);
+  background: rgba(139,92,246,.08);
+}
+
+.workflow-add-help {
+  margin: 7px 0 0;
+  color: var(--text-muted);
+  font-size: 10.5px;
+  line-height: 1.45;
+}
+
+.rb2.workflow-usability-enhanced .rb2-step {
+  padding: 10px 11px;
+}
+
+.rb2.workflow-usability-enhanced .rb2-step-summary {
+  white-space: normal;
+  overflow-wrap: anywhere;
+  line-height: 1.35;
+}
+
+.rb2.workflow-usability-enhanced .rb2-step-btns button {
+  min-width: 30px;
+  min-height: 30px;
+}
+
+.rb2.workflow-usability-enhanced .rb2-side {
+  padding: 16px;
+}
+
+.workflow-preview-actions {
+  display: flex;
+  gap: 7px;
+  flex-wrap: wrap;
+  margin: 0 0 8px;
+}
+
+.workflow-preview-actions button {
+  min-height: 32px;
+}
+
+.workflow-utility-status {
+  min-height: 18px;
+  margin: 4px 0 0;
+  color: var(--text-muted);
+  font-size: 10.5px;
+}
+
+.rb2.workflow-usability-enhanced #rb2Errors {
+  white-space: normal;
+  line-height: 1.45;
+  border-radius: 0 0 5px 5px;
+}
+
+.rb2.workflow-usability-enhanced .rb2-commercial-cta:disabled {
+  opacity: .46;
+  cursor: not-allowed;
+  border-color: rgba(var(--border-rgb),.25) !important;
+  color: var(--text-muted) !important;
+}
+
+.rb2.workflow-usability-enhanced button:focus-visible,
+.rb2.workflow-usability-enhanced select:focus-visible,
+.rb2.workflow-usability-enhanced input:focus-visible,
+.rb2.workflow-usability-enhanced textarea:focus-visible {
+  outline: 2px solid #8b5cf6;
+  outline-offset: 2px;
+}
+
+@media (max-width: 900px) {
+  .workflow-builder-context {
+    grid-template-columns: 1fr;
+  }
+  .workflow-builder-privacy {
+    grid-column: auto;
+  }
+  .rb2.workflow-usability-enhanced .rb2-body {
+    grid-template-columns: 1fr;
+  }
+  .rb2.workflow-usability-enhanced .rb2-flow {
+    border-right: 0;
+    border-bottom: 1px solid rgba(var(--border-rgb),.16);
+  }
+}
+
+@media (max-width: 560px) {
+  .rb2.workflow-usability-enhanced {
+    border-radius: 10px;
+  }
+  .rb2.workflow-usability-enhanced .rb2-head {
+    align-items: stretch;
+  }
+  .rb2.workflow-usability-enhanced .rb2-head .title,
+  .rb2.workflow-usability-enhanced .rb2-head input[type="text"] {
+    flex-basis: 100%;
+    max-width: none;
+  }
+  .rb2.workflow-usability-enhanced .rb2-head .icon-btn {
+    min-height: 42px;
+    justify-content: center;
+  }
+  .workflow-starters {
+    grid-template-columns: 1fr;
+  }
+  .rb2.workflow-usability-enhanced .rb2-flow,
+  .rb2.workflow-usability-enhanced .rb2-side {
+    padding: 14px 12px;
+  }
+  .rb2.workflow-usability-enhanced .rb2-step-btns button {
+    min-width: 36px;
+    min-height: 36px;
+  }
+}

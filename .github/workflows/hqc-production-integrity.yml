@@ -1,0 +1,75 @@
+name: HQC production analytics integrity
+
+on:
+  push:
+    branches: [main]
+    paths:
+      - '.github/workflows/hqc-production-integrity.yml'
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+jobs:
+  verify:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 22
+      - name: Verify live same-origin API and QA exclusion
+        working-directory: hqc-deploy-preview
+        shell: bash
+        run: |
+          set -euo pipefail
+          curl -fsSL --max-time 30 'https://homequotecheck.co.uk/api/metrics' > /tmp/before.json
+          curl -fsSL --max-time 30 'https://homequotecheck.co.uk/api/growth-report' > /tmp/growth-before.json
+          echo "METRICS_BEFORE $(cat /tmp/before.json)"
+          echo "GROWTH_BEFORE $(cat /tmp/growth-before.json)"
+          npm install --no-save playwright@1.55.0
+          npx playwright install --with-deps chromium
+          node --input-type=module <<'NODE'
+          import { chromium } from 'playwright';
+          const browser=await chromium.launch({headless:true});
+          const context=await browser.newContext({viewport:{width:390,height:844},isMobile:true,hasTouch:true});
+          const page=await context.newPage();
+          const xhr=[];
+          page.on('response',r=>{const req=r.request();if(['xhr','fetch'].includes(req.resourceType())) xhr.push({url:r.url(),status:r.status()});});
+          await page.goto('https://homequotecheck.co.uk/?qa=1&integrity_probe=1',{waitUntil:'networkidle',timeout:60000});
+          await page.getByRole('button',{name:/check my quote/i}).first().click();
+          const choose=page.locator('#hqc-choose-file');
+          await choose.waitFor({state:'visible',timeout:15000});
+          const chooserPromise=page.waitForEvent('filechooser',{timeout:5000});
+          await choose.click();
+          const chooser=await chooserPromise;
+          const png=Buffer.from('iVBORw0KGgoAAAANSUhEUgAAAAEAAAABCAQAAAC1HAwCAAAAC0lEQVR42mP8/x8AAusB9Wl2+XkAAAAASUVORK5CYII=','base64');
+          await chooser.setFiles({name:'qa-production-integrity.png',mimeType:'image/png',buffer:png});
+          await page.getByRole('heading',{name:/Ready to analyse|Tell us about your home/i}).waitFor({state:'visible',timeout:15000});
+          const analyse=page.getByRole('button',{name:/Analyse my quote/i}).first();
+          await analyse.waitFor({state:'visible',timeout:10000});
+          await analyse.click();
+          await page.locator('.resultsTop').waitFor({state:'visible',timeout:45000});
+          await page.waitForTimeout(1500);
+          const appApi=xhr.filter(x=>/\/api\/(event|analyse)/.test(new URL(x.url).pathname));
+          console.log('APP_API_RESPONSES',JSON.stringify(appApi));
+          if(!appApi.some(x=>new URL(x.url).origin==='https://homequotecheck.co.uk'&&new URL(x.url).pathname==='/api/analyse'&&x.status===200)) throw new Error('Analysis did not use successful same-origin production API');
+          if(appApi.some(x=>new URL(x.url).hostname==='api-v2.appdeploy.ai')) throw new Error('Browser still bypasses Cloudflare API proxy');
+          const body=await page.locator('body').innerText();
+          if(!/Your Decision Case/.test(body)||!/Marked as a genuine quote analysis/.test(body)) throw new Error('Decision Case did not render');
+          await context.close();
+          await browser.close();
+          NODE
+          curl -fsSL --max-time 30 'https://homequotecheck.co.uk/api/metrics' > /tmp/after.json
+          curl -fsSL --max-time 30 'https://homequotecheck.co.uk/api/growth-report' > /tmp/growth-after.json
+          echo "METRICS_AFTER $(cat /tmp/after.json)"
+          echo "GROWTH_AFTER $(cat /tmp/growth-after.json)"
+          python - <<'PY'
+          import json
+          b=json.load(open('/tmp/before.json')); a=json.load(open('/tmp/after.json'))
+          gb=json.load(open('/tmp/growth-before.json')); ga=json.load(open('/tmp/growth-after.json'))
+          keys=('genuineAnalyses','shareOpens','outboundClicks')
+          if any(b.get(k)!=a.get(k) for k in keys): raise SystemExit(f'QA polluted North Star metrics: before={b} after={a}')
+          if gb.get('total')!=ga.get('total'): raise SystemExit(f'QA polluted growth totals: before={gb.get("total")} after={ga.get("total")}')
+          print('PRODUCTION_QA_EXCLUSION_VERIFIED')
+          PY

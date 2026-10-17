@@ -1,0 +1,40 @@
+name: Recast Release 3 Phase 2
+
+on:
+  push:
+    branches:
+      - release-3-commercial-funnel-phase2
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+concurrency:
+  group: recast-release3-phase2
+  cancel-in-progress: true
+
+jobs:
+  quality_gate:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v5
+        with:
+          ref: release-3-commercial-funnel-phase2
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 20
+      - name: Install dependencies
+        working-directory: recast-worker
+        run: npm install --no-package-lock
+      - name: Full regression and Release 3 tests
+        working-directory: recast-worker
+        run: npm test
+      - name: Wrangler build validation
+        working-directory: recast-worker
+        run: npx wrangler deploy --dry-run --outdir=.wrangler-dry-run
+      - name: Verify no tracked product drift
+        run: |
+          dirty="$(git status --porcelain recast-worker | grep -vE '^\?\? recast-worker/(node_modules|\.wrangler-dry-run)/' || true)"
+          test -z "$dirty" || { echo "$dirty"; exit 1; }
+      - name: Summary
+        run: echo "Release 3 Phase 2 use cases, analytics, pricing reconciliation and build validation passed."

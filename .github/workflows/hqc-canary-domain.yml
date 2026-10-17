@@ -1,0 +1,277 @@
+name: HQC custom-domain canary
+
+on:
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+concurrency:
+  group: hqc-custom-domain-canary
+  cancel-in-progress: true
+
+jobs:
+  canary:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 22
+      - name: Install
+        working-directory: hqc-deploy-preview
+        run: npm install
+      - name: Snapshot HQC frontend for canary hostname
+        working-directory: hqc-deploy-preview
+        run: node snapshot.mjs
+        env:
+          HQC_PUBLIC_ORIGIN: https://cf-preview.homequotecheck.co.uk
+      - name: Bind safe HQC canary custom domain
+        working-directory: hqc-deploy-preview
+        run: npx wrangler deploy --config wrangler.canary.toml
+        env:
+          CLOUDFLARE_API_TOKEN: ${{ secrets.CLOUDFLARE_API_TOKEN }}
+          CLOUDFLARE_ACCOUNT_ID: ${{ secrets.CLOUDFLARE_ACCOUNT_ID }}
+      - name: Verify canary domain
+        shell: bash
+        run: |
+          set -euo pipefail
+          base='https://cf-preview.homequotecheck.co.uk'
+          ready=false
+          for attempt in 1 2 3 4 5 6 7 8 9 10 11 12; do
+            code=$(curl -L -sS -o /tmp/canary -w '%{http_code}' --max-time 30 "$base/health" || true)
+            body=$(cat /tmp/canary 2>/dev/null || true)
+            home=$(curl -L -sS --max-time 30 "$base/?release_probe=$attempt" || true)
+            uploadfix=$(curl -L -sS --max-time 30 "$base/__hqc_upload_v3.js?release_probe=$attempt" || true)
+            intake=$(curl -L -sS --max-time 30 "$base/__hqc_intake_diagnostics.js?release_probe=$attempt" || true)
+            event=$(curl -L -sS --max-time 30 -X POST -H 'content-type: application/json' --data '{"event":"intake_file_selected","technology":"heat_pump","source":"canary_smoke"}' "$base/api/event" || true)
+            if [ "$code" = '200' ] && grep -q 'hqc-migration-preview' <<< "$body" && grep -q '__hqc_enhancements.js' <<< "$home" && grep -q '__hqc_upload_v3.js' <<< "$home" && grep -q '__hqc_simple_results.js' <<< "$home" && grep -q '__hqc_intake_diagnostics.js' <<< "$home" && grep -q 'intake_file_selected' <<< "$intake" && grep -q '"test":true' <<< "$event" && ! grep -q 'heat-pump-second-opinion-v43csv.v2.appdeploy.ai' <<< "$home" && grep -q 'upload-friction-v3.3' <<< "$uploadfix" && grep -q "Get my personalised Decision Pack — £4.99" <<< "$(curl -L -sS --max-time 30 "$base/__hqc_decision_pack.js?release_probe=$attempt")"; then ready=true; break; fi
+            echo "Awaiting complete canary assets and intake route (attempt $attempt)"
+            sleep 5
+          done
+          test "$ready" = 'true'
+          curl -fsS -o /tmp/notifications-runtime.js "$base/assets/notifications-runtime-DKZvfw3S.js"
+          test -s /tmp/notifications-runtime.js
+          enhancement=$(curl -L -sS --max-time 30 "$base/__hqc_enhancements.js")
+          grep -q 'Quote evidence completeness' <<< "$enhancement"
+          grep -q 'Enter figures manually' <<< "$enhancement"
+          api=$(curl -L -sS --max-time 30 "$base/api/_healthcheck")
+          grep -q 'Success' <<< "$api"
+          echo 'HQC custom-domain canary passed: assets, health, API proxy and enhancement bundle verified.'
+      - name: Verify gated Solar analysis boundary
+        working-directory: hqc-deploy-preview
+        run: node test/canary-solar-live.mjs
+        env:
+          HQC_CANARY_ORIGIN: https://cf-preview.homequotecheck.co.uk
+      - name: Verify private Solar thermal evidence and comparison boundary
+        working-directory: hqc-deploy-preview
+        run: node test/canary-solar-thermal-private.mjs
+        env:
+          HQC_CANARY_ORIGIN: https://cf-preview.homequotecheck.co.uk
+      - name: Verify quote intake paths in mobile browser
+        working-directory: hqc-deploy-preview
+        shell: bash
+        run: |
+          set -euo pipefail
+          npm install --no-save playwright@1.55.0 pdf-lib@1.17.1
+          npx playwright install --with-deps chromium
+          node --input-type=module <<'NODE'
+          import { chromium } from 'playwright';
+          import { PDFDocument, StandardFonts } from 'pdf-lib';
+          const browser=await chromium.launch({headless:true});
+          const makeTextPdf=async(text)=>{
+            const doc=await PDFDocument.create();
+            const page=doc.addPage([612,792]);
+            const font=await doc.embedFont(StandardFonts.Helvetica);
+            page.drawText(String(text),{x:72,y:720,size:11,font,maxWidth:468});
+            return Buffer.from(await doc.save());
+          };
+          for (const suffix of ['?qa=1','?qa=1&manual_path=1']) {
+            const context=await browser.newContext({viewport:{width:390,height:844},isMobile:true,hasTouch:true,serviceWorkers:'block'});
+            const page=await context.newPage();
+            const errors=[]; const badScripts=[]; page.on('pageerror',e=>errors.push(String(e))); page.on('response',res=>{if(res.request().resourceType()==='script'&&/text\/html/i.test(res.headers()['content-type']||''))badScripts.push(res.url());});
+            await page.goto('https://cf-preview.homequotecheck.co.uk/'+suffix,{waitUntil:'domcontentloaded',timeout:30000});
+            await page.waitForLoadState('load',{timeout:15000}).catch(()=>{});
+            const mobileLayout=await page.evaluate(()=>{const choice=document.querySelector('#hqc-journey-choice');const hero=choice?.closest('[data-hqc-approved]');const img=[...document.querySelectorAll('img')].find(x=>/homepage-(?:graphic|house-only)/i.test(x.getAttribute('src')||''));let art=img;while(art&&hero&&art.parentElement!==hero)art=art.parentElement;return {overflow:document.documentElement.scrollWidth-window.innerWidth,choiceTop:choice?.getBoundingClientRect().top??9999,choiceBottom:choice?.getBoundingClientRect().bottom??9999,viewport:window.innerHeight,artDisplay:art?getComputedStyle(art).display:null};});
+            if(mobileLayout.overflow>1)throw new Error(`Mobile homepage has horizontal overflow: ${mobileLayout.overflow}px`);
+            if(mobileLayout.choiceTop<0||mobileLayout.choiceTop>620)throw new Error(`Mobile journey choices are not prioritised in viewport: top=${mobileLayout.choiceTop}`);
+            if(mobileLayout.artDisplay&&mobileLayout.artDisplay!=='none')throw new Error(`Mobile decorative art should be hidden to prioritise actions: ${mobileLayout.artDisplay}`);
+            const start=page.getByRole('button',{name:/start single quote check/i}).first();
+            await start.waitFor({state:'visible',timeout:15000});
+            await start.click();
+            const back=page.locator('#hqc-upload-back');await back.waitFor({state:'visible',timeout:15000});
+            if(suffix.includes('qa=1')&&!suffix.includes('manual_path')){await back.click();await page.waitForURL(url=>url.pathname==='/'&&!url.search,{timeout:15000});await start.waitFor({state:'visible',timeout:15000});await start.click();await page.locator('#hqc-upload-back').waitFor({state:'visible',timeout:15000});}
+            const chooseVisible=await page.locator('#hqc-choose-file').isVisible().catch(()=>false);
+            if(!chooseVisible)throw new Error('Upload CTA missing after opening single-quote intake');
+            if(suffix.includes('manual_path')){
+              const manual=page.locator('#hqc-enter-manual');await manual.waitFor({state:'visible',timeout:15000});const before=await page.locator('input:not([type="file"]),textarea,select').count();await manual.click();await page.waitForTimeout(500);const after=await page.locator('input:not([type="file"]),textarea,select').count();if(after<=before)throw new Error(`Manual-entry fallback did not reveal editable fields: before=${before} after=${after}`);
+            } else {
+              const choose=page.locator('#hqc-choose-file');await choose.waitFor({state:'visible',timeout:15000});const chooserPromise=page.waitForEvent('filechooser',{timeout:5000});await choose.click();const chooser=await chooserPromise;const png=Buffer.from('iVBORw0KGgoAAAANSUhEUgAAAAEAAAABCAQAAAC1HAwCAAAAC0lEQVR42mP8/x8AAusB9Wl2+XkAAAAASUVORK5CYII=','base64');await chooser.setFiles({name:'qa-heat-pump-quote.png',mimeType:'image/png',buffer:png});await page.getByRole('button',{name:/Analyse my quote/i}).first().waitFor({state:'visible',timeout:15000});
+            }
+            if(badScripts.length)throw new Error('Script URLs returned HTML: '+badScripts.join(', ')); if(errors.length)throw new Error(errors.join(' | '));await context.close();
+          }
+          {
+            const context=await browser.newContext({viewport:{width:390,height:844},isMobile:true,hasTouch:true,serviceWorkers:'block'});
+            const page=await context.newPage();
+            const errors=[]; const badScripts=[]; page.on('pageerror',e=>errors.push(String(e))); page.on('response',res=>{if(res.request().resourceType()==='script'&&/text\/html/i.test(res.headers()['content-type']||''))badScripts.push(res.url());});
+            await page.goto('https://cf-preview.homequotecheck.co.uk/?qa=1&compare_regression=1',{waitUntil:'domcontentloaded',timeout:30000});
+            await page.getByRole('button',{name:/start quote comparison/i}).first().click();
+            const compareBack=page.locator('#hqc-upload-back'); await compareBack.waitFor({state:'visible',timeout:15000});
+            await compareBack.click(); await page.waitForURL(url=>url.pathname==='/'&&!url.search,{timeout:15000});
+            await page.getByRole('button',{name:/start quote comparison/i}).first().click(); await page.locator('#hqc-upload-back').waitFor({state:'visible',timeout:15000});
+            const choose=page.locator('#hqc-choose-file'); await choose.waitFor({state:'visible',timeout:15000});
+            const chooserPromise=page.waitForEvent('filechooser',{timeout:5000}); await choose.click(); const chooser=await chooserPromise;
+            const png=Buffer.from('iVBORw0KGgoAAAANSUhEUgAAAAEAAAABCAQAAAC0lEQVR42mP8/x8AAusB9Wl2+XkAAAAASUVORK5CYII=','base64');
+            await chooser.setFiles([{name:'quote-a.png',mimeType:'image/png',buffer:png},{name:'quote-b.png',mimeType:'image/png',buffer:png}]);
+            const count=await page.locator('input[type="file"]').first().evaluate(el=>el.files?.length||0);
+            if(count!==2)throw new Error(`Compare intake did not retain two selected quotes: ${count}`);
+            await page.waitForTimeout(700);
+            if(await page.getByRole('button',{name:/Analyse my quote$/i}).count())throw new Error('Compare intake incorrectly exposed single-quote auto-analysis');
+            if(badScripts.length)throw new Error('Script URLs returned HTML: '+badScripts.join(', ')); if(errors.length)throw new Error(errors.join(' | '));
+            await context.close();
+          }
+          {
+            const context=await browser.newContext({viewport:{width:390,height:844},isMobile:true,hasTouch:true,serviceWorkers:'block'});
+            const page=await context.newPage();
+            let checkoutRequests=0;
+            await page.route('**/api/decision-pack/checkout',async route=>{checkoutRequests++;await route.fulfill({status:200,contentType:'application/json',body:JSON.stringify({url:'https://cf-preview.homequotecheck.co.uk/?qa=1&checkout_probe=ok',sessionId:'cs_probe'})});});
+            await page.goto('https://cf-preview.homequotecheck.co.uk/?qa=1&decision_pack_regression=1',{waitUntil:'domcontentloaded',timeout:30000});
+            await page.evaluate(()=>{localStorage.setItem('hqcDecisionPackCaseId','qa-case-12345678');const b=document.createElement('button');b.id='qa-open-decision-pack';b.textContent='Get Decision Pack';document.body.appendChild(b);});
+            const opener=page.locator('#qa-open-decision-pack');await opener.click();
+            const buy=page.locator('#hqc-comparison-gate [data-buy]');await buy.waitFor({state:'visible',timeout:5000});await buy.click();await page.waitForTimeout(400);
+            if(checkoutRequests!==1)throw new Error(`Decision Pack purchase CTA did not invoke checkout exactly once: ${checkoutRequests}`);
+            await context.close();
+          }
+          for (const viewport of [{width:390,height:844},{width:1366,height:900}]) {
+            const context=await browser.newContext({viewport,serviceWorkers:'block'});
+            const page=await context.newPage();
+            await page.goto('https://cf-preview.homequotecheck.co.uk/?qa=1&solar_preview=1',{waitUntil:'commit',timeout:30000});
+            await page.locator('#hqc-solar-preview-badge').waitFor({state:'attached',timeout:20000});
+            await page.locator('#hqc-solar-preview-badge').waitFor({state:'visible',timeout:15000});
+            const solarHeading=(await page.locator('.copy h1,.copy h2').first().innerText()).toLowerCase();
+            if(!solarHeading.includes('solar')||!solarHeading.includes('battery'))throw new Error('Solar preview proposition did not render');
+            const badge=await page.locator('#hqc-solar-preview-badge').innerText();
+            if(!/not public/i.test(badge))throw new Error('Solar preview is missing its non-public label');
+            await context.close();
+          }
+          {
+            const context=await browser.newContext({viewport:{width:390,height:844},isMobile:true,hasTouch:true,serviceWorkers:'block'});
+            const page=await context.newPage();
+            await page.goto('https://cf-preview.homequotecheck.co.uk/?qa=1&solar_preview=1',{waitUntil:'domcontentloaded',timeout:30000});
+            await page.getByRole('button',{name:/start solar quote check/i}).first().click();
+            const choose=page.locator('#hqc-choose-file');await choose.waitFor({state:'visible',timeout:15000});
+            const chooserPromise=page.waitForEvent('filechooser',{timeout:5000});await choose.click();const chooser=await chooserPromise;
+            await chooser.setFiles({name:'solar-installer-quote.pdf',mimeType:'application/pdf',buffer:await makeTextPdf('Solar quote. 12 panels. Array size 5.1 kWp. Annual generation 4200 kWh. Total price GBP 9500.')});
+            await page.waitForTimeout(5000);
+            const extractionState=await page.evaluate(()=>({raw:sessionStorage.getItem('hqc_solar_extracted_media'),status:document.querySelector('#hqc-upload-v3-status')?.textContent||'',error:document.querySelector('#hqc-upload-help')?.dataset?.hqcPdfError||'',scripts:[...document.scripts].map(s=>s.src).filter(Boolean)}));
+            let extracted=null;try{extracted=JSON.parse(extractionState.raw||'[]')[0]||null}catch{}
+            if(!extracted||extracted.extractionMethod!=='pdfjs-text-v1'||!/5\.1 kWp/.test(extracted.extractedText||''))throw new Error('Solar PDF browser extraction failed: '+JSON.stringify(extractionState));
+            if(extracted.sourceMediaType!=='application/pdf'||extracted.pageCount!==1)throw new Error('Solar PDF extraction provenance was not retained');
+            const analysed=await page.evaluate(async()=>{const r=await fetch('/api/analyse',{method:'POST',body:'native-upstream-body'});return {status:r.status,body:await r.json()};});
+            if(analysed.status!==200||analysed.body?.evidence?.arrayKwp!==5.1)throw new Error('Extracted Solar PDF did not reach technology-specific analysis');
+            const result=page.locator('#hqc-solar-analysis-result');await result.waitFor({state:'visible',timeout:10000});
+            const resultText=await result.innerText();if(!resultText.includes('5.1 kWp')||!/evidence gaps/i.test(resultText))throw new Error('Extracted Solar PDF result did not render');
+            if(await page.locator('#hqc-decision-pack-offer').isVisible())throw new Error('Heat Pump paid Decision Pack leaked into Solar journey');
+            await context.close();
+          }
+          {
+            const context=await browser.newContext({viewport:{width:390,height:844},isMobile:true,hasTouch:true,serviceWorkers:'block'});
+            const page=await context.newPage();
+            await page.goto('https://cf-preview.homequotecheck.co.uk/?qa=1&solar_preview=1',{waitUntil:'domcontentloaded',timeout:30000});
+            await page.locator('#hqc-solar-preview-badge').waitFor({state:'visible',timeout:20000});
+            await page.evaluate(()=>sessionStorage.setItem('hqc_solar_extracted_media',JSON.stringify([{sourceMediaType:'application/pdf',extractionMethod:'pdfjs-text-v1',pageCount:1,extractedText:'12 panels. Array size 5.1 kWp. Annual generation 4200 kWh. Total price £9,500.'}])));
+            const probe=await page.evaluate(async()=>{const r=await fetch('/api/analyse',{method:'POST',body:'native-upstream-body'});return {status:r.status,body:await r.json()};});
+            if(probe.status!==200||probe.body?.evidence?.arrayKwp!==5.1)throw new Error('Solar browser bridge did not replace native request with extracted-media analysis');
+            const rendered=page.locator('#hqc-solar-analysis-result');
+            await rendered.waitFor({state:'visible',timeout:10000});
+            const renderedText=await rendered.innerText();
+            if(!renderedText.includes('5.1 kWp')||!/questions to ask the installer/i.test(renderedText))throw new Error('Solar-specific evidence result did not render');
+            if(await page.locator('#hqc-decision-pack-offer').isVisible())throw new Error('Heat Pump paid Decision Pack leaked into Solar preview');
+            await context.close();
+          }
+          {
+            const context=await browser.newContext({viewport:{width:390,height:844},isMobile:true,hasTouch:true,serviceWorkers:'block'});
+            const page=await context.newPage();
+            await page.goto('https://cf-preview.homequotecheck.co.uk/?qa=1',{waitUntil:'commit',timeout:30000});
+            await page.locator('#hqc-journey-choice').waitFor({state:'visible',timeout:20000});
+            if(await page.locator('#hqc-solar-preview-badge').count())throw new Error('Private Solar preview leaked into default renewable-generic journey');
+            const heading=(await page.locator('.copy h1,.copy h2').first().innerText()).toLowerCase();
+            if(!heading.includes('home energy quote'))throw new Error(`Default public proposition is not renewable-generic: ${heading}`);
+            const tech=page.locator('#hqc-technology-choice');
+            const techText=(await tech.innerText()).toLowerCase();
+            if(!techText.includes('heat pump')||!techText.includes('solar pv / battery'))throw new Error(`Technology selector is incomplete: ${techText}`);
+            await context.close();
+          }
+          for (const viewport of [{width:390,height:844},{width:1366,height:900}]) {
+            const context=await browser.newContext({viewport,serviceWorkers:'block'});
+            const page=await context.newPage();
+            await page.goto('https://cf-preview.homequotecheck.co.uk/?qa=1&ev_preview=1',{waitUntil:'domcontentloaded',timeout:30000});
+            const heading=page.locator('.copy h1,.copy h2').first();await heading.waitFor({state:'visible',timeout:20000});
+            if(!/ev charger/i.test(await heading.innerText()))throw new Error('EV proposition did not render');
+            const beforeEvMetrics=await page.evaluate(async()=>{const r=await fetch('/api/growth-report');return r.ok?(await r.json()).total:null});
+            if(typeof beforeEvMetrics?.evAnalyses!=='number'||typeof beforeEvMetrics?.evComparisons!=='number')throw new Error('EV durable completion schema unavailable on canary');
+            await page.evaluate(()=>sessionStorage.setItem('hqc_ev_extracted_media',JSON.stringify([{sourceMediaType:'application/pdf',extractionMethod:'pdfjs-text-v1',pageCount:1,extractedText:'Installation of Zappi V2 EV charger 7.4 kW charging. Tethered Type 2 cable. Smart charging with app control and dynamic load management. DNO notification included. Equipment warranty 3 years. Total £1,250.'}])));
+            const probe=await page.evaluate(async()=>{const r=await fetch('/api/analyse',{method:'POST',body:'native-upstream-body'});return {status:r.status,body:await r.json(),adapter:r.headers.get('x-hqc-analysis-adapter')};});
+            if(probe.status!==200||probe.body?.evidence?.powerKw!==7.4||probe.body?.evidence?.priceGbp!==1250||probe.adapter!=='ev_chargepoint_internal')throw new Error('EV browser bridge did not reach isolated EV adapter: '+JSON.stringify(probe));
+            const result=page.locator('#hqc-ev-analysis-result');await result.waitFor({state:'visible',timeout:10000});
+            const txt=(await result.innerText()).toLowerCase();if(!txt.includes('7.4 kw')||!txt.includes('£1,250')||!txt.includes('evidence gaps')||!txt.includes('questions to ask the installer'))throw new Error('EV result did not render required evidence UX');
+            const brief=result.locator('#hqc-ev-decision-brief');await brief.locator('summary').click();
+            const briefText=await brief.innerText();if(!briefText.includes('Confirm with the installer')||!/dno/i.test(briefText)||!/No paid EV product is offered/i.test(briefText)||/heat loss|radiator/i.test(briefText))throw new Error('EV-specific decision brief failed single-quote render');
+            if(await page.locator('#hqc-decision-pack-offer').isVisible())throw new Error('Heat Pump paid Decision Pack leaked into EV preview');
+            await page.evaluate(()=>sessionStorage.setItem('hqc_ev_extracted_media',JSON.stringify([
+              {sourceMediaType:'application/pdf',extractionMethod:'pdfjs-text-v1',pageCount:1,extractedText:'Installation of Zappi V2 EV charger 7.4 kW charging. Cable run included. Consumer unit upgrade excluded. Total £1,250.'},
+              {sourceMediaType:'application/pdf',extractionMethod:'pdfjs-text-v1',pageCount:1,extractedText:'Install Ohme HomePro chargepoint 7 kW charging. Consumer unit upgrade included. Total £1,099.'}
+            ])));
+            const compared=await page.evaluate(async()=>{const r=await fetch('/api/analyse',{method:'POST',body:'native-upstream-body'});return {status:r.status,body:await r.json()}});
+            if(compared.status!==200||compared.body?.analyses?.length!==2||compared.body?.comparison?.find(x=>x.dimension==='consumer unit works')?.values?.[0]?.value!=='Excluded: Consumer unit upgrade excluded.')throw new Error('EV two-quote scope comparison failed');
+            const table=result.getByRole('table');await table.waitFor({state:'visible',timeout:10000});
+            const tableText=await table.innerText();if(!tableText.includes('consumer unit works')||!tableText.includes('Excluded: Consumer unit upgrade excluded.')||!tableText.includes('Included: Consumer unit upgrade included.')||!tableText.includes('Not evidenced'))throw new Error('EV two-quote table omitted evidence or missing states');
+            await brief.locator('summary').click();
+            const comparisonBrief=await brief.innerText();if(!comparisonBrief.includes('Material comparison points')||!comparisonBrief.includes('consumer unit works')||!comparisonBrief.includes('Confirm equipment, scope, exclusions'))throw new Error('EV private comparison brief did not reconcile material differences');
+            await page.evaluate(()=>sessionStorage.setItem('hqc_ev_extracted_media',JSON.stringify([{sourceMediaType:'application/pdf',extractionMethod:'pdfjs-text-v1',pageCount:1,extractedText:'Supply and install a dedicated consumer unit for the EV charger. Install 10 metres of 6 mm cable in surface trunking. Charger: Ohme ePod untethered (proposal labels it 7kWh). A CT clamp for load balancing is included. Submit DNO notification. Three-year warranty. Total payable (incl VAT) £1,329.60.'}])));
+            const derived=await page.evaluate(async()=>{const r=await fetch('/api/analyse',{method:'POST',body:'native-upstream-body'});return {status:r.status,body:await r.json()}});
+            if(derived.status!==200||derived.body?.evidence?.priceGbp!==1329.6||derived.body?.evidence?.model!=='ePod'||derived.body?.evidence?.powerKw!==null||derived.body?.evidence?.consumerUnitScope?.status!=='included')throw new Error('EV public-document-derived PDF wording was misread');
+            await page.waitForFunction(()=>document.querySelector('#hqc-ev-analysis-result')?.textContent?.includes('£1,329.60'),{timeout:10000});
+            const afterEvMetrics=await page.evaluate(async()=>{const r=await fetch('/api/growth-report');return r.ok?(await r.json()).total:null});
+            if(afterEvMetrics?.evAnalyses!==beforeEvMetrics.evAnalyses||afterEvMetrics?.evComparisons!==beforeEvMetrics.evComparisons)throw new Error('QA EV analyses were counted as durable customer completions');
+            const overflow=await page.evaluate(()=>document.documentElement.scrollWidth-window.innerWidth);if(overflow>1)throw new Error('EV rendered journey horizontal overflow: '+overflow);
+            await context.close();
+          }
+          {
+            const context=await browser.newContext({viewport:{width:390,height:844},isMobile:true,hasTouch:true,serviceWorkers:'block'});
+            const page=await context.newPage();
+            await page.goto('https://cf-preview.homequotecheck.co.uk/?qa=1&ev_preview=1',{waitUntil:'domcontentloaded',timeout:30000});
+            await page.getByRole('button',{name:/start single quote check/i}).first().click();
+            const choose=page.locator('#hqc-choose-file');await choose.waitFor({state:'visible',timeout:15000});
+            if(!/text-based ev charger pdf/i.test(await page.locator('#hqc-approved-upload-zone').innerText()))throw new Error('EV upload does not disclose its supported PDF format');
+            let pick=page.waitForEvent('filechooser',{timeout:5000});await choose.click();
+            await (await pick).setFiles({name:'ev-installer.pdf',mimeType:'application/pdf',buffer:await makeTextPdf('Installation of Zappi V2 EV charger 7.4 kW charging. Smart charging not included. Total £1,250.')});
+            await page.waitForFunction(()=>{try{return JSON.parse(sessionStorage.getItem('hqc_ev_extracted_media')||'[]')[0]?.extractedText?.includes('Zappi V2')}catch{return false}},{timeout:15000});
+            const checked=await page.evaluate(async()=>{const r=await fetch('/api/analyse',{method:'POST',body:'native-upstream-body'});return {status:r.status,body:await r.json()}});
+            if(checked.status!==200||checked.body?.evidence?.powerKw!==7.4||checked.body?.evidence?.smart!==null)throw new Error('Selected EV PDF was not analysed with exclusions preserved');
+            await page.locator('#hqc-ev-analysis-result').waitFor({state:'visible',timeout:10000});
+            await page.goto('https://cf-preview.homequotecheck.co.uk/?qa=1&ev_preview=1',{waitUntil:'domcontentloaded',timeout:30000});
+            await page.getByRole('button',{name:/start single quote check/i}).first().click();
+            await choose.waitFor({state:'visible',timeout:15000});
+            pick=page.waitForEvent('filechooser',{timeout:5000});await choose.click();
+            await (await pick).setFiles({name:'scan.png',mimeType:'image/png',buffer:Buffer.from('iVBORw0KGgoAAAANSUhEUgAAAAEAAAABCAQAAAC1HAwCAAAAC0lEQVR42mP8/x8AAusB9Wl2+XkAAAAASUVORK5CYII=','base64')});
+            await page.getByText(/text-based installer PDFs only/i).waitFor({state:'visible',timeout:5000});
+            const stale=await page.evaluate(()=>sessionStorage.getItem('hqc_ev_extracted_media'));
+            if(stale!==null)throw new Error('Unsupported EV image retained stale PDF evidence');
+            await context.close();
+          }
+          {
+            const context=await browser.newContext({viewport:{width:390,height:844},serviceWorkers:'block'});const page=await context.newPage();
+            await page.goto('https://cf-preview.homequotecheck.co.uk/?qa=1',{waitUntil:'domcontentloaded',timeout:30000});
+            if(await page.locator('#hqc-ev-analysis-result').count())throw new Error('Private EV results leaked into default journey');
+            const tech=(await page.locator('#hqc-technology-choice').innerText()).toLowerCase();if(!tech.includes('ev charger'))throw new Error('Public EV choice missing');await page.locator('#hqc-technology-choice [data-tech="ev_chargepoint"]').click();await page.waitForURL(/technology=ev_chargepoint/);await page.locator('#hqc-journey-choice').waitFor({state:'visible'});if(!/ev charger/i.test(await page.locator('.copy h1,.copy h2').first().innerText()))throw new Error('Public EV journey did not render');await page.locator('#hqc-technology-choice [data-tech="heat_pump"]').click();await page.waitForURL(/technology=heat_pump/);await page.locator('#hqc-journey-choice').waitFor({state:'visible'});await page.waitForFunction(()=>/home energy quote/i.test(document.querySelector('.copy h1,.copy h2')?.textContent||''),undefined,{timeout:10000});if(await page.evaluate(()=>sessionStorage.getItem('hqc_ev_preview')==='1'||sessionStorage.getItem('hqc_journey_technology')==='ev_chargepoint'))throw new Error('EV state leaked after technology switch');
+            await context.close();
+          }
+          await browser.close();
+          console.log('HQC canary quote intake, compare-mode, Solar and EV public selection, rendered EV mobile/desktop, and Decision Pack regression paths passed.');
+          NODE
+      - name: Verify private solar thermal browser upload and results
+        working-directory: hqc-deploy-preview
+        run: node test/canary-solar-thermal-browser.mjs
+        env:
+          HQC_CANARY_ORIGIN: https://cf-preview.homequotecheck.co.uk

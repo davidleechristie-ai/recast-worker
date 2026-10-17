@@ -1,0 +1,144 @@
+name: Recast Release 3 Phase 1
+
+on:
+  push:
+    branches:
+      - release-3-commercial-funnel-phase1-final
+    paths:
+      - '.github/release3-phase1-tool-workflow.md'
+      - '.github/release3-phase1-workflow-automation.md'
+      - '.github/release3-phase1-api.md'
+      - '.github/release3-phase1-context-upgrades.md'
+      - '.github/workflows/release3-phase1.yml'
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+concurrency:
+  group: recast-release3-phase1
+  cancel-in-progress: true
+
+jobs:
+  baseline:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v5
+        with:
+          ref: release-3-commercial-funnel-phase1-final
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 20
+      - name: Install dependencies
+        working-directory: recast-worker
+        run: npm install --no-package-lock
+      - name: Full baseline tests
+        working-directory: recast-worker
+        run: npm test
+
+  tool_workflow:
+    needs: baseline
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v5
+        with:
+          ref: release-3-commercial-funnel-phase1-final
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 20
+      - name: Install dependencies
+        working-directory: recast-worker
+        run: npm install --no-package-lock
+      - name: Validate Tool to Workflow
+        working-directory: recast-worker
+        run: node src/release3-tool-workflow.test.mjs
+      - name: Verify committed Phase 1A files
+        run: |
+          test -f recast-worker/public/release3-tool-workflow.js
+          test -f recast-worker/src/worker-release3.js
+          grep -q 'src/worker-release3.js' recast-worker/wrangler.jsonc
+
+  workflow_automation:
+    needs: tool_workflow
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v5
+        with:
+          ref: release-3-commercial-funnel-phase1-final
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 20
+      - name: Install dependencies
+        working-directory: recast-worker
+        run: npm install --no-package-lock
+      - name: Validate Workflow to Automation
+        working-directory: recast-worker
+        run: |
+          node src/release3-tool-workflow.test.mjs
+          grep -q 'automation_configuration_started' public/release3-tool-workflow.js
+          grep -q 'server-side processing' public/release3-tool-workflow.js
+          grep -q '/automation/?source=workflow' public/release3-tool-workflow.js
+
+  developer_api:
+    needs: workflow_automation
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v5
+        with:
+          ref: release-3-commercial-funnel-phase1-final
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 20
+      - name: Install dependencies
+        working-directory: recast-worker
+        run: npm install --no-package-lock
+      - name: Validate Developer to API
+        working-directory: recast-worker
+        run: |
+          node src/release3-tool-workflow.test.mjs
+          grep -q 'api_documentation_viewed' public/release3-tool-workflow.js
+          grep -q '/api/index.html?source=tool' public/release3-tool-workflow.js
+
+  contextual_upgrades:
+    needs: developer_api
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v5
+        with:
+          ref: release-3-commercial-funnel-phase1-final
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 20
+      - name: Install dependencies
+        working-directory: recast-worker
+        run: npm install --no-package-lock
+      - name: Validate contextual upgrade journeys
+        working-directory: recast-worker
+        run: |
+          node src/release3-tool-workflow.test.mjs
+          grep -q 'repeat_success' public/release3-tool-workflow.js
+          grep -q 'product_limit' public/release3-tool-workflow.js
+          grep -q 'pricing_viewed' public/release3-tool-workflow.js
+
+  final_quality_gate:
+    needs: contextual_upgrades
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v5
+        with:
+          ref: release-3-commercial-funnel-phase1-final
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 20
+      - name: Install dependencies
+        working-directory: recast-worker
+        run: npm install --no-package-lock
+      - name: Full Release 3 Phase 1 tests
+        working-directory: recast-worker
+        run: npm test
+      - name: Verify no tracked product drift
+        run: |
+          dirty="$(git status --porcelain recast-worker | grep -vE '^\?\? recast-worker/node_modules/$' || true)"
+          test -z "$dirty" || { echo "$dirty"; exit 1; }
+      - name: Summary
+        run: echo "Release 3 Phase 1 deterministic journeys built and tested on the release branch."
