@@ -12,6 +12,18 @@ on:
       - 'hqc-deploy-preview/test/quote-guides.test.mjs'
       - 'hqc-deploy-preview/test/quote-guides-rendered.mjs'
       - 'hqc-deploy-preview/snapshot.mjs'
+      - 'hqc-deploy-preview/approved-home-layout.js'
+      - 'hqc-deploy-preview/mobile-homepage-override.js'
+      - 'hqc-deploy-preview/simple-results-journey.js'
+      - 'hqc-deploy-preview/decision-pack.js'
+      - 'hqc-deploy-preview/paid-comparison-gate.js'
+      - 'hqc-deploy-preview/decision-pack-model.js'
+      - 'hqc-deploy-preview/conversion-examples.js'
+      - 'hqc-deploy-preview/artwork-fit.js'
+      - 'hqc-deploy-preview/landing-conversion.js'
+      - 'hqc-deploy-preview/decision-pack.html'
+      - 'hqc-deploy-preview/test/decision-pack-model.test.mjs'
+      - 'hqc-deploy-preview/test/conversion-journey-rendered.mjs'
       - '.github/workflows/hqc-production.yml'
   push:
     branches: [main]
@@ -19,6 +31,18 @@ on:
       - 'hqc-deploy-preview/approved-home-layout.js'
       - 'hqc-deploy-preview/mobile-homepage-override.js'
       - 'hqc-deploy-preview/snapshot.mjs'
+      - 'hqc-deploy-preview/approved-home-layout.js'
+      - 'hqc-deploy-preview/mobile-homepage-override.js'
+      - 'hqc-deploy-preview/simple-results-journey.js'
+      - 'hqc-deploy-preview/decision-pack.js'
+      - 'hqc-deploy-preview/paid-comparison-gate.js'
+      - 'hqc-deploy-preview/decision-pack-model.js'
+      - 'hqc-deploy-preview/conversion-examples.js'
+      - 'hqc-deploy-preview/artwork-fit.js'
+      - 'hqc-deploy-preview/landing-conversion.js'
+      - 'hqc-deploy-preview/decision-pack.html'
+      - 'hqc-deploy-preview/test/decision-pack-model.test.mjs'
+      - 'hqc-deploy-preview/test/conversion-journey-rendered.mjs'
       - 'hqc-deploy-preview/compare-heat-pump-quotes.html'
       - 'hqc-deploy-preview/is-this-a-good-heat-pump-quote.html'
       - 'hqc-deploy-preview/heat-pump-quote-checklist.html'
@@ -45,17 +69,23 @@ jobs:
           node-version: 22
       - name: Check content contracts
         run: node --test hqc-deploy-preview/test/quote-guides.test.mjs
+      - name: Check Decision Pack model and technology boundaries
+        run: node --test hqc-deploy-preview/test/decision-pack-model.test.mjs hqc-deploy-preview/test/decision-pack-technology.test.mjs hqc-deploy-preview/test/renewable-decision-pack-boundary.test.mjs
       - name: Install existing browser QA tooling
         run: |
           npm install --no-save playwright@1.55.0
           npx playwright install --with-deps chromium
       - name: Render all five guides on mobile and desktop
-        run: node hqc-deploy-preview/test/quote-guides-rendered.mjs
+        run: |
+          node hqc-deploy-preview/test/quote-guides-rendered.mjs
+          node hqc-deploy-preview/test/conversion-journey-rendered.mjs
       - uses: actions/upload-artifact@v4
         if: always()
         with:
           name: hqc-quote-guides-rendered
-          path: artifacts/quote-guides
+          path: |
+            artifacts/quote-guides
+            artifacts/conversion-journey
   deploy:
     if: github.event_name != 'pull_request'
     needs: quote-guides
@@ -80,7 +110,7 @@ jobs:
         shell: bash
         run: |
           set -euo pipefail
-          for f in index.html __hqc_enhancements.js __hqc_upload_v3.js __hqc_artwork_fit.js __hqc_results_layout.js __hqc_quote_facts.js __hqc_paid_comparison.js __hqc_decision_pack.js __hqc_approved_layout.js __hqc_simple_results.js; do test -s "hqc-deploy-preview/site/$f"; done
+          for f in decision-pack.html __hqc_decision_pack_model.js __hqc_conversion_examples.js index.html __hqc_enhancements.js __hqc_upload_v3.js __hqc_artwork_fit.js __hqc_results_layout.js __hqc_quote_facts.js __hqc_paid_comparison.js __hqc_decision_pack.js __hqc_approved_layout.js __hqc_simple_results.js; do test -s "hqc-deploy-preview/site/$f"; done
           test -s hqc-deploy-preview/site/assets/notifications-runtime-DKZvfw3S.js
           test -s hqc-deploy-preview/site/resources/pdf.mjs
           test -s hqc-deploy-preview/site/resources/pdf.worker.mjs
@@ -148,4 +178,5 @@ jobs:
           growth=$(curl -L -sS --max-time 30 "$base/api/growth-report")
           ! grep -q 'qa_production_guard' <<< "$growth"
           echo 'HQC production HTTP verification passed.'
+
 

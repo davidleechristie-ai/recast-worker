@@ -37,8 +37,8 @@
  }`;
  const template=`<div class="inner"><div class="brand"><span class="mark">⌂</span><div><b>Home Quote Check</b><small>Be sure before you sign.</small></div></div>
  <span class="tag">HOME ENERGY QUOTES</span><h1>Is your home energy quote a good deal?</h1>
- <p class="lead">From heat pumps to solar panels and EV chargers, understand the price, gaps and questions before you commit.</p><div class="technology-picker"><b>What are you getting a quote for?</b><div class="technology-options"><button type="button" data-tech="heat_pump" aria-pressed="true">Heat pump</button><button type="button" data-tech="solar_battery" aria-pressed="false">Solar & battery</button><button type="button" data-tech="ev_chargepoint" aria-pressed="false">EV charger</button></div></div>
- <button class="primary" data-go="single">Check my quote — free →</button><p class="upload-note">Upload a photo, screenshot or PDF · About a minute to start</p>
+ <p class="lead">See what’s included, what’s missing and what to ask before paying a deposit.</p><div class="technology-picker"><b>What are you getting a quote for?</b><div class="technology-options"><button type="button" data-tech="heat_pump" aria-pressed="true">Heat pump</button><button type="button" data-tech="solar_battery" aria-pressed="false">Solar & battery</button><button type="button" data-tech="ev_chargepoint" aria-pressed="false">EV charger</button></div></div>
+ <button class="primary" data-go="single">Check my quote — free →</button><p class="upload-note">Upload a photo, screenshot or PDF · Get clear next steps</p>
  <div class="scene"><img src="/resources/homepage-house-only.svg" alt="House with an outdoor heat pump"><div class="result-mini"><b>✓ Example quote review</b><span>✓ Price checked</span><span>⚠ Missing details highlighted</span><span>✓ Questions to ask</span></div></div>
  <div class="benefits"><div class="benefit"><span class="symbol">▥</span><div><b>Check the price</b><p>Understand how your quote compares.</p></div></div>
  <div class="benefit"><span class="symbol">⌕</span><div><b>Spot what's missing</b><p>Find unclear costs and exclusions.</p></div></div>
@@ -52,7 +52,7 @@
   const renewable=technology==='solar_battery'||technology==='ev_chargepoint';
   const label=technology==='solar_battery'?'solar or battery':technology==='ev_chargepoint'?'EV charger':'home energy';
   screen.querySelector('h1').textContent='Is your '+label+' quote a good deal?';
-  screen.querySelector('.upload-note').textContent=renewable?'Upload a text-based installer PDF · Photos and scanned PDFs are not supported':'Upload a photo, screenshot or PDF · About a minute to start';
+  screen.querySelector('.upload-note').textContent=renewable?'Upload a text-based installer PDF · Photos and scanned PDFs are not supported':'Upload a photo, screenshot or PDF · Get clear next steps';
   screen.querySelector('.scene').hidden=renewable;
   screen.querySelector('.step p').textContent=renewable?'Upload a text-based installer PDF.':'Take a photo or upload a PDF.';
  }
