@@ -84,6 +84,12 @@ try{
      await page.locator('#hqc-choose-file').waitFor({state:'visible'});
      assert.match(page.url(),/src=organic_heat_pump_quote_checklist_top/,'guide handoff retains its source');
     }
+    if(width===390||width===1440){
+     await page.goto('https://homequotecheck.co.uk/?qa=1&technology=heat_pump&src=qa_category_handoff',{waitUntil:'networkidle'});
+     await page.locator('#hqc-clean-home #hqc-technology-choice [data-tech="ev_chargepoint"]').click();
+     await page.waitForURL(url=>url.searchParams.get('technology')==='ev_chargepoint');
+     assert.equal(new URL(page.url()).searchParams.get('src'),'qa_category_handoff','new homepage renewable switch retains attribution');
+    }
     continue;
    }
    const root=width<760?'#hqc-mobile-landing':'.copy';
