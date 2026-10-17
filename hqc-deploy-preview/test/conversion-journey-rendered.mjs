@@ -14,10 +14,18 @@ async function layoutEvidence(page,label){
   const elements=selectors.map(selector=>{const el=document.querySelector(selector);if(!el)return {selector,missing:true};const ancestors=[];for(let p=el;p&&p!==document.body;p=p.parentElement){const c=getComputedStyle(p);ancestors.push({name:name(p),rect:rect(p),display:c.display,order:c.order,overflowX:c.overflowX,overflowY:c.overflowY,inline:p.style.cssText})}return {selector,ancestors}});
   const styles=new Map([...document.querySelectorAll('*')].map(el=>[el.style,name(el)]));
   const writes=(window.__hqcStyleTrace||[]).map(x=>({element:styles.get(x.style)||'detached',property:x.property,value:x.value,stack:x.stack}));
-  return {viewport:{width:innerWidth,height:innerHeight},elements,writes};
+  const images=[...document.querySelectorAll('img')].filter(el=>/homepage-|hqcHero/.test(el.src)||el.dataset.hqcHeroImage).map(el=>({src:el.getAttribute('src'),tagged:el.dataset.hqcHeroImage,insideCopy:!!el.closest('.copy'),ancestors:[el.parentElement,el.parentElement?.parentElement].filter(Boolean).map(name)}));
+  return {viewport:{width:innerWidth,height:innerHeight},elements,writes,images};
  });
  await writeFile('artifacts/conversion-journey/layout-'+label+'.json',JSON.stringify(data,null,2));
  return data;
+}
+function assertFreePath(state,label){
+ for(const selector of ['#hqc-primary-start','.copy .hqc-visible-guides']){
+  const item=state.elements.find(x=>x.selector===selector);assert.ok(item&&!item.missing,selector+' exists '+label);
+  const child=item.ancestors[0].rect;assert.ok(child.width>0&&child.height>0,selector+' is rendered '+label);
+  for(const parent of item.ancestors.slice(1))if(['hidden','clip'].includes(parent.overflowY))assert.ok(child.y>=parent.rect.y-1&&child.bottom<=parent.rect.bottom+1,selector+' is not vertically clipped by '+parent.name+' '+label);
+ }
 }
 try{
  for(const width of [390,1440]){
@@ -54,15 +62,11 @@ try{
    if(width>=760&&tech==='heat_pump')await layoutEvidence(page,'before-fullpage');
    await page.screenshot({path:'artifacts/conversion-journey/home-'+width+'-'+tech+'.png',fullPage:width>=760});
    if(width>=760&&tech==='heat_pump'){
-    await layoutEvidence(page,'after-fullpage');
+    assertFreePath(await layoutEvidence(page,'after-fullpage'),'after full-page capture');
     await page.setViewportSize({width:width-1,height:900});await page.setViewportSize({width,height:900});await page.waitForTimeout(500);
     const state=await layoutEvidence(page,'after-resize');
     await page.screenshot({path:'artifacts/conversion-journey/hero-after-resize.png'});
-    for(const selector of ['#hqc-primary-start','.copy .hqc-visible-guides']){
-     const item=state.elements.find(x=>x.selector===selector);assert.ok(item&&!item.missing,selector+' exists');
-     const child=item.ancestors[0].rect;assert.ok(child.width>0&&child.height>0,selector+' is rendered');
-     for(const parent of item.ancestors.slice(1))if(['hidden','clip'].includes(parent.overflowY))assert.ok(child.y>=parent.rect.y-1&&child.bottom<=parent.rect.bottom+1,selector+' is not vertically clipped by '+parent.name);
-    }
+    assertFreePath(state,'after resize');
    }
    if(tech==='heat_pump'){await page.locator(root+' .hqc-visible-guides').scrollIntoViewIfNeeded();await page.screenshot({path:'artifacts/conversion-journey/guides-'+width+'-'+tech+'.png'});}
   }
