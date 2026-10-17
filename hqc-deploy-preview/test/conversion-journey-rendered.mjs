@@ -40,6 +40,7 @@ try{
   await page.route('https://homequotecheck.co.uk/**',async route=>{
    const r=route.request(),p=new URL(r.url()).pathname;
    if(r.method()!=='GET')return route.abort();
+   if(p==='/resources/homepage-house-professional.webp')return route.fulfill({contentType:'image/webp',body:await readFile('hqc-deploy-preview/homepage-house-professional.webp')});
    if(scripts[p])return route.fulfill({contentType:'application/javascript',body:await code(scripts[p])});
    return route.continue();
   });
@@ -62,7 +63,10 @@ try{
     const cta=home.locator('#hqc-primary-start');
     const before=await cta.boundingBox();assert.ok(before.y+before.height<900,'free CTA appears in first screen');
     const illustration=home.locator('.hqc-home-scene img');await illustration.scrollIntoViewIfNeeded();
-    assert.equal(await illustration.evaluate(img=>{const b=img.getBoundingClientRect(),scale=Math.min(b.width/1000,b.height/620),x=b.x+(b.width-1000*scale)/2+735*scale,y=b.y+(b.height-620*scale)/2+477*scale;return document.elementFromPoint(x,y)===img}),true,'the example card leaves the illustrated heat pump visible');
+    assert.equal(await illustration.getAttribute('src'),'/resources/homepage-house-professional.webp');
+    await illustration.evaluate(img=>img.decode());
+    assert.equal(await illustration.evaluate(img=>img.naturalWidth),1200);
+    assert.equal(await illustration.evaluate(img=>{const b=img.getBoundingClientRect(),scale=Math.min(b.width/img.naturalWidth,b.height/img.naturalHeight),x=b.x+(b.width-img.naturalWidth*scale)/2+img.naturalWidth*0.84*scale,y=b.y+(b.height-img.naturalHeight*scale)/2+img.naturalHeight*0.69*scale;return document.elementFromPoint(x,y)===img}),true,'the example card leaves the illustrated heat pump visible');
     await page.screenshot({path:'artifacts/conversion-journey/home-'+width+'-'+tech+'.png',fullPage:true});
     await page.setViewportSize({width:width-1,height:900});await page.setViewportSize({width,height:900});
     await cta.scrollIntoViewIfNeeded();
