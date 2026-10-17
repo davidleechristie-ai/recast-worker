@@ -61,8 +61,11 @@ try{
     assert.equal(await page.evaluate(()=>document.documentElement.scrollWidth>innerWidth),false,'homepage has no horizontal overflow');
     const cta=home.locator('#hqc-primary-start');
     const before=await cta.boundingBox();assert.ok(before.y+before.height<900,'free CTA appears in first screen');
+    const illustration=home.locator('.hqc-home-scene img');await illustration.scrollIntoViewIfNeeded();
+    assert.equal(await illustration.evaluate(img=>{const b=img.getBoundingClientRect(),scale=Math.min(b.width/1000,b.height/620),x=b.x+(b.width-1000*scale)/2+735*scale,y=b.y+(b.height-620*scale)/2+477*scale;return document.elementFromPoint(x,y)===img}),true,'the example card leaves the illustrated heat pump visible');
     await page.screenshot({path:'artifacts/conversion-journey/home-'+width+'-'+tech+'.png',fullPage:true});
     await page.setViewportSize({width:width-1,height:900});await page.setViewportSize({width,height:900});
+    await cta.scrollIntoViewIfNeeded();
     assert.equal(await cta.evaluate(el=>{const r=el.getBoundingClientRect();return document.elementFromPoint(r.x+r.width/2,r.y+r.height/2)?.closest('button')===el}),true,'free CTA remains unoccluded after capture and resize');
     await cta.click();await page.locator('#hqc-choose-file').waitFor({state:'visible'});
     assert.equal(await home.count(),0,'homepage releases ownership on upload');
@@ -72,6 +75,15 @@ try{
     await page.locator('#hqc-clean-home [data-home-start="compare"]').click();
     await page.locator('#hqc-choose-file').waitFor({state:'visible'});
     assert.match(await page.locator('body').innerText(),/Add the quotes you want to compare/);
+    if(width===390){
+     await page.goto('https://homequotecheck.co.uk/?qa=1&legal=privacy',{waitUntil:'networkidle'});
+     assert.equal(await page.locator('#hqc-clean-home').count(),0,'Privacy releases homepage ownership');
+     assert.match(await page.locator('body').innerText(),/Privacy/i);
+     await page.goto('https://homequotecheck.co.uk/heat-pump-quote-checklist?qa=1',{waitUntil:'networkidle'});
+     await page.getByRole('link',{name:'Upload your quote for a free gap analysis',exact:true}).first().click();
+     await page.locator('#hqc-choose-file').waitFor({state:'visible'});
+     assert.match(page.url(),/src=organic_heat_pump_quote_checklist_top/,'guide handoff retains its source');
+    }
     continue;
    }
    const root=width<760?'#hqc-mobile-landing':'.copy';
