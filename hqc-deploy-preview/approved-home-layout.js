@@ -13,9 +13,13 @@
   btn?.closest('a')?.click();
  }
  function apply(){
-  const copy=qs('.copy'),img=qsa('img').find(x=>x.dataset.hqcHeroImage==='true'||/homepage-(?:graphic|house-only)\.(?:png|svg)/i.test(x.getAttribute('src')||''));if(!copy||!img)return;
+  const copy=qs('.copy');if(!copy)return;
+  // Generated mobile illustrations inside the copy are not hero layout anchors.
+  const candidates=qsa('img').filter(x=>!copy.contains(x));
+  const img=candidates.find(x=>x.dataset.hqcHeroImage==='true')||candidates.find(x=>/homepage-(?:graphic|house-only)\.(?:png|svg)/i.test(x.getAttribute('src')||''));if(!img)return;
   let hero=copy.parentElement;while(hero&&hero!==document.body&&!hero.contains(img))hero=hero.parentElement;if(!hero||!hero.contains(img))return;
-  const left=direct(hero,copy),right=direct(hero,img),mobile=innerWidth<760,selectedTech=technology(),renewable=selectedTech==='solar_battery'||selectedTech==='ev_chargepoint',mode=(mobile?'conversion-mobile-v1':'conversion-desktop-v1')+':'+selectedTech;if(renewable){
+  const left=direct(hero,copy),right=direct(hero,img);if(left===right)return;
+  const mobile=innerWidth<760,selectedTech=technology(),renewable=selectedTech==='solar_battery'||selectedTech==='ev_chargepoint',mode=(mobile?'conversion-mobile-v1':'conversion-desktop-v1')+':'+selectedTech;if(renewable){
    const label=selectedTech==='solar_battery'?'solar or battery':'EV charger';
    qsa('*',copy).filter(el=>/^Compare your heat[-‑– ]pump quotes before you commit\.$/i.test(el.textContent.trim())).forEach(el=>{el.textContent='Understand your '+label+' quote before you commit.'});
    qsa('p,span,div').filter(el=>el.textContent.trim()==='Upload images or enter facts manually.').forEach(el=>{el.textContent='Upload a text-based installer PDF.'});
