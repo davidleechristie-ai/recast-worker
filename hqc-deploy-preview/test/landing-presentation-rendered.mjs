@@ -12,10 +12,18 @@ try{
   for(const tech of ['heat_pump','solar_battery','ev_chargepoint']){
    await page.goto('https://presentation.test/?technology='+tech+'&src=test_kept');
    await page.evaluate(t=>sessionStorage.setItem('hqc_journey_technology',t),tech);
-   const file=mode==='mobile'?'mobile-homepage-override.js':'approved-home-layout.js';
+   const file=mode==='mobile'&&tech!=='heat_pump'?'mobile-homepage-override.js':'approved-home-layout.js';
    await page.addScriptTag({content:await readFile('hqc-deploy-preview/'+file,'utf8')});
-   const scope=mode==='mobile'?'#hqc-mobile-landing':'.copy';
+   const scope=tech==='heat_pump'?'#hqc-clean-home':mode==='mobile'?'#hqc-mobile-landing':'.copy';
    await page.locator(scope).waitFor();
+   if(tech==='heat_pump'){
+    assert.match(await page.locator(scope+' .hqc-home-upload-note').innerText(),/photo.*PDF/);
+    assert.equal(await page.locator(scope+' h1').innerText(),'See what’s missing in your quote');
+    assert.equal(await page.locator(scope+' .hqc-home-report').count(),1);
+    assert.equal(await page.evaluate(()=>document.documentElement.scrollWidth>innerWidth),false);
+    await page.screenshot({path:'artifacts/landing-presentation/'+mode+'-'+tech+'.png',fullPage:true});
+    continue;
+   }
    if(mode==='mobile')await page.locator(scope+' [data-tech="'+tech+'"]').click();
    await page.waitForTimeout(100);
    const note=await page.locator(mode==='mobile'?scope+' .upload-note':'#hqc-primary-start span').innerText();
@@ -50,7 +58,7 @@ try{
  for(const mode of ['mobile','desktop']){
   const context=await browser.newContext({viewport:mode==='mobile'?{width:390,height:844}:{width:1280,height:900}});
   const page=await context.newPage();
-  const scripts={'/__hqc_mobile_homepage.js':'mobile-homepage-override.js','/__hqc_approved_layout.js':'approved-home-layout.js','/__hqc_landing_conversion.js':'landing-conversion.js'};
+  const scripts={'/__hqc_conversion_examples.js':'conversion-examples.js','/__hqc_artwork_fit.js':'artwork-fit.js','/__hqc_mobile_homepage.js':'mobile-homepage-override.js','/__hqc_approved_layout.js':'approved-home-layout.js','/__hqc_landing_conversion.js':'landing-conversion.js'};
   await page.route('https://homequotecheck.co.uk/**',async route=>{
    const request=route.request(),path=new URL(request.url()).pathname;
    if(request.method()!=='GET')return route.abort();
@@ -59,6 +67,14 @@ try{
   });
   for(const tech of ['heat_pump','solar_battery','ev_chargepoint']){
    await page.goto('https://homequotecheck.co.uk/?qa=1&technology='+tech+'&src=qa_presentation',{waitUntil:'networkidle'});
+   if(tech==='heat_pump'){
+    const home=page.locator('#hqc-clean-home');await home.waitFor({state:'visible'});
+    assert.match(await home.locator('.hqc-home-upload-note').innerText(),/photo.*PDF/);
+    assert.equal(await page.locator('h1:visible').count(),1);
+    assert.equal(await page.locator('#hqc-mobile-landing:visible,#hqc-desktop-example:visible').count(),0);
+    await page.screenshot({path:'artifacts/landing-presentation/live-'+mode+'-'+tech+'.png',fullPage:true});
+    continue;
+   }
    const overlay=page.locator('#hqc-mobile-landing');
    const useOverlay=mode==='mobile'&&await overlay.count();
    const scope=useOverlay?'#hqc-mobile-landing':'.copy';
@@ -78,3 +94,4 @@ try{
 
  console.log('LANDING_PRESENTATION_RENDERED mobile desktop heat_pump solar_battery ev_chargepoint');
 }finally{await browser.close()}
+

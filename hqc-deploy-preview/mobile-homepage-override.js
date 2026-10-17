@@ -70,6 +70,8 @@
   const nav=document.querySelector('header button');if(nav)nav.click();
  }
  function mount(){
+  const current=new URLSearchParams(location.search).get('technology')||sessionStorage.getItem('hqc_journey_technology')||'heat_pump';
+  if(current==='heat_pump'||document.getElementById('hqc-clean-home'))return;
   if(!mobile()||document.getElementById('hqc-mobile-landing'))return;
   if(journeyActive)return;
   const text=document.body.innerText||'';
@@ -101,3 +103,4 @@
   if(/^Home$/i.test(name))setTimeout(()=>{journeyActive=false;onNavigation()},150);
  },true);
 })();
+

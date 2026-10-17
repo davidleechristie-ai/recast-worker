@@ -1,6 +1,7 @@
 (()=>{
   const HOUSE='/resources/homepage-house-only.svg';
   const fit=()=>{
+    if(document.getElementById('hqc-clean-home'))return;
     const img=[...document.querySelectorAll('img')].find(x=>/homepage-(?:graphic\.png|house-only\.svg)/i.test(x.getAttribute('src')||''));
     if(!img)return;
     // The report preview now owns this container; retain legacy fitting elsewhere.
@@ -36,3 +37,4 @@
   addEventListener('resize',run,{passive:true});
   run();
 })();
+
