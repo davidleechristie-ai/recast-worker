@@ -6,9 +6,29 @@ await mkdir('artifacts/conversion-journey',{recursive:true});
 const code=n=>readFile('hqc-deploy-preview/'+n,'utf8');
 const scripts={'/__hqc_artwork_fit.js':'artwork-fit.js','/__hqc_landing_conversion.js':'landing-conversion.js','/__hqc_mobile_homepage.js':'mobile-homepage-override.js','/__hqc_approved_layout.js':'approved-home-layout.js','/__hqc_simple_results.js':'simple-results-journey.js','/__hqc_decision_pack.js':'decision-pack.js','/__hqc_paid_comparison.js':'paid-comparison-gate.js'};
 const quotes=[{installer:'Illustrative Installer A',price:12400,model:'Model 8',electricalWork:'Electrical work included in quoted price',emitterChanges:'Provisional allowance £500',flowTemperatureC:45},{installer:'Illustrative Installer B',price:11900,model:'Model 8',electricalWork:'Excluded: customer to arrange'},{installer:'Illustrative Installer C',price:13000,roomByRoom:'Not provided'}];
+async function layoutEvidence(page,label){
+ const data=await page.evaluate(()=>{
+  const name=el=>el.tagName.toLowerCase()+(el.id?'#'+el.id:'')+(typeof el.className==='string'?'.'+el.className.trim().replaceAll(' ','.'):'');
+  const rect=el=>{const b=el.getBoundingClientRect();return {x:b.x,y:b.y,width:b.width,height:b.height,right:b.right,bottom:b.bottom}};
+  const selectors=['.copy','#hqc-primary-start','.copy .hqc-visible-guides','#hqc-desktop-example','img[data-hqc-hero-image]'];
+  const elements=selectors.map(selector=>{const el=document.querySelector(selector);if(!el)return {selector,missing:true};const ancestors=[];for(let p=el;p&&p!==document.body;p=p.parentElement){const c=getComputedStyle(p);ancestors.push({name:name(p),rect:rect(p),display:c.display,order:c.order,overflowX:c.overflowX,overflowY:c.overflowY,inline:p.style.cssText})}return {selector,ancestors}});
+  const styles=new Map([...document.querySelectorAll('*')].map(el=>[el.style,name(el)]));
+  const writes=(window.__hqcStyleTrace||[]).map(x=>({element:styles.get(x.style)||'detached',property:x.property,value:x.value,stack:x.stack}));
+  return {viewport:{width:innerWidth,height:innerHeight},elements,writes};
+ });
+ await writeFile('artifacts/conversion-journey/layout-'+label+'.json',JSON.stringify(data,null,2));
+ return data;
+}
 try{
  for(const width of [390,1440]){
   const page=await browser.newPage({viewport:{width,height:900}});
+  await page.addInitScript(()=>{
+   window.__hqcStyleTrace=[];
+   const keep=(style,property,value)=>{const stack=new Error().stack||'';if(stack.includes('__hqc')){window.__hqcStyleTrace.push({style,property,value:String(value),stack});if(window.__hqcStyleTrace.length>2000)window.__hqcStyleTrace.shift()}};
+   const proto=CSSStyleDeclaration.prototype,original=proto.setProperty,cssText=Object.getOwnPropertyDescriptor(proto,'cssText');
+   proto.setProperty=function(property,value,priority){keep(this,property,value);return original.call(this,property,value,priority)};
+   Object.defineProperty(proto,'cssText',{...cssText,set(value){keep(this,'cssText',value);return cssText.set.call(this,value)}});
+  });
   await page.route('https://homequotecheck.co.uk/**',async route=>{
    const r=route.request(),p=new URL(r.url()).pathname;
    if(r.method()!=='GET')return route.abort();
@@ -31,7 +51,19 @@ try{
    assert.equal(await preview.evaluate(el=>{const r=el.getBoundingClientRect();for(let p=el;p&&p!==document.body;p=p.parentElement){const b=p.getBoundingClientRect(),c=getComputedStyle(p);if(c.overflowY==='hidden'&&(r.top<b.top-1||r.bottom>b.bottom+1))return false;}return getComputedStyle(el.parentElement).display!=='flex';}),true,'legacy artwork fitter does not crop the report');
    if(tech!=='heat_pump')assert.doesNotMatch(await preview.innerText(),/heat-loss calculation/);
    assert.equal(await page.evaluate(()=>document.documentElement.scrollWidth>innerWidth),false);
+   if(width>=760&&tech==='heat_pump')await layoutEvidence(page,'before-fullpage');
    await page.screenshot({path:'artifacts/conversion-journey/home-'+width+'-'+tech+'.png',fullPage:width>=760});
+   if(width>=760&&tech==='heat_pump'){
+    await layoutEvidence(page,'after-fullpage');
+    await page.setViewportSize({width:width-1,height:900});await page.setViewportSize({width,height:900});await page.waitForTimeout(500);
+    const state=await layoutEvidence(page,'after-resize');
+    await page.screenshot({path:'artifacts/conversion-journey/hero-after-resize.png'});
+    for(const selector of ['#hqc-primary-start','.copy .hqc-visible-guides']){
+     const item=state.elements.find(x=>x.selector===selector);assert.ok(item&&!item.missing,selector+' exists');
+     const child=item.ancestors[0].rect;assert.ok(child.width>0&&child.height>0,selector+' is rendered');
+     for(const parent of item.ancestors.slice(1))if(['hidden','clip'].includes(parent.overflowY))assert.ok(child.y>=parent.rect.y-1&&child.bottom<=parent.rect.bottom+1,selector+' is not vertically clipped by '+parent.name);
+    }
+   }
    if(tech==='heat_pump'){await page.locator(root+' .hqc-visible-guides').scrollIntoViewIfNeeded();await page.screenshot({path:'artifacts/conversion-journey/guides-'+width+'-'+tech+'.png'});}
   }
   await page.setContent(await code('decision-pack.html'));
