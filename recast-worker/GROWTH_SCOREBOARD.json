@@ -11,15 +11,15 @@
     "organic_clicks": 1,
     "organic_ctr": 0.004201680672268907,
     "indexed_target_pages": null,
-    "successful_tool_uses": 6,
+    "successful_tool_uses": 8,
     "workflow_starts": 0,
     "workflow_completions": 0,
     "returning_users": 1,
-    "upgrade_visits": 1,
+    "upgrade_visits": 2,
     "pro_customers": 0,
     "api_automation_customers": 0,
-    "tool_run_attempts": 6,
-    "commercial_intent_events": 2
+    "tool_run_attempts": 7,
+    "commercial_intent_events": 6
   },
   "diagnosis": {
     "current_bottleneck": "search_visibility",
@@ -195,8 +195,7 @@
   ],
   "missing_instrumentation": [
     "Indexed target-page count or URL Inspection/index coverage evidence is unavailable.",
-    "Workflow completion rate awaits a workflow_start denominator.",
-    "Activation/deeper-product/commercial-intent user rates await post-instrumentation activated organic users."
+    "Workflow completion rate awaits a workflow_start denominator."
   ],
   "last_updated": "2026-10-17",
   "measurement_rules": {
@@ -1695,43 +1694,47 @@
     },
     "ga4": {
       "period_days": 28,
-      "organic_sessions": 3,
-      "organic_active_users": 2,
-      "organic_new_users": 1,
+      "organic_sessions": 4,
+      "organic_active_users": 3,
+      "organic_new_users": 2,
       "organic_returning_users": 1,
       "event_counts": {
-        "successful_tool_use": 6,
-        "tool_run_attempt": 6,
-        "commercial_intent": 2,
-        "upgrade_click": 1
+        "successful_tool_use": 8,
+        "tool_run_attempt": 7,
+        "commercial_intent": 6,
+        "upgrade_click": 2
       },
       "event_active_users": {
-        "successful_tool_use": 1,
-        "tool_run_attempt": 1,
-        "commercial_intent": 2,
-        "upgrade_click": 1
+        "successful_tool_use": 2,
+        "tool_run_attempt": 2,
+        "commercial_intent": 3,
+        "upgrade_click": 2
       },
       "organic_event_counts": {
-        "commercial_intent": 2,
-        "upgrade_click": 1
+        "commercial_intent": 6,
+        "successful_tool_use": 2,
+        "upgrade_click": 2,
+        "tool_run_attempt": 1
       },
       "organic_event_active_users": {
-        "commercial_intent": 2,
-        "upgrade_click": 1
+        "commercial_intent": 3,
+        "successful_tool_use": 1,
+        "upgrade_click": 2,
+        "tool_run_attempt": 1
       },
-      "tool_run_attempts": 6,
-      "successful_tool_uses": 6,
+      "tool_run_attempts": 7,
+      "successful_tool_uses": 8,
       "workflow_starts": 0,
       "workflow_completions": 0,
-      "upgrade_clicks": 1,
-      "commercial_intent_events": 2,
+      "upgrade_clicks": 2,
+      "commercial_intent_events": 6,
       "rates": {
-        "successful_task_rate": 1,
+        "successful_task_rate": 1.1428571428571428,
         "workflow_completion_rate": null,
-        "activation_rate": 0,
-        "deeper_product_usage_rate": null,
-        "commercial_intent_rate": null,
-        "returning_user_rate": 0.5
+        "activation_rate": 0.3333333333333333,
+        "deeper_product_usage_rate": 0,
+        "commercial_intent_rate": 3,
+        "returning_user_rate": 0.3333333333333333
       },
       "rate_definitions": {
         "successful_task_rate": "successful_tool_use events / tool_run_attempt events",
@@ -1754,11 +1757,11 @@
   },
   "refresh_warnings": [],
   "rates": {
-    "successful_task_rate": 1,
+    "successful_task_rate": 1.1428571428571428,
     "workflow_completion_rate": null,
-    "activation_rate": 0,
-    "deeper_product_usage_rate": null,
-    "commercial_intent_rate": null,
-    "returning_user_rate": 0.5
+    "activation_rate": 0.3333333333333333,
+    "deeper_product_usage_rate": 0,
+    "commercial_intent_rate": 3,
+    "returning_user_rate": 0.3333333333333333
   }
 }
