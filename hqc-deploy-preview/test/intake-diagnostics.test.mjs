@@ -2,7 +2,18 @@ import assert from 'node:assert/strict';
 import test from 'node:test';
 import fs from 'node:fs';
 import vm from 'node:vm';
-import worker,{HqcMetrics} from '../worker.js';
+import worker,{HqcMetrics,isQaRequest} from '../worker.js';
+
+test('production release PDF smoke calls are explicitly QA-marked',()=>{
+  const workflow=fs.readFileSync(new URL('../../.github/workflows/hqc-production-router-release.yml',import.meta.url),'utf8');
+  const calls=workflow.split('\n').filter(line=>line.includes('curl ')&&line.includes('release-smoke-text-v1'));
+  assert.equal(calls.length,2,'cover both Solar and EV PDF smoke calls');
+  for(const call of calls){
+    assert.ok(call.includes('-H "referer: $base/?qa=1"'),'synthetic release PDF request lacks QA referer: '+call.trim().split('=')[0]);
+    const referer=call.match(/-H "referer: ([^"]+)"/)[1].replace('$base','https://homequotecheck.co.uk');
+    assert.equal(isQaRequest(new Request('https://homequotecheck.co.uk/api/analyse',{headers:{referer}}),'production'),true);
+  }
+});
 
 class MemoryStorage{
   values=new Map();
@@ -57,3 +68,4 @@ test('upload interception emits picker and manual stages before propagation is s
   assert.match(manual,/emit\('intake_manual_opened'\)/);
   assert.ok(manual.indexOf("emit('intake_manual_opened')")<manual.indexOf('stopImmediatePropagation()'));
 });
+

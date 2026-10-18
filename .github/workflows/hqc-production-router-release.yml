@@ -98,7 +98,7 @@ jobs:
           test "$hp_code" = '200'
           grep -q 'Success' /tmp/hqc-hp
 
-          solar_code=$(curl -L -sS -o /tmp/hqc-solar -w '%{http_code}' --max-time 30 -X POST -H 'content-type: application/json' -H 'x-hqc-technology: solar_battery' --data '{"extractedMedia":{"sourceMediaType":"application/pdf","extractionMethod":"release-smoke-text-v1","pageCount":1,"extractedText":"Solar PV quote: 12 x 425W panels, 5.1 kWp array. Inverter 5 kW. Total price £9,500."}}' "$base/api/analyse")
+          solar_code=$(curl -L -sS -o /tmp/hqc-solar -w '%{http_code}' --max-time 30 -X POST -H 'content-type: application/json' -H "referer: $base/?qa=1" -H 'x-hqc-technology: solar_battery' --data '{"extractedMedia":{"sourceMediaType":"application/pdf","extractionMethod":"release-smoke-text-v1","pageCount":1,"extractedText":"Solar PV quote: 12 x 425W panels, 5.1 kWp array. Inverter 5 kW. Total price £9,500."}}' "$base/api/analyse")
           echo "solar production analysis -> $solar_code"
           test "$solar_code" = '200'
           grep -q '5.1' /tmp/hqc-solar
@@ -110,7 +110,7 @@ jobs:
             grep -q '"error":"decision_pack_unavailable_for_technology"' /tmp/hqc-renewable-pack
           done
 
-          ev_code=$(curl -L -sS -o /tmp/hqc-ev -w '%{http_code}' --max-time 30 -X POST -H 'content-type: application/json' -H 'x-hqc-technology: ev_chargepoint' --data '{"extractedMedia":{"sourceMediaType":"application/pdf","extractionMethod":"release-smoke-text-v1","pageCount":1,"extractedText":"Installation of Zappi V2 EV charger 7.4 kW charging. Total £1,250."}}' "$base/api/analyse")
+          ev_code=$(curl -L -sS -o /tmp/hqc-ev -w '%{http_code}' --max-time 30 -X POST -H 'content-type: application/json' -H "referer: $base/?qa=1" -H 'x-hqc-technology: ev_chargepoint' --data '{"extractedMedia":{"sourceMediaType":"application/pdf","extractionMethod":"release-smoke-text-v1","pageCount":1,"extractedText":"Installation of Zappi V2 EV charger 7.4 kW charging. Total £1,250."}}' "$base/api/analyse")
           echo "EV public production analysis -> $ev_code"
           test "$ev_code" = '200'
           grep -q '"technology":"ev_chargepoint"' /tmp/hqc-ev
@@ -199,3 +199,4 @@ jobs:
           } finally {await browser.close()}
           console.log('Production public EV text-PDF upload, analysis and result verified on mobile and desktop.');
           NODE
+
