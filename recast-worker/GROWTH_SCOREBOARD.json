@@ -3,13 +3,13 @@
     "north_star": "monthly_recurring_revenue_gbp",
     "target": 1000,
     "current": 0,
-    "evidence_date": "2026-10-18",
+    "evidence_date": "2026-10-19",
     "revenue_definition": "Genuine recurring revenue only: current subscription plus paid succeeded latest invoice charge, excluding fully refunded and inactive/cancelled subscriptions."
   },
   "funnel": {
-    "search_impressions": 258,
+    "search_impressions": 255,
     "organic_clicks": 1,
-    "organic_ctr": 0.003875968992248062,
+    "organic_ctr": 0.00392156862745098,
     "indexed_target_pages": null,
     "successful_tool_uses": 8,
     "workflow_starts": 0,
@@ -197,7 +197,7 @@
     "Indexed target-page count or URL Inspection/index coverage evidence is unavailable.",
     "Workflow completion rate awaits a workflow_start denominator."
   ],
-  "last_updated": "2026-10-18",
+  "last_updated": "2026-10-19",
   "measurement_rules": {
     "unknown_values": "Keep unavailable measurements as null; never estimate them as facts.",
     "follow_up_windows_days": [
@@ -227,9 +227,9 @@
     "search_console": {
       "period_days": 28,
       "clicks": 1,
-      "impressions": 258,
-      "ctr": 0.003875968992248062,
-      "average_position": 59.7093023255814,
+      "impressions": 255,
+      "ctr": 0.00392156862745098,
+      "average_position": 59.78823529411765,
       "top_pages": [
         {
           "clicks": 1,
@@ -261,16 +261,9 @@
         },
         {
           "clicks": 0,
-          "impressions": 1,
+          "impressions": 22,
           "ctr": 0,
-          "average_position": 86,
-          "page": "https://tryrecast.app/blog/compare-json-files.html"
-        },
-        {
-          "clicks": 0,
-          "impressions": 23,
-          "ctr": 0,
-          "average_position": 58.08695652173913,
+          "average_position": 58.09090909090909,
           "page": "https://tryrecast.app/blog/compare-xml-files.html"
         },
         {
@@ -296,9 +289,9 @@
         },
         {
           "clicks": 0,
-          "impressions": 9,
+          "impressions": 8,
           "ctr": 0,
-          "average_position": 15.222222222222221,
+          "average_position": 15.25,
           "page": "https://tryrecast.app/tools/"
         },
         {
@@ -389,9 +382,9 @@
         },
         {
           "clicks": 0,
-          "impressions": 2,
+          "impressions": 1,
           "ctr": 0,
-          "average_position": 89.5,
+          "average_position": 93,
           "query": "compara json"
         },
         {
@@ -942,9 +935,9 @@
         },
         {
           "clicks": 0,
-          "impressions": 2,
+          "impressions": 1,
           "ctr": 0,
-          "average_position": 65,
+          "average_position": 72,
           "query": "xml compare"
         },
         {
@@ -1020,14 +1013,6 @@
           "clicks": 0,
           "impressions": 1,
           "ctr": 0,
-          "average_position": 86,
-          "page": "https://tryrecast.app/blog/compare-json-files.html",
-          "query": "compara json"
-        },
-        {
-          "clicks": 0,
-          "impressions": 1,
-          "ctr": 0,
           "average_position": 61,
           "page": "https://tryrecast.app/blog/compare-xml-files.html",
           "query": "compare online xml"
@@ -1066,9 +1051,9 @@
         },
         {
           "clicks": 0,
-          "impressions": 2,
+          "impressions": 1,
           "ctr": 0,
-          "average_position": 65,
+          "average_position": 72,
           "page": "https://tryrecast.app/blog/compare-xml-files.html",
           "query": "xml compare"
         },
@@ -1689,7 +1674,7 @@
           "query": "validate jsonpath"
         }
       ],
-      "evidence_date": "2026-10-18"
+      "evidence_date": "2026-10-19"
     },
     "ga4": {
       "period_days": 28,
@@ -1743,7 +1728,7 @@
         "commercial_intent_rate": "organic users with commercial_intent / organic users with successful_tool_use",
         "returning_user_rate": "organic returning active users / organic active users"
       },
-      "evidence_date": "2026-10-18"
+      "evidence_date": "2026-10-19"
     },
     "stripe": {
       "active_subscription_customers": 0,
@@ -1751,7 +1736,7 @@
       "plan_counts": {},
       "excluded_non_genuine_subscriptions": 9,
       "measurement_rule": "Counts only active/trialing subscriptions backed by a paid, succeeded latest invoice charge that has not been fully refunded.",
-      "evidence_date": "2026-10-18"
+      "evidence_date": "2026-10-19"
     }
   },
   "refresh_warnings": [],
