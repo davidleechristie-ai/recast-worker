@@ -9,6 +9,8 @@ on:
       - 'hqc-deploy-preview/heat-pump-quote-checklist.html'
       - 'hqc-deploy-preview/what-should-a-heat-pump-quote-include.html'
       - 'hqc-deploy-preview/heat-pump-heat-loss-calculation-flow-temperature.html'
+      - 'hqc-deploy-preview/how-we-help.html'
+      - 'hqc-deploy-preview/test/how-we-help-rendered.cjs'
       - 'hqc-deploy-preview/test/quote-guides.test.mjs'
       - 'hqc-deploy-preview/test/quote-guides-rendered.mjs'
       - 'hqc-deploy-preview/snapshot.mjs'
@@ -48,6 +50,8 @@ on:
       - 'hqc-deploy-preview/heat-pump-quote-checklist.html'
       - 'hqc-deploy-preview/what-should-a-heat-pump-quote-include.html'
       - 'hqc-deploy-preview/heat-pump-heat-loss-calculation-flow-temperature.html'
+      - 'hqc-deploy-preview/how-we-help.html'
+      - 'hqc-deploy-preview/test/how-we-help-rendered.cjs'
       - 'hqc-deploy-preview/test/quote-guides.test.mjs'
       - 'hqc-deploy-preview/test/quote-guides-rendered.mjs'
       - '.github/workflows/hqc-production.yml'
@@ -78,6 +82,7 @@ jobs:
       - name: Render all five guides on mobile and desktop
         run: |
           node hqc-deploy-preview/test/quote-guides-rendered.mjs
+          node hqc-deploy-preview/test/how-we-help-rendered.cjs
           node hqc-deploy-preview/test/conversion-journey-rendered.mjs
       - uses: actions/upload-artifact@v4
         if: always()
@@ -85,6 +90,7 @@ jobs:
           name: hqc-quote-guides-rendered
           path: |
             artifacts/quote-guides
+            artifacts/how-we-help
             artifacts/conversion-journey
   deploy:
     if: github.event_name != 'pull_request'
@@ -178,5 +184,6 @@ jobs:
           growth=$(curl -L -sS --max-time 30 "$base/api/growth-report")
           ! grep -q 'qa_production_guard' <<< "$growth"
           echo 'HQC production HTTP verification passed.'
+
 
 
