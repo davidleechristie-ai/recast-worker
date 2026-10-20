@@ -7,9 +7,9 @@
     "revenue_definition": "Genuine recurring revenue only: current subscription plus paid succeeded latest invoice charge, excluding fully refunded and inactive/cancelled subscriptions."
   },
   "funnel": {
-    "search_impressions": 256,
+    "search_impressions": 262,
     "organic_clicks": 1,
-    "organic_ctr": 0.00390625,
+    "organic_ctr": 0.003816793893129771,
     "indexed_target_pages": null,
     "successful_tool_uses": 2,
     "workflow_starts": 0,
@@ -194,8 +194,8 @@
     }
   ],
   "missing_instrumentation": [
-    "GA4 feed unavailable.",
-    "Indexed target-page count or URL Inspection/index coverage evidence is unavailable."
+    "Indexed target-page count or URL Inspection/index coverage evidence is unavailable.",
+    "Workflow completion rate awaits a workflow_start denominator."
   ],
   "last_updated": "2026-10-20",
   "measurement_rules": {
@@ -227,9 +227,9 @@
     "search_console": {
       "period_days": 28,
       "clicks": 1,
-      "impressions": 256,
-      "ctr": 0.00390625,
-      "average_position": 59.59765625,
+      "impressions": 262,
+      "ctr": 0.003816793893129771,
+      "average_position": 59.25954198473283,
       "top_pages": [
         {
           "clicks": 1,
@@ -317,9 +317,9 @@
         },
         {
           "clicks": 0,
-          "impressions": 135,
+          "impressions": 136,
           "ctr": 0,
-          "average_position": 78.62962962962963,
+          "average_position": 78.58088235294117,
           "page": "https://tryrecast.app/tools/json-diff.html"
         },
         {
@@ -331,9 +331,9 @@
         },
         {
           "clicks": 0,
-          "impressions": 18,
+          "impressions": 19,
           "ctr": 0,
-          "average_position": 49.111111111111114,
+          "average_position": 46.8421052631579,
           "page": "https://tryrecast.app/tools/json-to-csv.html"
         },
         {
@@ -370,6 +370,13 @@
           "ctr": 0,
           "average_position": 53.5,
           "page": "https://tryrecast.app/tools/validate-json-schema.html"
+        },
+        {
+          "clicks": 0,
+          "impressions": 4,
+          "ctr": 0,
+          "average_position": 47.75,
+          "page": "https://tryrecast.app/tools/yaml-to-json.html"
         }
       ],
       "top_queries": [
@@ -505,6 +512,13 @@
           "ctr": 0,
           "average_position": 59,
           "query": "convert json array to csv"
+        },
+        {
+          "clicks": 0,
+          "impressions": 1,
+          "ctr": 0,
+          "average_position": 73,
+          "query": "convert yaml to json"
         },
         {
           "clicks": 0,
@@ -830,9 +844,9 @@
         },
         {
           "clicks": 0,
-          "impressions": 2,
+          "impressions": 3,
           "ctr": 0,
-          "average_position": 5,
+          "average_position": 5.333333333333333,
           "query": "json to csv"
         },
         {
@@ -893,9 +907,9 @@
         },
         {
           "clicks": 0,
-          "impressions": 2,
+          "impressions": 3,
           "ctr": 0,
-          "average_position": 71,
+          "average_position": 71.33333333333333,
           "query": "online json diff"
         },
         {
@@ -967,6 +981,27 @@
           "ctr": 0,
           "average_position": 72.75,
           "query": "xml file comparison"
+        },
+        {
+          "clicks": 0,
+          "impressions": 1,
+          "ctr": 0,
+          "average_position": 62,
+          "query": "yaml to json"
+        },
+        {
+          "clicks": 0,
+          "impressions": 1,
+          "ctr": 0,
+          "average_position": 14,
+          "query": "yaml to json converter"
+        },
+        {
+          "clicks": 0,
+          "impressions": 1,
+          "ctr": 0,
+          "average_position": 42,
+          "query": "yaml to json online"
         }
       ],
       "top_page_queries": [
@@ -1548,9 +1583,9 @@
         },
         {
           "clicks": 0,
-          "impressions": 2,
+          "impressions": 3,
           "ctr": 0,
-          "average_position": 71,
+          "average_position": 71.33333333333333,
           "page": "https://tryrecast.app/tools/json-diff.html",
           "query": "online json diff"
         },
@@ -1588,9 +1623,9 @@
         },
         {
           "clicks": 0,
-          "impressions": 2,
+          "impressions": 3,
           "ctr": 0,
-          "average_position": 5,
+          "average_position": 5.333333333333333,
           "page": "https://tryrecast.app/tools/json-to-csv.html",
           "query": "json to csv"
         },
@@ -1657,12 +1692,94 @@
           "average_position": 55,
           "page": "https://tryrecast.app/tools/jsonpath-tester.html",
           "query": "validate jsonpath"
+        },
+        {
+          "clicks": 0,
+          "impressions": 1,
+          "ctr": 0,
+          "average_position": 73,
+          "page": "https://tryrecast.app/tools/yaml-to-json.html",
+          "query": "convert yaml to json"
+        },
+        {
+          "clicks": 0,
+          "impressions": 1,
+          "ctr": 0,
+          "average_position": 62,
+          "page": "https://tryrecast.app/tools/yaml-to-json.html",
+          "query": "yaml to json"
+        },
+        {
+          "clicks": 0,
+          "impressions": 1,
+          "ctr": 0,
+          "average_position": 14,
+          "page": "https://tryrecast.app/tools/yaml-to-json.html",
+          "query": "yaml to json converter"
+        },
+        {
+          "clicks": 0,
+          "impressions": 1,
+          "ctr": 0,
+          "average_position": 42,
+          "page": "https://tryrecast.app/tools/yaml-to-json.html",
+          "query": "yaml to json online"
         }
       ],
       "evidence_date": "2026-10-20"
     },
     "ga4": {
-      "status": "unavailable",
+      "period_days": 28,
+      "organic_sessions": 5,
+      "organic_active_users": 3,
+      "organic_new_users": 2,
+      "organic_returning_users": 1,
+      "event_counts": {
+        "commercial_intent": 6,
+        "successful_tool_use": 2,
+        "upgrade_click": 2,
+        "tool_run_attempt": 1
+      },
+      "event_active_users": {
+        "commercial_intent": 3,
+        "successful_tool_use": 1,
+        "upgrade_click": 2,
+        "tool_run_attempt": 1
+      },
+      "organic_event_counts": {
+        "commercial_intent": 6,
+        "successful_tool_use": 2,
+        "upgrade_click": 2,
+        "tool_run_attempt": 1
+      },
+      "organic_event_active_users": {
+        "commercial_intent": 3,
+        "successful_tool_use": 1,
+        "upgrade_click": 2,
+        "tool_run_attempt": 1
+      },
+      "tool_run_attempts": 1,
+      "successful_tool_uses": 2,
+      "workflow_starts": 0,
+      "workflow_completions": 0,
+      "upgrade_clicks": 2,
+      "commercial_intent_events": 6,
+      "rates": {
+        "successful_task_rate": 2,
+        "workflow_completion_rate": null,
+        "activation_rate": 0.3333333333333333,
+        "deeper_product_usage_rate": 0,
+        "commercial_intent_rate": 3,
+        "returning_user_rate": 0.3333333333333333
+      },
+      "rate_definitions": {
+        "successful_task_rate": "successful_tool_use events / tool_run_attempt events",
+        "workflow_completion_rate": "workflow_complete events / workflow_start events",
+        "activation_rate": "organic users with successful_tool_use / organic active users",
+        "deeper_product_usage_rate": "organic users with workflow_start / organic users with successful_tool_use",
+        "commercial_intent_rate": "organic users with commercial_intent / organic users with successful_tool_use",
+        "returning_user_rate": "organic returning active users / organic active users"
+      },
       "evidence_date": "2026-10-20"
     },
     "stripe": {
@@ -1674,9 +1791,7 @@
       "evidence_date": "2026-10-20"
     }
   },
-  "refresh_warnings": [
-    "GA4 returning-user report failed: 503 {\n  \"error\": {\n    \"code\": 503,\n    \"message\": \"The service is currently unavailable.\",\n    \"status\": \"UNAVAILABLE\"\n  }\n}\n"
-  ],
+  "refresh_warnings": [],
   "rates": {
     "successful_task_rate": 2,
     "workflow_completion_rate": null,
