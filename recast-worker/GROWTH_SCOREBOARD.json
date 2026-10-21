@@ -7,9 +7,9 @@
     "revenue_definition": "Genuine recurring revenue only: current subscription plus paid succeeded latest invoice charge, excluding fully refunded and inactive/cancelled subscriptions."
   },
   "funnel": {
-    "search_impressions": 249,
+    "search_impressions": 263,
     "organic_clicks": 1,
-    "organic_ctr": 0.004016064257028112,
+    "organic_ctr": 0.0038022813688212928,
     "indexed_target_pages": null,
     "successful_tool_uses": 2,
     "workflow_starts": 0,
@@ -227,9 +227,9 @@
     "search_console": {
       "period_days": 28,
       "clicks": 1,
-      "impressions": 249,
-      "ctr": 0.004016064257028112,
-      "average_position": 59.15261044176707,
+      "impressions": 263,
+      "ctr": 0.0038022813688212928,
+      "average_position": 59.00760456273764,
       "top_pages": [
         {
           "clicks": 1,
@@ -240,16 +240,16 @@
         },
         {
           "clicks": 0,
-          "impressions": 34,
+          "impressions": 35,
           "ctr": 0,
-          "average_position": 9.205882352941176,
+          "average_position": 11.057142857142857,
           "page": "https://tryrecast.app/"
         },
         {
           "clicks": 0,
-          "impressions": 17,
+          "impressions": 19,
           "ctr": 0,
-          "average_position": 6.0588235294117645,
+          "average_position": 6.473684210526316,
           "page": "https://tryrecast.app/api/"
         },
         {
@@ -317,9 +317,9 @@
         },
         {
           "clicks": 0,
-          "impressions": 134,
+          "impressions": 137,
           "ctr": 0,
-          "average_position": 78.2910447761194,
+          "average_position": 78.1094890510949,
           "page": "https://tryrecast.app/tools/json-diff.html"
         },
         {
@@ -331,9 +331,9 @@
         },
         {
           "clicks": 0,
-          "impressions": 19,
+          "impressions": 20,
           "ctr": 0,
-          "average_position": 46.8421052631579,
+          "average_position": 44.6,
           "page": "https://tryrecast.app/tools/json-to-csv.html"
         },
         {
@@ -373,9 +373,9 @@
         },
         {
           "clicks": 0,
-          "impressions": 4,
+          "impressions": 11,
           "ctr": 0,
-          "average_position": 47.75,
+          "average_position": 61.36363636363637,
           "page": "https://tryrecast.app/tools/yaml-to-json.html"
         }
       ],
@@ -858,6 +858,13 @@
         },
         {
           "clicks": 0,
+          "impressions": 1,
+          "ctr": 0,
+          "average_position": 61,
+          "query": "jsondiff online"
+        },
+        {
+          "clicks": 0,
           "impressions": 2,
           "ctr": 0,
           "average_position": 66,
@@ -872,9 +879,9 @@
         },
         {
           "clicks": 0,
-          "impressions": 11,
+          "impressions": 13,
           "ctr": 0,
-          "average_position": 82.9090909090909,
+          "average_position": 81.61538461538461,
           "query": "online json compare"
         },
         {
@@ -949,9 +956,9 @@
         },
         {
           "clicks": 0,
-          "impressions": 1,
+          "impressions": 7,
           "ctr": 0,
-          "average_position": 62,
+          "average_position": 68,
           "query": "yaml to json"
         },
         {
@@ -1492,6 +1499,14 @@
         },
         {
           "clicks": 0,
+          "impressions": 1,
+          "ctr": 0,
+          "average_position": 61,
+          "page": "https://tryrecast.app/tools/json-diff.html",
+          "query": "jsondiff online"
+        },
+        {
+          "clicks": 0,
           "impressions": 4,
           "ctr": 0,
           "average_position": 94.25,
@@ -1500,9 +1515,9 @@
         },
         {
           "clicks": 0,
-          "impressions": 11,
+          "impressions": 13,
           "ctr": 0,
-          "average_position": 82.9090909090909,
+          "average_position": 81.61538461538461,
           "page": "https://tryrecast.app/tools/json-diff.html",
           "query": "online json compare"
         },
@@ -1628,9 +1643,9 @@
         },
         {
           "clicks": 0,
-          "impressions": 1,
+          "impressions": 7,
           "ctr": 0,
-          "average_position": 62,
+          "average_position": 68,
           "page": "https://tryrecast.app/tools/yaml-to-json.html",
           "query": "yaml to json"
         },
