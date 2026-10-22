@@ -3,23 +3,23 @@
     "north_star": "monthly_recurring_revenue_gbp",
     "target": 1000,
     "current": 0,
-    "evidence_date": "2026-10-21",
+    "evidence_date": "2026-10-22",
     "revenue_definition": "Genuine recurring revenue only: current subscription plus paid succeeded latest invoice charge, excluding fully refunded and inactive/cancelled subscriptions."
   },
   "funnel": {
-    "search_impressions": 263,
+    "search_impressions": 255,
     "organic_clicks": 1,
-    "organic_ctr": 0.0038022813688212928,
+    "organic_ctr": 0.00392156862745098,
     "indexed_target_pages": null,
     "successful_tool_uses": 2,
     "workflow_starts": 0,
     "workflow_completions": 0,
-    "returning_users": 1,
-    "upgrade_visits": 2,
+    "returning_users": 0,
+    "upgrade_visits": 1,
     "pro_customers": 0,
     "api_automation_customers": 0,
     "tool_run_attempts": 1,
-    "commercial_intent_events": 6
+    "commercial_intent_events": 5
   },
   "diagnosis": {
     "current_bottleneck": "search_visibility",
@@ -197,7 +197,7 @@
     "Indexed target-page count or URL Inspection/index coverage evidence is unavailable.",
     "Workflow completion rate awaits a workflow_start denominator."
   ],
-  "last_updated": "2026-10-21",
+  "last_updated": "2026-10-22",
   "measurement_rules": {
     "unknown_values": "Keep unavailable measurements as null; never estimate them as facts.",
     "follow_up_windows_days": [
@@ -227,9 +227,9 @@
     "search_console": {
       "period_days": 28,
       "clicks": 1,
-      "impressions": 263,
-      "ctr": 0.0038022813688212928,
-      "average_position": 59.00760456273764,
+      "impressions": 255,
+      "ctr": 0.00392156862745098,
+      "average_position": 59.498039215686276,
       "top_pages": [
         {
           "clicks": 1,
@@ -240,9 +240,9 @@
         },
         {
           "clicks": 0,
-          "impressions": 35,
+          "impressions": 32,
           "ctr": 0,
-          "average_position": 11.057142857142857,
+          "average_position": 11.65625,
           "page": "https://tryrecast.app/"
         },
         {
@@ -261,9 +261,9 @@
         },
         {
           "clicks": 0,
-          "impressions": 11,
+          "impressions": 6,
           "ctr": 0,
-          "average_position": 48.09090909090909,
+          "average_position": 32.66666666666667,
           "page": "https://tryrecast.app/blog/compare-xml-files.html"
         },
         {
@@ -484,20 +484,6 @@
           "ctr": 0,
           "average_position": 85,
           "query": "compare two json"
-        },
-        {
-          "clicks": 0,
-          "impressions": 2,
-          "ctr": 0,
-          "average_position": 62.5,
-          "query": "compare xml"
-        },
-        {
-          "clicks": 0,
-          "impressions": 1,
-          "ctr": 0,
-          "average_position": 67,
-          "query": "comparison xml"
         },
         {
           "clicks": 0,
@@ -949,13 +935,6 @@
         },
         {
           "clicks": 0,
-          "impressions": 2,
-          "ctr": 0,
-          "average_position": 70.5,
-          "query": "xml file comparison"
-        },
-        {
-          "clicks": 0,
           "impressions": 7,
           "ctr": 0,
           "average_position": 68,
@@ -1011,22 +990,6 @@
         },
         {
           "clicks": 0,
-          "impressions": 2,
-          "ctr": 0,
-          "average_position": 62.5,
-          "page": "https://tryrecast.app/blog/compare-xml-files.html",
-          "query": "compare xml"
-        },
-        {
-          "clicks": 0,
-          "impressions": 1,
-          "ctr": 0,
-          "average_position": 67,
-          "page": "https://tryrecast.app/blog/compare-xml-files.html",
-          "query": "comparison xml"
-        },
-        {
-          "clicks": 0,
           "impressions": 1,
           "ctr": 0,
           "average_position": 85,
@@ -1040,14 +1003,6 @@
           "average_position": 85,
           "page": "https://tryrecast.app/blog/compare-xml-files.html",
           "query": "xml comparison tool"
-        },
-        {
-          "clicks": 0,
-          "impressions": 2,
-          "ctr": 0,
-          "average_position": 70.5,
-          "page": "https://tryrecast.app/blog/compare-xml-files.html",
-          "query": "xml file comparison"
         },
         {
           "clicks": 0,
@@ -1666,51 +1621,51 @@
           "query": "yaml to json online"
         }
       ],
-      "evidence_date": "2026-10-21"
+      "evidence_date": "2026-10-22"
     },
     "ga4": {
       "period_days": 28,
-      "organic_sessions": 5,
-      "organic_active_users": 3,
+      "organic_sessions": 4,
+      "organic_active_users": 2,
       "organic_new_users": 2,
-      "organic_returning_users": 1,
+      "organic_returning_users": 0,
       "event_counts": {
-        "commercial_intent": 6,
+        "commercial_intent": 5,
         "successful_tool_use": 2,
-        "upgrade_click": 2,
-        "tool_run_attempt": 1
+        "tool_run_attempt": 1,
+        "upgrade_click": 1
       },
       "event_active_users": {
-        "commercial_intent": 3,
+        "commercial_intent": 2,
         "successful_tool_use": 1,
-        "upgrade_click": 2,
-        "tool_run_attempt": 1
+        "tool_run_attempt": 1,
+        "upgrade_click": 1
       },
       "organic_event_counts": {
-        "commercial_intent": 6,
+        "commercial_intent": 5,
         "successful_tool_use": 2,
-        "upgrade_click": 2,
-        "tool_run_attempt": 1
+        "tool_run_attempt": 1,
+        "upgrade_click": 1
       },
       "organic_event_active_users": {
-        "commercial_intent": 3,
+        "commercial_intent": 2,
         "successful_tool_use": 1,
-        "upgrade_click": 2,
-        "tool_run_attempt": 1
+        "tool_run_attempt": 1,
+        "upgrade_click": 1
       },
       "tool_run_attempts": 1,
       "successful_tool_uses": 2,
       "workflow_starts": 0,
       "workflow_completions": 0,
-      "upgrade_clicks": 2,
-      "commercial_intent_events": 6,
+      "upgrade_clicks": 1,
+      "commercial_intent_events": 5,
       "rates": {
         "successful_task_rate": 2,
         "workflow_completion_rate": null,
-        "activation_rate": 0.3333333333333333,
+        "activation_rate": 0.5,
         "deeper_product_usage_rate": 0,
-        "commercial_intent_rate": 3,
-        "returning_user_rate": 0.3333333333333333
+        "commercial_intent_rate": 2,
+        "returning_user_rate": 0
       },
       "rate_definitions": {
         "successful_task_rate": "successful_tool_use events / tool_run_attempt events",
@@ -1720,7 +1675,7 @@
         "commercial_intent_rate": "organic users with commercial_intent / organic users with successful_tool_use",
         "returning_user_rate": "organic returning active users / organic active users"
       },
-      "evidence_date": "2026-10-21"
+      "evidence_date": "2026-10-22"
     },
     "stripe": {
       "active_subscription_customers": 0,
@@ -1728,16 +1683,16 @@
       "plan_counts": {},
       "excluded_non_genuine_subscriptions": 9,
       "measurement_rule": "Counts only active/trialing subscriptions backed by a paid, succeeded latest invoice charge that has not been fully refunded.",
-      "evidence_date": "2026-10-21"
+      "evidence_date": "2026-10-22"
     }
   },
   "refresh_warnings": [],
   "rates": {
     "successful_task_rate": 2,
     "workflow_completion_rate": null,
-    "activation_rate": 0.3333333333333333,
+    "activation_rate": 0.5,
     "deeper_product_usage_rate": 0,
-    "commercial_intent_rate": 3,
-    "returning_user_rate": 0.3333333333333333
+    "commercial_intent_rate": 2,
+    "returning_user_rate": 0
   }
 }
