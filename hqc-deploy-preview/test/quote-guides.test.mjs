@@ -19,3 +19,16 @@ for(const [slug,title] of pages)test(slug+' gives a complete free-check entry an
  assert.ok(pages.filter(([s])=>s!==slug&&html.includes('/'+s)).length>=2,'related guides are linked');
  assert.doesNotMatch(html,/£29|£19|£39|guaranteed savings|installer introductions/i);
 });
+
+test('scope guide has a reusable record, separate uncertainty labels and dated sources',async()=>{
+ const html=await readFile(new URL('../what-should-a-heat-pump-quote-include.html',import.meta.url),'utf8');
+ assert.ok(html.includes('id="scope-record"'));
+ assert.ok(html.includes('Not stated is not included'));
+ assert.ok(html.includes('Included / Excluded / Provisional / Not stated'));
+ assert.ok(html.includes('id="installer-template"'));
+ assert.ok(html.includes('datetime="2026-10-22"'));
+ assert.ok(html.includes('https://energysavingtrust.org.uk/advice/installing-renewables/'));
+ assert.ok(html.includes('https://energysavingtrust.org.uk/heat-pump-installation-a-step-by-step-guide/'));
+ assert.ok(html.includes('does not establish a fair price'));
+ assert.doesNotMatch(html,/<(?:input|textarea|form)\b/i,'worksheet does not collect personal quote data');
+});
