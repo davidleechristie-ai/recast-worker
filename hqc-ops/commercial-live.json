@@ -1,5 +1,5 @@
 {
-  "fetchedAt": "2026-10-22T22:23:04Z",
+  "fetchedAt": "2026-10-23T01:31:26Z",
   "durable": true,
   "measurementStartedAt": "2026-09-11T18:33:07.244Z",
   "northStar": {
@@ -18,8 +18,8 @@
     "note": "Cumulative Cloudflare-side validation counters. QA/demo/test traffic is excluded; payment intent is not treated as revenue."
   },
   "total": {
-    "landings": 282,
-    "cta": 85,
+    "landings": 284,
+    "cta": 87,
     "pickerOpens": 0,
     "fileSelections": 0,
     "manualOpens": 1,
@@ -38,7 +38,7 @@
     "recipientStarts": 0,
     "outboundClicks": 0,
     "checkouts": 0,
-    "singleStarts": 5,
+    "singleStarts": 6,
     "comparisonStarts": 6,
     "resultViews": 0,
     "commercialNextStepViews": 0,
@@ -89,7 +89,7 @@
       "landingToGenuine": 4
     },
     {
-      "landings": 11,
+      "landings": 12,
       "cta": 0,
       "pickerOpens": 0,
       "fileSelections": 0,
@@ -719,7 +719,7 @@
     },
     {
       "landings": 2,
-      "cta": 0,
+      "cta": 4,
       "pickerOpens": 0,
       "fileSelections": 0,
       "manualOpens": 0,
@@ -738,7 +738,7 @@
       "recipientStarts": 0,
       "outboundClicks": 0,
       "checkouts": 0,
-      "singleStarts": 0,
+      "singleStarts": 1,
       "comparisonStarts": 0,
       "resultViews": 0,
       "commercialNextStepViews": 0,
@@ -747,11 +747,11 @@
       "analysisReady": 0,
       "analysisAutoStarts": 0,
       "analysisErrors": 0,
-      "resultVisible": 2,
+      "resultVisible": 0,
       "installerAlternativeInterest": 0,
-      "source": "organic_is_this_a_good_heat_pump_quote_t",
-      "landingToCta": 0,
-      "ctaToUpload": null,
+      "source": "how_we_help_solar_bottom",
+      "landingToCta": 200,
+      "ctaToUpload": 0,
       "landingToGenuine": 0
     },
     {
@@ -784,9 +784,9 @@
       "analysisReady": 0,
       "analysisAutoStarts": 0,
       "analysisErrors": 0,
-      "resultVisible": 0,
+      "resultVisible": 2,
       "installerAlternativeInterest": 0,
-      "source": "organic_questions_static",
+      "source": "organic_is_this_a_good_heat_pump_quote_t",
       "landingToCta": 0,
       "ctaToUpload": null,
       "landingToGenuine": 0
