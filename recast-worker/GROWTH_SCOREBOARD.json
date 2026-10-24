@@ -3,13 +3,13 @@
     "north_star": "monthly_recurring_revenue_gbp",
     "target": 1000,
     "current": 0,
-    "evidence_date": "2026-10-23",
+    "evidence_date": "2026-10-24",
     "revenue_definition": "Genuine recurring revenue only: current subscription plus paid succeeded latest invoice charge, excluding fully refunded and inactive/cancelled subscriptions."
   },
   "funnel": {
-    "search_impressions": 272,
+    "search_impressions": 268,
     "organic_clicks": 1,
-    "organic_ctr": 0.003676470588235294,
+    "organic_ctr": 0.0037313432835820895,
     "indexed_target_pages": null,
     "successful_tool_uses": 2,
     "workflow_starts": 0,
@@ -197,7 +197,7 @@
     "Indexed target-page count or URL Inspection/index coverage evidence is unavailable.",
     "Workflow completion rate awaits a workflow_start denominator."
   ],
-  "last_updated": "2026-10-23",
+  "last_updated": "2026-10-24",
   "measurement_rules": {
     "unknown_values": "Keep unavailable measurements as null; never estimate them as facts.",
     "follow_up_windows_days": [
@@ -227,9 +227,9 @@
     "search_console": {
       "period_days": 28,
       "clicks": 1,
-      "impressions": 272,
-      "ctr": 0.003676470588235294,
-      "average_position": 58.75735294117647,
+      "impressions": 268,
+      "ctr": 0.0037313432835820895,
+      "average_position": 59.19776119402985,
       "top_pages": [
         {
           "clicks": 1,
@@ -240,9 +240,9 @@
         },
         {
           "clicks": 0,
-          "impressions": 35,
+          "impressions": 33,
           "ctr": 0,
-          "average_position": 11.114285714285714,
+          "average_position": 11.484848484848484,
           "page": "https://tryrecast.app/"
         },
         {
@@ -251,13 +251,6 @@
           "ctr": 0,
           "average_position": 7,
           "page": "https://tryrecast.app/api/"
-        },
-        {
-          "clicks": 0,
-          "impressions": 1,
-          "ctr": 0,
-          "average_position": 9,
-          "page": "https://tryrecast.app/api/index.html"
         },
         {
           "clicks": 0,
@@ -289,9 +282,9 @@
         },
         {
           "clicks": 0,
-          "impressions": 6,
+          "impressions": 5,
           "ctr": 0,
-          "average_position": 19.333333333333332,
+          "average_position": 3.6,
           "page": "https://tryrecast.app/tools/"
         },
         {
@@ -900,9 +893,9 @@
         },
         {
           "clicks": 0,
-          "impressions": 6,
+          "impressions": 5,
           "ctr": 0,
-          "average_position": 8.5,
+          "average_position": 8.4,
           "query": "recast api"
         },
         {
@@ -985,14 +978,6 @@
           "ctr": 0,
           "average_position": 8.4,
           "page": "https://tryrecast.app/api/",
-          "query": "recast api"
-        },
-        {
-          "clicks": 0,
-          "impressions": 1,
-          "ctr": 0,
-          "average_position": 9,
-          "page": "https://tryrecast.app/api/index.html",
           "query": "recast api"
         },
         {
@@ -1628,7 +1613,7 @@
           "query": "yaml to json online"
         }
       ],
-      "evidence_date": "2026-10-23"
+      "evidence_date": "2026-10-24"
     },
     "ga4": {
       "period_days": 28,
@@ -1682,7 +1667,7 @@
         "commercial_intent_rate": "organic users with commercial_intent / organic users with successful_tool_use",
         "returning_user_rate": "organic returning active users / organic active users"
       },
-      "evidence_date": "2026-10-23"
+      "evidence_date": "2026-10-24"
     },
     "stripe": {
       "active_subscription_customers": 0,
@@ -1690,7 +1675,7 @@
       "plan_counts": {},
       "excluded_non_genuine_subscriptions": 9,
       "measurement_rule": "Counts only active/trialing subscriptions backed by a paid, succeeded latest invoice charge that has not been fully refunded.",
-      "evidence_date": "2026-10-23"
+      "evidence_date": "2026-10-24"
     }
   },
   "refresh_warnings": [],
