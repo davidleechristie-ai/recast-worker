@@ -1,5 +1,5 @@
 {
-  "fetchedAt": "2026-10-26T13:07:41Z",
+  "fetchedAt": "2026-10-26T19:19:23Z",
   "durable": true,
   "measurementStartedAt": "2026-09-11T18:33:07.244Z",
   "northStar": {
@@ -18,7 +18,7 @@
     "note": "Cumulative Cloudflare-side validation counters. QA/demo/test traffic is excluded; payment intent is not treated as revenue."
   },
   "total": {
-    "landings": 292,
+    "landings": 298,
     "cta": 88,
     "pickerOpens": 0,
     "fileSelections": 0,
@@ -47,12 +47,12 @@
     "analysisReady": 0,
     "analysisAutoStarts": 0,
     "analysisErrors": 0,
-    "resultVisible": 31,
+    "resultVisible": 32,
     "installerAlternativeInterest": 0
   },
   "sources": [
     {
-      "landings": 165,
+      "landings": 169,
       "cta": 77,
       "pickerOpens": 0,
       "fileSelections": 0,
@@ -84,7 +84,7 @@
       "resultVisible": 21,
       "installerAlternativeInterest": 0,
       "source": "direct",
-      "landingToCta": 47,
+      "landingToCta": 46,
       "ctaToUpload": 8,
       "landingToGenuine": 4
     },
@@ -163,7 +163,7 @@
       "landingToGenuine": 0
     },
     {
-      "landings": 7,
+      "landings": 8,
       "cta": 0,
       "pickerOpens": 0,
       "fileSelections": 0,
@@ -192,9 +192,9 @@
       "analysisReady": 0,
       "analysisAutoStarts": 0,
       "analysisErrors": 0,
-      "resultVisible": 1,
+      "resultVisible": 0,
       "installerAlternativeInterest": 0,
-      "source": "organic_compare_static",
+      "source": "organic_price",
       "landingToCta": 0,
       "ctaToUpload": null,
       "landingToGenuine": 0
@@ -229,9 +229,9 @@
       "analysisReady": 0,
       "analysisAutoStarts": 0,
       "analysisErrors": 0,
-      "resultVisible": 0,
+      "resultVisible": 1,
       "installerAlternativeInterest": 0,
-      "source": "organic_price",
+      "source": "organic_compare_static",
       "landingToCta": 0,
       "ctaToUpload": null,
       "landingToGenuine": 0
@@ -793,13 +793,13 @@
     }
   ],
   "recommendations": [
-    "CTA-to-upload is weak: reduce intake friction and clarify privacy/file requirements.",
+    "Landing-to-CTA is weak: improve message match, trust proof and CTA prominence before adding more traffic.",
     "Too few genuine users reach a second-quote comparison: strengthen multi-quote progression before expanding acquisition.",
     "Share loop is below the 20% validation threshold: strengthen Decision Case sharing and recipient conversion.",
     "No qualified organic cohort yet: improve existing high-intent decision pages and internal handoff before expanding acquisition."
   ],
   "decision": {
-    "priority": "quote intake",
-    "action": "Reduce checker-start-to-upload friction before adding acquisition."
+    "priority": "landing conversion",
+    "action": "Improve message match, trust proof and CTA clarity on existing qualified pages before adding acquisition."
   }
 }
