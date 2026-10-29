@@ -32,3 +32,16 @@ test('scope guide has a reusable record, separate uncertainty labels and dated s
  assert.ok(html.includes('does not establish a fair price'));
  assert.doesNotMatch(html,/<(?:input|textarea|form)\b/i,'worksheet does not collect personal quote data');
 });
+test('heat-loss guide maps room evidence to equipment selection with dated primary sources',async()=>{
+ const html=await readFile(new URL('../heat-pump-heat-loss-calculation-flow-temperature.html',import.meta.url),'utf8');
+ assert.ok(html.includes('id="design-evidence-map"'));
+ assert.ok(html.includes('Heat pump design evidence map'));
+ assert.equal((html.match(/<th scope="row">/g)||[]).length,5);
+ assert.ok(html.includes('datetime="2026-10-29"'));
+ assert.ok(html.includes('https://heatloadcalculator.mcscertified.com/docs/getting-started/understanding-heat-loss'));
+ assert.ok(html.includes('https://greenheattoolkit.energysavingtrust.org.uk/t/heat-pump-installers-toolkit/heat-pump-system-design/sizing-a-heat-pump/'));
+ assert.ok(html.includes('does not recalculate heat loss or select equipment'));
+ assert.ok(html.includes('not an MCS compliance assessment'));
+ assert.doesNotMatch(html,/<(?:input|textarea|form)\b/i,'evidence map does not collect quote or property data');
+});
+

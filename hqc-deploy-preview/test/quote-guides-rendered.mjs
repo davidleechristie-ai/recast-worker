@@ -22,6 +22,12 @@ try{
    const related=await page.locator('nav.related a').evaluateAll(xs=>xs.map(x=>x.href));
    for(const href of related){await page.goto(href);assert.equal(await page.locator('h1').count(),1);assert.notEqual(await page.locator('h1').innerText(),'Free checker handoff');}
    await page.goto('https://guides.test/'+slug);
+   if(slug==='heat-pump-heat-loss-calculation-flow-temperature'){
+    const map=page.locator('#design-evidence-map');await map.scrollIntoViewIfNeeded();assert.equal(await map.isVisible(),true);
+    assert.equal(await page.locator('#design-evidence-map tbody tr').count(),5);
+    assert.equal(await page.evaluate(()=>document.documentElement.scrollWidth>innerWidth),false,'evidence map keeps the page within the viewport');
+    await page.emulateMedia({media:'print'});assert.equal(await map.isVisible(),true);await page.emulateMedia({media:'screen'});
+   }
    if(slug==='what-should-a-heat-pump-quote-include'){
     const record=page.locator('#scope-record');await record.scrollIntoViewIfNeeded();assert.equal(await record.isVisible(),true);
     assert.equal(await page.locator('#installer-template blockquote').isVisible(),true);
