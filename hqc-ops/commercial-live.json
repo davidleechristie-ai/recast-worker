@@ -1,5 +1,5 @@
 {
-  "fetchedAt": "2026-10-29T14:19:50Z",
+  "fetchedAt": "2026-10-29T20:17:45Z",
   "durable": true,
   "measurementStartedAt": "2026-09-11T18:33:07.244Z",
   "northStar": {
@@ -18,7 +18,7 @@
     "note": "Cumulative Cloudflare-side validation counters. QA/demo/test traffic is excluded; payment intent is not treated as revenue."
   },
   "total": {
-    "landings": 307,
+    "landings": 310,
     "cta": 88,
     "pickerOpens": 0,
     "fileSelections": 0,
@@ -47,12 +47,12 @@
     "analysisReady": 0,
     "analysisAutoStarts": 0,
     "analysisErrors": 0,
-    "resultVisible": 38,
+    "resultVisible": 39,
     "installerAlternativeInterest": 0
   },
   "sources": [
     {
-      "landings": 175,
+      "landings": 177,
       "cta": 77,
       "pickerOpens": 0,
       "fileSelections": 0,
@@ -192,15 +192,15 @@
       "analysisReady": 0,
       "analysisAutoStarts": 0,
       "analysisErrors": 0,
-      "resultVisible": 0,
+      "resultVisible": 2,
       "installerAlternativeInterest": 0,
-      "source": "organic_price",
+      "source": "organic_compare_static",
       "landingToCta": 0,
       "ctaToUpload": null,
       "landingToGenuine": 0
     },
     {
-      "landings": 7,
+      "landings": 8,
       "cta": 0,
       "pickerOpens": 0,
       "fileSelections": 0,
@@ -229,9 +229,9 @@
       "analysisReady": 0,
       "analysisAutoStarts": 0,
       "analysisErrors": 0,
-      "resultVisible": 1,
+      "resultVisible": 0,
       "installerAlternativeInterest": 0,
-      "source": "organic_compare_static",
+      "source": "organic_price",
       "landingToCta": 0,
       "ctaToUpload": null,
       "landingToGenuine": 0
