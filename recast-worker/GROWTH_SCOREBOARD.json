@@ -3,13 +3,13 @@
     "north_star": "monthly_recurring_revenue_gbp",
     "target": 1000,
     "current": 0,
-    "evidence_date": "2026-10-29",
+    "evidence_date": "2026-10-30",
     "revenue_definition": "Genuine recurring revenue only: current subscription plus paid succeeded latest invoice charge, excluding fully refunded and inactive/cancelled subscriptions."
   },
   "funnel": {
-    "search_impressions": 343,
+    "search_impressions": 335,
     "organic_clicks": 1,
-    "organic_ctr": 0.0029154518950437317,
+    "organic_ctr": 0.0029850746268656717,
     "indexed_target_pages": null,
     "successful_tool_uses": 2,
     "workflow_starts": 0,
@@ -197,7 +197,7 @@
     "Indexed target-page count or URL Inspection/index coverage evidence is unavailable.",
     "Workflow completion rate awaits a workflow_start denominator."
   ],
-  "last_updated": "2026-10-29",
+  "last_updated": "2026-10-30",
   "measurement_rules": {
     "unknown_values": "Keep unavailable measurements as null; never estimate them as facts.",
     "follow_up_windows_days": [
@@ -227,9 +227,9 @@
     "search_console": {
       "period_days": 28,
       "clicks": 1,
-      "impressions": 343,
-      "ctr": 0.0029154518950437317,
-      "average_position": 55.90962099125365,
+      "impressions": 335,
+      "ctr": 0.0029850746268656717,
+      "average_position": 56.659701492537316,
       "top_pages": [
         {
           "clicks": 1,
@@ -240,23 +240,23 @@
         },
         {
           "clicks": 0,
-          "impressions": 53,
+          "impressions": 50,
           "ctr": 0,
-          "average_position": 14.169811320754716,
+          "average_position": 14.46,
           "page": "https://tryrecast.app/"
         },
         {
           "clicks": 0,
-          "impressions": 21,
+          "impressions": 20,
           "ctr": 0,
-          "average_position": 7.0476190476190474,
+          "average_position": 6.95,
           "page": "https://tryrecast.app/api/"
         },
         {
           "clicks": 0,
-          "impressions": 2,
+          "impressions": 1,
           "ctr": 0,
-          "average_position": 10,
+          "average_position": 8,
           "page": "https://tryrecast.app/blog/compare-xml-files.html"
         },
         {
@@ -289,9 +289,9 @@
         },
         {
           "clicks": 0,
-          "impressions": 6,
+          "impressions": 5,
           "ctr": 0,
-          "average_position": 26.666666666666668,
+          "average_position": 19.2,
           "page": "https://tryrecast.app/tools/csv-diff.html"
         },
         {
@@ -310,9 +310,9 @@
         },
         {
           "clicks": 0,
-          "impressions": 139,
+          "impressions": 138,
           "ctr": 0,
-          "average_position": 76.00719424460432,
+          "average_position": 76.0072463768116,
           "page": "https://tryrecast.app/tools/json-diff.html"
         },
         {
@@ -328,13 +328,6 @@
           "ctr": 0,
           "average_position": 46.233333333333334,
           "page": "https://tryrecast.app/tools/json-to-csv.html"
-        },
-        {
-          "clicks": 0,
-          "impressions": 1,
-          "ctr": 0,
-          "average_position": 7,
-          "page": "https://tryrecast.app/tools/json-to-go.html"
         },
         {
           "clicks": 0,
@@ -449,13 +442,6 @@
           "ctr": 0,
           "average_position": 80.5,
           "query": "compare objects online"
-        },
-        {
-          "clicks": 0,
-          "impressions": 1,
-          "ctr": 0,
-          "average_position": 64,
-          "query": "compare two csv files"
         },
         {
           "clicks": 0,
@@ -613,9 +599,9 @@
         },
         {
           "clicks": 0,
-          "impressions": 11,
+          "impressions": 10,
           "ctr": 0,
-          "average_position": 88.81818181818181,
+          "average_position": 90.1,
           "query": "json compare"
         },
         {
@@ -1070,14 +1056,6 @@
           "clicks": 0,
           "impressions": 1,
           "ctr": 0,
-          "average_position": 64,
-          "page": "https://tryrecast.app/tools/csv-diff.html",
-          "query": "compare two csv files"
-        },
-        {
-          "clicks": 0,
-          "impressions": 1,
-          "ctr": 0,
           "average_position": 57,
           "page": "https://tryrecast.app/tools/csv-diff.html",
           "query": "csv diff tool"
@@ -1292,9 +1270,9 @@
         },
         {
           "clicks": 0,
-          "impressions": 11,
+          "impressions": 10,
           "ctr": 0,
-          "average_position": 88.81818181818181,
+          "average_position": 90.1,
           "page": "https://tryrecast.app/tools/json-diff.html",
           "query": "json compare"
         },
@@ -1763,7 +1741,7 @@
           "query": "yml to json"
         }
       ],
-      "evidence_date": "2026-10-29"
+      "evidence_date": "2026-10-30"
     },
     "ga4": {
       "period_days": 28,
@@ -1817,7 +1795,7 @@
         "commercial_intent_rate": "organic users with commercial_intent / organic users with successful_tool_use",
         "returning_user_rate": "organic returning active users / organic active users"
       },
-      "evidence_date": "2026-10-29"
+      "evidence_date": "2026-10-30"
     },
     "stripe": {
       "active_subscription_customers": 0,
@@ -1825,7 +1803,7 @@
       "plan_counts": {},
       "excluded_non_genuine_subscriptions": 9,
       "measurement_rule": "Counts only active/trialing subscriptions backed by a paid, succeeded latest invoice charge that has not been fully refunded.",
-      "evidence_date": "2026-10-29"
+      "evidence_date": "2026-10-30"
     }
   },
   "refresh_warnings": [],
