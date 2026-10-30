@@ -22,6 +22,26 @@ try{
    const related=await page.locator('nav.related a').evaluateAll(xs=>xs.map(x=>x.href));
    for(const href of related){await page.goto(href);assert.equal(await page.locator('h1').count(),1);assert.notEqual(await page.locator('h1').innerText(),'Free checker handoff');}
    await page.goto('https://guides.test/'+slug);
+   if(slug==='heat-pump-heat-loss-calculation-flow-temperature'){
+    const map=page.locator('#design-evidence-map');await map.scrollIntoViewIfNeeded();assert.equal(await map.isVisible(),true);
+    const region=page.getByRole('region',{name:'Heat pump design evidence map'});
+    assert.equal(await page.locator('#design-evidence-map tbody tr').count(),5);
+    assert.equal(await page.evaluate(()=>document.documentElement.scrollWidth>innerWidth),false,'evidence map keeps the page within the viewport');
+    if(width===390){
+     assert.equal(await region.evaluate(el=>el.scrollWidth>el.clientWidth),true,'mobile table has a deliberate scroll region');
+     await region.focus();assert.equal(await region.evaluate(el=>document.activeElement===el),true,'scroll region accepts keyboard focus');
+     await page.keyboard.press('ArrowRight');await page.keyboard.press('ArrowRight');await page.waitForTimeout(50);
+     assert.ok(await region.evaluate(el=>el.scrollLeft)>0,'arrow keys move the focused table region');
+     await region.evaluate(el=>{el.scrollLeft=el.scrollWidth});
+     const finalCell=page.locator('#design-evidence-map tbody tr').first().locator('td').last();
+     const [regionBox,cellBox]=await Promise.all([region.boundingBox(),finalCell.boundingBox()]);
+     assert.ok(regionBox&&cellBox&&cellBox.x>=regionBox.x-1&&cellBox.x+cellBox.width<=regionBox.x+regionBox.width+1,'final column is reachable after scrolling');
+    }
+    await page.emulateMedia({media:'print'});assert.equal(await map.isVisible(),true);
+    assert.equal(await region.evaluate(el=>el.scrollWidth<=el.clientWidth+1),true,'print table fits without clipped columns');
+    assert.equal(await page.locator('#design-evidence-map thead th').count(),3);
+    await page.emulateMedia({media:'screen'});
+   }
    if(slug==='what-should-a-heat-pump-quote-include'){
     const record=page.locator('#scope-record');await record.scrollIntoViewIfNeeded();assert.equal(await record.isVisible(),true);
     assert.equal(await page.locator('#installer-template blockquote').isVisible(),true);
