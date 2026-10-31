@@ -22,6 +22,30 @@ try{
    const related=await page.locator('nav.related a').evaluateAll(xs=>xs.map(x=>x.href));
    for(const href of related){await page.goto(href);assert.equal(await page.locator('h1').count(),1);assert.notEqual(await page.locator('h1').innerText(),'Free checker handoff');}
    await page.goto('https://guides.test/'+slug);
+   if(slug==='compare-heat-pump-quotes'){
+    const region=page.getByRole('region',{name:'Illustrative heat pump quote cost comparison'});
+    await region.scrollIntoViewIfNeeded();
+    assert.equal(await region.isVisible(),true);
+    assert.equal(await region.locator('tbody tr').count(),4);
+    assert.match(await region.innerText(),/Unknown until/);
+    assert.equal(await region.locator('th[scope="col"]').count(),3);
+    assert.equal(await region.locator('th[scope="row"]').count(),4);
+    if(width===390){
+     assert.equal(await region.evaluate(el=>el.scrollWidth>el.clientWidth),true);
+     await region.focus();assert.equal(await region.evaluate(el=>document.activeElement===el),true);
+     await page.keyboard.press('ArrowRight');await page.keyboard.press('ArrowRight');await page.waitForTimeout(50);
+     assert.ok(await region.evaluate(el=>el.scrollLeft)>0,'focused comparison scrolls with arrow keys');
+     await region.evaluate(el=>{el.scrollLeft=el.scrollWidth});
+     const [box,last]=await Promise.all([region.boundingBox(),region.locator('tbody tr').last().locator('td').last().boundingBox()]);
+     assert.ok(box&&last&&last.x>=box.x-1&&last.x+last.width<=box.x+box.width+1,'Quote B is reachable');
+    }
+    await page.emulateMedia({media:'print'});
+    assert.equal(await region.isVisible(),true);
+    assert.equal(await region.evaluate(el=>el.scrollWidth<=el.clientWidth+1),true,'printed comparison fits');
+    await page.emulateMedia({media:'screen'});
+    await region.evaluate(el=>{el.scrollLeft=0});
+    await region.screenshot({path:'artifacts/quote-guides/'+width+'-comparison-table.png'});
+   }
    if(slug==='heat-pump-heat-loss-calculation-flow-temperature'){
     const map=page.locator('#design-evidence-map');await map.scrollIntoViewIfNeeded();assert.equal(await map.isVisible(),true);
     const region=page.getByRole('region',{name:'Heat pump design evidence map'});
