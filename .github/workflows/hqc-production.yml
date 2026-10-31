@@ -14,6 +14,8 @@ on:
       - 'hqc-deploy-preview/test/quote-guides.test.mjs'
       - 'hqc-deploy-preview/test/quote-guides-rendered.mjs'
       - 'hqc-deploy-preview/snapshot.mjs'
+      - 'hqc-deploy-preview/presentation-polish.css'
+      - 'hqc-deploy-preview/test/presentation-polish-rendered.mjs'
       - 'hqc-deploy-preview/approved-home-layout.js'
       - 'hqc-deploy-preview/mobile-homepage-override.js'
       - 'hqc-deploy-preview/simple-results-journey.js'
@@ -33,6 +35,8 @@ on:
       - 'hqc-deploy-preview/approved-home-layout.js'
       - 'hqc-deploy-preview/mobile-homepage-override.js'
       - 'hqc-deploy-preview/snapshot.mjs'
+      - 'hqc-deploy-preview/presentation-polish.css'
+      - 'hqc-deploy-preview/test/presentation-polish-rendered.mjs'
       - 'hqc-deploy-preview/approved-home-layout.js'
       - 'hqc-deploy-preview/mobile-homepage-override.js'
       - 'hqc-deploy-preview/simple-results-journey.js'
@@ -85,6 +89,7 @@ jobs:
           node hqc-deploy-preview/test/quote-guides-rendered.mjs
           node hqc-deploy-preview/test/how-we-help-rendered.cjs
           node hqc-deploy-preview/test/conversion-journey-rendered.mjs
+          node hqc-deploy-preview/test/presentation-polish-rendered.mjs
       - uses: actions/upload-artifact@v4
         if: always()
         with:
@@ -93,6 +98,7 @@ jobs:
             artifacts/quote-guides
             artifacts/how-we-help
             artifacts/conversion-journey
+            artifacts/presentation-polish
   deploy:
     if: github.event_name != 'pull_request'
     needs: quote-guides
