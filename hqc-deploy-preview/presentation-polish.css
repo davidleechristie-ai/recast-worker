@@ -1,0 +1,120 @@
+/* HQC presentation layer. No content, events, requests or application state. */
+:root{--hqc-ui-ink:#15323e;--hqc-ui-muted:#52676d;--hqc-ui-green:#087f5b;--hqc-ui-line:#d9e7e1;--hqc-ui-paper:#f4f8f6}
+body[data-hqc-presentation]{text-rendering:optimizeLegibility;-webkit-text-size-adjust:100%}
+body[data-hqc-presentation] :focus-visible{outline:3px solid #bd7b09!important;outline-offset:4px!important}
+body[data-hqc-presentation] button:disabled,body[data-hqc-presentation] input:disabled,body[data-hqc-presentation] select:disabled{opacity:.48!important;cursor:not-allowed!important;transform:none!important;box-shadow:none!important}
+body[data-hqc-presentation="app"] input,body[data-hqc-presentation="app"] select,body[data-hqc-presentation="app"] textarea{font-size:max(16px,1rem)!important;max-width:100%;min-width:0}
+body[data-hqc-presentation="app"] button,body[data-hqc-presentation="app"] a{touch-action:manipulation}
+body[data-hqc-presentation="app"] main:not(#hqc-clean-home main) p{overflow-wrap:break-word}
+body[data-hqc-presentation="app"] #hqc-clean-home{background:#fff;color:var(--hqc-ui-ink);font-family:system-ui,-apple-system,BlinkMacSystemFont,"Segoe UI",sans-serif}
+body #hqc-clean-home main{max-width:none;background:transparent}
+body #hqc-clean-home h1,body #hqc-clean-home h2,body #hqc-clean-home h3,body #hqc-clean-home .hqc-home-report{font-family:inherit!important}
+body #hqc-clean-home .hqc-home-wrap{width:min(1200px,calc(100% - 80px))}
+body #hqc-clean-home header{min-height:100px;gap:24px}
+body #hqc-clean-home header nav a{display:inline-flex;align-items:center;min-height:44px;color:#39515b;border-bottom:2px solid transparent}
+body #hqc-clean-home header nav a:hover{color:#087f5b;border-bottom-color:#087f5b}
+body #hqc-clean-home .hqc-home-eyebrow{font-size:12px!important;line-height:1.5!important;letter-spacing:.1em;color:#087153;margin-bottom:18px}
+body #hqc-clean-home .hqc-home-hero{padding:64px 0 56px;gap:64px;grid-template-columns:1.05fr .95fr}
+body #hqc-clean-home h1{font-size:clamp(42px,4.8vw,66px)!important;line-height:1.04!important;letter-spacing:-.045em;max-width:650px}
+body #hqc-clean-home .hqc-home-lead{font-size:19px!important;line-height:1.65!important;color:var(--hqc-ui-muted);max-width:510px}
+body #hqc-clean-home .hqc-home-cta{border:1px solid transparent;min-height:54px;border-radius:12px;box-shadow:0 5px 14px #0b624014;transition:background .15s,box-shadow .15s}
+body #hqc-clean-home .hqc-home-cta:hover{box-shadow:0 7px 20px #0b624025}
+body #hqc-clean-home .hqc-home-upload-note{font-size:14px!important;line-height:1.5!important}
+body #hqc-clean-home .hqc-home-trust span{font-size:12px!important;background:#f1f7f3;border-color:#dfebe4;padding:7px 10px}
+body #hqc-clean-home .hqc-home-scene{height:auto;min-height:0;padding:0 0 174px;border:1px solid #dce9e2;background:linear-gradient(145deg,#f0f7f2,#e3f0e7);border-radius:24px;box-shadow:0 16px 44px #133d2b0c}
+body #hqc-clean-home .hqc-home-scene img{height:auto!important;aspect-ratio:3/2;width:100%;object-fit:contain;border-radius:23px 23px 0 0}
+body #hqc-clean-home .hqc-home-report{position:absolute;left:24px;bottom:20px;width:calc(100% - 48px);max-width:370px;padding:20px 22px;border-radius:16px;box-shadow:0 10px 28px #123c2917}
+body #hqc-clean-home .hqc-home-report h2{font-weight:750!important;font-size:23px!important;margin:7px 0 13px!important}
+body #hqc-clean-home .hqc-home-report small{font-size:11px!important;color:#52685d!important}
+body #hqc-clean-home .hqc-home-report li{font-size:14px!important;line-height:1.5!important;padding:9px 0;align-items:flex-start}
+body #hqc-clean-home .hqc-home-report strong{font-size:14px!important;line-height:1.5}
+body #hqc-clean-home .hqc-home-steps{border-radius:14px;background:#163f36}
+body #hqc-clean-home .hqc-home-steps ol{padding:23px 16px}
+body #hqc-clean-home .hqc-home-benefits{padding:38px 0;gap:16px}
+body #hqc-clean-home .hqc-home-benefit{font-size:15px!important;line-height:1.5;min-width:0;border-radius:16px;background:#fbfdfb;padding:22px 20px;box-shadow:none}
+body #hqc-clean-home .hqc-home-guides{padding:20px 0 54px}
+body #hqc-clean-home .hqc-home-guide-grid{gap:16px}
+body #hqc-clean-home .hqc-home-guide{border:1px solid #dce8e1;border-radius:14px;background:#fff;padding:22px!important;transition:border-color .15s,background .15s}
+body #hqc-clean-home .hqc-home-guide:hover{background:#f4f9f5;border-color:#328667}
+body #hqc-clean-home .hqc-home-guide p{font-size:15px!important;line-height:1.6!important;color:#52676d}
+body #hqc-clean-home .hqc-home-other{margin-top:28px;padding-top:20px;align-items:center}
+body #hqc-clean-home .hqc-home-text-button{font-size:14px!important;line-height:1.5;min-height:44px;text-align:left}
+body #hqc-clean-home .hqc-home-final{background:#15323e;color:#fff;padding:52px 24px}
+body #hqc-clean-home .hqc-home-final h2{color:#fff!important;font-size:34px!important;font-weight:750}
+body #hqc-clean-home .hqc-home-final p{color:#d4e2dc!important;font-size:14px!important}
+body #hqc-clean-home footer{padding:36px 0 40px;line-height:1.7}
+body #hqc-clean-home footer p{font-size:14px!important;color:#52676d}
+body #hqc-clean-home footer nav a{display:inline-flex;align-items:center;min-height:44px;font-size:14px}
+body[data-hqc-presentation="app"] #hqc-mobile-landing .inner{padding-bottom:110px}
+body[data-hqc-presentation="app"] #hqc-mobile-landing .technology-options button{min-height:44px;font-size:13px}
+body[data-hqc-presentation="app"] #hqc-mobile-landing .upload-note{font-size:14px;line-height:1.55}
+body[data-hqc-presentation="app"] #hqc-mobile-landing .sticky{padding-bottom:max(16px,env(safe-area-inset-bottom))}
+body[data-hqc-presentation="app"] #hqc-mobile-sticky-cta{bottom:max(10px,env(safe-area-inset-bottom))}
+body[data-hqc-presentation="guide"]{margin:0;background:#f4f8f6;color:var(--hqc-ui-ink);font:17px/1.75 system-ui,-apple-system,BlinkMacSystemFont,"Segoe UI",sans-serif}
+body[data-hqc-presentation="guide"] *{box-sizing:border-box}
+body[data-hqc-presentation="guide"] header{background:#fff;border-bottom:1px solid var(--hqc-ui-line)}
+body[data-hqc-presentation="guide"] .wrap{max-width:900px}
+body[data-hqc-presentation="guide"] header .wrap{padding:24px 32px}
+body[data-hqc-presentation="guide"] main.wrap{width:calc(100% - 48px);margin:32px auto 48px;padding:44px 52px 52px;background:#fff;border:1px solid var(--hqc-ui-line);border-radius:22px}
+body[data-hqc-presentation="guide"] h1{max-width:760px;font-size:clamp(32px,4.8vw,49px);line-height:1.12;letter-spacing:-.035em}
+body[data-hqc-presentation="guide"] h2{line-height:1.25;margin-top:40px;scroll-margin-top:24px}
+body[data-hqc-presentation="guide"] p,body[data-hqc-presentation="guide"] li{overflow-wrap:break-word}
+body[data-hqc-presentation="guide"] .lede{font-size:20px;line-height:1.65;color:#49616b}
+body[data-hqc-presentation="guide"] .card{border-radius:16px;padding:24px;border-color:#d9e7df;background:#f1f8f3}
+body[data-hqc-presentation="guide"] .card h2{margin-top:0}
+body[data-hqc-presentation="guide"] .cta{min-height:50px;padding:14px 20px;box-shadow:0 4px 10px #0b624014}
+body[data-hqc-presentation="guide"] .note{font-size:15px;line-height:1.65;color:#52676d}
+body[data-hqc-presentation="guide"] .related a{min-height:44px;padding:12px 0;border-bottom:1px solid #e5eee8}
+body[data-hqc-presentation="guide"] footer{background:#fff;border-color:var(--hqc-ui-line)}
+body[data-hqc-presentation="guide"] footer .wrap{padding:28px 32px}
+@media(max-width:1000px){
+ body #hqc-clean-home .hqc-home-wrap{width:calc(100% - 48px)}
+ body #hqc-clean-home .hqc-home-hero{gap:32px;padding-top:44px}
+ body #hqc-clean-home .hqc-home-report{position:relative;left:auto;bottom:auto;width:calc(100% - 28px);margin:-12px auto 0;max-width:none}
+ body #hqc-clean-home .hqc-home-scene{padding-bottom:14px}
+ body #hqc-clean-home .hqc-home-guide-grid{grid-template-columns:repeat(2,minmax(0,1fr))}
+}
+@media(max-width:759px){
+ body #hqc-clean-home .hqc-home-wrap{width:calc(100% - 40px)}
+ body #hqc-clean-home header{flex-wrap:wrap;gap:10px 8px;padding:17px 0 8px;min-height:0}
+ body #hqc-clean-home .hqc-home-brand{min-width:0}
+ body #hqc-clean-home .hqc-home-brand b{font-size:14px}
+ body #hqc-clean-home .hqc-home-cta{padding:14px 16px;gap:10px;font-size:16px!important}
+ body #hqc-clean-home .hqc-home-header-cta{font-size:12px!important;padding:10px 12px;min-height:44px}
+ body #hqc-clean-home header nav{display:flex!important;order:3;flex-basis:100%;justify-content:space-between;gap:8px;font-size:12px;border-top:1px solid #e4ede8;padding-top:4px}
+ body #hqc-clean-home header nav a{min-height:44px}
+ body #hqc-clean-home .hqc-home-hero{grid-template-columns:1fr;gap:28px;padding:30px 0 32px}
+ body #hqc-clean-home .hqc-home-eyebrow{font-size:10px!important;letter-spacing:.08em;margin-bottom:14px}
+ body #hqc-clean-home h1{font-size:clamp(36px,9.3vw,52px)!important;margin-bottom:18px;max-width:540px}
+ body #hqc-clean-home .hqc-home-lead{font-size:17px!important;line-height:1.6!important}
+ body #hqc-clean-home .hqc-home-upload-note{font-size:13px!important;text-align:left}
+ body #hqc-clean-home .hqc-home-trust{justify-content:flex-start;gap:6px}
+ body #hqc-clean-home .hqc-home-trust span{font-size:11px!important;padding:7px 9px}
+ body #hqc-clean-home .hqc-home-scene{border-radius:18px;padding-bottom:12px}
+ body #hqc-clean-home .hqc-home-report{padding:17px 18px;border-radius:13px}
+ body #hqc-clean-home .hqc-home-report li{font-size:14px!important}
+ body #hqc-clean-home .hqc-home-steps{border-radius:0}
+ body #hqc-clean-home .hqc-home-steps ol{padding:18px 6px}
+ body #hqc-clean-home .hqc-home-steps li{gap:6px;font-size:12px!important}
+ body #hqc-clean-home .hqc-home-benefits{grid-template-columns:repeat(2,minmax(0,1fr));gap:10px;padding:24px 0}
+ body #hqc-clean-home .hqc-home-benefit{padding:16px 13px;gap:10px;font-size:13px!important}
+ body #hqc-clean-home .hqc-home-guides h2{font-size:27px!important}
+ body #hqc-clean-home .hqc-home-guide-grid{grid-template-columns:1fr;gap:12px}
+ body #hqc-clean-home .hqc-home-guide{padding:18px!important}
+ body #hqc-clean-home .hqc-home-other-types{gap:8px 16px}
+ body #hqc-clean-home .hqc-home-other-types>span{flex-basis:100%}
+ body #hqc-clean-home .hqc-home-final{padding:36px 20px}
+ body #hqc-clean-home .hqc-home-final h2{font-size:28px!important}
+ body #hqc-clean-home footer{padding:26px 0;gap:12px}
+ body #hqc-clean-home footer nav{gap:8px 20px}
+ body[data-hqc-presentation="guide"] main.wrap{width:calc(100% - 24px);margin:16px auto 24px;padding:26px 20px 32px;border-radius:16px}
+ body[data-hqc-presentation="guide"] header .wrap,body[data-hqc-presentation="guide"] footer .wrap{padding:20px 24px}
+ body[data-hqc-presentation="guide"] .lede{font-size:18px}
+ body[data-hqc-presentation="guide"] .card{padding:20px}
+}
+@media(prefers-reduced-motion:reduce){body[data-hqc-presentation] *,body[data-hqc-presentation] *::before,body[data-hqc-presentation] *::after{scroll-behavior:auto!important;transition:none!important;animation:none!important}}
+@media print{
+ body[data-hqc-presentation="guide"]{background:#fff}
+ body[data-hqc-presentation="guide"] main.wrap{width:100%;max-width:none;border:0;border-radius:0;margin:0;padding:0}
+ body[data-hqc-presentation="guide"] header,body[data-hqc-presentation="guide"] footer{display:none}
+}

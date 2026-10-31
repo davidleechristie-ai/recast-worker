@@ -14,6 +14,9 @@ on:
       - 'hqc-deploy-preview/test/quote-guides.test.mjs'
       - 'hqc-deploy-preview/test/quote-guides-rendered.mjs'
       - 'hqc-deploy-preview/snapshot.mjs'
+      - 'hqc-deploy-preview/presentation-polish.css'
+      - 'hqc-deploy-preview/test/presentation-polish-rendered.mjs'
+      - 'hqc-deploy-preview/test/presentation-snapshot.test.mjs'
       - 'hqc-deploy-preview/approved-home-layout.js'
       - 'hqc-deploy-preview/mobile-homepage-override.js'
       - 'hqc-deploy-preview/simple-results-journey.js'
@@ -33,6 +36,9 @@ on:
       - 'hqc-deploy-preview/approved-home-layout.js'
       - 'hqc-deploy-preview/mobile-homepage-override.js'
       - 'hqc-deploy-preview/snapshot.mjs'
+      - 'hqc-deploy-preview/presentation-polish.css'
+      - 'hqc-deploy-preview/test/presentation-polish-rendered.mjs'
+      - 'hqc-deploy-preview/test/presentation-snapshot.test.mjs'
       - 'hqc-deploy-preview/approved-home-layout.js'
       - 'hqc-deploy-preview/mobile-homepage-override.js'
       - 'hqc-deploy-preview/simple-results-journey.js'
@@ -73,7 +79,7 @@ jobs:
         with:
           node-version: 22
       - name: Check content contracts
-        run: node --test hqc-deploy-preview/test/quote-guides.test.mjs
+        run: node --test hqc-deploy-preview/test/quote-guides.test.mjs hqc-deploy-preview/test/presentation-snapshot.test.mjs
       - name: Check Decision Pack model and technology boundaries
         run: node --test hqc-deploy-preview/test/decision-pack-model.test.mjs hqc-deploy-preview/test/decision-pack-technology.test.mjs hqc-deploy-preview/test/renewable-decision-pack-boundary.test.mjs
       - name: Install existing browser QA tooling
@@ -85,6 +91,7 @@ jobs:
           node hqc-deploy-preview/test/quote-guides-rendered.mjs
           node hqc-deploy-preview/test/how-we-help-rendered.cjs
           node hqc-deploy-preview/test/conversion-journey-rendered.mjs
+          node hqc-deploy-preview/test/presentation-polish-rendered.mjs
       - uses: actions/upload-artifact@v4
         if: always()
         with:
@@ -93,6 +100,7 @@ jobs:
             artifacts/quote-guides
             artifacts/how-we-help
             artifacts/conversion-journey
+            artifacts/presentation-polish
   deploy:
     if: github.event_name != 'pull_request'
     needs: quote-guides
