@@ -79,6 +79,7 @@ body[data-hqc-presentation="guide"] footer .wrap{padding:28px 32px}
  body #hqc-clean-home header{flex-wrap:wrap;gap:10px 8px;padding:17px 0 8px;min-height:0}
  body #hqc-clean-home .hqc-home-brand{min-width:0}
  body #hqc-clean-home .hqc-home-brand b{font-size:14px}
+ body #hqc-clean-home .hqc-home-cta{padding:14px 16px;gap:10px;font-size:16px!important}
  body #hqc-clean-home .hqc-home-header-cta{font-size:12px!important;padding:10px 12px;min-height:44px}
  body #hqc-clean-home header nav{display:flex!important;order:3;flex-basis:100%;justify-content:space-between;gap:8px;font-size:12px;border-top:1px solid #e4ede8;padding-top:4px}
  body #hqc-clean-home header nav a{min-height:44px}
