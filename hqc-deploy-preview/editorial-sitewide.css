@@ -1,0 +1,16 @@
+/* HQC editorial design system | presentation-only, all public pages and app screens */
+:root{--hqc-paper:#faf9f5;--hqc-ink:#203336;--hqc-forest:#204b3d;--hqc-rule:#c2cec5;--hqc-muted:#536760}
+html{scroll-behavior:smooth}
+body{font-family:Arial,Helvetica,sans-serif!important;color:var(--hqc-ink);background:var(--hqc-paper)}
+body:not([data-hqc-home="clean"]) main{background:var(--hqc-paper)}
+body:not([data-hqc-home="clean"]) h1,body:not([data-hqc-home="clean"]) h2,body:not([data-hqc-home="clean"]) .panel-title{font-family:Georgia,'Times New Roman',serif!important;font-weight:700!important;letter-spacing:-.035em!important;line-height:1.16!important;color:var(--hqc-ink)!important}
+body:not([data-hqc-home="clean"]) p,body:not([data-hqc-home="clean"]) li{line-height:1.58}
+body:not([data-hqc-home="clean"]) button,body:not([data-hqc-home="clean"]) input,body:not([data-hqc-home="clean"]) select,body:not([data-hqc-home="clean"]) textarea{font-family:Arial,Helvetica,sans-serif}
+body:not([data-hqc-home="clean"]) button:not([role="switch"]),body:not([data-hqc-home="clean"]) .btn,body:not([data-hqc-home="clean"]) input:not([type="checkbox"]):not([type="radio"]),body:not([data-hqc-home="clean"]) select,body:not([data-hqc-home="clean"]) textarea{border-radius:4px!important;box-shadow:none!important}
+body:not([data-hqc-home="clean"]) .card,body:not([data-hqc-home="clean"]) .panel,body:not([data-hqc-home="clean"]) [class*="Card"],body:not([data-hqc-home="clean"]) [class*="Panel"]{border-radius:3px!important;box-shadow:none!important}
+body:not([data-hqc-home="clean"]) button.primary,body:not([data-hqc-home="clean"]) .primary,body:not([data-hqc-home="clean"]) button[type="submit"]{background-color:var(--hqc-forest);border-radius:3px!important}
+body:not([data-hqc-home="clean"]) button:focus-visible,body:not([data-hqc-home="clean"]) a:focus-visible,body:not([data-hqc-home="clean"]) input:focus-visible{outline:3px solid #b48b44!important;outline-offset:3px}
+body:not([data-hqc-home="clean"]) header,body:not([data-hqc-home="clean"]) footer{border-color:var(--hqc-rule)}
+body:not([data-hqc-home="clean"]) [class*="badge"],body:not([data-hqc-home="clean"]) [class*="Badge"]{box-shadow:none!important}
+@media(max-width:759px){body:not([data-hqc-home="clean"]) main{width:100%;max-width:100%}body:not([data-hqc-home="clean"]) h1{font-size:clamp(32px,9vw,47px)!important}body:not([data-hqc-home="clean"]) h2{font-size:clamp(25px,7vw,32px)!important}}
+@media(prefers-reduced-motion:reduce){html{scroll-behavior:auto}}
