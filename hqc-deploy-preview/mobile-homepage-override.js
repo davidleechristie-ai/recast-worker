@@ -7,14 +7,14 @@
  }
  const css=`@media(min-width:760px){#hqc-mobile-landing{display:none!important}}@media(max-width:759px){
  #hqc-mobile-landing{position:fixed;z-index:2147480000;inset:0;background:white;overflow:auto;overscroll-behavior:contain;color:#0b2548;font:normal 15px/1.45 system-ui,-apple-system,Segoe UI,sans-serif}
- #hqc-mobile-landing *{box-sizing:border-box}#hqc-mobile-landing .inner{max-width:430px;margin:auto;padding:20px 20px 95px}
- #hqc-mobile-landing .brand{display:flex;gap:12px;align-items:center;margin-bottom:36px}
+ #hqc-mobile-landing *{box-sizing:border-box}#hqc-mobile-landing .inner{max-width:480px;margin:auto;padding:20px 20px 124px}
+ #hqc-mobile-landing .brand{display:flex;gap:12px;align-items:center;margin-bottom:26px}
  #hqc-mobile-landing .mark{width:40px;height:40px;border:3px solid #05845c;color:#05845c;border-radius:12px;display:grid;place-items:center;font-size:25px}
  #hqc-mobile-landing .brand b{display:block;font-size:16px;line-height:1.2}#hqc-mobile-landing .brand small{font-size:11px;color:#687a86}
  #hqc-mobile-landing .tag{display:inline-block;border-radius:30px;background:#e4f6ed;padding:6px 12px;font-weight:800;letter-spacing:.1em;color:#057e5b;font-size:11px}
  #hqc-mobile-landing h1{font-size:clamp(32px,9vw,40px);letter-spacing:-.04em;line-height:1.04;margin:15px 0 16px;font-weight:850;color:#0b2548}
  #hqc-mobile-landing p{color:#52647a;margin:4px 0 12px}#hqc-mobile-landing .lead{font-size:16px;line-height:1.5;margin-bottom:20px}
- #hqc-mobile-landing button{cursor:pointer}#hqc-mobile-landing .primary{width:100%;border:0;border-radius:12px;background:#07835f;padding:16px;color:white;font-size:17px;font-weight:800}
+ #hqc-mobile-landing button{cursor:pointer}#hqc-mobile-landing .primary{width:100%;border:0;border-radius:12px;background:#087452;padding:16px;color:white;font-size:17px;font-weight:800;min-height:54px;box-shadow:0 6px 18px #07563c24}
  #hqc-mobile-landing .technology-picker{padding:14px;background:#eff9f5;border-radius:14px;margin:16px 0}#hqc-mobile-landing .technology-picker>b{font-size:13px;display:block;margin-bottom:10px}#hqc-mobile-landing .technology-options{display:flex;flex-wrap:wrap;gap:7px}#hqc-mobile-landing .technology-options button{border:1px solid #a6cdc0;border-radius:999px;padding:9px 11px;background:white;color:#0b2548;font-size:12px;font-weight:750}#hqc-mobile-landing .technology-options button[aria-pressed="true"]{background:#087f5b;color:white;border-color:#087f5b}
  #hqc-mobile-landing .upload-note{text-align:center;font-size:12px;margin:10px 0 18px}
  #hqc-mobile-landing .scene{position:relative;background:#eef8f3;border-radius:18px;overflow:hidden;height:215px;margin:20px 0}
@@ -33,7 +33,7 @@
  #hqc-mobile-landing .step b{font-size:14px}#hqc-mobile-landing .step p{font-size:12px;margin:2px 0}
  #hqc-mobile-landing .comparison{border-radius:16px;background:#eff9f5;padding:18px;margin-bottom:24px}
  #hqc-mobile-landing .secondary{width:100%;border:1px solid #07835f;border-radius:10px;background:transparent;color:#07835f;font-size:14px;font-weight:800;padding:12px;margin-top:12px}
- #hqc-mobile-landing .sticky{position:sticky;bottom:0;background:linear-gradient(transparent,#fff 18%);padding:12px 20px max(14px,env(safe-area-inset-bottom));margin-top:-70px}
+ #hqc-mobile-landing .sticky{position:fixed;z-index:2;bottom:0;left:0;right:0;background:linear-gradient(transparent,#fff 16%,#fff 100%);padding:18px max(20px,env(safe-area-inset-right)) max(14px,env(safe-area-inset-bottom)) max(20px,env(safe-area-inset-left));box-shadow:0 -5px 20px #0b25480d}#hqc-mobile-landing .sticky .primary{max-width:440px;display:block;margin:auto}#hqc-mobile-landing button:focus-visible{outline:3px solid #0b2548;outline-offset:3px}#hqc-mobile-landing button:active{transform:translateY(1px)}@media(prefers-reduced-motion:reduce){#hqc-mobile-landing button{transition:none!important;transform:none!important}}
  }`;
  const template=`<div class="inner"><div class="brand"><span class="mark">⌂</span><div><b>Home Quote Check</b><small>Be sure before you sign.</small></div></div>
  <span class="tag">HOME ENERGY QUOTES</span><h1>Is your home energy quote a good deal?</h1>
@@ -70,7 +70,7 @@
   const nav=document.querySelector('header button');if(nav)nav.click();
  }
  function mount(){
-  const current=new URLSearchParams(location.search).get('technology')||sessionStorage.getItem('hqc_journey_technology')||'heat_pump';
+  let storedTechnology='heat_pump';try{storedTechnology=sessionStorage.getItem('hqc_journey_technology')||'heat_pump'}catch{}const current=new URLSearchParams(location.search).get('technology')||storedTechnology;
   if(current==='heat_pump'||document.getElementById('hqc-clean-home'))return;
   if(!mobile()||document.getElementById('hqc-mobile-landing'))return;
   if(journeyActive)return;
@@ -81,7 +81,7 @@
   const screen=document.createElement('div');screen.id='hqc-mobile-landing';screen.setAttribute('aria-label','Home Quote Check mobile homepage');screen.innerHTML=template;
   document.body.appendChild(screen);
   screen.querySelectorAll('[data-tech]').forEach(button=>button.addEventListener('click',()=>{screen.querySelectorAll('[data-tech]').forEach(other=>other.setAttribute('aria-pressed',String(other===button)));updatePresentation(screen,button.dataset.tech);}));
-  const preferred=destination.get('technology')||sessionStorage.getItem('hqc_journey_technology')||'heat_pump';
+  const preferred=destination.get('technology')||storedTechnology;
   const selected=screen.querySelector('[data-tech="'+preferred+'"]')||screen.querySelector('[data-tech="heat_pump"]');selected.click();
   screen.querySelectorAll('[data-go]').forEach(button=>button.addEventListener('click',()=>go(button.dataset.go)));
  }
@@ -95,7 +95,7 @@
   if(isHome){journeyActive=false;mount()}
  }
  let pending=false;
- new MutationObserver(()=>{if(pending)return;pending=true;requestAnimationFrame(()=>{pending=false;onNavigation()})}).observe(document.body||document.documentElement,{childList:true,subtree:true});
+ new MutationObserver(()=>{if(pending)return;pending=true;requestAnimationFrame(()=>{pending=false;onNavigation()})}).observe(document.documentElement,{childList:true,subtree:true});
  addEventListener('popstate',()=>setTimeout(onNavigation,100));
  document.addEventListener('click',event=>{
   const button=event.target.closest('button,a');if(!button)return;
