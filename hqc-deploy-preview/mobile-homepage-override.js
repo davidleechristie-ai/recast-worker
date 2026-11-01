@@ -34,19 +34,50 @@
  #hqc-mobile-landing .comparison{border-radius:16px;background:#eff9f5;padding:18px;margin-bottom:24px}
  #hqc-mobile-landing .secondary{width:100%;border:1px solid #07835f;border-radius:10px;background:transparent;color:#07835f;font-size:14px;font-weight:800;padding:12px;margin-top:12px}
  #hqc-mobile-landing .sticky{position:fixed;z-index:2;bottom:0;left:0;right:0;background:linear-gradient(transparent,#fff 16%,#fff 100%);padding:18px max(20px,env(safe-area-inset-right)) max(14px,env(safe-area-inset-bottom)) max(20px,env(safe-area-inset-left));box-shadow:0 -5px 20px #0b25480d}#hqc-mobile-landing .sticky .primary{max-width:440px;display:block;margin:auto}#hqc-mobile-landing button:focus-visible{outline:3px solid #0b2548;outline-offset:3px}#hqc-mobile-landing button:active{transform:translateY(1px)}@media(prefers-reduced-motion:reduce){#hqc-mobile-landing button{transition:none!important;transform:none!important}}
+ #hqc-mobile-landing{background:#f9f8f4;color:#182b31;font-family:Arial,Helvetica,sans-serif}
+ #hqc-mobile-landing .inner{max-width:520px;padding:24px 23px 132px}
+ #hqc-mobile-landing .brand{margin-bottom:38px;padding-bottom:18px;border-bottom:1px solid #aab8b4}
+ #hqc-mobile-landing .brand b{font-size:18px;font-weight:800;letter-spacing:-.035em}
+ #hqc-mobile-landing .brand small{font-size:12px}
+ #hqc-mobile-landing .mark{background:#194638;color:#fff;border:0;border-radius:2px}
+ #hqc-mobile-landing .eyebrow{font-size:11px;letter-spacing:.12em;font-weight:750;color:#386353;margin:0 0 14px;text-transform:uppercase}
+ #hqc-mobile-landing h1{font-family:Georgia,'Times New Roman',serif;font-size:clamp(37px,10vw,49px);font-weight:700;line-height:1.04;letter-spacing:-.045em;color:#172c32;margin:0 0 20px}
+ #hqc-mobile-landing .lead{font-size:17px;line-height:1.54;color:#3f5358;margin-bottom:26px}
+ #hqc-mobile-landing .technology-picker{background:transparent;border-top:1px solid #b3c0bc;border-bottom:1px solid #b3c0bc;border-radius:0;margin:22px 0;padding:17px 0 19px}
+ #hqc-mobile-landing .technology-picker>b{font-size:14px;margin-bottom:14px}
+ #hqc-mobile-landing .technology-options{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:6px}
+ #hqc-mobile-landing .technology-options button{border:1px solid #9dabaa;border-radius:3px;padding:12px 4px;min-height:45px;font-size:12px}
+ #hqc-mobile-landing .technology-options button[aria-pressed="true"]{background:#194638;border-color:#194638}
+ #hqc-mobile-landing .primary{background:#194638;border-radius:3px;min-height:58px;box-shadow:none;font-size:16px}
+ #hqc-mobile-landing .upload-note{text-align:left;color:#53645f;font-size:12px}
+ #hqc-mobile-landing .scene{border-radius:0;border-bottom:3px solid #194638;background:#e9eee8;height:205px;margin:30px 0}
+ #hqc-mobile-landing .benefits{background:transparent;border-radius:0;padding:0;margin:26px 0 38px;border-top:1px solid #b3c0bc}
+ #hqc-mobile-landing .benefit{gap:15px;padding:19px 0;border-bottom:1px solid #d0d8d3}
+ #hqc-mobile-landing .symbol{background:none;border-radius:0;width:30px;height:auto;color:#386353;font:bold 13px/1.2 Arial,sans-serif;align-self:flex-start;margin-top:3px}
+ #hqc-mobile-landing .benefit b{font-size:17px}#hqc-mobile-landing .benefit p{font-size:14px;line-height:1.5}
+ #hqc-mobile-landing h2{font-family:Georgia,'Times New Roman',serif;font-size:29px!important;letter-spacing:-.035em;line-height:1.13;color:#172c32!important}
+ #hqc-mobile-landing .section{margin:38px 0}
+ #hqc-mobile-landing .sample{border:1px solid #c2cbc5;background:#fff;border-radius:0;padding:18px;margin-top:18px}
+ #hqc-mobile-landing .fact{font-size:13px;border-color:#e1e5e0;padding:12px 0}
+ #hqc-mobile-landing .step{gap:15px;margin:20px 0}#hqc-mobile-landing .step i{background:transparent;border:1px solid #9dabaa;border-radius:0;width:32px;height:32px}
+ #hqc-mobile-landing .step b{font-size:15px}#hqc-mobile-landing .step p{font-size:13px;line-height:1.5}
+ #hqc-mobile-landing .comparison{background:#e8ece6;border-top:3px solid #194638;border-radius:0;padding:24px 20px;margin:36px -5px}
+ #hqc-mobile-landing .secondary{border:1px solid #194638;border-radius:3px;color:#194638;background:transparent;padding:15px}
+ #hqc-mobile-landing .sticky{background:#f9f8f4;padding-top:13px;box-shadow:0 -1px 0 #cad4cc}
+
  }`;
  const template=`<div class="inner"><div class="brand"><span class="mark">⌂</span><div><b>Home Quote Check</b><small>Be sure before you sign.</small></div></div>
- <span class="tag">HOME ENERGY QUOTES</span><h1>Is your home energy quote a good deal?</h1>
+ <p class="eyebrow">INDEPENDENT HOME QUOTE REVIEW</p><h1>Is your home energy quote a good deal?</h1>
  <p class="lead">See what’s included, what’s missing and what to ask before paying a deposit.</p><div class="technology-picker"><b>What are you getting a quote for?</b><div class="technology-options"><button type="button" data-tech="heat_pump" aria-pressed="true">Heat pump</button><button type="button" data-tech="solar_battery" aria-pressed="false">Solar & battery</button><button type="button" data-tech="ev_chargepoint" aria-pressed="false">EV charger</button></div></div>
  <button class="primary" data-go="single">Check my quote — free →</button><p class="upload-note">Upload a photo, screenshot or PDF · Get clear next steps</p>
- <div class="scene"><img src="/resources/homepage-house-only.svg" alt="House with an outdoor heat pump"><div class="result-mini"><b>✓ Example quote review</b><span>✓ Price checked</span><span>⚠ Missing details highlighted</span><span>✓ Questions to ask</span></div></div>
- <div class="benefits"><div class="benefit"><span class="symbol">▥</span><div><b>Check the price</b><p>Understand how your quote compares.</p></div></div>
- <div class="benefit"><span class="symbol">⌕</span><div><b>Spot what's missing</b><p>Find unclear costs and exclusions.</p></div></div>
- <div class="benefit"><span class="symbol">☏</span><div><b>Ask the right questions</b><p>Know what to clarify with your installer.</p></div></div></div>
- <div class="section"><span class="tag">EXAMPLE RESULT</span><h2>A clearer picture of your quote.</h2><p>Illustrative example of the information checked.</p>
- <div class="sample"><b>▤ Installer Quote.pdf · Example</b><div class="fact">Price <em>✓ Reviewed</em></div><div class="fact">Installation scope <em class="warn">⚠ Details missing</em></div><div class="fact">Warranty <em>✓ Checked</em></div><div class="fact">Extras and add-ons <em class="warn">⚠ Needs clarity</em></div><div class="fact">Installer questions <em>✓ Suggested</em></div></div></div>
+ <div class="scene"><img src="/resources/homepage-house-only.svg" alt="House with an outdoor heat pump"></div>
+ <div class="benefits"><div class="benefit"><span class="symbol">01</span><div><b>Check the price</b><p>Understand how your quote compares.</p></div></div>
+ <div class="benefit"><span class="symbol">02</span><div><b>Spot what's missing</b><p>Find unclear costs and exclusions.</p></div></div>
+ <div class="benefit"><span class="symbol">03</span><div><b>Ask the right questions</b><p>Know what to clarify with your installer.</p></div></div></div>
+ <div class="section"><p class="eyebrow">WHAT YOU GET</p><h2>A clearer picture of your quote.</h2><p>Illustrative example of the information checked.</p>
+ <div class="sample"><b>Illustrative quote review</b><div class="fact">Price <em>✓ Reviewed</em></div><div class="fact">Installation scope <em class="warn">⚠ Details missing</em></div><div class="fact">Warranty <em>✓ Checked</em></div><div class="fact">Extras and add-ons <em class="warn">⚠ Needs clarity</em></div><div class="fact">Installer questions <em>✓ Suggested</em></div></div></div>
  <div class="section"><h2>How it works</h2><div class="step"><i>1</i><div><b>Upload your quote</b><p>Take a photo or upload a PDF.</p></div></div><div class="step"><i>2</i><div><b>We check the details</b><p>We review price, scope and key information.</p></div></div><div class="step"><i>3</i><div><b>Get your answers</b><p>See what needs attention before you commit.</p></div></div></div>
- <div class="comparison"><span class="tag">MORE THAN ONE QUOTE?</span><h2>Compare quotes side by side.</h2><p>See differences in price, scope and what's included.</p><button class="secondary" data-go="compare">Compare quotes →</button></div>
+ <div class="comparison"><p class="eyebrow">COMPARE INSTALLERS</p><h2>Compare quotes side by side.</h2><p>See differences in price, scope and what's included.</p><button class="secondary" data-go="compare">Compare quotes →</button></div>
  </div><div class="sticky"><button class="primary" data-go="single">Check my quote — free →</button></div>`;
  function updatePresentation(screen,technology){
   const renewable=technology==='solar_battery'||technology==='ev_chargepoint';
