@@ -14,3 +14,26 @@ body:not([data-hqc-home="clean"]) header,body:not([data-hqc-home="clean"]) foote
 body:not([data-hqc-home="clean"]) [class*="badge"],body:not([data-hqc-home="clean"]) [class*="Badge"]{box-shadow:none!important}
 @media(max-width:759px){body:not([data-hqc-home="clean"]) main{width:100%;max-width:100%}body:not([data-hqc-home="clean"]) h1{font-size:clamp(32px,9vw,47px)!important}body:not([data-hqc-home="clean"]) h2{font-size:clamp(25px,7vw,32px)!important}}
 @media(prefers-reduced-motion:reduce){html{scroll-behavior:auto}}
+
+/* Consistency audit: global surfaces, content density and accessible controls. */
+:root{color-scheme:light}
+body:not([data-hqc-home="clean"]) .resultsTop,
+body:not([data-hqc-home="clean"]) .questions,
+body:not([data-hqc-home="clean"]) #hqc-completeness{color:var(--hqc-ink)}
+body:not([data-hqc-home="clean"]) :is(.resultsTop,.questions,#hqc-completeness) :is(h1,h2,h3){color:var(--hqc-ink)!important}
+body:not([data-hqc-home="clean"]) :is(.resultsTop,.questions,#hqc-completeness) :is(button,a[role="button"]){border-radius:3px!important;box-shadow:none!important}
+body:not([data-hqc-home="clean"]) :is(.resultsTop,.questions,#hqc-completeness) :is(.panel,.card){box-shadow:none!important;border-radius:3px!important}
+body:not([data-hqc-home="clean"]) :is(button,input,select,textarea,a):focus-visible{outline:3px solid #b48b44!important;outline-offset:3px!important}
+body:not([data-hqc-home="clean"]) :is(input,textarea,select){max-width:100%;box-sizing:border-box}
+body:not([data-hqc-home="clean"]) :is(p,li,span,strong){overflow-wrap:break-word}
+body:not([data-hqc-home="clean"]) :is(.card,.panel){min-width:0}
+#hqc-journey-progress [data-step]{border-radius:2px!important;background:transparent!important;padding:8px 2px!important}
+#hqc-journey-progress [data-step] i{border-radius:2px!important}
+#hqc-journey-progress [data-step]:not([aria-current="step"]) i{background:#e7ede7!important;color:#536760!important}
+#hqc-journey-progress [data-step][aria-current="step"] i{background:#204b3d!important;color:#fff!important}
+@media(max-width:759px){
+ body:not([data-hqc-home="clean"]) :is(button,input[type="file"],select){max-width:100%}
+ body:not([data-hqc-home="clean"]) .resultsTop{padding-inline:0!important}
+ #hqc-journey-progress [data-step]{min-width:0;gap:4px!important;flex-wrap:wrap}
+ #hqc-journey-progress [data-step] b{font-size:12px!important}
+}

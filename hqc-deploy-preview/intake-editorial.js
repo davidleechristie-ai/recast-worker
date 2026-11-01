@@ -11,13 +11,13 @@
  #hqc-journey-progress{background:transparent!important;border:0!important;box-shadow:none!important;gap:6px!important}
  #hqc-journey-progress [data-step]{color:#536760!important;font-family:Arial,Helvetica,sans-serif!important}
  #hqc-journey-progress [data-step] i{border-radius:2px!important;box-shadow:none!important;background:#e7ede7!important;color:#536760!important;border:1px solid #c2cec5!important}
- #hqc-journey-progress [data-step="1"] i{background:#204b3d!important;color:#fff!important;border-color:#204b3d!important}
+ #hqc-journey-progress [data-step][aria-current="step"] i,#hqc-journey-progress [data-step].active i{background:#204b3d!important;color:#fff!important;border-color:#204b3d!important}
  #hqc-upload-help{background:#fff!important;border-radius:0!important;box-shadow:none!important}
  #hqc-upload-help [style*="dashed"],body:has(#hqc-journey-progress) [class*="dropzone"],body:has(#hqc-journey-progress) [class*="dropZone"]{border:1px solid #9aafa4!important;border-radius:3px!important;background:#f7f8f4!important;box-shadow:none!important}
  #hqc-choose-file{background:#204b3d!important;color:#fff!important;border:0!important;border-radius:3px!important;box-shadow:none!important;min-height:52px!important}
  body:has(#hqc-journey-progress) main button{border-radius:3px!important;box-shadow:none!important}
  body:has(#hqc-journey-progress) main p{color:#536760}
- body:has(#hqc-journey-progress) #hqc-mobile-sticky-cta{display:none!important}
+ body:has(#hqc-journey-progress) #hqc-mobile-sticky-cta{display:none!important}\n body:has(#hqc-journey-progress) [style*="border: 3px dashed"],body:has(#hqc-journey-progress) [style*="border:3px dashed"],body:has(#hqc-journey-progress) [style*="border: 2px dashed"]{border:1px solid #9aafa4!important;border-radius:3px!important;background:#f7f8f4!important}\n body:has(#hqc-journey-progress) button:focus-visible,body:has(#hqc-journey-progress) input:focus-visible{outline:3px solid #b48b44!important;outline-offset:3px!important}
  @media(max-width:759px){
  body:has(#hqc-journey-progress) main{padding-bottom:calc(24px + env(safe-area-inset-bottom))!important}
  body:has(#hqc-journey-progress) main .card,body:has(#hqc-journey-progress) main .panel{padding:18px!important}
