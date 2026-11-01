@@ -1,0 +1,43 @@
+name: HQC design consistency audit
+on:
+  pull_request:
+    paths:
+      - 'hqc-deploy-preview/editorial-sitewide.css'
+      - 'hqc-deploy-preview/intake-editorial.js'
+      - 'hqc-deploy-preview/upload-friction-v3.js'
+      - '.github/workflows/hqc-design-consistency.yml'
+permissions:
+  contents: read
+jobs:
+  consistency:
+    runs-on: ubuntu-24.04
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: '22'
+      - name: Source syntax and consistency contracts
+        run: |
+          node --check hqc-deploy-preview/intake-editorial.js
+          node --check hqc-deploy-preview/upload-friction-v3.js
+          node --check hqc-deploy-preview/snapshot.mjs
+          node --input-type=module <<'NODE'
+          import fs from 'node:fs';
+          import assert from 'node:assert/strict';
+          const css=fs.readFileSync('hqc-deploy-preview/editorial-sitewide.css','utf8');
+          const intake=fs.readFileSync('hqc-deploy-preview/intake-editorial.js','utf8');
+          const upload=fs.readFileSync('hqc-deploy-preview/upload-friction-v3.js','utf8');
+          const snap=fs.readFileSync('hqc-deploy-preview/snapshot.mjs','utf8');
+          assert.match(css,/--hqc-paper/);
+          assert.match(css,/\.resultsTop/);
+          assert.match(css,/aria-current="step"/);
+          assert.match(intake,/hqc-mobile-sticky-cta/);
+          assert.match(intake,/border: 3px dashed/);
+          assert.match(upload,/setAttribute\('aria-current','step'\)/);
+          assert.match(snap,/__hqc_intake_editorial\.js/);
+          assert.match(snap,/editorial-sitewide\.css/);
+          console.log('HQC shared design contracts passed');
+          NODE
+      - name: Guard core quote and payment boundaries
+        working-directory: hqc-deploy-preview
+        run: node --test test/renewable-upload-boundary.test.mjs test/decision-pack-model.test.mjs test/decision-pack-technology.test.mjs test/renewable-decision-pack-boundary.test.mjs
