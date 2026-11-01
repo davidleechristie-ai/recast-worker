@@ -25,23 +25,23 @@
  function mountStyle(){if(document.getElementById(styleId))return;const tag=document.createElement('style');tag.id=styleId;tag.textContent=css;document.head.appendChild(tag)}
  function decorate(){
   if(qs('#hqc-mobile-landing')||qs('#hqc-clean-home'))return;
-  const headers=[...document.querySelectorAll('header')];
-  for(const header of headers){
+  for(const header of document.querySelectorAll('header')){
    if(header.classList.contains('hqc-unified-app-header'))continue;
-   const exact=[...header.querySelectorAll('b,strong,span,div,h1,h2')].find(el=>el.children.length===0&&(el.textContent||'').trim()==='Home Quote Check');
-   if(!exact)continue;
-   let original=exact;
-   while(original.parentElement&&original.parentElement!==header){
-    const parent=original.parentElement;
-    const text=(parent.textContent||'').trim();
-    if(!/Be sure before you sign\./.test(text)||parent.querySelector('button'))break;
-    original=parent;
+   const label=[...header.querySelectorAll('b,strong,span,div,h1,h2,p')].find(el=>el.children.length===0&&(el.textContent||'').trim()==='Home Quote Check');
+   if(!label)continue;
+   let candidate=label;
+   while(candidate.parentElement && candidate.parentElement!==header){
+    const parent=candidate.parentElement;
+    if(parent.querySelector('button,[role="button"]'))break;
+    if(!parent.textContent.includes('Home Quote Check'))break;
+    candidate=parent;
    }
-   if(original===header||original.querySelector('button')||!String(original.textContent||'').includes('Be sure before you sign.'))continue;
-   const mark='<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linejoin="round" aria-hidden="true"><path d="m4 11 8-7 8 7v9H4z"/><path d="M9 20v-7h6v7"/></svg>';
-   const brand=document.createElement('a');brand.className='hqc-shared-brand';brand.href='/';brand.setAttribute('aria-label','Home Quote Check home');
-   brand.innerHTML='<span class="hqc-shared-mark">'+mark+'</span><span><span class="hqc-shared-name">Home Quote Check</span><span class="hqc-shared-tagline">Be sure before you sign.</span></span>';
-   original.replaceWith(brand);
+   const brand=document.createElement('a');
+   brand.className='hqc-shared-brand';
+   brand.href='/';
+   brand.setAttribute('aria-label','Home Quote Check home');
+   brand.innerHTML='<span class="hqc-shared-mark"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linejoin="round" aria-hidden="true"><path d="m4 11 8-7 8 7v9H4z"/><path d="M9 20v-7h6v7"/></svg></span><span><span class="hqc-shared-name">Home Quote Check</span><span class="hqc-shared-tagline">Be sure before you sign.</span></span>';
+   candidate.replaceWith(brand);
    header.classList.add('hqc-unified-app-header');
   }
  }
