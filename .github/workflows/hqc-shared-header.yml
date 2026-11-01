@@ -1,0 +1,41 @@
+name: HQC shared header consistency
+on:
+  pull_request:
+    paths:
+      - 'hqc-deploy-preview/shared-header.js'
+      - 'hqc-deploy-preview/mobile-homepage-override.js'
+      - 'hqc-deploy-preview/snapshot.mjs'
+      - '.github/workflows/hqc-shared-header.yml'
+permissions:
+  contents: read
+jobs:
+  header-check:
+    runs-on: ubuntu-24.04
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: '22'
+      - name: Verify source, shared brand and CTA contracts
+        run: |
+          node --check hqc-deploy-preview/shared-header.js
+          node --check hqc-deploy-preview/mobile-homepage-override.js
+          node --check hqc-deploy-preview/snapshot.mjs
+          node --input-type=module <<'NODE'
+          import fs from 'node:fs';
+          import assert from 'node:assert/strict';
+          const header=fs.readFileSync('hqc-deploy-preview/shared-header.js','utf8');
+          const mobile=fs.readFileSync('hqc-deploy-preview/mobile-homepage-override.js','utf8');
+          const snapshot=fs.readFileSync('hqc-deploy-preview/snapshot.mjs','utf8');
+          assert.match(header,/hqc-shared-brand/);
+          assert.match(header,/hqc-unified-app-header/);
+          assert.match(header,/Be sure before you sign/);
+          assert.match(snapshot,/__hqc_shared_header.js/);
+          assert.match(snapshot,/copyFile\('shared-header.js'/);
+          assert.equal((mobile.match(/data-go="single"/g)||[]).length,1,'mobile landing must have one single-check CTA');
+          assert.match(mobile,/class="sticky"/);
+          console.log('Shared header and single mobile CTA contracts passed');
+          NODE
+      - name: Guard analysis and payment contracts
+        working-directory: hqc-deploy-preview
+        run: node --test test/renewable-upload-boundary.test.mjs test/decision-pack-model.test.mjs test/decision-pack-technology.test.mjs test/renewable-decision-pack-boundary.test.mjs

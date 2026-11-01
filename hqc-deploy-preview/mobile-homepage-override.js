@@ -66,10 +66,10 @@
  #hqc-mobile-landing .sticky{background:#f9f8f4;padding-top:13px;box-shadow:0 -1px 0 #cad4cc}
 
  }`;
- const template=`<div class="inner"><div class="brand"><span class="mark">⌂</span><div><b>Home Quote Check</b><small>Be sure before you sign.</small></div></div>
+ const template=`<div class="inner"><div class="brand"><span class="mark" aria-hidden="true">⌂</span><div><b>Home Quote Check</b><small>Be sure before you sign.</small></div></div>
  <p class="eyebrow">INDEPENDENT HOME QUOTE REVIEW</p><h1>Is your home energy quote a good deal?</h1>
  <p class="lead">See what’s included, what’s missing and what to ask before paying a deposit.</p><div class="technology-picker"><b>What are you getting a quote for?</b><div class="technology-options"><button type="button" data-tech="heat_pump" aria-pressed="true">Heat pump</button><button type="button" data-tech="solar_battery" aria-pressed="false">Solar & battery</button><button type="button" data-tech="ev_chargepoint" aria-pressed="false">EV charger</button></div></div>
- <button class="primary" data-go="single">Check my quote — free →</button><p class="upload-note">Upload a photo, screenshot or PDF · Get clear next steps</p>
+ <p class="upload-note">Upload a photo, screenshot or PDF · Get clear next steps</p>
  <div class="scene"><img src="/resources/homepage-house-only.svg" alt="House with an outdoor heat pump"></div>
  <div class="benefits"><div class="benefit"><span class="symbol">01</span><div><b>Check the price</b><p>Understand how your quote compares.</p></div></div>
  <div class="benefit"><span class="symbol">02</span><div><b>Spot what's missing</b><p>Find unclear costs and exclusions.</p></div></div>
