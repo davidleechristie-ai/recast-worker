@@ -1,0 +1,37 @@
+name: HQC sitewide editorial presentation
+on:
+  pull_request:
+    paths:
+      - 'hqc-deploy-preview/editorial-sitewide.css'
+      - 'hqc-deploy-preview/snapshot.mjs'
+      - '.github/workflows/hqc-editorial-sitewide.yml'
+permissions:
+  contents: read
+jobs:
+  editorial-checks:
+    runs-on: ubuntu-24.04
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: '22'
+      - name: Validate snapshot syntax and editorial contracts
+        run: |
+          node --check hqc-deploy-preview/snapshot.mjs
+          node --input-type=module <<'NODE'
+          import fs from 'node:fs';
+          import assert from 'node:assert/strict';
+          const snap=fs.readFileSync('hqc-deploy-preview/snapshot.mjs','utf8');
+          const css=fs.readFileSync('hqc-deploy-preview/editorial-sitewide.css','utf8');
+          assert.match(snap,/editorial-sitewide\.css/);
+          assert.match(css,/hqc-paper/);
+          assert.match(css,/focus-visible/);
+          assert.ok(snap.indexOf("await copyFile('editorial-sitewide.css'") < snap.indexOf("await save('/');"));
+          for(const guide of ['how-we-help','decision-pack','compare-heat-pump-quotes','heat-pump-quote-checklist']){
+            assert.ok(snap.includes(guide+'.html'));
+          }
+          console.log('Sitewide editorial source and build contracts passed');
+          NODE
+      - name: Verify existing decision models and quote intake boundaries
+        working-directory: hqc-deploy-preview
+        run: node --test test/renewable-upload-boundary.test.mjs test/decision-pack-model.test.mjs test/decision-pack-technology.test.mjs test/renewable-decision-pack-boundary.test.mjs
