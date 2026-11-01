@@ -37,7 +37,7 @@
     if(!/Be sure before you sign\./.test(text)||parent.querySelector('button'))break;
     original=parent;
    }
-   if(original===header||original.querySelector('button')||!/Be sure before you sign\\./.test(original.textContent||''))continue;
+   if(original===header||original.querySelector('button')||!String(original.textContent||'').includes('Be sure before you sign.'))continue;
    const mark='<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linejoin="round" aria-hidden="true"><path d="m4 11 8-7 8 7v9H4z"/><path d="M9 20v-7h6v7"/></svg>';
    const brand=document.createElement('a');brand.className='hqc-shared-brand';brand.href='/';brand.setAttribute('aria-label','Home Quote Check home');
    brand.innerHTML='<span class="hqc-shared-mark">'+mark+'</span><span><span class="hqc-shared-name">Home Quote Check</span><span class="hqc-shared-tagline">Be sure before you sign.</span></span>';
