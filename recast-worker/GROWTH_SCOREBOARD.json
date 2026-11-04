@@ -3,13 +3,13 @@
     "north_star": "monthly_recurring_revenue_gbp",
     "target": 1000,
     "current": 0,
-    "evidence_date": "2026-11-03",
+    "evidence_date": "2026-11-04",
     "revenue_definition": "Genuine recurring revenue only: current subscription plus paid succeeded latest invoice charge, excluding fully refunded and inactive/cancelled subscriptions."
   },
   "funnel": {
-    "search_impressions": 362,
+    "search_impressions": 352,
     "organic_clicks": 1,
-    "organic_ctr": 0.0027624309392265192,
+    "organic_ctr": 0.002840909090909091,
     "indexed_target_pages": null,
     "successful_tool_uses": 2,
     "workflow_starts": 0,
@@ -197,7 +197,7 @@
     "Indexed target-page count or URL Inspection/index coverage evidence is unavailable.",
     "Workflow completion rate awaits a workflow_start denominator."
   ],
-  "last_updated": "2026-11-03",
+  "last_updated": "2026-11-04",
   "measurement_rules": {
     "unknown_values": "Keep unavailable measurements as null; never estimate them as facts.",
     "follow_up_windows_days": [
@@ -227,9 +227,9 @@
     "search_console": {
       "period_days": 28,
       "clicks": 1,
-      "impressions": 362,
-      "ctr": 0.0027624309392265192,
-      "average_position": 53.92817679558011,
+      "impressions": 352,
+      "ctr": 0.002840909090909091,
+      "average_position": 54.09090909090909,
       "top_pages": [
         {
           "clicks": 1,
@@ -247,9 +247,9 @@
         },
         {
           "clicks": 0,
-          "impressions": 49,
+          "impressions": 46,
           "ctr": 0,
-          "average_position": 14.612244897959183,
+          "average_position": 14.347826086956522,
           "page": "https://tryrecast.app/"
         },
         {
@@ -289,9 +289,9 @@
         },
         {
           "clicks": 0,
-          "impressions": 7,
+          "impressions": 6,
           "ctr": 0,
-          "average_position": 4,
+          "average_position": 3.5,
           "page": "https://tryrecast.app/tools/"
         },
         {
@@ -317,9 +317,9 @@
         },
         {
           "clicks": 0,
-          "impressions": 129,
+          "impressions": 125,
           "ctr": 0,
-          "average_position": 74.3953488372093,
+          "average_position": 74.136,
           "page": "https://tryrecast.app/tools/json-diff.html"
         },
         {
@@ -345,9 +345,9 @@
         },
         {
           "clicks": 0,
-          "impressions": 16,
+          "impressions": 15,
           "ctr": 0,
-          "average_position": 61.0625,
+          "average_position": 59.8,
           "page": "https://tryrecast.app/tools/json-validator.html"
         },
         {
@@ -366,9 +366,9 @@
         },
         {
           "clicks": 0,
-          "impressions": 4,
+          "impressions": 3,
           "ctr": 0,
-          "average_position": 62,
+          "average_position": 79.66666666666667,
           "page": "https://tryrecast.app/tools/validate-json-schema.html"
         },
         {
@@ -585,9 +585,9 @@
         },
         {
           "clicks": 0,
-          "impressions": 5,
+          "impressions": 3,
           "ctr": 0,
-          "average_position": 88,
+          "average_position": 92.66666666666667,
           "query": "json compare"
         },
         {
@@ -610,13 +610,6 @@
           "ctr": 0,
           "average_position": 76,
           "query": "json compare tool"
-        },
-        {
-          "clicks": 0,
-          "impressions": 2,
-          "ctr": 0,
-          "average_position": 84,
-          "query": "json comparer"
         },
         {
           "clicks": 0,
@@ -921,17 +914,10 @@
         },
         {
           "clicks": 0,
-          "impressions": 2,
+          "impressions": 1,
           "ctr": 0,
           "average_position": 9,
           "query": "recast app"
-        },
-        {
-          "clicks": 0,
-          "impressions": 1,
-          "ctr": 0,
-          "average_position": 40,
-          "query": "recast labs"
         },
         {
           "clicks": 0,
@@ -1008,19 +994,11 @@
         },
         {
           "clicks": 0,
-          "impressions": 2,
+          "impressions": 1,
           "ctr": 0,
           "average_position": 9,
           "page": "https://tryrecast.app/",
           "query": "recast app"
-        },
-        {
-          "clicks": 0,
-          "impressions": 1,
-          "ctr": 0,
-          "average_position": 40,
-          "page": "https://tryrecast.app/",
-          "query": "recast labs"
         },
         {
           "clicks": 0,
@@ -1232,9 +1210,9 @@
         },
         {
           "clicks": 0,
-          "impressions": 5,
+          "impressions": 3,
           "ctr": 0,
-          "average_position": 88,
+          "average_position": 92.66666666666667,
           "page": "https://tryrecast.app/tools/json-diff.html",
           "query": "json compare"
         },
@@ -1261,14 +1239,6 @@
           "average_position": 76,
           "page": "https://tryrecast.app/tools/json-diff.html",
           "query": "json compare tool"
-        },
-        {
-          "clicks": 0,
-          "impressions": 2,
-          "ctr": 0,
-          "average_position": 84,
-          "page": "https://tryrecast.app/tools/json-diff.html",
-          "query": "json comparer"
         },
         {
           "clicks": 0,
@@ -1703,7 +1673,7 @@
           "query": "yml to json"
         }
       ],
-      "evidence_date": "2026-11-03"
+      "evidence_date": "2026-11-04"
     },
     "ga4": {
       "period_days": 28,
@@ -1757,7 +1727,7 @@
         "commercial_intent_rate": "organic users with commercial_intent / organic users with successful_tool_use",
         "returning_user_rate": "organic returning active users / organic active users"
       },
-      "evidence_date": "2026-11-03"
+      "evidence_date": "2026-11-04"
     },
     "stripe": {
       "active_subscription_customers": 0,
@@ -1765,7 +1735,7 @@
       "plan_counts": {},
       "excluded_non_genuine_subscriptions": 9,
       "measurement_rule": "Counts only active/trialing subscriptions backed by a paid, succeeded latest invoice charge that has not been fully refunded.",
-      "evidence_date": "2026-11-03"
+      "evidence_date": "2026-11-04"
     }
   },
   "refresh_warnings": [],
