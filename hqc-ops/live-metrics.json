@@ -1,5 +1,5 @@
 {
-  "fetchedAt": "2026-11-04T06:42:18Z",
+  "fetchedAt": "2026-11-04T15:33:24Z",
   "metrics": {
     "genuineAnalyses": 6,
     "shareOpens": 0,
@@ -15,12 +15,12 @@
     "note": "Cumulative Cloudflare-side counters from measurementStartedAt; QA/demo/test events are excluded. Extended funnel counters use their own same-epoch denominator from extendedMeasurementStartedAt."
   },
   "growthReport": {
-    "generatedAt": "2026-11-04T06:42:17.987Z",
+    "generatedAt": "2026-11-04T15:33:24.572Z",
     "measurementStartedAt": "2026-09-11T18:33:07.244Z",
     "extendedMeasurementStartedAt": "2026-09-11T20:34:24.536Z",
     "durable": true,
     "total": {
-      "landings": 354,
+      "landings": 359,
       "cta": 112,
       "pickerOpens": 0,
       "fileSelections": 0,
@@ -49,11 +49,11 @@
       "analysisReady": 0,
       "analysisAutoStarts": 0,
       "analysisErrors": 0,
-      "resultVisible": 59,
+      "resultVisible": 62,
       "installerAlternativeInterest": 0
     },
     "rates": {
-      "landingToCta": 32,
+      "landingToCta": 31,
       "ctaToUpload": 5,
       "uploadToGenuine": 100,
       "landingToSingleStart": 4,
@@ -71,7 +71,7 @@
     },
     "sources": [
       {
-        "landings": 216,
+        "landings": 220,
         "cta": 101,
         "pickerOpens": 0,
         "fileSelections": 0,
@@ -100,10 +100,10 @@
         "analysisReady": 0,
         "analysisAutoStarts": 0,
         "analysisErrors": 0,
-        "resultVisible": 47,
+        "resultVisible": 49,
         "installerAlternativeInterest": 0,
         "source": "direct",
-        "landingToCta": 47,
+        "landingToCta": 46,
         "ctaToUpload": 6,
         "landingToGenuine": 3
       },
@@ -182,7 +182,7 @@
         "landingToGenuine": 0
       },
       {
-        "landings": 8,
+        "landings": 9,
         "cta": 0,
         "pickerOpens": 0,
         "fileSelections": 0,
@@ -211,7 +211,7 @@
         "analysisReady": 0,
         "analysisAutoStarts": 0,
         "analysisErrors": 0,
-        "resultVisible": 2,
+        "resultVisible": 3,
         "installerAlternativeInterest": 0,
         "source": "organic_compare_static",
         "landingToCta": 0,
@@ -813,7 +813,7 @@
     ],
     "technologies": [
       {
-        "landings": 301,
+        "landings": 306,
         "cta": 97,
         "pickerOpens": 0,
         "fileSelections": 0,
@@ -842,7 +842,7 @@
         "analysisReady": 0,
         "analysisAutoStarts": 0,
         "analysisErrors": 0,
-        "resultVisible": 55,
+        "resultVisible": 58,
         "installerAlternativeInterest": 0,
         "technology": "heat_pump"
       },
