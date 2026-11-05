@@ -80,3 +80,6 @@ try{
  }
  console.log('QUOTE_GUIDES_RENDERED five pages, mobile/desktop, links and attributed free-check handoffs passed');
 }finally{await browser.close()}
+
+// Cover the existing radiator guide in the same browser gate and artifact bundle.
+await import('./radiator-guide-rendered.mjs');
