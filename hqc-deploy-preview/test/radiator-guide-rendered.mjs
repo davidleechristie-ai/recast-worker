@@ -4,7 +4,7 @@ import assert from 'node:assert/strict';
 const html=await readFile('hqc-deploy-preview/heat-pump-radiator-check.html','utf8');
 const css=await readFile('hqc-deploy-preview/editorial-sitewide.css','utf8');
 const browser=await chromium.launch({headless:true});
-await mkdir('artifacts/radiator-guide',{recursive:true});
+await mkdir('artifacts/quote-guides/radiator-guide',{recursive:true});
 try{
  for(const width of [320,390,1440]){
   const page=await browser.newPage({viewport:{width,height:900}});
@@ -38,8 +38,8 @@ try{
    assert.equal(u.searchParams.get('technology'),'heat_pump');assert.equal(u.searchParams.get('hqc_start'),'1');
    assert.equal(u.searchParams.get('src'),i===0?'organic_radiator_top':'organic_radiator_end');
   }
-  await page.screenshot({path:'artifacts/radiator-guide/'+width+'-guide.png',fullPage:true});
-  await example.screenshot({path:'artifacts/radiator-guide/'+width+'-example.png'});
+  await page.screenshot({path:'artifacts/quote-guides/radiator-guide/'+width+'-guide.png',fullPage:true});
+  await example.screenshot({path:'artifacts/quote-guides/radiator-guide/'+width+'-example.png'});
   await ctas.first().click();assert.equal(new URL(page.url()).searchParams.get('technology'),'heat_pump');
   assert.deepEqual(errors,[]);await page.close();
  }
