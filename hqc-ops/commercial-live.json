@@ -1,5 +1,5 @@
 {
-  "fetchedAt": "2026-11-05T12:20:50Z",
+  "fetchedAt": "2026-11-05T20:39:49Z",
   "durable": true,
   "measurementStartedAt": "2026-09-11T18:33:07.244Z",
   "northStar": {
@@ -47,7 +47,7 @@
     "analysisReady": 0,
     "analysisAutoStarts": 0,
     "analysisErrors": 0,
-    "resultVisible": 63,
+    "resultVisible": 64,
     "installerAlternativeInterest": 0
   },
   "sources": [
@@ -81,7 +81,7 @@
       "analysisReady": 0,
       "analysisAutoStarts": 0,
       "analysisErrors": 0,
-      "resultVisible": 50,
+      "resultVisible": 51,
       "installerAlternativeInterest": 0,
       "source": "direct",
       "landingToCta": 46,
