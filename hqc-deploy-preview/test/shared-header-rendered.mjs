@@ -44,6 +44,7 @@ try{
   await page.locator('header.hqc-unified-app-header').waitFor({state:'visible'});
   assert.equal(await page.getByRole('link',{name:'Home Quote Check home',exact:true}).count(),1);
   assert.equal(await page.getByRole('button',{name:/^Continue/}).isEnabled(),false,'header changes do not advance incomplete journey');
+  assert.equal(await page.evaluate(()=>document.documentElement.scrollWidth>innerWidth),false,'upload fits '+width);
   await page.screenshot({path:'artifacts/shared-header/upload-'+width+'.png',fullPage:true});
   await context.close();
  }
