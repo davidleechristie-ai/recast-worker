@@ -36,7 +36,7 @@
   for(const header of document.querySelectorAll('header')){
    if(header.classList.contains('hqc-unified-app-header'))continue;
    const linkedBrand=[...header.querySelectorAll('a')].find(el=>(el.textContent||'').trim()==='Home Quote Check'&&el.getAttribute('href')==='/');
-   const label=linkedBrand||[...header.querySelectorAll('b,strong,span,div,h1,h2,p')].find(el=>el.children.length===0&&(el.textContent||'').trim()==='Home Quote Check');
+   const label=linkedBrand||[...header.querySelectorAll('b,strong,span,div,h1,h2,p')].find(el=>[...el.childNodes].filter(node=>node.nodeType===Node.TEXT_NODE).map(node=>node.textContent).join('').trim()==='Home Quote Check');
    if(!label)continue;
    let candidate=label;
    while(!linkedBrand && candidate.parentElement && candidate.parentElement!==header){
