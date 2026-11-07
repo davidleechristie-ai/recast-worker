@@ -7,9 +7,9 @@
     "revenue_definition": "Genuine recurring revenue only: current subscription plus paid succeeded latest invoice charge, excluding fully refunded and inactive/cancelled subscriptions."
   },
   "funnel": {
-    "search_impressions": 332,
+    "search_impressions": 342,
     "organic_clicks": 1,
-    "organic_ctr": 0.0030120481927710845,
+    "organic_ctr": 0.0029239766081871343,
     "indexed_target_pages": null,
     "successful_tool_uses": 2,
     "workflow_starts": 0,
@@ -227,9 +227,9 @@
     "search_console": {
       "period_days": 28,
       "clicks": 1,
-      "impressions": 332,
-      "ctr": 0.0030120481927710845,
-      "average_position": 49.17168674698795,
+      "impressions": 342,
+      "ctr": 0.0029239766081871343,
+      "average_position": 49.090643274853804,
       "top_pages": [
         {
           "clicks": 1,
@@ -247,9 +247,9 @@
         },
         {
           "clicks": 0,
-          "impressions": 50,
+          "impressions": 53,
           "ctr": 0,
-          "average_position": 13.64,
+          "average_position": 13.11320754716981,
           "page": "https://tryrecast.app/"
         },
         {
@@ -282,9 +282,9 @@
         },
         {
           "clicks": 0,
-          "impressions": 1,
+          "impressions": 7,
           "ctr": 0,
-          "average_position": 54,
+          "average_position": 63.142857142857146,
           "page": "https://tryrecast.app/blog/my-json-wont-parse.html"
         },
         {
@@ -331,9 +331,9 @@
         },
         {
           "clicks": 0,
-          "impressions": 85,
+          "impressions": 86,
           "ctr": 0,
-          "average_position": 68.24705882352941,
+          "average_position": 68.18604651162791,
           "page": "https://tryrecast.app/tools/json-diff.html"
         },
         {
@@ -620,9 +620,9 @@
         },
         {
           "clicks": 0,
-          "impressions": 1,
+          "impressions": 2,
           "ctr": 0,
-          "average_position": 70,
+          "average_position": 66.5,
           "query": "json diff online"
         },
         {
@@ -652,6 +652,13 @@
           "ctr": 0,
           "average_position": 56,
           "query": "json flattener online"
+        },
+        {
+          "clicks": 0,
+          "impressions": 1,
+          "ctr": 0,
+          "average_position": 87,
+          "query": "json parsing error"
         },
         {
           "clicks": 0,
@@ -802,9 +809,9 @@
         },
         {
           "clicks": 0,
-          "impressions": 4,
+          "impressions": 5,
           "ctr": 0,
-          "average_position": 45,
+          "average_position": 36.2,
           "query": "recast"
         },
         {
@@ -888,9 +895,9 @@
       "top_page_queries": [
         {
           "clicks": 0,
-          "impressions": 4,
+          "impressions": 5,
           "ctr": 0,
-          "average_position": 45,
+          "average_position": 36.2,
           "page": "https://tryrecast.app/",
           "query": "recast"
         },
@@ -917,6 +924,14 @@
           "average_position": 72,
           "page": "https://tryrecast.app/blog/generate-json-schema-from-json.html",
           "query": "generating json schema from json"
+        },
+        {
+          "clicks": 0,
+          "impressions": 1,
+          "ctr": 0,
+          "average_position": 87,
+          "page": "https://tryrecast.app/blog/my-json-wont-parse.html",
+          "query": "json parsing error"
         },
         {
           "clicks": 0,
@@ -1128,9 +1143,9 @@
         },
         {
           "clicks": 0,
-          "impressions": 1,
+          "impressions": 2,
           "ctr": 0,
-          "average_position": 70,
+          "average_position": 66.5,
           "page": "https://tryrecast.app/tools/json-diff.html",
           "query": "json diff online"
         },
