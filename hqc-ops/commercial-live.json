@@ -1,5 +1,5 @@
 {
-  "fetchedAt": "2026-11-07T16:26:07Z",
+  "fetchedAt": "2026-11-07T20:52:40Z",
   "durable": true,
   "measurementStartedAt": "2026-09-11T18:33:07.244Z",
   "northStar": {
@@ -18,7 +18,7 @@
     "note": "Cumulative Cloudflare-side validation counters. QA/demo/test traffic is excluded; payment intent is not treated as revenue."
   },
   "total": {
-    "landings": 369,
+    "landings": 370,
     "cta": 112,
     "pickerOpens": 0,
     "fileSelections": 0,
@@ -47,12 +47,12 @@
     "analysisReady": 0,
     "analysisAutoStarts": 0,
     "analysisErrors": 0,
-    "resultVisible": 68,
+    "resultVisible": 69,
     "installerAlternativeInterest": 0
   },
   "sources": [
     {
-      "landings": 223,
+      "landings": 224,
       "cta": 101,
       "pickerOpens": 0,
       "fileSelections": 0,
@@ -81,7 +81,7 @@
       "analysisReady": 0,
       "analysisAutoStarts": 0,
       "analysisErrors": 0,
-      "resultVisible": 55,
+      "resultVisible": 56,
       "installerAlternativeInterest": 0,
       "source": "direct",
       "landingToCta": 45,
