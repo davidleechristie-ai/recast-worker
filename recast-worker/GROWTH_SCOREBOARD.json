@@ -3,13 +3,13 @@
     "north_star": "monthly_recurring_revenue_gbp",
     "target": 1000,
     "current": 0,
-    "evidence_date": "2026-11-07",
+    "evidence_date": "2026-11-08",
     "revenue_definition": "Genuine recurring revenue only: current subscription plus paid succeeded latest invoice charge, excluding fully refunded and inactive/cancelled subscriptions."
   },
   "funnel": {
-    "search_impressions": 342,
+    "search_impressions": 345,
     "organic_clicks": 1,
-    "organic_ctr": 0.0029239766081871343,
+    "organic_ctr": 0.002898550724637681,
     "indexed_target_pages": null,
     "successful_tool_uses": 2,
     "workflow_starts": 0,
@@ -197,7 +197,7 @@
     "Indexed target-page count or URL Inspection/index coverage evidence is unavailable.",
     "Workflow completion rate awaits a workflow_start denominator."
   ],
-  "last_updated": "2026-11-07",
+  "last_updated": "2026-11-08",
   "measurement_rules": {
     "unknown_values": "Keep unavailable measurements as null; never estimate them as facts.",
     "follow_up_windows_days": [
@@ -227,15 +227,15 @@
     "search_console": {
       "period_days": 28,
       "clicks": 1,
-      "impressions": 342,
-      "ctr": 0.0029239766081871343,
-      "average_position": 49.090643274853804,
+      "impressions": 345,
+      "ctr": 0.002898550724637681,
+      "average_position": 48.40869565217391,
       "top_pages": [
         {
           "clicks": 1,
-          "impressions": 20,
-          "ctr": 0.05,
-          "average_position": 20.65,
+          "impressions": 22,
+          "ctr": 0.045454545454545456,
+          "average_position": 20.045454545454547,
           "page": "https://tryrecast.app/demo/"
         },
         {
@@ -247,16 +247,16 @@
         },
         {
           "clicks": 0,
-          "impressions": 53,
+          "impressions": 52,
           "ctr": 0,
-          "average_position": 13.11320754716981,
+          "average_position": 12.48076923076923,
           "page": "https://tryrecast.app/"
         },
         {
           "clicks": 0,
-          "impressions": 21,
+          "impressions": 24,
           "ctr": 0,
-          "average_position": 7.333333333333333,
+          "average_position": 7.166666666666667,
           "page": "https://tryrecast.app/api/"
         },
         {
@@ -317,9 +317,9 @@
         },
         {
           "clicks": 0,
-          "impressions": 4,
+          "impressions": 3,
           "ctr": 0,
-          "average_position": 44,
+          "average_position": 38.666666666666664,
           "page": "https://tryrecast.app/tools/csv-to-json.html"
         },
         {
@@ -331,9 +331,9 @@
         },
         {
           "clicks": 0,
-          "impressions": 86,
+          "impressions": 87,
           "ctr": 0,
-          "average_position": 68.18604651162791,
+          "average_position": 67.37931034482759,
           "page": "https://tryrecast.app/tools/json-diff.html"
         },
         {
@@ -345,9 +345,9 @@
         },
         {
           "clicks": 0,
-          "impressions": 40,
+          "impressions": 38,
           "ctr": 0,
-          "average_position": 50.625,
+          "average_position": 49.973684210526315,
           "page": "https://tryrecast.app/tools/json-to-csv.html"
         },
         {
@@ -359,9 +359,9 @@
         },
         {
           "clicks": 0,
-          "impressions": 13,
+          "impressions": 14,
           "ctr": 0,
-          "average_position": 56.07692307692308,
+          "average_position": 59.214285714285715,
           "page": "https://tryrecast.app/tools/json-validator.html"
         },
         {
@@ -475,13 +475,6 @@
           "clicks": 0,
           "impressions": 1,
           "ctr": 0,
-          "average_position": 60,
-          "query": "csv to json converter"
-        },
-        {
-          "clicks": 0,
-          "impressions": 1,
-          "ctr": 0,
           "average_position": 56,
           "query": "csv to json converter tool"
         },
@@ -538,13 +531,6 @@
           "clicks": 0,
           "impressions": 1,
           "ctr": 0,
-          "average_position": 92,
-          "query": "json compare"
-        },
-        {
-          "clicks": 0,
-          "impressions": 1,
-          "ctr": 0,
           "average_position": 73,
           "query": "json compare online"
         },
@@ -592,9 +578,9 @@
         },
         {
           "clicks": 0,
-          "impressions": 3,
+          "impressions": 2,
           "ctr": 0,
-          "average_position": 76,
+          "average_position": 75,
           "query": "json diff"
         },
         {
@@ -662,9 +648,9 @@
         },
         {
           "clicks": 0,
-          "impressions": 1,
+          "impressions": 2,
           "ctr": 0,
-          "average_position": 85,
+          "average_position": 92.5,
           "query": "json response validation"
         },
         {
@@ -690,9 +676,9 @@
         },
         {
           "clicks": 0,
-          "impressions": 8,
+          "impressions": 7,
           "ctr": 0,
-          "average_position": 57.875,
+          "average_position": 57.714285714285715,
           "query": "json to csv converter"
         },
         {
@@ -760,9 +746,9 @@
         },
         {
           "clicks": 0,
-          "impressions": 1,
+          "impressions": 2,
           "ctr": 0,
-          "average_position": 73,
+          "average_position": 69.5,
           "query": "online compare json"
         },
         {
@@ -834,13 +820,6 @@
           "ctr": 0,
           "average_position": 9,
           "query": "recastdemo"
-        },
-        {
-          "clicks": 0,
-          "impressions": 1,
-          "ctr": 0,
-          "average_position": 67,
-          "query": "transform json to csv"
         },
         {
           "clicks": 0,
@@ -940,14 +919,6 @@
           "average_position": 9,
           "page": "https://tryrecast.app/demo/",
           "query": "recastdemo"
-        },
-        {
-          "clicks": 0,
-          "impressions": 1,
-          "ctr": 0,
-          "average_position": 60,
-          "page": "https://tryrecast.app/tools/csv-to-json.html",
-          "query": "csv to json converter"
         },
         {
           "clicks": 0,
@@ -1065,14 +1036,6 @@
           "clicks": 0,
           "impressions": 1,
           "ctr": 0,
-          "average_position": 92,
-          "page": "https://tryrecast.app/tools/json-diff.html",
-          "query": "json compare"
-        },
-        {
-          "clicks": 0,
-          "impressions": 1,
-          "ctr": 0,
           "average_position": 73,
           "page": "https://tryrecast.app/tools/json-diff.html",
           "query": "json compare online"
@@ -1111,9 +1074,9 @@
         },
         {
           "clicks": 0,
-          "impressions": 3,
+          "impressions": 2,
           "ctr": 0,
-          "average_position": 76,
+          "average_position": 75,
           "page": "https://tryrecast.app/tools/json-diff.html",
           "query": "json diff"
         },
@@ -1183,9 +1146,9 @@
         },
         {
           "clicks": 0,
-          "impressions": 1,
+          "impressions": 2,
           "ctr": 0,
-          "average_position": 73,
+          "average_position": 69.5,
           "page": "https://tryrecast.app/tools/json-diff.html",
           "query": "online compare json"
         },
@@ -1303,9 +1266,9 @@
         },
         {
           "clicks": 0,
-          "impressions": 8,
+          "impressions": 7,
           "ctr": 0,
-          "average_position": 57.875,
+          "average_position": 57.714285714285715,
           "page": "https://tryrecast.app/tools/json-to-csv.html",
           "query": "json to csv converter"
         },
@@ -1332,14 +1295,6 @@
           "average_position": 56,
           "page": "https://tryrecast.app/tools/json-to-csv.html",
           "query": "parse json to csv"
-        },
-        {
-          "clicks": 0,
-          "impressions": 1,
-          "ctr": 0,
-          "average_position": 67,
-          "page": "https://tryrecast.app/tools/json-to-csv.html",
-          "query": "transform json to csv"
         },
         {
           "clicks": 0,
@@ -1383,9 +1338,9 @@
         },
         {
           "clicks": 0,
-          "impressions": 1,
+          "impressions": 2,
           "ctr": 0,
-          "average_position": 85,
+          "average_position": 92.5,
           "page": "https://tryrecast.app/tools/json-validator.html",
           "query": "json response validation"
         },
@@ -1462,7 +1417,7 @@
           "query": "yml to json"
         }
       ],
-      "evidence_date": "2026-11-07"
+      "evidence_date": "2026-11-08"
     },
     "ga4": {
       "period_days": 28,
@@ -1516,7 +1471,7 @@
         "commercial_intent_rate": "organic users with commercial_intent / organic users with successful_tool_use",
         "returning_user_rate": "organic returning active users / organic active users"
       },
-      "evidence_date": "2026-11-07"
+      "evidence_date": "2026-11-08"
     },
     "stripe": {
       "active_subscription_customers": 0,
@@ -1524,7 +1479,7 @@
       "plan_counts": {},
       "excluded_non_genuine_subscriptions": 9,
       "measurement_rule": "Counts only active/trialing subscriptions backed by a paid, succeeded latest invoice charge that has not been fully refunded.",
-      "evidence_date": "2026-11-07"
+      "evidence_date": "2026-11-08"
     }
   },
   "refresh_warnings": [],
