@@ -7,7 +7,7 @@
     "revenue_definition": "Genuine recurring revenue only: current subscription plus paid succeeded latest invoice charge, excluding fully refunded and inactive/cancelled subscriptions."
   },
   "funnel": {
-    "search_impressions": 313,
+    "search_impressions": 318,
     "organic_clicks": 0,
     "organic_ctr": 0,
     "indexed_target_pages": null,
@@ -227,9 +227,9 @@
     "search_console": {
       "period_days": 28,
       "clicks": 0,
-      "impressions": 313,
+      "impressions": 318,
       "ctr": 0,
-      "average_position": 46.361022364217256,
+      "average_position": 46.18867924528302,
       "top_pages": [
         {
           "clicks": 0,
@@ -240,9 +240,9 @@
         },
         {
           "clicks": 0,
-          "impressions": 51,
+          "impressions": 52,
           "ctr": 0,
-          "average_position": 12.686274509803921,
+          "average_position": 12.48076923076923,
           "page": "https://tryrecast.app/"
         },
         {
@@ -275,9 +275,9 @@
         },
         {
           "clicks": 0,
-          "impressions": 9,
+          "impressions": 11,
           "ctr": 0,
-          "average_position": 61.55555555555556,
+          "average_position": 60.72727272727273,
           "page": "https://tryrecast.app/blog/my-json-wont-parse.html"
         },
         {
@@ -289,9 +289,9 @@
         },
         {
           "clicks": 0,
-          "impressions": 21,
+          "impressions": 22,
           "ctr": 0,
-          "average_position": 20.714285714285715,
+          "average_position": 20.181818181818183,
           "page": "https://tryrecast.app/demo/"
         },
         {
@@ -345,9 +345,9 @@
         },
         {
           "clicks": 0,
-          "impressions": 40,
+          "impressions": 41,
           "ctr": 0,
-          "average_position": 50.65,
+          "average_position": 50.68292682926829,
           "page": "https://tryrecast.app/tools/json-to-csv.html"
         },
         {
@@ -634,9 +634,9 @@
         },
         {
           "clicks": 0,
-          "impressions": 2,
+          "impressions": 3,
           "ctr": 0,
-          "average_position": 7.5,
+          "average_position": 22.333333333333332,
           "query": "json to csv"
         },
         {
@@ -1190,9 +1190,9 @@
         },
         {
           "clicks": 0,
-          "impressions": 2,
+          "impressions": 3,
           "ctr": 0,
-          "average_position": 7.5,
+          "average_position": 22.333333333333332,
           "page": "https://tryrecast.app/tools/json-to-csv.html",
           "query": "json to csv"
         },
