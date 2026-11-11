@@ -1,5 +1,5 @@
 {
-  "fetchedAt": "2026-11-11T06:47:32Z",
+  "fetchedAt": "2026-11-11T15:27:08Z",
   "metrics": {
     "genuineAnalyses": 6,
     "shareOpens": 0,
@@ -15,13 +15,13 @@
     "note": "Cumulative Cloudflare-side counters from measurementStartedAt; QA/demo/test events are excluded. Extended funnel counters use their own same-epoch denominator from extendedMeasurementStartedAt."
   },
   "growthReport": {
-    "generatedAt": "2026-11-11T06:47:32.873Z",
+    "generatedAt": "2026-11-11T15:27:08.001Z",
     "measurementStartedAt": "2026-09-11T18:33:07.244Z",
     "extendedMeasurementStartedAt": "2026-09-11T20:34:24.536Z",
     "durable": true,
     "total": {
-      "landings": 383,
-      "cta": 112,
+      "landings": 384,
+      "cta": 114,
       "pickerOpens": 0,
       "fileSelections": 0,
       "manualOpens": 1,
@@ -40,7 +40,7 @@
       "recipientStarts": 0,
       "outboundClicks": 0,
       "checkouts": 0,
-      "singleStarts": 13,
+      "singleStarts": 14,
       "comparisonStarts": 11,
       "resultViews": 4,
       "commercialNextStepViews": 0,
@@ -49,15 +49,15 @@
       "analysisReady": 0,
       "analysisAutoStarts": 0,
       "analysisErrors": 0,
-      "resultVisible": 79,
+      "resultVisible": 80,
       "installerAlternativeInterest": 0
     },
     "rates": {
-      "landingToCta": 29,
+      "landingToCta": 30,
       "ctaToUpload": 5,
       "uploadToGenuine": 100,
-      "landingToSingleStart": 3,
-      "singleStartToGenuine": 46,
+      "landingToSingleStart": 4,
+      "singleStartToGenuine": 43,
       "genuineToResultView": 67,
       "resultToAlternativeIntent": 0,
       "uploadHandoffToReady": null,
@@ -71,8 +71,8 @@
     },
     "sources": [
       {
-        "landings": 233,
-        "cta": 101,
+        "landings": 234,
+        "cta": 103,
         "pickerOpens": 0,
         "fileSelections": 0,
         "manualOpens": 1,
@@ -91,7 +91,7 @@
         "recipientStarts": 0,
         "outboundClicks": 0,
         "checkouts": 0,
-        "singleStarts": 11,
+        "singleStarts": 12,
         "comparisonStarts": 9,
         "resultViews": 4,
         "commercialNextStepViews": 0,
@@ -100,10 +100,10 @@
         "analysisReady": 0,
         "analysisAutoStarts": 0,
         "analysisErrors": 0,
-        "resultVisible": 66,
+        "resultVisible": 67,
         "installerAlternativeInterest": 0,
         "source": "direct",
-        "landingToCta": 43,
+        "landingToCta": 44,
         "ctaToUpload": 6,
         "landingToGenuine": 3
       },
@@ -813,8 +813,8 @@
     ],
     "technologies": [
       {
-        "landings": 330,
-        "cta": 97,
+        "landings": 331,
+        "cta": 99,
         "pickerOpens": 0,
         "fileSelections": 0,
         "manualOpens": 1,
@@ -833,7 +833,7 @@
         "recipientStarts": 0,
         "outboundClicks": 0,
         "checkouts": 0,
-        "singleStarts": 4,
+        "singleStarts": 5,
         "comparisonStarts": 6,
         "resultViews": 0,
         "commercialNextStepViews": 0,
@@ -842,7 +842,7 @@
         "analysisReady": 0,
         "analysisAutoStarts": 0,
         "analysisErrors": 0,
-        "resultVisible": 75,
+        "resultVisible": 76,
         "installerAlternativeInterest": 0,
         "technology": "heat_pump"
       },
