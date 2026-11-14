@@ -7,9 +7,9 @@
     "revenue_definition": "Genuine recurring revenue only: current subscription plus paid succeeded latest invoice charge, excluding fully refunded and inactive/cancelled subscriptions."
   },
   "funnel": {
-    "search_impressions": 291,
-    "organic_clicks": 0,
-    "organic_ctr": 0,
+    "search_impressions": 295,
+    "organic_clicks": 1,
+    "organic_ctr": 0.003389830508474576,
     "indexed_target_pages": null,
     "successful_tool_uses": 0,
     "workflow_starts": 0,
@@ -228,24 +228,24 @@
   "sources": {
     "search_console": {
       "period_days": 28,
-      "clicks": 0,
-      "impressions": 291,
-      "ctr": 0,
-      "average_position": 44.75257731958763,
+      "clicks": 1,
+      "impressions": 295,
+      "ctr": 0.003389830508474576,
+      "average_position": 44.4135593220339,
       "top_pages": [
+        {
+          "clicks": 1,
+          "impressions": 52,
+          "ctr": 0.019230769230769232,
+          "average_position": 11.038461538461538,
+          "page": "https://tryrecast.app/"
+        },
         {
           "clicks": 0,
           "impressions": 1,
           "ctr": 0,
           "average_position": 5,
           "page": "http://tryrecast.app/contact.html"
-        },
-        {
-          "clicks": 0,
-          "impressions": 49,
-          "ctr": 0,
-          "average_position": 11.448979591836734,
-          "page": "https://tryrecast.app/"
         },
         {
           "clicks": 0,
@@ -326,9 +326,9 @@
         },
         {
           "clicks": 0,
-          "impressions": 46,
+          "impressions": 47,
           "ctr": 0,
-          "average_position": 56.97826086956522,
+          "average_position": 57.170212765957444,
           "page": "https://tryrecast.app/tools/json-diff.html"
         },
         {
