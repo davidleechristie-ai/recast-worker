@@ -19,7 +19,7 @@
     "pro_customers": 0,
     "api_automation_customers": 0,
     "tool_run_attempts": 0,
-    "commercial_intent_events": 1
+    "commercial_intent_events": 5
   },
   "diagnosis": {
     "current_bottleneck": "search_visibility",
@@ -1129,10 +1129,10 @@
       "organic_new_users": 0,
       "organic_returning_users": 0,
       "event_counts": {
-        "commercial_intent": 1
+        "commercial_intent": 5
       },
       "event_active_users": {
-        "commercial_intent": 1
+        "commercial_intent": 5
       },
       "organic_event_counts": {},
       "organic_event_active_users": {},
@@ -1141,7 +1141,7 @@
       "workflow_starts": 0,
       "workflow_completions": 0,
       "upgrade_clicks": 0,
-      "commercial_intent_events": 1,
+      "commercial_intent_events": 5,
       "rates": {
         "successful_task_rate": null,
         "workflow_completion_rate": null,
