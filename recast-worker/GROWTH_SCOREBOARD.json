@@ -7,9 +7,9 @@
     "revenue_definition": "Genuine recurring revenue only: current subscription plus paid succeeded latest invoice charge, excluding fully refunded and inactive/cancelled subscriptions."
   },
   "funnel": {
-    "search_impressions": 286,
+    "search_impressions": 297,
     "organic_clicks": 1,
-    "organic_ctr": 0.0034965034965034965,
+    "organic_ctr": 0.003367003367003367,
     "indexed_target_pages": null,
     "successful_tool_uses": 0,
     "workflow_starts": 0,
@@ -229,9 +229,9 @@
     "search_console": {
       "period_days": 28,
       "clicks": 1,
-      "impressions": 286,
-      "ctr": 0.0034965034965034965,
-      "average_position": 43.47552447552447,
+      "impressions": 297,
+      "ctr": 0.003367003367003367,
+      "average_position": 43.313131313131315,
       "top_pages": [
         {
           "clicks": 1,
@@ -253,6 +253,13 @@
           "ctr": 0,
           "average_position": 6.294117647058823,
           "page": "https://tryrecast.app/api/"
+        },
+        {
+          "clicks": 0,
+          "impressions": 2,
+          "ctr": 0,
+          "average_position": 38,
+          "page": "https://tryrecast.app/automation/index.html"
         },
         {
           "clicks": 0,
@@ -293,7 +300,14 @@
           "clicks": 0,
           "impressions": 1,
           "ctr": 0,
-          "average_position": 8,
+          "average_position": 67,
+          "page": "https://tryrecast.app/how-to/automate.html"
+        },
+        {
+          "clicks": 0,
+          "impressions": 4,
+          "ctr": 0,
+          "average_position": 7.25,
           "page": "https://tryrecast.app/how-to/compare.html"
         },
         {
@@ -312,9 +326,9 @@
         },
         {
           "clicks": 0,
-          "impressions": 3,
+          "impressions": 5,
           "ctr": 0,
-          "average_position": 10,
+          "average_position": 31,
           "page": "https://tryrecast.app/tools/csv-diff.html"
         },
         {
@@ -333,16 +347,16 @@
         },
         {
           "clicks": 0,
-          "impressions": 49,
+          "impressions": 52,
           "ctr": 0,
-          "average_position": 56.775510204081634,
+          "average_position": 56.59615384615385,
           "page": "https://tryrecast.app/tools/json-diff.html"
         },
         {
           "clicks": 0,
-          "impressions": 31,
+          "impressions": 32,
           "ctr": 0,
-          "average_position": 52.354838709677416,
+          "average_position": 52.1875,
           "page": "https://tryrecast.app/tools/json-to-csv.html"
         },
         {
@@ -398,9 +412,9 @@
       "top_queries": [
         {
           "clicks": 0,
-          "impressions": 1,
+          "impressions": 4,
           "ctr": 0,
-          "average_position": 9,
+          "average_position": 42.5,
           "query": "compare json objects online"
         },
         {
@@ -444,6 +458,20 @@
           "ctr": 0,
           "average_position": 47.5,
           "query": "convertir yaml a json"
+        },
+        {
+          "clicks": 0,
+          "impressions": 1,
+          "ctr": 0,
+          "average_position": 61,
+          "query": "csv comparison tool"
+        },
+        {
+          "clicks": 0,
+          "impressions": 1,
+          "ctr": 0,
+          "average_position": 64,
+          "query": "csv diff tool"
         },
         {
           "clicks": 0,
@@ -706,6 +734,13 @@
         },
         {
           "clicks": 0,
+          "impressions": 2,
+          "ctr": 0,
+          "average_position": 38,
+          "query": "reforecasting automation"
+        },
+        {
+          "clicks": 0,
           "impressions": 1,
           "ctr": 0,
           "average_position": 14,
@@ -796,6 +831,14 @@
         },
         {
           "clicks": 0,
+          "impressions": 2,
+          "ctr": 0,
+          "average_position": 38,
+          "page": "https://tryrecast.app/automation/index.html",
+          "query": "reforecasting automation"
+        },
+        {
+          "clicks": 0,
           "impressions": 1,
           "ctr": 0,
           "average_position": 87,
@@ -809,6 +852,30 @@
           "average_position": 9,
           "page": "https://tryrecast.app/demo/",
           "query": "recastdemo"
+        },
+        {
+          "clicks": 0,
+          "impressions": 1,
+          "ctr": 0,
+          "average_position": 67,
+          "page": "https://tryrecast.app/how-to/automate.html",
+          "query": "reforecasting automation"
+        },
+        {
+          "clicks": 0,
+          "impressions": 1,
+          "ctr": 0,
+          "average_position": 61,
+          "page": "https://tryrecast.app/tools/csv-diff.html",
+          "query": "csv comparison tool"
+        },
+        {
+          "clicks": 0,
+          "impressions": 1,
+          "ctr": 0,
+          "average_position": 64,
+          "page": "https://tryrecast.app/tools/csv-diff.html",
+          "query": "csv diff tool"
         },
         {
           "clicks": 0,
@@ -868,9 +935,9 @@
         },
         {
           "clicks": 0,
-          "impressions": 1,
+          "impressions": 4,
           "ctr": 0,
-          "average_position": 9,
+          "average_position": 42.5,
           "page": "https://tryrecast.app/tools/json-diff.html",
           "query": "compare json objects online"
         },
