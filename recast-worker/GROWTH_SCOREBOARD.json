@@ -3,13 +3,13 @@
     "north_star": "monthly_recurring_revenue_gbp",
     "target": 1000,
     "current": 0,
-    "evidence_date": "2026-11-19",
+    "evidence_date": "2026-11-20",
     "revenue_definition": "Genuine recurring revenue only: current subscription plus paid succeeded latest invoice charge, excluding fully refunded and inactive/cancelled subscriptions."
   },
   "funnel": {
-    "search_impressions": 357,
+    "search_impressions": 344,
     "organic_clicks": 1,
-    "organic_ctr": 0.0028011204481792717,
+    "organic_ctr": 0.0029069767441860465,
     "indexed_target_pages": null,
     "successful_tool_uses": 0,
     "workflow_starts": 0,
@@ -19,7 +19,7 @@
     "pro_customers": 0,
     "api_automation_customers": 0,
     "tool_run_attempts": 0,
-    "commercial_intent_events": 6
+    "commercial_intent_events": 5
   },
   "diagnosis": {
     "current_bottleneck": "search_visibility",
@@ -199,7 +199,7 @@
     "Workflow completion rate awaits a workflow_start denominator.",
     "Activation/deeper-product/commercial-intent user rates await post-instrumentation activated organic users."
   ],
-  "last_updated": "2026-11-19",
+  "last_updated": "2026-11-20",
   "measurement_rules": {
     "unknown_values": "Keep unavailable measurements as null; never estimate them as facts.",
     "follow_up_windows_days": [
@@ -229,15 +229,15 @@
     "search_console": {
       "period_days": 28,
       "clicks": 1,
-      "impressions": 357,
-      "ctr": 0.0028011204481792717,
-      "average_position": 39.00840336134454,
+      "impressions": 344,
+      "ctr": 0.0029069767441860465,
+      "average_position": 38.79360465116279,
       "top_pages": [
         {
           "clicks": 1,
-          "impressions": 54,
-          "ctr": 0.018518518518518517,
-          "average_position": 10.62962962962963,
+          "impressions": 50,
+          "ctr": 0.02,
+          "average_position": 10.44,
           "page": "https://tryrecast.app/"
         },
         {
@@ -249,9 +249,9 @@
         },
         {
           "clicks": 0,
-          "impressions": 17,
+          "impressions": 15,
           "ctr": 0,
-          "average_position": 6.294117647058823,
+          "average_position": 4.866666666666667,
           "page": "https://tryrecast.app/api/"
         },
         {
@@ -305,9 +305,9 @@
         },
         {
           "clicks": 0,
-          "impressions": 21,
+          "impressions": 20,
           "ctr": 0,
-          "average_position": 11.523809523809524,
+          "average_position": 10.65,
           "page": "https://tryrecast.app/demo/"
         },
         {
@@ -361,9 +361,9 @@
         },
         {
           "clicks": 0,
-          "impressions": 31,
+          "impressions": 29,
           "ctr": 0,
-          "average_position": 42.67741935483871,
+          "average_position": 42.172413793103445,
           "page": "https://tryrecast.app/tools/flatten-json.html"
         },
         {
@@ -382,9 +382,9 @@
         },
         {
           "clicks": 0,
-          "impressions": 30,
+          "impressions": 29,
           "ctr": 0,
-          "average_position": 52.36666666666667,
+          "average_position": 52.55172413793103,
           "page": "https://tryrecast.app/tools/json-to-csv.html"
         },
         {
@@ -438,16 +438,9 @@
         },
         {
           "clicks": 0,
-          "impressions": 2,
+          "impressions": 42,
           "ctr": 0,
-          "average_position": 70.5,
-          "page": "https://tryrecast.app/tools/validate-json-schema.html"
-        },
-        {
-          "clicks": 0,
-          "impressions": 45,
-          "ctr": 0,
-          "average_position": 45.2,
+          "average_position": 43.23809523809524,
           "page": "https://tryrecast.app/tools/yaml-to-json.html"
         }
       ],
@@ -479,13 +472,6 @@
           "ctr": 0,
           "average_position": 70,
           "query": "convert .json to csv"
-        },
-        {
-          "clicks": 0,
-          "impressions": 1,
-          "ctr": 0,
-          "average_position": 47,
-          "query": "convert from json to csv"
         },
         {
           "clicks": 0,
@@ -874,9 +860,9 @@
         },
         {
           "clicks": 0,
-          "impressions": 33,
+          "impressions": 30,
           "ctr": 0,
-          "average_position": 43.21212121212121,
+          "average_position": 40.266666666666666,
           "query": "yaml to json"
         },
         {
@@ -1232,14 +1218,6 @@
           "clicks": 0,
           "impressions": 1,
           "ctr": 0,
-          "average_position": 47,
-          "page": "https://tryrecast.app/tools/json-to-csv.html",
-          "query": "convert from json to csv"
-        },
-        {
-          "clicks": 0,
-          "impressions": 1,
-          "ctr": 0,
           "average_position": 67,
           "page": "https://tryrecast.app/tools/json-to-csv.html",
           "query": "convert json in csv"
@@ -1406,9 +1384,9 @@
         },
         {
           "clicks": 0,
-          "impressions": 33,
+          "impressions": 30,
           "ctr": 0,
-          "average_position": 43.21212121212121,
+          "average_position": 40.266666666666666,
           "page": "https://tryrecast.app/tools/yaml-to-json.html",
           "query": "yaml to json"
         },
@@ -1453,7 +1431,7 @@
           "query": "yml to json"
         }
       ],
-      "evidence_date": "2026-11-19"
+      "evidence_date": "2026-11-20"
     },
     "ga4": {
       "period_days": 28,
@@ -1462,10 +1440,10 @@
       "organic_new_users": 0,
       "organic_returning_users": 0,
       "event_counts": {
-        "commercial_intent": 6
+        "commercial_intent": 5
       },
       "event_active_users": {
-        "commercial_intent": 6
+        "commercial_intent": 5
       },
       "organic_event_counts": {},
       "organic_event_active_users": {},
@@ -1474,7 +1452,7 @@
       "workflow_starts": 0,
       "workflow_completions": 0,
       "upgrade_clicks": 0,
-      "commercial_intent_events": 6,
+      "commercial_intent_events": 5,
       "rates": {
         "successful_task_rate": null,
         "workflow_completion_rate": null,
@@ -1491,7 +1469,7 @@
         "commercial_intent_rate": "organic users with commercial_intent / organic users with successful_tool_use",
         "returning_user_rate": "organic returning active users / organic active users"
       },
-      "evidence_date": "2026-11-19"
+      "evidence_date": "2026-11-20"
     },
     "stripe": {
       "active_subscription_customers": 0,
@@ -1499,7 +1477,7 @@
       "plan_counts": {},
       "excluded_non_genuine_subscriptions": 9,
       "measurement_rule": "Counts only active/trialing subscriptions backed by a paid, succeeded latest invoice charge that has not been fully refunded.",
-      "evidence_date": "2026-11-19"
+      "evidence_date": "2026-11-20"
     }
   },
   "refresh_warnings": [],
