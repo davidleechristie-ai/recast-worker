@@ -1,9 +1,9 @@
 {
-  "fetchedAt": "2026-11-20T21:07:39.759110Z",
+  "fetchedAt": "2026-11-21T02:18:29.877331Z",
   "growthReport": {
     "durable": true,
     "extendedMeasurementStartedAt": "2026-09-11T20:34:24.536Z",
-    "generatedAt": "2026-11-20T21:07:39.728Z",
+    "generatedAt": "2026-11-21T02:18:29.835Z",
     "loop": [
       "Acquire qualified homeowners",
       "Measure source funnels",
@@ -30,7 +30,7 @@
       "uploadToGenuine": 100
     },
     "recommendations": [
-      "Landing-to-CTA is weak: improve message match, trust proof and CTA prominence before adding more traffic.",
+      "CTA-to-upload is weak: reduce intake friction and clarify privacy/file requirements.",
       "Too few genuine users reach a second-quote comparison: strengthen multi-quote progression before expanding acquisition.",
       "Share loop is below the 20% validation threshold: strengthen Decision Case sharing and recipient conversion.",
       "No qualified organic cohort yet: improve existing high-intent decision pages and internal handoff before expanding acquisition."
@@ -786,7 +786,7 @@
         "checkouts": 0,
         "commercialNextStepViews": 0,
         "comparisonStarts": 6,
-        "cta": 113,
+        "cta": 114,
         "decisionCases": 1,
         "evAnalyses": 0,
         "evComparisons": 0,
@@ -795,7 +795,7 @@
         "genuine": 1,
         "installerAlternativeInterest": 0,
         "installerQuestions": 0,
-        "landings": 375,
+        "landings": 376,
         "manualOpens": 1,
         "multiQuoteAnalyses": 1,
         "outboundClicks": 0,
@@ -889,7 +889,7 @@
       "checkouts": 0,
       "commercialNextStepViews": 0,
       "comparisonStarts": 11,
-      "cta": 128,
+      "cta": 129,
       "decisionCases": 5,
       "evAnalyses": 29,
       "evComparisons": 0,
@@ -898,7 +898,7 @@
       "genuine": 6,
       "installerAlternativeInterest": 0,
       "installerQuestions": 0,
-      "landings": 428,
+      "landings": 429,
       "manualOpens": 1,
       "multiQuoteAnalyses": 1,
       "outboundClicks": 0,
