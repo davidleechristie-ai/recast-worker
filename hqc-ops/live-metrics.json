@@ -1,5 +1,5 @@
 {
-  "fetchedAt": "2026-11-22T15:28:07Z",
+  "fetchedAt": "2026-11-22T21:54:25Z",
   "metrics": {
     "genuineAnalyses": 6,
     "shareOpens": 0,
@@ -15,12 +15,12 @@
     "note": "Cumulative Cloudflare-side counters from measurementStartedAt; QA/demo/test events are excluded. Extended funnel counters use their own same-epoch denominator from extendedMeasurementStartedAt."
   },
   "growthReport": {
-    "generatedAt": "2026-11-22T15:28:07.059Z",
+    "generatedAt": "2026-11-22T21:54:25.953Z",
     "measurementStartedAt": "2026-09-11T18:33:07.244Z",
     "extendedMeasurementStartedAt": "2026-09-11T20:34:24.536Z",
     "durable": true,
     "total": {
-      "landings": 435,
+      "landings": 437,
       "cta": 133,
       "pickerOpens": 0,
       "fileSelections": 0,
@@ -49,11 +49,11 @@
       "analysisReady": 0,
       "analysisAutoStarts": 0,
       "analysisErrors": 0,
-      "resultVisible": 94,
+      "resultVisible": 95,
       "installerAlternativeInterest": 0
     },
     "rates": {
-      "landingToCta": 31,
+      "landingToCta": 30,
       "ctaToUpload": 5,
       "uploadToGenuine": 100,
       "landingToSingleStart": 3,
@@ -71,7 +71,7 @@
     },
     "sources": [
       {
-        "landings": 244,
+        "landings": 245,
         "cta": 103,
         "pickerOpens": 0,
         "fileSelections": 0,
@@ -100,7 +100,7 @@
         "analysisReady": 0,
         "analysisAutoStarts": 0,
         "analysisErrors": 0,
-        "resultVisible": 80,
+        "resultVisible": 81,
         "installerAlternativeInterest": 0,
         "source": "direct",
         "landingToCta": 42,
@@ -145,7 +145,7 @@
         "landingToGenuine": 0
       },
       {
-        "landings": 13,
+        "landings": 14,
         "cta": 0,
         "pickerOpens": 0,
         "fileSelections": 0,
@@ -813,7 +813,7 @@
     ],
     "technologies": [
       {
-        "landings": 382,
+        "landings": 384,
         "cta": 118,
         "pickerOpens": 0,
         "fileSelections": 0,
@@ -842,7 +842,7 @@
         "analysisReady": 0,
         "analysisAutoStarts": 0,
         "analysisErrors": 0,
-        "resultVisible": 90,
+        "resultVisible": 91,
         "installerAlternativeInterest": 0,
         "technology": "heat_pump"
       },
