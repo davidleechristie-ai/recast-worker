@@ -3,13 +3,13 @@
     "north_star": "monthly_recurring_revenue_gbp",
     "target": 1000,
     "current": 0,
-    "evidence_date": "2026-11-23",
+    "evidence_date": "2026-11-24",
     "revenue_definition": "Genuine recurring revenue only: current subscription plus paid succeeded latest invoice charge, excluding fully refunded and inactive/cancelled subscriptions."
   },
   "funnel": {
-    "search_impressions": 460,
+    "search_impressions": 446,
     "organic_clicks": 1,
-    "organic_ctr": 0.002173913043478261,
+    "organic_ctr": 0.002242152466367713,
     "indexed_target_pages": null,
     "successful_tool_uses": 0,
     "workflow_starts": 0,
@@ -199,7 +199,7 @@
     "Workflow completion rate awaits a workflow_start denominator.",
     "Activation/deeper-product/commercial-intent user rates await post-instrumentation activated organic users."
   ],
-  "last_updated": "2026-11-23",
+  "last_updated": "2026-11-24",
   "measurement_rules": {
     "unknown_values": "Keep unavailable measurements as null; never estimate them as facts.",
     "follow_up_windows_days": [
@@ -229,15 +229,15 @@
     "search_console": {
       "period_days": 28,
       "clicks": 1,
-      "impressions": 460,
-      "ctr": 0.002173913043478261,
-      "average_position": 30.96086956521739,
+      "impressions": 446,
+      "ctr": 0.002242152466367713,
+      "average_position": 30.565022421524663,
       "top_pages": [
         {
           "clicks": 1,
-          "impressions": 49,
-          "ctr": 0.02040816326530612,
-          "average_position": 6.489795918367347,
+          "impressions": 47,
+          "ctr": 0.02127659574468085,
+          "average_position": 6.48936170212766,
           "page": "https://tryrecast.app/"
         },
         {
@@ -347,9 +347,9 @@
         },
         {
           "clicks": 0,
-          "impressions": 17,
+          "impressions": 15,
           "ctr": 0,
-          "average_position": 7.529411764705882,
+          "average_position": 7.666666666666667,
           "page": "https://tryrecast.app/demo/"
         },
         {
@@ -410,9 +410,9 @@
         },
         {
           "clicks": 0,
-          "impressions": 56,
+          "impressions": 55,
           "ctr": 0,
-          "average_position": 57.857142857142854,
+          "average_position": 57.58181818181818,
           "page": "https://tryrecast.app/tools/json-diff.html"
         },
         {
@@ -424,9 +424,9 @@
         },
         {
           "clicks": 0,
-          "impressions": 27,
+          "impressions": 26,
           "ctr": 0,
-          "average_position": 49.888888888888886,
+          "average_position": 50.30769230769231,
           "page": "https://tryrecast.app/tools/json-to-csv.html"
         },
         {
@@ -459,9 +459,9 @@
         },
         {
           "clicks": 0,
-          "impressions": 13,
+          "impressions": 9,
           "ctr": 0,
-          "average_position": 78.07692307692308,
+          "average_position": 81.55555555555556,
           "page": "https://tryrecast.app/tools/json-to-typescript.html"
         },
         {
@@ -487,9 +487,9 @@
         },
         {
           "clicks": 0,
-          "impressions": 25,
+          "impressions": 21,
           "ctr": 0,
-          "average_position": 38.48,
+          "average_position": 36.714285714285715,
           "page": "https://tryrecast.app/tools/yaml-to-json.html"
         }
       ],
@@ -853,17 +853,10 @@
         },
         {
           "clicks": 0,
-          "impressions": 11,
+          "impressions": 9,
           "ctr": 0,
-          "average_position": 78.63636363636364,
+          "average_position": 81.55555555555556,
           "query": "json to typescript"
-        },
-        {
-          "clicks": 0,
-          "impressions": 1,
-          "ctr": 0,
-          "average_position": 80,
-          "query": "json to typescript converter"
         },
         {
           "clicks": 0,
@@ -888,13 +881,6 @@
         },
         {
           "clicks": 0,
-          "impressions": 1,
-          "ctr": 0,
-          "average_position": 39,
-          "query": "json2csv online"
-        },
-        {
-          "clicks": 0,
           "impressions": 3,
           "ctr": 0,
           "average_position": 57.666666666666664,
@@ -916,9 +902,9 @@
         },
         {
           "clicks": 0,
-          "impressions": 4,
+          "impressions": 3,
           "ctr": 0,
-          "average_position": 64,
+          "average_position": 61,
           "query": "online compare json"
         },
         {
@@ -930,9 +916,9 @@
         },
         {
           "clicks": 0,
-          "impressions": 3,
+          "impressions": 2,
           "ctr": 0,
-          "average_position": 6.666666666666667,
+          "average_position": 5.5,
           "query": "recast"
         },
         {
@@ -1000,9 +986,9 @@
         },
         {
           "clicks": 0,
-          "impressions": 20,
+          "impressions": 16,
           "ctr": 0,
-          "average_position": 32.45,
+          "average_position": 28.625,
           "query": "yaml to json"
         },
         {
@@ -1031,9 +1017,9 @@
         },
         {
           "clicks": 0,
-          "impressions": 3,
+          "impressions": 2,
           "ctr": 0,
-          "average_position": 6.666666666666667,
+          "average_position": 5.5,
           "page": "https://tryrecast.app/",
           "query": "recast"
         },
@@ -1375,9 +1361,9 @@
         },
         {
           "clicks": 0,
-          "impressions": 4,
+          "impressions": 3,
           "ctr": 0,
-          "average_position": 64,
+          "average_position": 61,
           "page": "https://tryrecast.app/tools/json-diff.html",
           "query": "online compare json"
         },
@@ -1481,14 +1467,6 @@
           "clicks": 0,
           "impressions": 1,
           "ctr": 0,
-          "average_position": 39,
-          "page": "https://tryrecast.app/tools/json-to-csv.html",
-          "query": "json2csv online"
-        },
-        {
-          "clicks": 0,
-          "impressions": 1,
-          "ctr": 0,
           "average_position": 36,
           "page": "https://tryrecast.app/tools/json-to-java.html",
           "query": "convert json to pojo online"
@@ -1543,19 +1521,11 @@
         },
         {
           "clicks": 0,
-          "impressions": 11,
+          "impressions": 9,
           "ctr": 0,
-          "average_position": 78.63636363636364,
+          "average_position": 81.55555555555556,
           "page": "https://tryrecast.app/tools/json-to-typescript.html",
           "query": "json to typescript"
-        },
-        {
-          "clicks": 0,
-          "impressions": 1,
-          "ctr": 0,
-          "average_position": 80,
-          "page": "https://tryrecast.app/tools/json-to-typescript.html",
-          "query": "json to typescript converter"
         },
         {
           "clicks": 0,
@@ -1607,9 +1577,9 @@
         },
         {
           "clicks": 0,
-          "impressions": 20,
+          "impressions": 16,
           "ctr": 0,
-          "average_position": 32.45,
+          "average_position": 28.625,
           "page": "https://tryrecast.app/tools/yaml-to-json.html",
           "query": "yaml to json"
         },
@@ -1630,7 +1600,7 @@
           "query": "yaml to json online"
         }
       ],
-      "evidence_date": "2026-11-23"
+      "evidence_date": "2026-11-24"
     },
     "ga4": {
       "period_days": 28,
@@ -1668,7 +1638,7 @@
         "commercial_intent_rate": "organic users with commercial_intent / organic users with successful_tool_use",
         "returning_user_rate": "organic returning active users / organic active users"
       },
-      "evidence_date": "2026-11-23"
+      "evidence_date": "2026-11-24"
     },
     "stripe": {
       "active_subscription_customers": 0,
@@ -1676,7 +1646,7 @@
       "plan_counts": {},
       "excluded_non_genuine_subscriptions": 9,
       "measurement_rule": "Counts only active/trialing subscriptions backed by a paid, succeeded latest invoice charge that has not been fully refunded.",
-      "evidence_date": "2026-11-23"
+      "evidence_date": "2026-11-24"
     }
   },
   "refresh_warnings": [],
