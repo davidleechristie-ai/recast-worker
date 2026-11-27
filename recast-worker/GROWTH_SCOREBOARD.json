@@ -7,9 +7,9 @@
     "revenue_definition": "Genuine recurring revenue only: current subscription plus paid succeeded latest invoice charge, excluding fully refunded and inactive/cancelled subscriptions."
   },
   "funnel": {
-    "search_impressions": 485,
+    "search_impressions": 499,
     "organic_clicks": 2,
-    "organic_ctr": 0.004123711340206186,
+    "organic_ctr": 0.004008016032064128,
     "indexed_target_pages": null,
     "successful_tool_uses": 0,
     "workflow_starts": 0,
@@ -229,15 +229,15 @@
     "search_console": {
       "period_days": 28,
       "clicks": 2,
-      "impressions": 485,
-      "ctr": 0.004123711340206186,
-      "average_position": 29.544329896907218,
+      "impressions": 499,
+      "ctr": 0.004008016032064128,
+      "average_position": 29.801603206412825,
       "top_pages": [
         {
           "clicks": 2,
-          "impressions": 52,
-          "ctr": 0.038461538461538464,
-          "average_position": 6.019230769230769,
+          "impressions": 53,
+          "ctr": 0.03773584905660377,
+          "average_position": 6.150943396226415,
           "page": "https://tryrecast.app/"
         },
         {
@@ -326,23 +326,23 @@
         },
         {
           "clicks": 0,
-          "impressions": 20,
+          "impressions": 25,
           "ctr": 0,
-          "average_position": 68.75,
+          "average_position": 67.88,
           "page": "https://tryrecast.app/blog/what-is-json-schema.html"
         },
         {
           "clicks": 0,
-          "impressions": 2,
+          "impressions": 3,
           "ctr": 0,
-          "average_position": 91,
+          "average_position": 89,
           "page": "https://tryrecast.app/blog/what-is-jsonpath.html"
         },
         {
           "clicks": 0,
-          "impressions": 10,
+          "impressions": 13,
           "ctr": 0,
-          "average_position": 8,
+          "average_position": 8.076923076923077,
           "page": "https://tryrecast.app/blog/whats-new-in-recast.html"
         },
         {
@@ -354,9 +354,9 @@
         },
         {
           "clicks": 0,
-          "impressions": 16,
+          "impressions": 18,
           "ctr": 0,
-          "average_position": 7.1875,
+          "average_position": 7.388888888888889,
           "page": "https://tryrecast.app/demo/"
         },
         {
@@ -424,9 +424,9 @@
         },
         {
           "clicks": 0,
-          "impressions": 63,
+          "impressions": 64,
           "ctr": 0,
-          "average_position": 57.44444444444444,
+          "average_position": 57.078125,
           "page": "https://tryrecast.app/tools/json-diff.html"
         },
         {
@@ -480,9 +480,9 @@
         },
         {
           "clicks": 0,
-          "impressions": 6,
+          "impressions": 7,
           "ctr": 0,
-          "average_position": 72.66666666666667,
+          "average_position": 68.71428571428571,
           "page": "https://tryrecast.app/tools/json-validator.html"
         },
         {
@@ -776,10 +776,17 @@
         },
         {
           "clicks": 0,
-          "impressions": 11,
+          "impressions": 13,
           "ctr": 0,
-          "average_position": 71.0909090909091,
+          "average_position": 70.46153846153847,
           "query": "json schema"
+        },
+        {
+          "clicks": 0,
+          "impressions": 1,
+          "ctr": 0,
+          "average_position": 74,
+          "query": "json schema example"
         },
         {
           "clicks": 0,
@@ -787,6 +794,13 @@
           "ctr": 0,
           "average_position": 83,
           "query": "json schema items example"
+        },
+        {
+          "clicks": 0,
+          "impressions": 1,
+          "ctr": 0,
+          "average_position": 55,
+          "query": "json schema pattern"
         },
         {
           "clicks": 0,
@@ -925,6 +939,13 @@
           "clicks": 0,
           "impressions": 1,
           "ctr": 0,
+          "average_position": 85,
+          "query": "jsonpath"
+        },
+        {
+          "clicks": 0,
+          "impressions": 1,
+          "ctr": 0,
           "average_position": 89,
           "query": "jsonpath examples"
         },
@@ -965,9 +986,9 @@
         },
         {
           "clicks": 0,
-          "impressions": 2,
+          "impressions": 3,
           "ctr": 0,
-          "average_position": 6.5,
+          "average_position": 8.666666666666668,
           "query": "recast"
         },
         {
@@ -1004,6 +1025,13 @@
           "ctr": 0,
           "average_position": 38,
           "query": "reforecasting automation"
+        },
+        {
+          "clicks": 0,
+          "impressions": 1,
+          "ctr": 0,
+          "average_position": 59,
+          "query": "understanding json schema"
         },
         {
           "clicks": 0,
@@ -1052,9 +1080,9 @@
         },
         {
           "clicks": 0,
-          "impressions": 2,
+          "impressions": 3,
           "ctr": 0,
-          "average_position": 6.5,
+          "average_position": 8.666666666666668,
           "page": "https://tryrecast.app/",
           "query": "recast"
         },
@@ -1124,11 +1152,19 @@
         },
         {
           "clicks": 0,
-          "impressions": 11,
+          "impressions": 13,
           "ctr": 0,
-          "average_position": 71.0909090909091,
+          "average_position": 70.46153846153847,
           "page": "https://tryrecast.app/blog/what-is-json-schema.html",
           "query": "json schema"
+        },
+        {
+          "clicks": 0,
+          "impressions": 1,
+          "ctr": 0,
+          "average_position": 74,
+          "page": "https://tryrecast.app/blog/what-is-json-schema.html",
+          "query": "json schema example"
         },
         {
           "clicks": 0,
@@ -1137,6 +1173,14 @@
           "average_position": 83,
           "page": "https://tryrecast.app/blog/what-is-json-schema.html",
           "query": "json schema items example"
+        },
+        {
+          "clicks": 0,
+          "impressions": 1,
+          "ctr": 0,
+          "average_position": 55,
+          "page": "https://tryrecast.app/blog/what-is-json-schema.html",
+          "query": "json schema pattern"
         },
         {
           "clicks": 0,
@@ -1161,6 +1205,22 @@
           "average_position": 68,
           "page": "https://tryrecast.app/blog/what-is-json-schema.html",
           "query": "json-schema"
+        },
+        {
+          "clicks": 0,
+          "impressions": 1,
+          "ctr": 0,
+          "average_position": 59,
+          "page": "https://tryrecast.app/blog/what-is-json-schema.html",
+          "query": "understanding json schema"
+        },
+        {
+          "clicks": 0,
+          "impressions": 1,
+          "ctr": 0,
+          "average_position": 85,
+          "page": "https://tryrecast.app/blog/what-is-jsonpath.html",
+          "query": "jsonpath"
         },
         {
           "clicks": 0,
