@@ -1,5 +1,5 @@
 {
-  "fetchedAt": "2026-11-28T01:59:26Z",
+  "fetchedAt": "2026-11-28T10:27:22Z",
   "durable": true,
   "measurementStartedAt": "2026-09-11T18:33:07.244Z",
   "northStar": {
@@ -47,7 +47,7 @@
     "analysisReady": 0,
     "analysisAutoStarts": 0,
     "analysisErrors": 0,
-    "resultVisible": 108,
+    "resultVisible": 112,
     "installerAlternativeInterest": 0
   },
   "sources": [
@@ -488,7 +488,7 @@
       "analysisReady": 0,
       "analysisAutoStarts": 0,
       "analysisErrors": 0,
-      "resultVisible": 3,
+      "resultVisible": 4,
       "installerAlternativeInterest": 0,
       "source": "organic_heat_pump_heat_loss_calculation_",
       "landingToCta": 43,
@@ -599,7 +599,7 @@
       "analysisReady": 0,
       "analysisAutoStarts": 0,
       "analysisErrors": 0,
-      "resultVisible": 0,
+      "resultVisible": 1,
       "installerAlternativeInterest": 0,
       "source": "organic_what_should_a_heat_pump_quote_in",
       "landingToCta": 40,
@@ -747,7 +747,7 @@
       "analysisReady": 0,
       "analysisAutoStarts": 0,
       "analysisErrors": 0,
-      "resultVisible": 0,
+      "resultVisible": 1,
       "installerAlternativeInterest": 0,
       "source": "organic_guide_footer",
       "landingToCta": 67,
